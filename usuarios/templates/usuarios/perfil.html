@@ -153,27 +153,6 @@
                             <span class="info-value">{% if precio_hora %}S/ {{ precio_hora|floatformat:2 }}{% else %}No especificado{% endif %}</span>
                         </div>
                     </div>
-                        <h3>📅 Google Calendar</h3>
-
-                        {% if token_info.connected %}
-                            <p>✅ Cuenta conectada</p>
-                            {# Si quieres mostrar el correo, descomenta esto: #}
-                            {# <p><strong>Correo:</strong> {{ token_info.email }}</p> #}
-                            <p><strong>Expira:</strong> {{ token_info.expires|date:"d/m/Y H:i" }}</p>
-                            <small>🔄 Se renovará automáticamente mientras uses tu cuenta.</small>
-
-                            <div style="margin-top: 10px;">
-                                <a href="{% url 'usuarios:desconectar_google' %}" class="btn btn-danger">
-                                    ❌ Desconectar Google Calendar
-                                </a>
-                            </div>
-
-                        {% else %}
-                            <p>❌ No conectado</p>
-                            <a href="{% url 'usuarios:conectar_google' %}" class="btn btn-outline-primary">
-                                🔗 Conectar con Google Calendar
-                            </a>
-                        {% endif %}
                 </div>
 
                 <div class="card">
