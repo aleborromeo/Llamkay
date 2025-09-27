@@ -1,0 +1,51 @@
+<!-- templates/index_trabajo.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro de Primer Trabajo</title>
+    <link rel="stylesheet" href="{% static 'css/index_trabajo.css' %}">
+</head>
+<body>
+    <div class="inicio">
+     <a href="{% url 'trabajo_llamkay:home' %}">
+        <img src="volver" alt="Inicio" class="icono-inicio">
+      </a>
+    </div>
+    <div class="container">
+        <h1>Registro de Primer Trabajo</h1>
+        <p>Selecciona el tipo de registro que deseas realizar para comenzar tu experiencia laboral</p>
+
+        <div class="cards">
+            <div class="card">
+                <div class="icon user"></div>
+                <h2>Registro Individual</h2>
+                <p>Para personas que buscan registrar su primer trabajo</p>
+                <ul>
+                    <li>Información personal y contacto</li>
+                    <li>Detalles del trabajo obtenido</li>
+                    <li>Experiencia y habilidades</li>
+                    <li>Modalidad de trabajo</li>
+                </ul>
+                <a href="{% url 'trabajos:registro_individual' %}" class="btn dark">Comenzar Registro Individual</a>
+            </div>
+
+            <div class="card">
+                <div class="icon company"></div>
+                <h2>Registro de Empresa</h2>
+                <p>Para empresas que ofrecen oportunidades de primer trabajo</p>
+                <ul>
+                    <li>Información de la empresa</li>
+                    <li>Detalles del puesto disponible</li>
+                    <li>Requisitos y beneficios</li>
+                    <li>Contacto del reclutador</li>
+                </ul>
+                <a href="{% url 'trabajos:registro_empresa' %}"  class="btn purple">Comenzar Registro de Empresa</a>
+            </div>
+        </div>
+
+        <p class="contacto">¿Necesitas ayuda? Contáctanos en <a href="mailto:soporte@primerTrabajo.com">soporte@primerTrabajo.com</a></p>
+    </div>
+</body>
+</html>

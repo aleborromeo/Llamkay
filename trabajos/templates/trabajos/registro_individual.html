@@ -1,0 +1,254 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulario de Trabajo</title>
+  <link rel="stylesheet" href="{% static 'css/registro_individual.css' %}" />
+</head>
+
+<body class="fondo">
+  
+  <div class="formulario">
+    <div class="volver">
+      <button type="button" onclick="location.href='{% url 'trabajos:admin_empleador' %}'">← Volver</button>
+    </div>
+
+    <h2>Información del Trabajo</h2>
+    <p>Detalles sobre tu oferta de trabajo</p>
+
+    <form enctype="multipart/form-data" method="POST">
+      {% csrf_token %}
+
+      {% if form.errors %}
+        <div style="color: red;">
+          <ul>
+            {% for field in form %}
+              {% for error in field.errors %}
+                <li>{{ field.label }}: {{ error }}</li>
+              {% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+
+      <!-- Título y Pago -->
+      <div class="seccion-container">
+        <div class="seccion-titulo basicos">Información Básica</div>
+        <div class="fila">
+          <div class="campo">
+            <label>{{ form.titulo.label }}</label>
+            {{ form.titulo }}
+          </div>
+          <div class="campo">
+            <label>{{ form.pago.label }}</label>
+            {{ form.pago }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Fecha y Hora límite -->
+      <div class="seccion-container">
+        <div class="seccion-titulo tiempo">Tiempo y Fechas</div>
+        <div class="fila">
+          <div class="campo">
+            <label>{{ form.fecha_limite.label }}</label>
+            {{ form.fecha_limite }}
+          </div>
+          <div class="campo">
+            <label>{{ form.horas_limite.label }}</label>
+            {{ form.horas_limite }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Descripción y Herramientas -->
+      <div class="seccion-container">
+        <div class="seccion-titulo detalles">Detalles del Trabajo</div>
+        <div class="campo">
+          <label>{{ form.descripcion.label }}</label>
+          {{ form.descripcion }}
+        </div>
+        <div class="campo">
+          <label>{{ form.herramientas.label }}</label>
+          {{ form.herramientas }}
+        </div>
+      </div>
+
+      <!-- Dirección -->
+      <div class="seccion-container">
+        <div class="seccion-titulo ubicacion">Ubicación del Trabajo</div>
+        <div class="direccion">
+          <div class="campo">
+            <label>Departamento</label>
+            {{ form.id_departamento }}
+          </div>
+          <div class="campo">
+            <label>Provincia</label>
+            {{ form.id_provincia }}
+          </div>
+          <div class="campo">
+            <label>Distrito</label>
+            {{ form.id_distrito }}
+          </div>
+          <div class="campo">
+            <label>Comunidad</label>
+            {{ form.id_comunidad }}
+          </div>
+        </div>
+        <!-- Dirección detalle en su propia fila -->
+        <div class="campo direccion-detalle">
+          <label>Dirección detalle</label>
+          {{ form.direccion_detalle }}
+        </div>
+      </div>
+
+      <!-- Foto -->
+      <div class="seccion-container">
+        <div class="seccion-titulo multimedia">Imagen del Trabajo</div>
+        <div class="campo foto-opcional">
+          <label>{{ form.foto.label }}</label>
+          {{ form.foto }}
+          <img id="preview-imagen" src="" alt="Vista previa" style="margin-top: 10px; max-width: 100%; display: none; border: 1px solid #ccc; border-radius: 8px;" />
+        </div>
+      </div>
+
+      <!-- Número de contacto WhatsApp -->
+      <div class="seccion-container contacto-whatsapp">
+        <div class="seccion-titulo contacto">Contacto WhatsApp</div>
+        <div class="campo">
+          <label for="id_numero_contacto">Número de contacto (WhatsApp) *:</label>
+          <input type="tel" id="id_numero_contacto" name="numero_contacto" placeholder="Ej: +51999123456" maxlength="15" required />
+          <small style="color: #666; font-size: 0.9rem;">* Campo obligatorio. Formato: +51999123456</small>
+        </div>
+      </div>
+
+      <!-- Estado oculto -->
+      {{ form.estado.as_hidden }}
+
+      <!-- Botón -->
+      <!-- Botones según modo -->
+      <div class="boton">
+         {% if modo_edicion %}
+          <button type="submit" class="btn-editar">Guardar Cambios</button>
+          <a href="{% url 'trabajos:all_trabajos' %}" class="btn-cancelar">Cancelar</a>
+          {% else %}
+          <button type="submit" class="btn-registrar">Completar Registro</button>
+         {% endif %}
+        </div>
+
+    </form>
+  </div>
+
+  <!-- Previsualizar imagen -->
+  <script>
+    document.querySelector('input[type="file"]').addEventListener("change", function (event) {
+      const imagenPreview = document.getElementById("preview-imagen");
+      const archivo = event.target.files[0];
+      if (archivo) {
+        const lector = new FileReader();
+        lector.onload = function (e) {
+          imagenPreview.src = e.target.result;
+          imagenPreview.style.display = "block";
+        };
+        lector.readAsDataURL(archivo);
+      } else {
+        imagenPreview.src = "";
+        imagenPreview.style.display = "none";
+      }
+    });
+  </script>
+
+  <!-- AJAX para ubicación -->
+ <script>
+document.addEventListener('DOMContentLoaded', function () {
+  const departamentoSelect = document.getElementById('id_id_departamento');
+  const provinciaSelect = document.getElementById('id_id_provincia');
+  const distritoSelect = document.getElementById('id_id_distrito');
+  const comunidadSelect = document.getElementById('id_id_comunidad');
+
+  departamentoSelect.addEventListener('change', function () {
+    const departamentoId = this.value;
+    fetch(`/trabajos/ajax/cargar-provincias/?departamento_id=${departamentoId}`)
+      .then(response => response.json())
+      .then(data => {
+        provinciaSelect.innerHTML = '<option value="">seleccione</option>';
+        data.forEach(function (provincia) {
+          provinciaSelect.innerHTML += `<option value="${provincia.id_provincia}">${provincia.nombre}</option>`;
+        });
+        distritoSelect.innerHTML = '<option value="">seleccione</option>';
+        comunidadSelect.innerHTML = '<option value="">seleccione</option>';
+      });
+  });
+
+  provinciaSelect.addEventListener('change', function () {
+    const provinciaId = this.value;
+    fetch(`/trabajos/ajax/cargar-distritos/?provincia_id=${provinciaId}`)
+      .then(response => response.json())
+      .then(data => {
+        distritoSelect.innerHTML = '<option value="">seleccione</option>';
+        data.forEach(function (distrito) {
+          distritoSelect.innerHTML += `<option value="${distrito.id_distrito}">${distrito.nombre}</option>`;
+        });
+        comunidadSelect.innerHTML = '<option value="">seleccione</option>';
+      });
+  });
+
+  distritoSelect.addEventListener('change', function () {
+    const distritoId = this.value;
+    fetch(`/trabajos/ajax/cargar-comunidades/?distrito_id=${distritoId}`)
+      .then(response => response.json())
+      .then(data => {
+        comunidadSelect.innerHTML = '<option value="">seleccione</option>';
+        data.forEach(function (comunidad) {
+          comunidadSelect.innerHTML += `<option value="${comunidad.id_comunidad}">${comunidad.nombre}</option>`;
+        });
+      });
+  });
+
+  // Validación del número de WhatsApp
+  const numeroContacto = document.getElementById('id_numero_contacto');
+  
+  numeroContacto.addEventListener('input', function() {
+    let valor = this.value;
+    
+    // Remover caracteres no válidos excepto + y números
+    valor = valor.replace(/[^\d+]/g, '');
+    
+    // Asegurar que empiece con +
+    if (valor && !valor.startsWith('+')) {
+      valor = '+' + valor;
+    }
+    
+    this.value = valor;
+    
+    // Validar formato
+    const isValid = /^\+?[1-9]\d{8,14}$/.test(valor);
+    
+    if (valor && !isValid) {
+      this.style.borderColor = '#f44336';
+      this.style.backgroundColor = '#ffebee';
+    } else {
+      this.style.borderColor = '#4caf50';
+      this.style.backgroundColor = '#e8f5e8';
+    }
+  });
+  
+  // Validación al enviar el formulario
+  document.querySelector('form').addEventListener('submit', function(e) {
+    const numero = numeroContacto.value;
+    if (!numero || !/^\+?[1-9]\d{8,14}$/.test(numero)) {
+      e.preventDefault();
+      alert('Por favor, ingrese un número de WhatsApp válido. Formato: +51999123456');
+      numeroContacto.focus();
+    }
+  });
+});
+ </script>
+
+</body>
+</html>

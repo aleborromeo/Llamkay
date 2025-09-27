@@ -1,0 +1,182 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Panel del Empleador</title>
+  <link rel="stylesheet" href="{% static 'css/admin_empleador.css' %}">
+  <link rel="stylesheet" href="{% static 'css/trabajos_empleador.css' %}">
+</head>
+<body>
+
+<header>
+  <div class="navbar">
+    <div class="logo">Llamkay</div>
+    <nav>
+      <a href="{% url 'usuarios:dashboard' %}">Inicio</a>
+    </nav>
+    <div class="buscar">
+      <input type="text" placeholder="Buscar...">
+      <button>🔍</button>
+    </div>
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <a href="{% url 'trabajos:registro_individual' %}" class="btn-publicar">
+        Publicar Trabajo
+        <span class="sparkle-1">✨</span>
+        <span class="sparkle-2">⭐</span>
+        <span class="sparkle-3">💫</span>
+      </a>
+      <span class="menu-toggle" onclick="toggleMenu()">☰</span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <aside class="acciones">
+    <ul>
+      <li class="activo">
+        <button id="cargar-trabajos" class="menu-item">
+          <img src="{% static 'images/mistrabajos.png' %}" alt="" class="menu-icon">
+          Mis Trabajos
+        </button>
+      </li>
+      <li>
+        <button class="menu-item" id="ver-todos-trabajos">
+          <img src="{% static 'images/historial.png' %}" alt="" class="menu-icon">
+          Historial de Trabajos
+        </button>
+      </li>
+      <li>
+        <button class="menu-item" id="gestionar-postulaciones">
+          <img src="{% static 'images/postulaciones.png' %}" alt="" class="menu-icon">
+          Gestionar Postulaciones
+        </button>
+      </li>
+      <li>
+        <a href="{% url 'chats:lista_chats' %}" class="menu-item">
+          <img src="{% static 'images/comentario.png' %}" alt="" class="menu-icon">
+          Mensajes
+        </a>
+      </li>
+      <li>
+        <button class="menu-item" id="trabajos-guardados">
+          <img src="{% static 'images/guardar.png' %}" alt="" class="menu-icon">
+          Trabajos Guardados
+        </button>
+      </li>
+    </ul>
+  </aside>
+
+  <div class="menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
+
+  <section class="contenido">
+    <div id="contenido-dinamico">
+      <p>Cargando trabajos...</p>
+    </div>
+  </section>
+</main>
+
+<script>
+  function toggleMenu() {
+    const aside = document.querySelector('.acciones');
+    const overlay = document.getElementById('menuOverlay');
+    
+    aside.classList.toggle('open');
+    overlay.classList.toggle('active');
+    
+    // Prevenir scroll del body cuando el menú está abierto
+    if (aside.classList.contains('open')) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+  }
+
+  // Cerrar menú al hacer clic en cualquier enlace del menú en móvil
+  document.addEventListener('DOMContentLoaded', function() {
+    const menuItems = document.querySelectorAll('.menu-item');
+    menuItems.forEach(item => {
+      item.addEventListener('click', function() {
+        if (window.innerWidth <= 768) {
+          toggleMenu();
+        }
+      });
+    });
+  });
+
+  document.addEventListener('DOMContentLoaded', function () {
+    function cargarMisTrabajos() {
+      fetch("{% url 'trabajos:mis_trabajos_ajax' %}")
+        .then(response => {
+          if (!response.ok) throw new Error("Error al cargar los trabajos");
+          return response.text();
+        })
+        .then(html => {
+          document.getElementById('contenido-dinamico').innerHTML = html;
+          marcarActivo('cargar-trabajos');
+        })
+        .catch(error => {
+          document.getElementById('contenido-dinamico').innerHTML = "<p>Error al cargar trabajos.</p>";
+          console.error(error);
+        });
+    }
+
+    function cargarVerTodos() {
+      document.getElementById('contenido-dinamico').innerHTML = "<p>Ver Todos los Trabajos (pendiente de implementación).</p>";
+      marcarActivo('ver-todos-trabajos');
+    }
+
+    function cargarPostulaciones() {
+      document.getElementById('contenido-dinamico').innerHTML = "<p>Gestionar Postulaciones (pendiente de implementación).</p>";
+      marcarActivo('gestionar-postulaciones');
+    }
+
+    function cargarMensajes() {
+      document.getElementById('contenido-dinamico').innerHTML = "<p>Mensajes (pendiente de implementación).</p>";
+      marcarActivo('mensajes-panel');
+    }
+
+    function cargarGuardados() {
+      document.getElementById('contenido-dinamico').innerHTML = "<p>Trabajos Guardados (pendiente de implementación).</p>";
+      marcarActivo('trabajos-guardados');
+    }
+
+    function marcarActivo(idBoton) {
+      document.querySelectorAll('.acciones ul li').forEach(li => {
+        const btn = li.querySelector('button');
+        if (btn && btn.id === idBoton) {
+          li.classList.add('activo');
+        } else {
+          li.classList.remove('activo');
+        }
+      });
+    }
+
+    // Asignar eventos
+    document.getElementById('cargar-trabajos')?.addEventListener('click', e => {
+      e.preventDefault();
+      cargarMisTrabajos();
+    });
+    document.getElementById('ver-todos-trabajos')?.addEventListener('click', e => {
+      e.preventDefault();
+      cargarVerTodos();
+    });
+    document.getElementById('gestionar-postulaciones')?.addEventListener('click', e => {
+      e.preventDefault();
+      cargarPostulaciones();
+    });
+    document.getElementById('mensajes-panel')?.addEventListener('click', e => {
+      e.preventDefault();
+      cargarMensajes();
+    });
+    document.getElementById('trabajos-guardados')?.addEventListener('click', e => {
+      e.preventDefault();
+      cargarGuardados();
+    });
+
+    cargarMisTrabajos();
+  });
+</script>
+
+</body>
+</html>

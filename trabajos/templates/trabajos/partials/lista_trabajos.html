@@ -1,0 +1,344 @@
+{% load static %}
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lista de Trabajos</title>
+  <link rel="stylesheet" href="{% static 'css/all_trabajos.css' %}">
+</head>
+<body>
+
+<script src="{% static 'trabajos/js/domProvincia.js' %}"></script>
+<script src="{% static 'trabajos/js/domDistrito.js' %}"></script>
+<script src="{% static 'trabajos/js/domComunidad.js' %}"></script>
+
+
+<script src="{% static 'js/domProvincia.js' %}"></script>
+<script src="{% static 'js/domDistrito.js' %}"></script>
+<script src="{% static 'js/domComunidad.js' %}"></script>
+
+
+  <!-- FORMULARIO FILTROS Y BUSCADOR -->
+  <div class="filtros" style="padding: 15px;">
+    <form method="GET" action="{% url 'trabajos:filtrar_trabajos' %}" style="display: flex; flex-direction: column; gap: 15px; max-width: 100%;">
+      <!-- BUSCADOR -->
+      <div style="display: flex; align-items: center; width: 100%;">
+        <input type="text" name="buscar" placeholder="Buscar trabajo..." style="flex: 1; padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px 0 0 4px; font-size: 16px;">
+        <button type="submit" style="background-color:rgb(252, 245, 245); border: none; padding: 8px 12px; border-radius: 0 4px 4px 0;">
+          <img src="{% static 'images/lupa.png' %}" alt="Buscar" style="height: 20px;">
+        </button>
+      </div>
+
+      <!-- FILTROS Y BOTONES -->
+      <div style="
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  border: 1px solid #ccc;
+  padding: 10px;
+  background: linear-gradient(to right, #ffffff, #d3f9d8, #ffffff);
+  border-radius: 12px;">
+        
+        <!-- Selects -->
+         
+      <div style="
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 10px;
+">
+  <img src="{% static 'images/sonic.png' %}" alt="Sonic animado" class="img-sonic">
+
+  <input type="hidden" name="tipo_usuario" id="tipoUsuarioInput">
+  <button type="submit" style="
+    background: linear-gradient(135deg, #00d2ff, #0077ff);
+    color: white;
+    font-weight: 800;
+    font-family: 'Segoe UI', 'Roboto', sans-serif;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 0 12px rgba(0, 162, 255, 0.6);
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  ">
+    ¡CONTACTA YAA¡
+       </button>
+    </div>
+
+    </form>
+ </div>
+
+<!-- TARJETAS -->
+<div class="container">
+  <div class="trabajos-grid">
+    {% for trabajo in trabajos %}
+      <div class="tarjeta-trabajo" data-id="{{ trabajo.id }}">
+        <div class="iconos-tarjeta">
+          {% with id_str=trabajo.tipo|add:"_"|add:trabajo.id|stringformat:"s" %}
+            {% if id_str in trabajos_guardados_ids %}
+              <img src="{% static 'images/guardar.png' %}" alt="Guardado" class="guardar-icon" title="Ya guardado">
+            {% else %}
+              <a href="{% url 'trabajos:guardar_trabajo' trabajo.tipo trabajo.id %}" title="Guardar">
+                <img src="{% static 'images/guardar1.png' %}" alt="Guardar" class="guardar-icon">
+              </a>
+            {% endif %}
+          {% endwith %}
+        </div>
+        <p class="publicado-por">Publicado por: {{ trabajo.publicado_por }}</p>
+        <h3 class="titulo-trabajo">{{ trabajo.titulo }}</h3>
+        <p class="fecha-publicacion">Publicado: {{ trabajo.fecha_registro|date:"d M Y" }}</p>
+        {% if trabajo.foto %}
+          <img src="{{ trabajo.foto.url }}" alt="Imagen del trabajo" class="imagen-trabajo" />
+        {% endif %}
+        <p class="direccion">
+          <img src="{% static 'images/ubicacion.png' %}" alt="Dirección" class="icono-direccion">
+          {% if trabajo.id_departamento %}{{ trabajo.id_departamento.nombre }}, {% endif %}
+          {% if trabajo.id_provincia %}{{ trabajo.id_provincia.nombre }}, {% endif %}
+          {% if trabajo.id_distrito %}{{ trabajo.id_distrito.nombre }}, {% endif %}
+          {% if trabajo.id_comunidad %}{{ trabajo.id_comunidad.nombre }}{% endif %}
+        </p>
+        <p><strong>Fecha Límite:</strong> {{ trabajo.fecha_limite }}{% if trabajo.horas_limite %} {{ trabajo.horas_limite }}{% endif %}</p>
+        <div class="contenedor-contacto-mensaje">
+          {% if trabajo.numero_contacto %}
+            <a href="https://wa.me/{{ trabajo.numero_contacto }}?text=Hola%2C%20estoy%20interesado%20en%20la%20oferta%20de%20trabajo%3A%20{{ trabajo.titulo|urlencode }}" target="_blank" class="boton-contactar">
+              Contactar
+            </a>
+          {% else %}
+            <span class="boton-contactar-deshabilitado" title="Sin número de contacto disponible">
+              Contactar
+            </span>
+          {% endif %}
+          <img src="{% static 'images/comentario.png' %}" alt="Mensajería" class="mensaje-icon-btn" title="Mensaje">
+          <a href="{% url 'trabajos:all_trabajos' %}" class="ver-mas-btn">Ver más</a>
+
+        </div>
+      </div>
+    {% empty %}
+      <p>No hay trabajos disponibles.</p>
+    {% endfor %}
+    
+  </div>
+</div>
+<script>
+    function toggleTipo(btn) {
+      document.querySelectorAll('.tipo-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('tipoUsuarioInput').value = btn.textContent.toLowerCase();
+    }
+
+    // Funcionalidad de "guardar" usando localStorage
+    document.addEventListener('DOMContentLoaded', function() {
+      const savedKey = 'trabajosGuardados';
+      let guardados = [];
+      try {
+        const stored = localStorage.getItem(savedKey);
+        if (stored) {
+          guardados = JSON.parse(stored);
+        }
+      } catch(e) {
+        guardados = [];
+      }
+      document.querySelectorAll('.tarjeta-trabajo').forEach(card => {
+        const id = card.dataset.id;
+        const icon = card.querySelector('.guardar-icon');
+        if (id && icon) {
+          if (guardados.includes(id)) {
+            icon.classList.add('saved');
+          }
+          icon.addEventListener('click', function(evt) {
+            evt.stopPropagation();
+            const idx = guardados.indexOf(id);
+            if (idx === -1) {
+              guardados.push(id);
+              icon.classList.add('saved');
+            } else {
+              guardados.splice(idx, 1);
+              icon.classList.remove('saved');
+            }
+            localStorage.setItem(savedKey, JSON.stringify(guardados));
+          });
+        }
+      });
+
+      // Evento para íconos de mensajería (separados)
+      document.querySelectorAll('.mensaje-icon-btn').forEach(img => {
+        img.addEventListener('click', function(evt) {
+          evt.stopPropagation();
+          alert('Funcionalidad de mensajería aún no implementada.');
+        });
+      });
+    });
+  </script>
+  <style>
+      .tipo-btn.selected {
+    background: linear-gradient(to right, #b45309, #7c2d12) !important;
+    box-shadow: 0 0 10px #f97316;
+    border-color: #f59e0b;
+  }
+      </style>
+
+  <script>
+  function toggleTipo(button) {
+    // Quitar la clase "selected" de todos los botones
+    document.querySelectorAll('.tipo-btn').forEach(btn => {
+      btn.classList.remove('selected');
+    });
+
+    // Agregar la clase "selected" al botón clickeado
+    button.classList.add('selected');
+  }
+</script>
+  <style>
+    body {
+    background: rgba(190, 215, 185, 0.7); /* verde claro con opacidad */
+    backdrop-filter: blur(3px); /* efecto borroso suave */
+    -webkit-backdrop-filter: blur(3px); /* soporte Safari */
+    margin: 0;
+    padding: 0;
+}    
+    .tarjeta-trabajo {
+  background: #f5f5f5;
+  border-radius: 16px;
+  padding: 15px;
+  margin: 15px;
+  box-shadow: 0 0 12px rgba(0, 255, 180, 0.15);
+  border: 1px solid rgba(46, 138, 110, 0.3);
+  transition: all 0.3s ease-in-out;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px; /* reduce espacio entre elementos */
+}
+     .titulo-trabajo {
+  font-size: 18px;
+  margin: 0;
+  font-weight: bold;
+  color: #333;
+}
+
+.fecha-publicacion,
+.direccion,
+.publicado-por,
+.tarjeta-trabajo p {
+  margin: 0;
+  font-size: 14px;
+  color: #555;
+  line-height: 1.3;
+}
+
+.imagen-trabajo {
+  width: 100%;
+  max-height: 160px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin: 5px 0;
+}
+.tarjeta-trabajo:hover {
+  box-shadow: 0 0 20px rgba(0, 255, 180, 0.4);
+  transform: translateY(-3px);
+}
+
+/* Opcional: para que los iconos y botones tengan un look consistente */
+.guardar-icon,
+.mensaje-icon-btn {
+  width: 24px;
+  height: 24px;
+  transition: transform 0.2s;
+}
+
+.guardar-icon:hover,
+.mensaje-icon-btn:hover {
+  transform: scale(1.1);
+}
+
+.ver-mas-btn,
+.boton-contactar {
+  background-color:rgb(105, 128, 122);
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: bold;
+  box-shadow: 0 0 8px rgba(0, 255, 180, 0.4);
+  transition: background 0.3s, transform 0.2s;
+}
+
+.ver-mas-btn:hover,
+.boton-contactar:hover {
+  background-color: #00b88c;
+  transform: scale(1.05);
+}
+
+/* Botón Contactar Deshabilitado */
+.boton-contactar-deshabilitado {
+  background-color: #cccccc;
+  color: #666666;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+    .img-sonic {
+  height: 90px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+  transition: transform 0.3s ease;
+  position: center;
+}
+
+.img-sonic:hover {
+  transform: scale(1.1);
+}
+
+@media (max-width: 600px) {
+  .img-sonic {
+    height: 40px;
+  }
+}
+
+    
+
+/* Imagen dentro del modal */
+.modal-trabajo .imagen-trabajo {
+  width: 100%;
+  max-height: 200px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+
+/* Botón “Ver más” dentro de la tarjeta */
+.ver-mas-btn {
+  background: #198754;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-left: auto;
+  transition: background-color 0.3s ease;
+}
+.ver-mas-btn:hover {
+  background-color: #145f3a;
+}
+.icono-direccion {
+  width: 20px;
+  height: 20px;
+  vertical-align: middle;
+  margin-right: 0px;
+  filter: drop-shadow(0 0 0 rgba(0, 0, 0, 0.4));
+}
+
+  </style>
+
+</body>
