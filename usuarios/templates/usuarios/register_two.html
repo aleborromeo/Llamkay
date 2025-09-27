@@ -1,0 +1,89 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Registro - Llamkay</title>
+  <link rel="stylesheet" href="{% static 'css/register_two.css' %}" />
+</head>
+
+<body>
+  <main class="container">
+    <div class="form-box">
+      <div class="logo">
+        <h1>Llamkay</h1>
+      </div>
+      <h2>Crear cuenta de trabajador</h2>
+      <p class="step">Paso 2 de 4: Ubicación</p>
+      <div class="progress-bar">
+        <div class="step-bar active"></div>
+        <div class="step-bar active"></div>
+        <div class="step-bar"></div>
+        <div class="step-bar"></div>
+      </div>
+
+      <!-- 🔴 Mensaje de error general -->
+      {% if form.non_field_errors %}
+        <div class="alert-error">
+          {% for error in form.non_field_errors %}
+            <p>{{ error }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <form id="location-form" method="post" novalidate>
+        {% csrf_token %}
+
+        <!-- Dirección -->
+        <label for="{{ form.direccion.id_for_label }}">Dirección *</label>
+        {{ form.direccion }}
+        {% if form.direccion.errors %}
+          <div class="error-message">{{ form.direccion.errors.0 }}</div>
+        {% endif %}
+
+        <!-- Departamento -->
+        <label for="{{ form.departamento.id_for_label }}">Departamento *</label>
+        {{ form.departamento }}
+        {% if form.departamento.errors %}
+          <div class="error-message">{{ form.departamento.errors.0 }}</div>
+        {% endif %}
+
+        <!-- Provincia -->
+        <label for="id_provincia">Provincia *</label>
+        <select name="provincia" id="id_provincia" required>
+          <option value="">Selecciona tu provincia</option>
+        </select>
+        {% if form.provincia.errors %}
+          <div class="error-message">{{ form.provincia.errors.0 }}</div>
+        {% endif %}
+
+        <!-- Distrito -->
+        <label for="id_distrito">Distrito *</label>
+        <select name="distrito" id="id_distrito" required>
+          <option value="">Selecciona tu distrito</option>
+        </select>
+        {% if form.distrito.errors %}
+          <div class="error-message">{{ form.distrito.errors.0 }}</div>
+        {% endif %}
+
+        <!-- Botones -->
+        <div class="button-group">
+          <a href="{% url 'usuarios:register' %}" class="btn-outline">Anterior</a>
+          <button type="submit" class="btn-primary">Siguiente</button>
+        </div>
+      </form>
+
+      <p class="login-link">
+        ¿Ya tienes una cuenta? <a href="{% url 'usuarios:login' %}">Inicia sesión aquí</a>
+      </p>
+      <a href="#" class="back-link">← Volver al inicio</a>
+    </div>
+  </main>
+
+  <!-- JS dinámico -->
+  <script src="{% static 'js/cargarLugares.js' %}"></script>
+</body>
+
+</html>

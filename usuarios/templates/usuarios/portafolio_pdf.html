@@ -1,0 +1,76 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            color: #333;
+            line-height: 1.5;
+        }
+        h1, h2 {
+            color: #07734B;
+        }
+        h1 {
+            border-bottom: 2px solid #ccc;
+            padding-bottom: 5px;
+        }
+        .section {
+            margin-top: 25px;
+            margin-bottom: 20px;
+        }
+        .item {
+            margin-bottom: 12px;
+        }
+        .label {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Portafolio de {{ usuario.nombres }} {{ usuario.apellidos }}</h1>
+
+    <p><span class="label">Correo:</span> {{ usuario.email }}</p>
+
+    <p>
+        <span class="label">Ubicación:</span>
+        {% if profile.id_distrito and profile.id_provincia %}
+            {{ profile.id_distrito.nombre }}, {{ profile.id_provincia.nombre }}
+        {% else %}
+            No especificada
+        {% endif %}
+    </p>
+
+    <div class="section">
+        <h2>🛠 Trabajos Realizados</h2>
+        {% if trabajos %}
+            {% for trabajo in trabajos %}
+                <div class="item">
+                    <strong>{{ trabajo.titulo }}</strong><br>
+                    {{ trabajo.descripcion|truncatechars:120 }}
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No se registraron trabajos.</p>
+        {% endif %}
+    </div>
+
+    <div class="section">
+        <h2>🎓 Certificaciones</h2>
+        {% if certificaciones %}
+            {% for cert in certificaciones %}
+                <div class="item">
+                    <strong>{{ cert.descripcion }}</strong>
+                    ({{ cert.fecha_subida|date:"Y" }})
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No hay certificaciones.</p>
+        {% endif %}
+    </div>
+
+</body>
+</html>

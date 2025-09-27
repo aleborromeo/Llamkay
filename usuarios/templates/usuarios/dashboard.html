@@ -1,0 +1,357 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLamkay.pe - Dashboard</title>
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    <link rel="icon" href="{% static 'images/llamkay.png' %}" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Lobster&family=Playwrite+HU:wght@100..400&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="dropdown-overlay" id="dropdownOverlay"></div>
+    
+    <header>
+        <nav class="navbar">
+            <div class="logo">LLamkay.pe</div>
+            
+            <div class="navbar-center">
+                <a href="{% url 'trabajo_llamkay:nosotros' %}">Nosotros</a>
+                <a href="#">Trabajos</a>
+                <a href="#">Empresas</a>
+            </div>
+            
+            <div class="navbar-right">
+                <!-- Notificaciones -->
+                <div style="position: relative;">
+                    <button class="icon-button" id="notificationsBtn">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+                        </svg>
+                        <span class="notification-badge">3</span>
+                    </button>
+                    <div class="dropdown notifications-dropdown" id="notificationsDropdown">
+                        <div class="dropdown-header">Notificaciones</div>
+                        <div class="notification-item unread">
+                            <div class="notification-avatar">JD</div>
+                            <div class="notification-content">
+                                <div class="notification-text">Juan Díaz aplicó para tu trabajo de carpintería</div>
+                                <div class="notification-time">hace 5 minutos</div>
+                            </div>
+                        </div>
+                        <div class="notification-item unread">
+                            <div class="notification-avatar">MA</div>
+                            <div class="notification-content">
+                                <div class="notification-text">María Ayala publicó un nuevo trabajo en tu área</div>
+                                <div class="notification-time">hace 2 horas</div>
+                            </div>
+                        </div>
+                        <div class="notification-item">
+                            <div class="notification-avatar">CS</div>
+                            <div class="notification-content">
+                                <div class="notification-text">Carlos Silva aceptó tu propuesta de trabajo</div>
+                                <div class="notification-time">ayer</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mensajes -->
+                <div style="position: relative;">
+                    <button class="icon-button" id="messagesBtn">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/>
+                        </svg>
+                        {% if total_mensajes_no_leidos > 0 %}
+                            <span class="notification-badge">{{ total_mensajes_no_leidos }}</span>
+                        {% endif %}
+                    </button>
+                    <div class="dropdown messages-dropdown" id="messagesDropdown">
+                        <div class="dropdown-header">Mensajes</div>
+                        
+                        {% if mensajes_recientes %}
+                            {% for mensaje in mensajes_recientes %}
+                                <a href="{% url 'chats:ver_chat_por_id' mensaje.chat_id %}" class="message-item" style="text-decoration: none; color: inherit;">
+                                    <div class="message-avatar">
+                                        {% if mensaje.foto_otro_usuario %}
+                                            <img src="{{ mensaje.foto_otro_usuario }}" alt="Avatar" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                                        {% else %}
+                                            {{ mensaje.iniciales }}
+                                        {% endif %}
+                                    </div>
+                                    <div class="message-content">
+                                        <div class="message-name">{{ mensaje.nombre_otro_usuario }}</div>
+                                        <div class="message-preview">{{ mensaje.ultimo_mensaje }}</div>
+                                    </div>
+                                    <div class="message-time">
+                                        {% if mensaje.fecha_envio %}
+                                            {% now "Y-m-d H:i" as ahora %}
+                                            {% if mensaje.fecha_envio|date:"Y-m-d" == ahora|date:"Y-m-d" %}
+                                                {{ mensaje.fecha_envio|date:"H:i" }}
+                                            {% elif mensaje.fecha_envio|timesince|slice:":1" == "1" %}
+                                                {{ mensaje.fecha_envio|timesince|slice:":1" }}d
+                                            {% else %}
+                                                {{ mensaje.fecha_envio|date:"d/m" }}
+                                            {% endif %}
+                                        {% endif %}
+                                        {% if mensaje.no_leidos > 0 %}
+                                            <div class="unread-count">{{ mensaje.no_leidos }}</div>
+                                        {% endif %}
+                                    </div>
+                                </a>
+                            {% endfor %}
+                            
+                            <div style="border-top: 1px solid #eee; padding: 10px; text-align: center;">
+                                <a href="{% url 'chats:lista_chats' %}" style="color: #1877f2; text-decoration: none; font-weight: 500;">
+                                    Ver todos los mensajes
+                                </a>
+                            </div>
+                        {% else %}
+                            <div class="message-item" style="text-align: center; color: #666; padding: 20px;">
+                                <div>No tienes mensajes aún</div>
+                                <div style="font-size: 12px; margin-top: 5px;">
+                                    <a href="{% url 'chats:lista_chats' %}" style="color: #1877f2; text-decoration: none;">
+                                        Iniciar una conversación
+                                    </a>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Menú de usuario -->
+                <div style="position: relative;">
+                    <div class="user-menu" id="userMenuBtn">
+                        {% if profile.foto_url %}
+                            <img src="{{ profile.foto_url.url }}" alt="Foto de perfil" class="profile-pic">
+                        {% else %}
+                            {% with usuario.nombres|default:"" as fn %}
+                            {% with usuario.apellidos|default:"" as ln %}
+                            <div class="profile-pic-placeholder">
+                                {{ fn|first|upper }}{{ ln|first|upper }}
+                            </div>
+                            {% endwith %}
+                            {% endwith %}
+                        {% endif %}
+                        <span class="username">
+                            {% if usuario.nombres or usuario.apellidos %}
+                                {{ usuario.nombres }} {{ usuario.apellidos }}
+                            {% else %}
+                                {{ user.username }}
+                            {% endif %}
+                            </span>
+
+                        <div class="dropdown-arrow"></div>
+                    </div>
+
+                    <div class="dropdown user-dropdown" id="userDropdown">
+                        <div class="user-profile-section">
+                            {% if profile.foto_url %}
+                                <img src="{{ profile.foto_url.url }}" alt="Foto de perfil" class="user-profile-pic">
+                            {% else %}
+                                {% with usuario.nombres|default:"" as fn %}
+                                {% with usuario.apellidos|default:"" as ln %}
+                                <div class="user-profile-pic-placeholder">
+                                    {{ fn|first|upper }}{{ ln|first|upper }}
+                                </div>
+                                {% endwith %}
+                                {% endwith %}
+                            {% endif %}
+                            <div class="user-profile-info">
+                                <h3>{{ usuario.nombres|default:user.username }} {{ uusuario.apellidos }}</h3>
+                                <p>Ver todos los perfiles</p>
+                            </div>
+                        </div>
+
+                        <a href="{% url 'usuarios:perfil' %}" class="dropdown-menu-item">
+                            <div class="dropdown-icon">
+                                <img src="{% static 'images/perfil.png' %}" alt="Usuario" class="icon">
+                            </div>
+                            Perfil
+                        </a>
+                        <a href="{% url 'usuarios:configuracion' %}" class="dropdown-menu-item">
+                            <div class="dropdown-icon">
+                                <img src="{% static 'images/configuracion.png' %}" alt="Configuración" class="icon">
+                            </div>
+                            Configuración y privacidad
+                        </a>
+                        <a href="{% url 'usuarios:ayuda' %}" class="dropdown-menu-item">
+                            <div class="dropdown-icon">
+                                <img src="{% static 'images/ayuda-soporte.png' %}" alt="Ayuda" class="icon">
+                            </div>
+                            Ayuda y soporte técnico
+                        </a>
+                        <a href="{% url 'usuarios:accesibilidad' %}" class="dropdown-menu-item">
+                            <div class="dropdown-icon">
+                                <img src="{% static 'images/accesibilidad.png' %}" alt="Accesibilidad" class="icon">
+                            </div>
+                            Pantalla y accesibilidad
+                        </a>
+                        <a href="{% url 'usuarios:comentarios' %}" class="dropdown-menu-item">
+                            <div class="dropdown-icon">
+                                <img src="{% static 'images/comentarios.png' %}" alt="Comentarios" class="icon">
+                            </div>
+                            Enviar comentarios
+                        </a>
+                        <a href="{% url 'usuarios:logout' %}" class="dropdown-menu-item logout">
+                            <div class="dropdown-icon">
+                                <img src="{% static 'images/cerrar-sesion.png' %}" alt="Cerrar sesión" class="icon">
+                            </div>
+                            Cerrar sesión
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="carousel">
+            <img class="carousel-image active" src="{% static 'images/foto-index-1.jpg' %}" alt="Imagen 1">
+            <img class="carousel-image" src="{% static 'images/foto-index-2.jpg' %}" alt="Imagen 2">
+            <img class="carousel-image" src="{% static 'images/foto-index-3.jpg' %}" alt="Imagen 3">
+            <img class="carousel-image" src="{% static 'images/foto-index-4.jpg' %}" alt="Imagen 4">
+
+            <button class="carousel-btn prev" onclick="cambiarImagen(-1)">❮</button>
+            <button class="carousel-btn next" onclick="cambiarImagen(1)">❯</button>
+        </div>
+
+        <div class="hero-text">
+            <h1>Encuentra el trabajo ideal para ti</h1>
+            <p>LLamkay conecta a empleadores con empresas</p>
+    
+            <div class="hero-buttons">
+             {% if user.is_authenticated %}
+            {# Solo empleador, ambos o empresa pueden publicar #}
+                {% if user.perfil.tipo_usuario == 'ofrecer-trabajo' or user.perfil.tipo_usuario == 'ambos' %}
+              <a href="{% url 'trabajos:admin_empleador' %}" class="btn blue">Publica un trabajo</a>
+                {% elif user.perfil.tipo_usuario == 'empresa' %}
+              <a href="{% url 'trabajos:admin_empresa' %}" class="btn blue">Publica un trabajo</a>
+             {% endif %}
+
+            {# Solo trabajador puede ver "Mis trabajos" #}
+                {% if user.perfil.tipo_usuario == 'buscar-trabajo' %}
+                <a href="{% url 'trabajos:dashboard_trabajador' %}" class="btn green">Mis trabajos</a>
+                {% endif %}
+             {% endif %}
+
+        {# Todos pueden aplicar para un trabajo #}
+                <a href="{% url 'trabajos:all_trabajos' %}" class="btn grey">Aplica para un trabajo</a>
+            </div>
+        </div>
+
+
+    </section>
+
+    {% if profile.tipo_usuario != 'empresa' and profile.tipo_usuario != 'ofrecer-trabajo' %}
+    <section class="browse">
+    {% include 'trabajos/partials/lista_trabajos.html' %}
+    <div style="text-align: center; margin-top: 2rem;">
+        <div class="center-button">
+            <a href="{% url 'trabajos:all_trabajos' %}" class="btn blue ver-mas-trabajos">Ver más trabajos</a>
+        </div>
+    </div>
+    </section>
+    {% endif %}
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-container">
+            <!-- Información de la empresa -->
+            <div class="footer-section">
+                <div class="footer-logo">
+                    <h3>LLamkay.pe</h3>
+                    <p>Conectando talentos con oportunidades laborales en todo el Perú</p>
+                </div>
+                <div class="footer-social">
+                    <h4>Síguenos</h4>
+                    <div class="social-links">
+                        <a href="https://www.facebook.com/llamkay" target="_blank" rel="noopener" class="social-link facebook">
+                            <img src="{% static 'images/facebook.png' %}" alt="Facebook" class="social-icon">
+                            <span>Facebook</span>
+                        </a>
+                        <a href="https://www.instagram.com/llamkay.pe" target="_blank" rel="noopener" class="social-link instagram">
+                            <img src="{% static 'images/instagram.png' %}" alt="Instagram" class="social-icon">
+                            <span>Instagram</span>
+                        </a>
+                        <a href="https://www.tiktok.com/@llamkay.pe" target="_blank" rel="noopener" class="social-link tiktok">
+                            <img src="{% static 'images/tiktok.png' %}" alt="TikTok" class="social-icon">
+                            <span>TikTok</span>
+                        </a>
+                        <a href="https://wa.me/51987654321?text=Hola%20LLamkay,%20necesito%20ayuda" target="_blank" rel="noopener" class="social-link whatsapp">
+                            <img src="{% static 'images/whatsapp.png' %}" alt="WhatsApp" class="social-icon">
+                            <span>WhatsApp</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Enlaces rápidos -->
+            <div class="footer-section">
+                <h4>Accesos Rápidos</h4>
+                <ul class="footer-links">
+                    <li><a href="{% url 'trabajos:all_trabajos' %}">Buscar Trabajos</a></li>
+                    <li><a href="{% url 'trabajos:admin_empleador' %}">Publicar Trabajo</a></li>
+                    <li><a href="{% url 'usuarios:perfil' %}">Mi Perfil</a></li>
+                    <li><a href="{% url 'chats:lista_chats' %}">Mis Mensajes</a></li>
+                    <li><a href="{% url 'trabajo_llamkay:nosotros' %}">Sobre Nosotros</a></li>
+                </ul>
+            </div>
+
+            <!-- Servicios -->
+            <div class="footer-section">
+                <h4>Nuestros Servicios</h4>
+                <ul class="footer-links">
+                    <li><a href="#">Para Empleadores</a></li>
+                    <li><a href="#">Para Trabajadores</a></li>
+                    <li><a href="#">Para Empresas</a></li>
+                    <li><a href="#">Capacitaciones</a></li>
+                    <li><a href="#">Consultorías</a></li>
+                </ul>
+            </div>
+
+            <!-- Contacto -->
+            <div class="footer-section">
+                <h4>Contacto</h4>
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <img src="{% static 'images/email.png' %}" alt="Email" class="contact-icon">
+                        <span>contacto@llamkay.pe</span>
+                    </div>
+                    <div class="contact-item">
+                        <img src="{% static 'images/phone.png' %}" alt="Teléfono" class="contact-icon">
+                        <span>+51 987 654 321</span>
+                    </div>
+                    <div class="contact-item">
+                        <img src="{% static 'images/location.png' %}" alt="Ubicación" class="contact-icon">
+                        <span>Lima, Perú</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Copyright -->
+        <div class="footer-bottom">
+            <div class="footer-container">
+                <div class="copyright">
+                    <p>&copy; 2025 LLamkay.pe. Todos los derechos reservados.</p>
+                    <p>Desarrollado con ❤️ para conectar talentos peruanos</p>
+                </div>
+                <div class="footer-bottom-links">
+                    <a href="#">Términos de Servicio</a>
+                    <a href="#">Política de Privacidad</a>
+                    <a href="#">Cookies</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{% static 'js/tabs.js' %}"></script>
+    <script src="{% static 'js/menu-desplegable.js' %}"></script>
+    <script src="{% static 'js/carrusel.js' %}"></script>
+</body>
+</html>

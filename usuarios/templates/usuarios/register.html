@@ -1,0 +1,204 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Registro - Llamkay</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Lobster&family=Playwrite+HU:wght@100..400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{% static 'css/register.css' %}" />
+  <meta name="csrf-token" content="{{ csrf_token }}">
+</head>
+<body>
+  <div class="registro-container">
+    <div class="form-box">
+      <div class="logo"><h2>Llamkay</h2></div>
+      <h3>Crear cuenta</h3>
+      <p class="subtitle">Paso 1 de 4: Información Personal</p>
+
+      {% if form.non_field_errors %}
+        <div class="alert-error">
+          {% for error in form.non_field_errors %}
+            <p>{{ error }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <div class="progress-bar">
+        <div class="progress active"></div>
+        <div class="progress"></div>
+        <div class="progress"></div>
+        <div class="progress"></div>
+      </div>
+
+      <form method="post" id="registerForm" novalidate>
+        {% csrf_token %}
+        <fieldset>
+          <legend>Información Personal</legend>
+
+          {% if tipo_usuario != 'empresa' %}
+            <!-- CAMPOS PARA PERSONA NATURAL -->
+            <div class="form-row">
+              <div class="form-group">
+                <label for="{{ form.dni.id_for_label }}">DNI *</label>
+                <input type="text" 
+                       name="dni" 
+                       id="{{ form.dni.id_for_label }}"
+                       value="{{ form.dni.value|default_if_none:'' }}"
+                       placeholder="Ingresa tu DNI"
+                       maxlength="8"
+                       required>
+                {% if form.dni.errors %}<div class="error-message">{{ form.dni.errors.0 }}</div>{% endif %}
+              </div>
+              <div class="form-group" style="align-self: flex-end;">
+                <button type="button" onclick="buscarDNI(event)" class="btn-search">Buscar</button>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="{{ form.nombre.id_for_label }}">Nombres *</label>
+                <input type="text" 
+                       name="nombre" 
+                       id="{{ form.nombre.id_for_label }}"
+                       value="{{ form.nombre.value|default_if_none:'' }}"
+                       readonly 
+                       tabindex="-1"
+                       class="readonly-field"
+                       placeholder="Se llenará automáticamente"
+                       required>
+                <div class="field-info">Este campo se completa automáticamente</div>
+                {% if form.nombre.errors %}<div class="error-message">{{ form.nombre.errors.0 }}</div>{% endif %}
+              </div>
+              <div class="form-group">
+                <label for="{{ form.apellido.id_for_label }}">Apellidos *</label>
+                <input type="text" 
+                       name="apellido" 
+                       id="{{ form.apellido.id_for_label }}"
+                       value="{{ form.apellido.value|default_if_none:'' }}"
+                       readonly 
+                       tabindex="-1"
+                       class="readonly-field"
+                       placeholder="Se llenará automáticamente"
+                       required>
+                <div class="field-info">Este campo se completa automáticamente</div>
+                {% if form.apellido.errors %}<div class="error-message">{{ form.apellido.errors.0 }}</div>{% endif %}
+              </div>
+            </div>
+
+          {% else %}
+            <!-- CAMPOS PARA EMPRESA -->
+            <div class="form-row">
+              <div class="form-group">
+                <label for="{{ form.ruc.id_for_label }}">RUC *</label>
+                <input type="text" 
+                       name="ruc" 
+                       id="{{ form.ruc.id_for_label }}"
+                       value="{{ form.ruc.value|default_if_none:'' }}"
+                       placeholder="Ingresa el RUC"
+                       maxlength="11"
+                       required>
+                {% if form.ruc.errors %}<div class="error-message">{{ form.ruc.errors.0 }}</div>{% endif %}
+              </div>
+              <div class="form-group" style="align-self: flex-end;">
+                <button type="button" onclick="buscarRUC(event)" class="btn-search">Buscar</button>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="{{ form.razon_social.id_for_label }}">Razón Social *</label>
+              <input type="text" 
+                     name="razon_social" 
+                     id="{{ form.razon_social.id_for_label }}"
+                     value="{{ form.razon_social.value|default_if_none:'' }}"
+                     readonly 
+                     tabindex="-1"
+                     class="readonly-field"
+                     placeholder="Se llenará automáticamente"
+                     required>
+              <div class="field-info">Este campo se completa automáticamente</div>
+              {% if form.razon_social.errors %}<div class="error-message">{{ form.razon_social.errors.0 }}</div>{% endif %}
+            </div>
+          {% endif %}
+
+          <!-- CAMPOS COMUNES PARA AMBOS TIPOS -->
+          <div class="form-group">
+            <label for="{{ form.telefono.id_for_label }}">Teléfono *</label>
+            <input type="tel" 
+                   name="telefono" 
+                   id="{{ form.telefono.id_for_label }}"
+                   value="{{ form.telefono.value|default_if_none:'' }}"
+                   placeholder="Ingresa tu teléfono"
+                   required>
+            {% if form.telefono.errors %}<div class="error-message">{{ form.telefono.errors.0 }}</div>{% endif %}
+          </div>
+
+          <div class="form-group">
+            <label for="{{ form.email.id_for_label }}">Correo electrónico *</label>
+            <input type="email" 
+                   name="email" 
+                   id="{{ form.email.id_for_label }}"
+                   value="{{ form.email.value|default_if_none:'' }}"
+                   placeholder="Ingresa tu correo electrónico"
+                   required>
+            {% if form.email.errors %}<div class="error-message">{{ form.email.errors.0 }}</div>{% endif %}
+          </div>
+
+          <div class="form-group password">
+            <label for="{{ form.password1.id_for_label }}">Contraseña *</label>
+            <div class="password-wrapper toggle-password">
+              <input type="password" 
+                    name="password1" 
+                    id="{{ form.password1.id_for_label }}"
+                    class="password-input"
+                    placeholder="Ingresa tu contraseña"
+                    required>
+              <img src="{% static 'images/ojo-abierto.png' %}" class="eye-open" alt="Mostrar contraseña">
+              <img src="{% static 'images/ojo-cerrado.png' %}" class="eye-closed" style="display: none;" alt="Ocultar contraseña">
+            </div>
+            {% if form.password1.errors %}
+              <div class="error-message">{{ form.password1.errors.0 }}</div>
+            {% endif %}
+          </div>
+
+          <div class="form-group password">
+            <label for="{{ form.password2.id_for_label }}">Confirmar contraseña *</label>
+            <div class="password-wrapper toggle-password">
+              <input type="password" 
+                    name="password2" 
+                    id="{{ form.password2.id_for_label }}"
+                    class="password-input"
+                    placeholder="Confirma tu contraseña"
+                    required>
+              <img src="{% static 'images/ojo-abierto.png' %}" class="eye-open" alt="Mostrar contraseña">
+              <img src="{% static 'images/ojo-cerrado.png' %}" class="eye-closed" style="display: none;" alt="Ocultar contraseña">
+            </div>
+            {% if form.password2.errors %}
+              <div class="error-message">{{ form.password2.errors.0 }}</div>
+            {% endif %}
+          </div>
+
+          <div class="form-group checkbox">
+            <label>
+              <input type="checkbox" name="acepto_terminos" required />
+              Acepto los <a href="#">términos y condiciones</a> y la <a href="#">política de privacidad</a>
+            </label>
+          </div>
+
+          <button type="submit" class="btn-primary">Siguiente</button>
+        </fieldset>
+      </form>
+
+      <p class="login-link">¿Ya tienes una cuenta? <a href="{% url 'usuarios:login' %}">Inicia sesión aquí</a></p>
+    </div>
+  </div>
+
+    <script src="{% static 'js/ojo-register.js' %}"></script>
+     <script src="{% static 'js/buscarDNI_RUC.js' %}"></script>
+    <script src="{% static 'js/protegerDatosReadonly.js' %}"></script>
+</body>
+
+</html>
