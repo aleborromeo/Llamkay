@@ -1,0 +1,199 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chats</title>    
+    <link rel="stylesheet" href="{% static 'css/chat.css' %}" />
+    <link rel="icon" href="{% static 'images/llamkay.png' %}" type="image/png">
+    <style>
+        .search-form {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            width: 100%;
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            outline: none;
+        }
+        
+        .search-btn {
+            background: none;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            padding: 5px;
+        }
+        
+        .clear-search {
+            color: #666;
+            text-decoration: none;
+            font-size: 14px;
+            padding: 5px;
+        }
+        
+        .search-info {
+            background: #f0f0f0;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        .username {
+            color: #f0f0f0;
+            font-size: 0.9em;
+            font-weight: normal;
+            margin-left: 10px;
+        }
+        
+        .chat-details strong {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .dashboard-btn {
+            color: #034D31;
+            font-weight: bold;
+            text-decoration: none;
+            margin: 0;
+            padding: 10px 18px;
+            border-radius: 25px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            font-size: 15px;
+            background: rgba(238, 237, 235, 0.9);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .dashboard-btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 100%;
+            background: linear-gradient(45deg, #034D31, #097a4f);
+            border-radius: 25px;
+            transition: width 0.4s ease;
+            z-index: -1;
+        }
+        
+        .dashboard-btn:hover {
+            color: white;
+            text-decoration: none;
+        }
+        
+        .dashboard-btn:hover::before {
+            width: 100%;
+        }
+        
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            
+        }
+        
+        .left-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .search-wrapper {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <header class="top-bar">
+        <div class="left-section">
+            <a href="{% url 'usuarios:dashboard' %}" class="dashboard-btn">
+                ← Dashboard
+            </a>
+            <div class="logo">LLamkay.pe</div>
+        </div>
+        <div class="search-wrapper">
+            <form method="GET" action="{% url 'chats:lista_chats' %}" class="search-form">
+                <input 
+                    type="text" 
+                    name="search" 
+                    placeholder="Buscar por nombre o apellido..." 
+                    value="{{ search_query|default:'' }}"
+                    class="search-input"
+                >
+                <button type="submit" class="search-btn">🔍</button>
+                {% if search_query %}
+                    <a href="{% url 'chats:lista_chats' %}" class="clear-search">✕</a>
+                {% endif %}
+            </form>
+        </div>
+        <div class="profile-icon">
+            {% if usuario_actual.profile.foto_url %}
+                <img src="{{ usuario_actual.profile.foto_url.url }}" alt="Profile">
+            {% else %}
+                <img src="{% static 'default-avatar.png' %}" alt="Profile">
+            {% endif %}
+        </div>
+    </header>
+
+    <main class="chat-list-container">
+        {% if search_query %}
+            <div class="search-info">
+                <p>Resultados para: "<strong>{{ search_query }}</strong>" ({{ usuarios_con_chat|length }} encontrado{{ usuarios_con_chat|length|pluralize }})</p>
+            </div>
+        {% endif %}
+        
+        {% if usuarios_con_chat %}
+            {% for item in usuarios_con_chat %}
+                <a href="{% url 'chats:ver_chat' item.usuario.id_usuario %}" class="chat-item">
+                    {% if item.foto_url %}
+                        <img src="{{ item.foto_url }}" alt="Avatar" class="avatar">
+                    {% else %}
+                        <img src="{% static 'default-avatar.png' %}" alt="Avatar" class="avatar">
+                    {% endif %}
+                    <div class="chat-details">
+                        <strong>{{ item.nombre_completo }}</strong>
+                        {% if item.usuario.username != item.nombre_completo %}
+                            <span class="username">@{{ item.usuario.username }}</span>
+                        {% endif %}
+                        <p class="last-message">
+                            {% if item.ultimo_mensaje %}
+                                {{ item.ultimo_mensaje|truncatechars:50 }}
+                            {% else %}
+                                <em>Iniciar conversación</em>
+                            {% endif %}
+                        </p>
+                        {% if item.fecha_ultimo_mensaje %}
+                            <small class="message-time">{{ item.fecha_ultimo_mensaje|date:"d/m H:i" }}</small>
+                        {% endif %}
+                    </div>
+                </a>
+            {% endfor %}
+        {% else %}
+            {% if search_query %}
+                <p class="empty-state">No se encontraron usuarios que coincidan con "{{ search_query }}".</p>
+            {% else %}
+                <p class="empty-state">No hay usuarios disponibles para chatear.</p>
+            {% endif %}
+        {% endif %}
+    </main>
+</body>
+</html>
