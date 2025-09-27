@@ -1,0 +1,33 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Llamkay.pe - Soluciones</title>
+    <link rel="stylesheet" href="{% static 'css/nosotros.css' %}">
+</head>
+<body>
+    <div class="container">
+        <div class="content">
+            <h1>
+                Soluciones <br>
+                rápidas y <br>
+                accesibles <br>
+                para todos
+            </h1>
+            <p>
+                En Llamkay.pe conectamos tu necesidad con la solución adecuada en minutos, 
+                con precios transparentes y servicio de calidad.
+            </p>
+            <a href="{% url 'trabajos:all_trabajos' %}" class="btn-servicio">
+                Solicitar servicio ahora
+            </a>
+        </div>
+        <div class="image-container">
+            <img src="{% static 'images/nosotros.jpeg' %}" alt="Equipo trabajando">
+        </div>
+        
+    </div>
+</body>
+</html>
