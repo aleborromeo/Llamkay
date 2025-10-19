@@ -1,0 +1,123 @@
+/* ===== CUENTA BLOQUEADA POR ANTECEDENTES PENALES ===== */
+
+.bloqueado-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 2rem;
+    background: linear-gradient(135deg, #fee2e2 0%, #fecaca 50%, #fca5a5 100%);
+}
+
+.bloqueado-card {
+    background: white;
+    border-radius: 20px;
+    padding: 3rem 2.5rem;
+    max-width: 500px;
+    width: 100%;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    text-align: center;
+    border: 3px solid #dc2626;
+}
+
+.bloqueado-icon {
+    font-size: 5rem;
+    margin-bottom: 1.5rem;
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    75% { transform: translateX(10px); }
+}
+
+.bloqueado-card h1 {
+    font-size: 2rem;
+    color: #b91c1c;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+}
+
+.bloqueado-message {
+    font-size: 1.1rem;
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.bloqueado-message strong {
+    color: #dc2626;
+    font-weight: 700;
+}
+
+.bloqueado-help {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+
+.bloqueado-help a {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.bloqueado-help a:hover {
+    text-decoration: underline;
+}
+
+.btn {
+    display: inline-block;
+    padding: 14px 32px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-secondary {
+    background: #6b7280;
+    color: white;
+    border: none;
+}
+
+.btn-secondary:hover {
+    background: #4b5563;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .bloqueado-container {
+        padding: 1.5rem;
+    }
+
+    .bloqueado-card {
+        padding: 2rem 1.5rem;
+    }
+
+    .bloqueado-card h1 {
+        font-size: 1.75rem;
+    }
+
+    .bloqueado-icon {
+        font-size: 4rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .bloqueado-card {
+        padding: 1.5rem 1rem;
+    }
+
+    .bloqueado-card h1 {
+        font-size: 1.5rem;
+    }
+
+    .bloqueado-message, .bloqueado-help {
+        font-size: 0.95rem;
+    }
+}

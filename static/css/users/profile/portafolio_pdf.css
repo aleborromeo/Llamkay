@@ -1,0 +1,156 @@
+/* ===== PORTAFOLIO PDF - ESTILOS PARA IMPRESIÓN ===== */
+
+@page {
+    size: A4;
+    margin: 2cm;
+}
+
+body {
+    font-family: 'Helvetica', 'Arial', sans-serif;
+    font-size: 11pt;
+    color: #333;
+    line-height: 1.6;
+    margin: 0;
+    padding: 20px;
+    background: white;
+}
+
+h1, h2 {
+    color: #07734B;
+    page-break-after: avoid;
+}
+
+h1 {
+    font-size: 24pt;
+    border-bottom: 3px solid #07734B;
+    padding-bottom: 8px;
+    margin-bottom: 15px;
+    margin-top: 0;
+}
+
+h2 {
+    font-size: 16pt;
+    margin-top: 25px;
+    margin-bottom: 12px;
+    border-left: 5px solid #07734B;
+    padding-left: 12px;
+}
+
+.pdf-header {
+    text-align: center;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 15px;
+}
+
+.pdf-date {
+    font-size: 9pt;
+    color: #666;
+    font-style: italic;
+}
+
+.pdf-section {
+    margin-bottom: 25px;
+    page-break-inside: avoid;
+}
+
+.pdf-section p {
+    margin: 5px 0;
+    line-height: 1.5;
+}
+
+.label {
+    font-weight: bold;
+    color: #034D31;
+}
+
+.item, .trabajo-item, .calificacion-item {
+    margin-bottom: 15px;
+    padding: 10px;
+    background: #f9f9f9;
+    border-left: 4px solid #07734B;
+    page-break-inside: avoid;
+}
+
+.trabajo-item h3 {
+    margin: 0 0 8px 0;
+    color: #034D31;
+    font-size: 13pt;
+}
+
+.trabajo-item p {
+    margin: 5px 0;
+}
+
+.trabajo-fecha {
+    font-size: 9pt;
+    color: #666;
+    font-style: italic;
+}
+
+.calificacion-item p {
+    margin: 5px 0;
+}
+
+.calificacion-autor {
+    font-size: 9pt;
+    color: #666;
+    font-style: italic;
+    margin-top: 8px;
+}
+
+.trabajos-list, .calificaciones-list {
+    margin-top: 15px;
+}
+
+ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+ul li {
+    margin-bottom: 8px;
+    padding-left: 20px;
+    position: relative;
+}
+
+ul li::before {
+    content: "•";
+    color: #07734B;
+    font-weight: bold;
+    position: absolute;
+    left: 0;
+}
+
+.pdf-footer {
+    margin-top: 40px;
+    padding-top: 15px;
+    border-top: 2px solid #e0e0e0;
+    text-align: center;
+    font-size: 9pt;
+    color: #666;
+}
+
+.pdf-footer p {
+    margin: 5px 0;
+}
+
+/* Estilos para impresión */
+@media print {
+    body {
+        margin: 0;
+        padding: 0;
+    }
+
+    .pdf-section {
+        page-break-inside: avoid;
+    }
+
+    h1, h2 {
+        page-break-after: avoid;
+    }
+
+    .item, .trabajo-item, .calificacion-item {
+        page-break-inside: avoid;
+    }
+}

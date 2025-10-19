@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Llamkay.pe{% endblock %}</title>
+    <link rel="icon" href="{% static 'images/llamkay.png' %}" type="image/png">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Lobster&family=Playwrite+HU:wght@100..400&display=swap" rel="stylesheet">
+    
+    <!-- CSS Base -->
+    <link rel="stylesheet" href="{% static 'css/users/base.css' %}">
+    
+    <!-- CSS Específico de cada página -->
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Contenido Principal -->
+    {% block content %}{% endblock %}
+    
+    <!-- JavaScript Base -->
+    <script src="{% static 'js/users/base.js' %}"></script>
+    
+    <!-- JavaScript Específico -->
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

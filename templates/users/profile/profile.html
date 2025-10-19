@@ -1,0 +1,341 @@
+{% extends "users/base.html" %}
+{% load static %}
+
+{% block title %}Mi Perfil - Llamkay.pe{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/users/profile/perfil.css' %}">
+{% endblock %}
+
+{% block content %}
+<header>
+    <nav class="navbar">
+        <div class="logo">Llamkay.pe</div>
+        <a href="{% url 'users:dashboard' %}" class="back-link">← Dashboard</a>
+
+        <form action="{% url 'users:buscar_usuarios' %}" method="get" class="nav-search">
+            <input type="text" name="q" placeholder="Buscar profesionales...">
+        </form>
+    </nav>
+</header>
+
+<div class="edit-profile-modal" id="editProfileModal">
+    <form method="POST" enctype="multipart/form-data" id="form-editar-perfil">
+        {% csrf_token %}
+        <h2>Editar Perfil</h2>
+
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="foto">Foto de perfil:</label>
+                <input type="file" name="foto" id="foto">
+            </div>
+
+            <div class="form-group">
+                <label for="telefono">Teléfono:</label>
+                <input type="text" name="telefono" id="telefono" value="{{ usuario.telefono }}">
+            </div>
+
+            <div class="form-group full-width">
+                <label for="descripcion">Descripción:</label>
+                <textarea name="descripcion" id="descripcion">{{ profile.bio }}</textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="disponibilidad">Disponibilidad:</label>
+                <input type="text" name="disponibilidad" id="disponibilidad" value="{{ disponibilidad|default_if_none:'' }}">
+            </div>
+
+            <div class="form-group">
+                <label for="precio_hora">Precio por hora (S/):</label>
+                <input type="number" name="precio_hora" id="precio_hora" step="0.01" value="{{ precio_hora|default_if_none:'' }}">
+            </div>
+        </div>
+
+        <input type="hidden" name="id_departamento" value="{{ profile.id_departamento.id_departamento }}">
+        <input type="hidden" name="id_provincia" value="{{ profile.id_provincia.id_provincia }}">
+        <input type="hidden" name="id_distrito" value="{{ profile.id_distrito.id_distrito }}">
+
+        <div class="modal-buttons">
+            <button type="submit">Guardar</button>
+            <button type="button" data-action="cerrar-modal">Cancelar</button>
+        </div>
+    </form>
+</div>
+
+<div class="container">
+    <div class="profile-header">
+        <div class="profile-hero">
+            <div class="profile-avatar">
+                {% if profile.foto_url %}
+                    <img src="{{ profile.foto_url.url }}" alt="Foto de perfil" class="profile-photo">
+                {% else %}
+                    <span class="initials">{{ usuario.nombres|slice:":1" }}{{ usuario.apellidos|slice:":1" }}</span>
+                {% endif %}
+                <div class="profile-status"></div>
+            </div>
+
+            <div class="profile-info">
+                <h1>{{ usuario.nombres }} {{ usuario.apellidos }}</h1>
+                <div class="profile-details">
+                    <span class="detail-item">📧 {{ usuario.email }}</span>
+                    <span class="detail-item">
+                        {% if tipo_usuario == "trabajador" %}🔨 Trabajador
+                        {% elif tipo_usuario == "empleador" %}💼 Empleador
+                        {% elif tipo_usuario == "trabajador_empleador" %}⚡ Trabajador y Empleador
+                        {% elif tipo_usuario == "empresa" %}🏢 Empresa
+                        {% else %}❓ No especificado
+                        {% endif %}
+                    </span>
+                    <span class="detail-item">
+                        📍 
+                        {% if profile.id_distrito %}{{ profile.id_distrito.nombre }}{% else %}Sin ubicación{% endif %},
+                        {% if profile.id_provincia %}{{ profile.id_provincia.nombre }}{% endif %}
+                    </span>
+                </div>
+
+                <div class="profile-badges">
+                    <div class="profile-badge">✅ Verificado</div>
+                    <div class="profile-badge">⭐ Confiable</div>
+                    <div class="profile-badge">💪 Disponible</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="profile-actions">
+            <button class="btn btn-primary" data-action="editar-perfil">✏️ Editar</button>
+            <a href="#" class="btn btn-secondary">📋 Referencias</a>
+            <a href="#" class="btn btn-secondary">📱 WhatsApp</a>
+        </div>
+    </div>
+
+    <div class="tabs">
+        <button class="tab active" data-tab="general">📊 General</button>
+        <button class="tab" data-tab="skills">🛠️ Servicios</button>
+        <button class="tab" data-tab="portfolio">📸 Portafolio</button>
+        <button class="tab" data-tab="experience">💼 Experiencia</button>
+        <button class="tab" data-tab="certifications">🎓 Certificaciones</button>
+        <button class="tab" data-tab="history">📋 Historial</button>
+    </div>
+
+    <div id="general" class="tab-content active">
+        <div class="content-grid">
+            <div class="card">
+                <h3>📱 Contacto & Disponibilidad</h3>
+                <div class="info-list">
+                    <div class="info-item">
+                        <span class="info-label">Teléfono:</span>
+                        <span class="info-value">{{ usuario.telefono|default:"No especificado" }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Disponibilidad:</span>
+                        <span class="info-value">{{ disponibilidad|default:"No especificada" }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Precio/hora:</span>
+                        <span class="info-value">
+                            {% if precio_hora %}S/ {{ precio_hora|floatformat:2 }}{% else %}No especificado{% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>📊 Estadísticas</h3>
+                <div class="stats-compact">
+                    <div class="stat-item">
+                        <span class="stat-number">{{ estadisticas.trabajos_realizados }}</span>
+                        <span class="stat-label">Realizados</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">{{ estadisticas.trabajos_activos }}</span>
+                        <span class="stat-label">Activos</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">{{ estadisticas.trabajos_completados }}</span>
+                        <span class="stat-label">Completados</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">S/ {{ estadisticas.ingresos_mes }}</span>
+                        <span class="stat-label">Ingresos/mes</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card full-width">
+                <h3>💤 Sobre Mí</h3>
+                <p class="bio">
+                    {{ profile.bio|default:"Sin descripción aún. Agrega información sobre ti para que los empleadores conozcan mejor tu perfil profesional." }}
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <div id="skills" class="tab-content">
+        <div class="card">
+            <h3>🛠️ Servicios Ofrecidos</h3>
+            <div class="skills-grid">
+                {% for habilidad in habilidades %}
+                    <div class="skill-item">✅ {{ habilidad }}</div>
+                {% empty %}
+                    <div class="empty-state">
+                        <p>🔧 No has registrado servicios aún.</p>
+                        <small>Agrega los servicios que ofreces para aparecer en más búsquedas.</small>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div id="portfolio" class="tab-content">
+        <div class="card">
+            <h3>📸 Mi Portafolio</h3>
+
+            <div class="export-actions">
+                <a href="{% url 'users:exportar_portafolio_pdf' %}" class="btn btn-outline" target="_blank">
+                    📄 Exportar PDF
+                </a>
+            </div>
+
+            {% if trabajos or certificaciones %}
+                {% if certificaciones %}
+                    <h4>📌 Certificaciones</h4>
+                    <div class="portfolio-list">
+                        {% for cert in certificaciones %}
+                            <div class="portfolio-item">
+                                <span class="portfolio-title">{{ cert.descripcion }}</span>
+                                <span class="portfolio-date">({{ cert.fecha_subida|date:"Y" }})</span>
+                                <a href="{{ cert.archivo.url }}" target="_blank" class="portfolio-link">Ver</a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                {% if trabajos %}
+                    <h4>🛠️ Trabajos en Llamkay</h4>
+                    <div class="portfolio-list">
+                        {% for trabajo in trabajos %}
+                            <div class="portfolio-item">
+                                <span class="portfolio-title">{{ trabajo.titulo }}</span>
+                                <span class="portfolio-desc">{{ trabajo.descripcion|truncatechars:60 }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% else %}
+                <div class="empty-state">
+                    <p>📸 No hay elementos en tu portafolio aún.</p>
+                    <small>Sube certificaciones o aplica a trabajos para generar tu portafolio.</small>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div id="experience" class="tab-content">
+        <div class="content-grid">
+            <div class="card">
+                <h3>💼 Trabajos Realizados</h3>
+                {% if trabajos %}
+                    <div class="experience-list">
+                        {% for trabajo in trabajos %}
+                            <div class="experience-item">
+                                <h4>{{ trabajo.titulo }}</h4>
+                                <p class="experience-desc">{{ trabajo.descripcion|truncatechars:100 }}</p>
+                                <p class="experience-date">
+                                    {{ trabajo.fecha_inicio|date:"M Y" }} - 
+                                    {{ trabajo.fecha_fin|date:"M Y"|default:"En progreso" }}
+                                </p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty-state">
+                        <p>💼 No tienes trabajos realizados aún.</p>
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="card">
+                <h3>⭐ Calificaciones</h3>
+                {% if calificaciones %}
+                    <div class="ratings-list">
+                        {% for calificacion in calificaciones %}
+                            <div class="rating-item">
+                                <div class="rating-stars">
+                                    {% for i in "12345" %}
+                                        {% if forloop.counter <= calificacion.puntuacion %}⭐{% else %}☆{% endif %}
+                                    {% endfor %}
+                                    <span class="rating-score">({{ calificacion.puntuacion }}/5)</span>
+                                </div>
+                                <p class="rating-comment">"{{ calificacion.comentario|truncatechars:80 }}"</p>
+                                <small class="rating-author">
+                                    - {% if calificacion.autor %}
+                                        {{ calificacion.autor.nombres }} {{ calificacion.autor.apellidos }}
+                                    {% else %}
+                                        Usuario anónimo
+                                    {% endif %}, {{ calificacion.fecha|date:"M Y" }}
+                                </small>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty-state">
+                        <p>⭐ No tienes calificaciones aún.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div id="certifications" class="tab-content">
+        <div class="card">
+            <h3>🎓 Certificaciones y Documentos</h3>
+            {% if certificaciones %}
+                <div class="cert-grid">
+                    {% for cert in certificaciones %}
+                        <div class="cert-card">
+                            <div class="cert-icon">📄</div>
+                            <div class="cert-info">
+                                <h4>{{ cert.descripcion }}</h4>
+                                <small>{{ cert.fecha_subida|date:"d/m/Y" }}</small>
+                            </div>
+                            <a href="{{ cert.archivo.url }}" target="_blank" class="cert-btn">Ver</a>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <p>📄 No has subido certificaciones aún.</p>
+                    <small>Las certificaciones generan más confianza en tu perfil profesional.</small>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div id="history" class="tab-content">
+        <div class="card">
+            <h3>📋 Historial de Actividad</h3>
+            {% if actividades %}
+                <div class="activity-list">
+                    {% for actividad in actividades %}
+                        <div class="activity-item">
+                            <div class="activity-content">
+                                <p>{{ actividad.descripcion }}</p>
+                                <small>{{ actividad.fecha|timesince }} atrás</small>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <p>📋 No hay actividad reciente.</p>
+                    <small>Tu actividad en la plataforma aparecerá aquí.</small>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/users/profile/perfil.js' %}"></script>
+{% endblock %}

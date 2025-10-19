@@ -1,0 +1,83 @@
+{% extends "users/base.html" %}
+{% load static %}
+
+{% block title %}Registro - Paso 2 - Llamkay.pe{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/users/register/step_2.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="container">
+    <div class="form-box">
+        <div class="logo">
+            <h1>Llamkay</h1>
+        </div>
+        
+        <h2>Crear cuenta de trabajador</h2>
+        <p class="step">Paso 2 de 4: Ubicación</p>
+        
+        <div class="progress-bar">
+            <div class="step-bar active"></div>
+            <div class="step-bar active"></div>
+            <div class="step-bar"></div>
+            <div class="step-bar"></div>
+        </div>
+
+        {% if form.non_field_errors %}
+        <div class="alert-error">
+            {% for error in form.non_field_errors %}
+            <p>{{ error }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <form id="location-form" method="post" novalidate>
+            {% csrf_token %}
+
+            <label for="{{ form.direccion.id_for_label }}">Dirección *</label>
+            {{ form.direccion }}
+            {% if form.direccion.errors %}
+            <div class="error-message">{{ form.direccion.errors.0 }}</div>
+            {% endif %}
+
+            <label for="{{ form.departamento.id_for_label }}">Departamento *</label>
+            {{ form.departamento }}
+            {% if form.departamento.errors %}
+            <div class="error-message">{{ form.departamento.errors.0 }}</div>
+            {% endif %}
+
+            <label for="id_provincia">Provincia *</label>
+            <select name="provincia" id="id_provincia" required>
+                <option value="">Selecciona tu provincia</option>
+            </select>
+            {% if form.provincia.errors %}
+            <div class="error-message">{{ form.provincia.errors.0 }}</div>
+            {% endif %}
+
+            <label for="id_distrito">Distrito *</label>
+            <select name="distrito" id="id_distrito" required>
+                <option value="">Selecciona tu distrito</option>
+            </select>
+            {% if form.distrito.errors %}
+            <div class="error-message">{{ form.distrito.errors.0 }}</div>
+            {% endif %}
+
+            <div class="button-group">
+                <a href="{% url 'users:register' %}" class="btn-outline">Anterior</a>
+                <button type="submit" class="btn-primary">Siguiente</button>
+            </div>
+        </form>
+
+        <p class="login-link">
+            ¿Ya tienes una cuenta? 
+            <a href="{% url 'users:login' %}">Inicia sesión aquí</a>
+        </p>
+        <a href="#" class="back-link">← Volver al inicio</a>
+    </div>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/users/register/step_2.js' %}"></script>
+{% endblock %}

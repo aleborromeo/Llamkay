@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Panel de Empresa - Llamkay{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/jobs/admin_empresa.css' %}" />
+{% endblock %}
+
+{% block content %}
+<!-- Header Superior -->
+<div class="header">
+  <div class="header-left">
+    <div class="header-profile">
+      <img src="{% static 'images/user.png' %}" alt="Avatar" class="header-avatar" />
+      <span>{{ user.first_name|default:"Empresa" }}</span>
+    </div>
+  </div>
+  <div class="header-center">
+    <div class="logo">Llamkay</div>
+  </div>
+  <div class="header-right">
+    <span class="menu-toggle" id="menuToggle">☰</span>
+  </div>
+</div>
+
+<div class="dashboard">
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <div class="nav">
+      <!-- Inicio -->
+      <a href="{% url 'llamkay:dashboard' %}"
+         class="nav-item {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+        <span class="icon">🏠</span> <span>Inicio</span>
+      </a>
+
+      <!-- Publicar trabajo -->
+      <a href="{% url 'jobs:registro_empresa' %}" class="nav-item">
+        <span class="icon">➕</span> <span>Publicar trabajo</span>
+      </a>
+
+      <!-- Mis trabajos publicados -->
+      <a href="#" class="nav-item mis-trabajos-active" id="btn-mis-trabajos">
+        <span class="icon">📋</span> <span>Mis trabajos</span>
+      </a>
+
+      <!-- Postulaciones recibidas -->
+      <a href="#" class="nav-item">
+        <span class="icon">👤</span> <span>Postulaciones</span>
+      </a>
+
+      <!-- Mensajes -->
+      <a href="{% url 'chats:lista_chats' %}"
+         class="nav-item {% if request.resolver_match.url_name == 'lista_chats' %}active{% endif %}">
+        <span class="icon">✉️</span> <span>Mensajes</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Overlay para móvil -->
+  <div class="menu-overlay" id="menuOverlay"></div>
+
+  <!-- Contenido dinámico -->
+  <div class="contenido" id="contenido-dashboard">
+    <div class="main-content">
+      <div class="loader">Cargando panel de empresa...</div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- jQuery y AJAX -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  const urlMisTrabajosAjax = "{% url 'jobs:mis_trabajos_ajax' %}";
+</script>
+<script src="{% static 'js/jobs/admin_empresa.js' %}"></script>
+{% endblock %}

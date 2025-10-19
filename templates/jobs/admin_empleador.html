@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Panel del Empleador - Llamkay{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/jobs/admin_empleador.css' %}">
+{% endblock %}
+
+{% block content %}
+<header>
+  <div class="navbar">
+    <div class="logo">Llamkay</div>
+    <nav>
+      <a href="{% url 'llamkay:dashboard' %}">Inicio</a>
+    </nav>
+    <div class="buscar">
+      <input type="text" placeholder="Buscar..." id="input-buscar">
+      <button id="btn-buscar">🔍</button>
+    </div>
+    <div class="navbar-actions">
+      <a href="{% url 'jobs:registro_individual' %}" class="btn-publicar">
+        Publicar Trabajo
+        <span class="sparkle-1">✨</span>
+        <span class="sparkle-2">⭐</span>
+        <span class="sparkle-3">💫</span>
+      </a>
+      <span class="menu-toggle" id="menuToggle">☰</span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <aside class="acciones">
+    <ul>
+      <li class="activo">
+        <button id="cargar-trabajos" class="menu-item">
+          <img src="{% static 'images/mistrabajos.png' %}" alt="" class="menu-icon">
+          Mis Trabajos
+        </button>
+      </li>
+      <li>
+        <button class="menu-item" id="ver-todos-trabajos">
+          <img src="{% static 'images/historial.png' %}" alt="" class="menu-icon">
+          Historial de Trabajos
+        </button>
+      </li>
+      <li>
+        <button class="menu-item" id="gestionar-postulaciones">
+          <img src="{% static 'images/postulaciones.png' %}" alt="" class="menu-icon">
+          Gestionar Postulaciones
+        </button>
+      </li>
+      <li>
+        <a href="{% url 'chats:lista_chats' %}" class="menu-item">
+          <img src="{% static 'images/comentario.png' %}" alt="" class="menu-icon">
+          Mensajes
+        </a>
+      </li>
+      <li>
+        <button class="menu-item" id="trabajos-guardados">
+          <img src="{% static 'images/guardar.png' %}" alt="" class="menu-icon">
+          Trabajos Guardados
+        </button>
+      </li>
+    </ul>
+  </aside>
+
+  <div class="menu-overlay" id="menuOverlay"></div>
+
+  <section class="contenido">
+    <div id="contenido-dinamico">
+      <p>Cargando trabajos...</p>
+    </div>
+  </section>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  const urlMisTrabajosAjax = "{% url 'jobs:mis_trabajos_ajax' %}";
+</script>
+<script src="{% static 'js/jobs/admin_empleador.js' %}"></script>
+{% endblock %}

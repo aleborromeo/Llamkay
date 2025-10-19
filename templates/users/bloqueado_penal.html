@@ -1,0 +1,32 @@
+{% extends "users/base.html" %}
+{% load static %}
+
+{% block title %}Cuenta Bloqueada - Llamkay.pe{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/users/auth/bloqueado_penal.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="bloqueado-container">
+    <div class="bloqueado-card">
+        <div class="bloqueado-icon">🚫</div>
+        
+        <h1>Cuenta Bloqueada</h1>
+        
+        <p class="bloqueado-message">
+            Tu cuenta se encuentra bloqueada porque se detectaron 
+            <strong>antecedentes penales</strong>.
+        </p>
+        
+        <p class="bloqueado-help">
+            Si crees que esto es un error, por favor 
+            <a href="mailto:soporte@llamkay.pe">contacta a soporte</a>.
+        </p>
+        
+        <a href="{% url 'users:login' %}" class="btn btn-secondary">
+            Volver al inicio de sesión
+        </a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,99 @@
+{% extends "users/base.html" %}
+{% load static %}
+
+{% block title %}{{ usuario.nombres }} {{ usuario.apellidos }} - Llamkay.pe{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/users/profile/perfil_publico.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container perfil-publico">
+    <div class="card perfil-box">
+        <div class="perfil-header">
+            <div class="avatar">
+                {% if profile.foto_url %}
+                    <img src="{{ profile.foto_url.url }}" alt="Foto de perfil" class="foto-perfil">
+                {% else %}
+                    <span class="iniciales">{{ usuario.nombres|first }}{{ usuario.apellidos|first }}</span>
+                {% endif %}
+            </div>
+            <div class="perfil-info">
+                <h2>{{ usuario.nombres }} {{ usuario.apellidos }}</h2>
+                <p><strong>Correo:</strong> {{ usuario.email }}</p>
+                <p>
+                    <strong>Ubicación:</strong> 
+                    {% if profile.id_distrito %}{{ profile.id_distrito.nombre }}{% endif %}, 
+                    {% if profile.id_provincia %}{{ profile.id_provincia.nombre }}{% endif %}
+                </p>
+                <p><strong>Disponibilidad:</strong> {{ disponibilidad|default:'No especificada' }}</p>
+                <p><strong>Precio/hora:</strong> S/ {{ precio_hora|default:'-' }}</p>
+            </div>
+        </div>
+
+        <div class="perfil-seccion">
+            <h3>Sobre Mí</h3>
+            <p>{{ profile.bio|default:"Este usuario aún no ha agregado una descripción." }}</p>
+        </div>
+
+        <div class="perfil-seccion">
+            <h3>Servicios Ofrecidos</h3>
+            <ul class="lista-habilidades">
+                {% for habilidad in habilidades %}
+                    <li>✅ {{ habilidad }}</li>
+                {% empty %}
+                    <li>Este usuario aún no ha registrado servicios.</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="perfil-seccion">
+            <h3>Certificaciones</h3>
+            <ul class="lista-certificaciones">
+                {% for cert in certificaciones %}
+                    <li>
+                        {{ cert.descripcion }} ({{ cert.fecha_subida|date:"d/m/Y" }})
+                        {% if cert.archivo %}
+                            - <a href="{{ cert.archivo.url }}" target="_blank">Ver</a>
+                        {% endif %}
+                    </li>
+                {% empty %}
+                    <li>Este usuario no tiene certificaciones visibles.</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="perfil-seccion">
+            <h3>⭐ Comentarios y Calificaciones</h3>
+            {% if calificaciones %}
+                <ul class="lista-calificaciones">
+                    {% for c in calificaciones %}
+                        <li>
+                            <p>
+                                <strong>{{ c.autor.nombres }} {{ c.autor.apellidos }}:</strong>
+                                {{ c.puntuacion }}⭐ — "{{ c.comentario }}"
+                                <small>({{ c.fecha|date:"d/m/Y" }})</small>
+                            </p>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>Este usuario aún no tiene calificaciones.</p>
+            {% endif %}
+        </div>
+
+        <div class="perfil-acciones">
+            <a href="{% url 'chats:iniciar_chat' usuario.id %}" class="btn btn-primary">
+                💬 Enviar Mensaje
+            </a>
+            <a href="{% url 'users:dashboard' %}" class="btn btn-secondary">
+                ← Volver
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/users/profile/perfil_publico.js' %}"></script>
+{% endblock %}

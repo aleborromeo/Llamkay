@@ -1,0 +1,112 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Portafolio - {{ usuario.nombres }} {{ usuario.apellidos }}</title>
+    <link rel="stylesheet" href="{% static 'css/users/profile/portafolio_pdf.css' %}">
+</head>
+<body>
+    <div class="pdf-header">
+        <h1>Portafolio de {{ usuario.nombres }} {{ usuario.apellidos }}</h1>
+        <p class="pdf-date">Generado el: {% now "d/m/Y" %}</p>
+    </div>
+
+    <div class="pdf-section">
+        <h2>Información de Contacto</h2>
+        <p><strong>Correo:</strong> {{ usuario.email }}</p>
+        <p><strong>Teléfono:</strong> {{ usuario.telefono|default:"No especificado" }}</p>
+        <p>
+            <strong>Ubicación:</strong>
+            {% if profile.id_distrito and profile.id_provincia %}
+                {{ profile.id_distrito.nombre }}, {{ profile.id_provincia.nombre }}
+            {% else %}
+                No especificada
+            {% endif %}
+        </p>
+    </div>
+
+    <div class="pdf-section">
+        <h2>Sobre Mí</h2>
+        <p>{{ profile.bio|default:"Sin descripción." }}</p>
+    </div>
+
+    <div class="pdf-section">
+        <h2>Servicios y Habilidades</h2>
+        {% if habilidades %}
+            <ul>
+                {% for habilidad in habilidades %}
+                    <li>{{ habilidad }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No se registraron habilidades.</p>
+        {% endif %}
+    </div>
+
+    <div class="pdf-section">
+        <h2>🛠️ Trabajos Realizados</h2>
+        {% if trabajos %}
+            <div class="trabajos-list">
+                {% for trabajo in trabajos %}
+                    <div class="trabajo-item">
+                        <h3>{{ trabajo.titulo }}</h3>
+                        <p>{{ trabajo.descripcion|truncatechars:120 }}</p>
+                        <p class="trabajo-fecha">
+                            {% if trabajo.fecha_inicio %}
+                                {{ trabajo.fecha_inicio|date:"M Y" }} - 
+                                {{ trabajo.fecha_fin|date:"M Y"|default:"En progreso" }}
+                            {% endif %}
+                        </p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No se registraron trabajos.</p>
+        {% endif %}
+    </div>
+
+    <div class="pdf-section">
+        <h2>🎓 Certificaciones</h2>
+        {% if certificaciones %}
+            <ul>
+                {% for cert in certificaciones %}
+                    <li>
+                        <strong>{{ cert.descripcion }}</strong>
+                        ({{ cert.fecha_subida|date:"Y" }})
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No hay certificaciones.</p>
+        {% endif %}
+    </div>
+
+    <div class="pdf-section">
+        <h2>⭐ Calificaciones</h2>
+        {% if calificaciones %}
+            <div class="calificaciones-list">
+                {% for cal in calificaciones %}
+                    <div class="calificacion-item">
+                        <p>
+                            <strong>{{ cal.puntuacion }}/5 estrellas</strong> - 
+                            "{{ cal.comentario|truncatechars:100 }}"
+                        </p>
+                        <p class="calificacion-autor">
+                            Por: {{ cal.autor.nombres }} {{ cal.autor.apellidos }} 
+                            ({{ cal.fecha|date:"M Y" }})
+                        </p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>Sin calificaciones aún.</p>
+        {% endif %}
+    </div>
+
+    <div class="pdf-footer">
+        <p>Portafolio generado desde Llamkay.pe</p>
+        <p>© {% now "Y" %} Llamkay.pe - Todos los derechos reservados</p>
+    </div>
+</body>
+</html>

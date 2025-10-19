@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Chats - Llamkay{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/chats/chat.css' %}">
+<link rel="stylesheet" href="{% static 'css/chats/lista-chats.css' %}">
+{% endblock %}
+
+{% block content %}
+<header class="top-bar">
+    <div class="left-section">
+        <a href="{% url 'users:dashboard' %}" class="dashboard-btn">
+            ← Dashboard
+        </a>
+        <div class="logo">LLamkay.pe</div>
+    </div>
+    <div class="search-wrapper">
+        <form method="GET" action="{% url 'chats:lista_chats' %}" class="search-form">
+            <input 
+                type="text" 
+                name="search" 
+                placeholder="Buscar por nombre o apellido..." 
+                value="{{ search_query|default:'' }}"
+                class="search-input"
+            >
+            <button type="submit" class="search-btn">🔍</button>
+            {% if search_query %}
+                <a href="{% url 'chats:lista_chats' %}" class="clear-search">✕</a>
+            {% endif %}
+        </form>
+    </div>
+    <div class="profile-icon">
+        {% if usuario_actual.profile.foto_url %}
+            <img src="{{ usuario_actual.profile.foto_url.url }}" alt="Profile">
+        {% else %}
+            <img src="{% static 'images/default-avatar.png' %}" alt="Profile">
+        {% endif %}
+    </div>
+</header>
+
+<main class="chat-list-container">
+    {% if search_query %}
+        <div class="search-info">
+            <p>Resultados para: "<strong>{{ search_query }}</strong>" ({{ usuarios_con_chat|length }} encontrado{{ usuarios_con_chat|length|pluralize }})</p>
+        </div>
+    {% endif %}
+    
+    {% if usuarios_con_chat %}
+        {% for item in usuarios_con_chat %}
+            <a href="{% url 'chats:ver_chat' item.usuario.id_usuario %}" class="chat-item">
+                {% if item.foto_url %}
+                    <img src="{{ item.foto_url }}" alt="Avatar" class="avatar">
+                {% else %}
+                    <img src="{% static 'images/default-avatar.png' %}" alt="Avatar" class="avatar">
+                {% endif %}
+                <div class="chat-details">
+                    <strong>
+                        {{ item.nombre_completo }}
+                        {% if item.mensajes_no_leidos > 0 %}
+                            <span class="unread-badge">{{ item.mensajes_no_leidos }}</span>
+                        {% endif %}
+                    </strong>
+                    {% if item.usuario.user.username != item.nombre_completo %}
+                        <span class="username">@{{ item.usuario.user.username }}</span>
+                    {% endif %}
+                    <p class="last-message">
+                        {% if item.ultimo_mensaje %}
+                            {{ item.ultimo_mensaje|truncatechars:50 }}
+                        {% else %}
+                            <em>Iniciar conversación</em>
+                        {% endif %}
+                    </p>
+                    {% if item.fecha_ultimo_mensaje %}
+                        <small class="message-time">{{ item.fecha_ultimo_mensaje|date:"d/m H:i" }}</small>
+                    {% endif %}
+                </div>
+            </a>
+        {% endfor %}
+    {% else %}
+        {% if search_query %}
+            <p class="empty-state">No se encontraron usuarios que coincidan con "{{ search_query }}".</p>
+        {% else %}
+            <p class="empty-state">No hay usuarios disponibles para chatear.</p>
+        {% endif %}
+    {% endif %}
+</main>
+{% endblock %}

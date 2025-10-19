@@ -1,0 +1,32 @@
+{% extends "llamkay/base.html" %}
+{% load static %}
+
+{% block title %}Pantalla y Accesibilidad - Llamkay.pe{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/llamkay/settings/accesibilidad.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="accesibilidad-container">
+    <a href="{% url 'llamkay:dashboard' %}" class="back-link">← Volver al Dashboard</a>
+    
+    <div class="accesibilidad-box">
+        <div class="icon">♿</div>
+        <h1>{{ page_title }}</h1>
+        <p class="content">{{ page_content }}</p>
+        
+        <div class="success">
+            ✅ ¡La navegación funciona perfectamente!<br>
+            Esta página se está mostrando correctamente.
+        </div>
+        
+        <p><strong>Usuario:</strong> {{ user.first_name|default:user.username }}</p>
+        <p><small>Puedes crear un template personalizado para esta página cuando lo necesites.</small></p>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/llamkay/settings/accesibilidad.js' %}"></script>
+{% endblock %}

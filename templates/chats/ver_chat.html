@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Chat con {{ nombre_otro_usuario }} - Llamkay{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/chats/chat.css' %}">
+<link rel="stylesheet" href="{% static 'css/chats/chat-settings.css' %}">
+<link rel="stylesheet" href="{% static 'css/chats/ver-chat.css' %}">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Open+Sans:wght@300;400;600;700&family=Lato:wght@300;400;700&family=Poppins:wght@300;400;500;600;700&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<body class="chat-body">
+    <header class="chat-header">
+        <a href="{% url 'chats:lista_chats' %}" class="back-btn">←</a>
+        <div class="chat-user">
+            {% if foto_otro_usuario %}
+                <img src="{{ foto_otro_usuario }}" alt="Avatar" class="avatar">
+            {% else %}
+                <img src="{% static 'images/default-avatar.png' %}" alt="Avatar" class="avatar">
+            {% endif %}
+            <strong>{{ nombre_otro_usuario }}</strong>
+        </div>
+        
+        <button class="chat-settings-btn" title="Ajustes del chat">
+            ⚙️
+        </button>
+    </header>
+
+    <main class="chat-window">
+        <div class="messages">
+            {% if mensajes %}
+                {% for mensaje in mensajes %}
+                    <div class="message {% if mensaje.remitente == usuario_actual %}sent{% else %}received{% endif %}" data-mensaje-id="{{ mensaje.id_mensaje }}">
+                        <div class="message-content">
+                            <p>
+                                {% if mensaje.editado %}
+                                    <span class="mensaje-editado">{{ mensaje.contenido }} <em>(editado)</em></span>
+                                {% else %}
+                                    {{ mensaje.contenido }}
+                                {% endif %}
+                            </p>
+                            <small>{{ mensaje.fecha_envio|date:"d/m H:i" }}</small>
+                            
+                            {% if mensaje.remitente == usuario_actual %}
+                                <div class="message-actions">
+                                    <button class="action-btn edit-btn" data-mensaje-id="{{ mensaje.id_mensaje }}" data-contenido="{{ mensaje.contenido|escapejs }}"></button>
+                                    <button class="action-btn delete-btn" data-mensaje-id="{{ mensaje.id_mensaje }}"></button>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-chat">
+                    <p>¡Comienza una nueva conversación! 💬</p>
+                </div>
+            {% endif %}
+            
+            <div class="message-spacer"></div>
+        </div>
+
+        <form method="POST" class="message-form">
+            {% csrf_token %}
+            {{ form.contenido }}
+            <button type="submit">Enviar</button>
+        </form>
+    </main>
+
+    <!-- Modal para editar mensaje -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Editar mensaje</h3>
+                <span class="close">&times;</span>
+            </div>
+            <form id="editForm" method="POST">
+                {% csrf_token %}
+                <textarea id="editTextarea" name="contenido" placeholder="Escribe tu mensaje..."></textarea>
+                <div class="modal-buttons">
+                    <button type="button" class="modal-btn cancel-btn">Cancelar</button>
+                    <button type="submit" class="modal-btn save-btn">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Panel de ajustes del chat -->
+    <div class="settings-overlay"></div>
+    <div class="settings-panel">
+        <div class="settings-header">
+            <h3 class="settings-title">⚙️ Ajustes del Chat</h3>
+            <button class="close-settings">×</button>
+        </div>
+
+        <!-- Colores de fondo -->
+        <div class="setting-section">
+            <div class="setting-label">🎨 Color de fondo</div>
+            <div class="color-grid">
+                <div class="color-option color-gradient-1" data-gradient="gradient-1"></div>
+                <div class="color-option color-gradient-2" data-gradient="gradient-2"></div>
+                <div class="color-option color-gradient-3" data-gradient="gradient-3"></div>
+                <div class="color-option color-gradient-4" data-gradient="gradient-4"></div>
+                <div class="color-option color-gradient-5" data-gradient="gradient-5"></div>
+                <div class="color-option color-gradient-6" data-gradient="gradient-6"></div>
+                <div class="color-option color-gradient-7" data-gradient="gradient-7"></div>
+                <div class="color-option color-gradient-8" data-gradient="gradient-8"></div>
+            </div>
+        </div>
+
+        <!-- Tipo de fuente -->
+        <div class="setting-section">
+            <div class="setting-label">🔤 Tipo de letra</div>
+            <div class="font-selector">
+                <div class="font-option font-roboto" data-font="roboto">Roboto (por defecto)</div>
+                <div class="font-option font-open-sans" data-font="open-sans">Open Sans</div>
+                <div class="font-option font-lato" data-font="lato">Lato</div>
+                <div class="font-option font-poppins" data-font="poppins">Poppins</div>
+                <div class="font-option font-nunito" data-font="nunito">Nunito</div>
+            </div>
+        </div>
+
+        <!-- Tamaño de fuente -->
+        <div class="setting-section">
+            <div class="setting-label">🔍 Tamaño de letra</div>
+            <div class="size-selector">
+                <button type="button" class="size-btn size-decrease">-</button>
+                <span class="size-display">16px</span>
+                <button type="button" class="size-btn size-increase">+</button>
+            </div>
+        </div>
+
+        <button type="button" class="reset-btn">🔄 Restaurar valores predeterminados</button>
+    </div>
+</body>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/chats/chat-settings.js' %}"></script>
+<script src="{% static 'js/chats/ver-chat.js' %}"></script>
+{% endblock %}

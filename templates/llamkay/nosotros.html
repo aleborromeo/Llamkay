@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Sobre Nosotros - Llamkay.pe{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/llamkay/nosotros.css' %}">
+{% endblock %}
+
+{% block content %}
+<header>
+    <nav class="navbar">
+        <div class="logo">LLamkay.pe</div>
+        
+        <div class="navbar-center">
+            <a href="{% url 'llamkay:index' %}">Inicio</a>
+            <a href="{% url 'llamkay:nosotros' %}" class="active">Nosotros</a>
+            <a href="{% url 'jobs:all_trabajos' %}">Trabajos</a>
+        </div>
+        
+        <div class="navbar-right">
+            {% if user.is_authenticated %}
+                <a href="{% url 'llamkay:dashboard' %}" class="btn btn-primary">Dashboard</a>
+            {% else %}
+                <a href="{% url 'users:login' %}" class="btn btn-outline">Iniciar Sesión</a>
+                <a href="{% url 'users:seleccionar_tipo' %}" class="btn btn-primary">Registrarse</a>
+            {% endif %}
+        </div>
+    </nav>
+</header>
+
+<section class="hero-nosotros">
+    <div class="container">
+        <h1>Sobre Llamkay</h1>
+        <p class="hero-subtitle">Conectando talentos peruanos con oportunidades laborales</p>
+    </div>
+</section>
+
+<section class="mision-vision">
+    <div class="container">
+        <div class="content-grid">
+            <div class="card">
+                <div class="card-icon">🎯</div>
+                <h2>Nuestra Misión</h2>
+                <p>
+                    Facilitar la conexión entre trabajadores calificados y empleadores en todo el Perú, 
+                    promoviendo el empleo formal, la transparencia y la confianza en cada interacción laboral.
+                </p>
+            </div>
+            
+            <div class="card">
+                <div class="card-icon">🌟</div>
+                <h2>Nuestra Visión</h2>
+                <p>
+                    Ser la plataforma líder en Perú para la búsqueda y oferta de servicios laborales, 
+                    reconocida por su seguridad, eficiencia y compromiso con el desarrollo profesional 
+                    de todos los peruanos.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="historia">
+    <div class="container">
+        <h2>Nuestra Historia</h2>
+        <div class="historia-content">
+            <div class="historia-text">
+                <p>
+                    Llamkay nació en 2024 con la visión de transformar la forma en que los peruanos 
+                    encuentran oportunidades laborales. Observamos la necesidad de crear un espacio 
+                    seguro y confiable donde trabajadores y empleadores puedan conectarse de manera directa.
+                </p>
+                <p>
+                    Desde nuestros inicios, nos hemos comprometido con la verificación de identidad, 
+                    la transparencia en las transacciones y la creación de una comunidad basada en 
+                    la confianza mutua.
+                </p>
+                <p>
+                    Hoy, miles de peruanos confían en Llamkay para encontrar trabajo o contratar 
+                    profesionales calificados en diversas áreas.
+                </p>
+            </div>
+            <div class="historia-image">
+                <img src="{% static 'images/about-us.jpg' %}" alt="Equipo Llamkay">
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="valores">
+    <div class="container">
+        <h2>Nuestros Valores</h2>
+        
+        <div class="valores-grid">
+            <div class="valor-card">
+                <div class="valor-icon">🤝</div>
+                <h3>Confianza</h3>
+                <p>Verificamos la identidad de todos nuestros usuarios para garantizar seguridad</p>
+            </div>
+            
+            <div class="valor-card">
+                <div class="valor-icon">💎</div>
+                <h3>Transparencia</h3>
+                <p>Promovemos la honestidad en cada transacción y comunicación</p>
+            </div>
+            
+            <div class="valor-card">
+                <div class="valor-icon">🚀</div>
+                <h3>Innovación</h3>
+                <p>Mejoramos constantemente nuestra plataforma con tecnología de punta</p>
+            </div>
+            
+            <div class="valor-card">
+                <div class="valor-icon">❤️</div>
+                <h3>Compromiso Social</h3>
+                <p>Contribuimos al desarrollo económico y profesional del Perú</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="contacto-cta">
+    <div class="container">
+        <h2>¿Tienes alguna pregunta?</h2>
+        <p>Estamos aquí para ayudarte</p>
+        
+        <div class="contacto-buttons">
+            <a href="mailto:contacto@llamkay.pe" class="btn btn-large btn-primary">
+                Contáctanos
+            </a>
+            <a href="{% url 'llamkay:ayuda' %}" class="btn btn-large btn-secondary">
+                Centro de Ayuda
+            </a>
+        </div>
+    </div>
+</section>
+
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-section">
+            <div class="footer-logo">
+                <h3>LLamkay.pe</h3>
+                <p>Conectando talentos con oportunidades laborales en todo el Perú</p>
+            </div>
+        </div>
+
+        <div class="footer-section">
+            <h4>Accesos Rápidos</h4>
+            <ul class="footer-links">
+                <li><a href="{% url 'llamkay:index' %}">Inicio</a></li>
+                <li><a href="{% url 'llamkay:nosotros' %}">Sobre Nosotros</a></li>
+                <li><a href="{% url 'jobs:all_trabajos' %}">Buscar Trabajos</a></li>
+                <li><a href="{% url 'users:seleccionar_tipo' %}">Registrarse</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-section">
+            <h4>Contacto</h4>
+            <div class="contact-info">
+                <div class="contact-item">
+                    <img src="{% static 'images/email.png' %}" alt="Email" class="contact-icon">
+                    <span>contacto@llamkay.pe</span>
+                </div>
+                <div class="contact-item">
+                    <img src="{% static 'images/phone.png' %}" alt="Teléfono" class="contact-icon">
+                    <span>+51 987 654 321</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <div class="footer-container">
+            <div class="copyright">
+                <p>&copy; 2025 LLamkay.pe. Todos los derechos reservados.</p>
+            </div>
+            <div class="footer-bottom-links">
+                <a href="#">Términos de Servicio</a>
+                <a href="#">Política de Privacidad</a>
+            </div>
+        </div>
+    </div>
+</footer>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/llamkay/nosotros.js' %}"></script>
+{% endblock %}

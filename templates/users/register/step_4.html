@@ -1,0 +1,90 @@
+{% extends "users/base.html" %}
+{% load static %}
+
+{% block title %}Registro - Paso 4 - Llamkay.pe{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/users/register/step_4.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="logo">
+        <h2>Llamkay</h2>
+    </div>
+    
+    <h1>Verificación de antecedentes</h1>
+    <p class="subtitle">Paso 4 de 4: Documentación</p>
+
+    <div class="progress-bar">
+        <div class="progress active"></div>
+        <div class="progress active"></div>
+        <div class="progress active"></div>
+        <div class="progress active"></div>
+    </div>
+
+    {% if error %}
+    <div class="alert-error">{{ error }}</div>
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data" id="registerFourForm" novalidate>
+        {% csrf_token %}
+        
+        <fieldset>
+            <legend>Constancia de Antecedentes Penales</legend>
+            <p class="form-subtitle">
+                Sube tu constancia de antecedentes penales. 
+                Este documento es obligatorio para completar el registro.
+            </p>
+
+            <div class="form-group">
+                <label for="antecedentes">
+                    Constancia de Antecedentes Penales *
+                </label>
+                
+                <div class="file-upload-container">
+                    <input 
+                        type="file" 
+                        name="antecedentes" 
+                        id="antecedentes"
+                        accept=".pdf,.jpg,.jpeg,.png"
+                        required
+                        class="file-input">
+                    
+                    <div class="file-upload-display" id="fileUploadDisplay">
+                        <div class="upload-icon">📄</div>
+                        <div class="upload-text">
+                            <span class="upload-title">Haz clic para subir archivo</span>
+                            <span class="upload-subtitle">o arrastra y suelta aquí</span>
+                        </div>
+                    </div>
+                    
+                    <div class="selected-files" id="selectedFiles"></div>
+                </div>
+                
+                <div class="file-info">
+                    Formatos permitidos: PDF, JPG, PNG. Tamaño máximo: 5MB
+                </div>
+                
+                {% if form.antecedentes.errors %}
+                <div class="error-message">{{ form.antecedentes.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <div class="button-group">
+                <a href="{% url 'users:register_three' %}" class="btn-outline">← Anterior</a>
+                <button type="submit" class="btn-primary">Finalizar Registro</button>
+            </div>
+        </fieldset>
+    </form>
+
+    <p class="login-link">
+        ¿Ya tienes una cuenta? 
+        <a href="{% url 'users:login' %}">Inicia sesión aquí</a>
+    </p>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/users/register/step_4.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends "users/base.html" %}
+{% load static %}
+
+{% block title %}Iniciar Sesión - Llamkay.pe{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/users/auth/login.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="contenedor-login-demo">
+    <div class="login-container">
+        <div class="login-box">
+            <div class="logo">
+                <div class="icon">🧳</div>
+                <h2>Llamkay.pe</h2>
+            </div>
+            
+            <h3>Bienvenido de vuelta</h3>
+            <p class="subtitle">Inicia sesión en tu cuenta</p>
+
+            {% if error_message %}
+            <div class="error-message">
+                {{ error_message }}
+            </div>
+            {% endif %}
+
+            <form action="{% url 'users:login' %}" method="post">
+                {% csrf_token %}
+                
+                <div class="tabs">
+                    <button type="button" class="tab active">📧 Email</button>
+                </div>
+
+                <input type="email" 
+                       id="email" 
+                       name="email" 
+                       placeholder="tu@email.com" 
+                       required>
+                
+                <div class="password-container">
+                    <input type="password" 
+                           id="password" 
+                           name="password" 
+                           placeholder="Contraseña" 
+                           required>
+                    <span class="toggle-password">
+                        <img class="eye-open" 
+                             src="{% static 'images/ojo-abierto.png' %}" 
+                             alt="Mostrar contraseña">
+                        <img class="eye-closed" 
+                             src="{% static 'images/ojo-cerrado.png' %}" 
+                             alt="Ocultar contraseña">
+                    </span>
+                </div>
+
+                <div class="options">
+                    <label class="checkbox">
+                        <input type="checkbox"> Recordarme
+                    </label>
+                    <a href="#">¿Olvidaste tu contraseña?</a>
+                </div>
+
+                <button type="submit" class="btn-primary">Iniciar Sesión</button>
+            </form>
+
+            <p class="register">
+                ¿No tienes una cuenta? 
+                <a href="{% url 'users:seleccionar_tipo' %}">Regístrate aquí</a>
+            </p>
+            
+            <a href="/" class="back">← Volver al inicio</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/users/auth/login.js' %}"></script>
+{% endblock %}

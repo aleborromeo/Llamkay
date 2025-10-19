@@ -1,0 +1,39 @@
+{% extends "users/base.html" %}
+{% load static %}
+
+{% block title %}Seleccionar Tipo de Usuario - Llamkay.pe{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/users/register/seleccionar_tipo.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="registro-selector">
+    <h1>¿Cómo deseas registrarte?</h1>
+    <p>Selecciona tu rol en la plataforma</p>
+    
+    <form method="post" action="{% url 'users:seleccionar_tipo' %}">
+        {% csrf_token %}
+        
+        <button type="submit" name="tipo_usuario" value="trabajador">
+            🛠️ Buscar trabajo
+        </button>
+        
+        <button type="submit" name="tipo_usuario" value="trabajador_empleador">
+            🔁 Buscar y Publicar
+        </button>
+        
+        <button type="submit" name="tipo_usuario" value="empleador">
+            📢 Solo Publicar trabajos
+        </button>
+        
+        <button type="submit" name="tipo_usuario" value="empresa">
+            🏢 Soy una empresa
+        </button>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/users/auth/seleccionar_tipo.js' %}"></script>
+{% endblock %}

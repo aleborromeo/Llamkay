@@ -1,0 +1,468 @@
+/* ========================================
+   ALL_TRABAJOS.CSS - Lista pública de trabajos
+   Importa: base_jobs.css
+   ======================================== */
+
+/* === BARRA SUPERIOR ESPECÍFICA === */
+.barra-superior {
+  background-color: var(--color-primary);
+  color: white;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  box-shadow: var(--shadow-md);
+}
+
+.logo-inicio {
+  height: 40px;
+  margin-right: 10px;
+  transition: var(--transition-base);
+}
+
+.logo-inicio:hover {
+  transform: scale(1.1);
+}
+
+.titulo-principal {
+  font-size: 20px;
+  margin: 0;
+  font-style: italic;
+  font-weight: 900;
+}
+
+/* === CONTENEDOR PRINCIPAL === */
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* === FILTROS Y BUSCADOR === */
+.filtros {
+  padding: 15px;
+  background: var(--color-bg-content);
+  border-radius: var(--border-radius-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.form-filtros {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Contenedor del buscador */
+.contenedor-buscador {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 600px;
+}
+
+.input-buscar {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px 0 0 4px;
+  font-size: var(--font-size-base);
+  outline: none;
+}
+
+.btn-buscar {
+  background-color: #f5f5f5;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 0 4px 4px 0;
+  cursor: pointer;
+  transition: var(--transition-base);
+}
+
+.btn-buscar:hover {
+  background-color: #e0e0e0;
+}
+
+.icon-lupa {
+  height: 20px;
+  display: block;
+}
+
+/* Contenedor de filtros */
+.contenedor-filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  border: 1px solid var(--border-color);
+  padding: 10px;
+  background: linear-gradient(to right, #ffffff, #d3f9d8, #ffffff);
+  border-radius: var(--border-radius-md);
+}
+
+.select-ubicacion {
+  font-weight: 900;
+  color: black;
+  border-radius: 10px;
+  padding: 8px 12px;
+  background: linear-gradient(135deg, #c3f3be, #81c784);
+  border: 1px solid #81c784;
+  box-shadow: 0 0 8px #81c784;
+  outline: none;
+  cursor: pointer;
+  transition: var(--transition-base);
+}
+
+.select-ubicacion:hover {
+  transform: scale(1.02);
+}
+
+/* Chips de tipo (Empresa/Empleador) */
+.contenedor-chips {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.tipo-btn {
+  background: linear-gradient(to right, #064e3b, #065f46);
+  color: white;
+  font-weight: bold;
+  border: 2px solid #06b6d4;
+  border-radius: 10px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: var(--transition-base);
+  box-shadow: 0 0 8px #10b981;
+}
+
+.tipo-btn:hover {
+  transform: scale(1.05);
+}
+
+.tipo-btn.selected,
+.tipo-btn.active {
+  background: linear-gradient(to right, #b45309, #7c2d12) !important;
+  box-shadow: 0 0 10px #f97316;
+  border-color: #f59e0b;
+  transform: scale(1.05);
+}
+
+/* Botón filtrar */
+.btn-filtrar {
+  background: linear-gradient(135deg, #00d2ff, #0077ff);
+  color: white;
+  font-weight: 800;
+  padding: 10px 20px;
+  border: none;
+  border-radius: var(--border-radius-md);
+  box-shadow: 0 0 12px rgba(0, 162, 255, 0.6);
+  cursor: pointer;
+  transition: var(--transition-base);
+}
+
+.btn-filtrar:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(0, 162, 255, 0.8);
+}
+
+/* === GRID DE TRABAJOS === */
+.trabajos-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-top: 20px;
+}
+
+/* === TARJETA DE TRABAJO === */
+.tarjeta-trabajo {
+  background: var(--color-bg-content);
+  border-radius: var(--border-radius-lg);
+  padding: 20px;
+  box-shadow: var(--shadow-md);
+  transition: var(--transition-base);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tarjeta-trabajo:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-xl);
+}
+
+/* Ícono guardar */
+.iconos-tarjeta {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  z-index: 10;
+}
+
+.guardar-icon {
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.guardar-icon:hover {
+  transform: scale(1.15);
+}
+
+.guardar-icon.saved {
+  filter: brightness(0) saturate(100%) invert(34%) sepia(83%) saturate(512%) hue-rotate(82deg) brightness(92%) contrast(89%);
+}
+
+/* Contenido de tarjeta */
+.publicado-por {
+  color: #000000;
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.titulo-trabajo {
+  color: var(--color-heading);
+  font-size: 1.3rem;
+  font-weight: 900;
+  margin: 5px 0;
+  line-height: 1.3;
+}
+
+.fecha-publicacion {
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+  font-style: italic;
+  margin: 0;
+}
+
+/* Contenedor de imagen */
+.contenedor-imagen {
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  border-radius: var(--border-radius-md);
+  margin: 10px 0;
+  box-shadow: var(--shadow-md);
+  position: relative;
+}
+
+.imagen-trabajo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: var(--transition-base);
+  border-radius: var(--border-radius-md);
+}
+
+.contenedor-imagen:hover .imagen-trabajo {
+  transform: scale(1.05);
+}
+
+.descripcion-corta {
+  font-size: 0.95rem;
+  margin-bottom: 8px;
+  color: var(--color-text-primary);
+  line-height: 1.5;
+}
+
+.direccion {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+  margin: 5px 0;
+}
+
+.icono-direccion {
+  width: 20px;
+  height: 20px;
+  filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.4));
+}
+
+.fecha-limite {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  margin: 5px 0;
+}
+
+/* === BOTONES DE ACCIÓN === */
+.contenedor-contacto-mensaje {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.ver-mas-btn {
+  background: var(--color-success);
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: var(--transition-base);
+  margin-left: auto;
+}
+
+.ver-mas-btn:hover {
+  background-color: var(--color-success-hover);
+  transform: scale(1.05);
+}
+
+/* === MODALES === */
+.modal-trabajo {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 9999;
+  overflow: auto;
+}
+
+.modal-trabajo.mostrar {
+  display: block;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.modal-contenido {
+  background-color: var(--color-bg-content);
+  max-width: 600px;
+  margin: 60px auto;
+  padding: 30px;
+  border-radius: var(--border-radius-lg);
+  box-shadow: 0 0 15px rgba(0, 255, 128, 0.7);
+  animation: aparecer 0.3s ease-in-out;
+  position: relative;
+}
+
+.cerrar-modal {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #222;
+  transition: var(--transition-base);
+}
+
+.cerrar-modal:hover {
+  color: #e74c3c;
+}
+
+.modal-titulo {
+  color: var(--color-heading);
+  font-size: 1.5rem;
+  font-weight: 900;
+  margin-bottom: 15px;
+}
+
+.modal-imagen {
+  width: 100%;
+  max-height: 250px;
+  object-fit: cover;
+  border-radius: var(--border-radius-md);
+  margin-bottom: 20px;
+}
+
+.modal-contenido p {
+  margin: 10px 0;
+  line-height: 1.6;
+}
+
+.modal-contenido strong {
+  color: var(--color-heading);
+}
+
+/* === ANIMACIONES === */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes aparecer {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 992px) {
+  .trabajos-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .trabajos-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .contenedor-filtros {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .select-ubicacion,
+  .tipo-btn,
+  .btn-filtrar {
+    width: 100%;
+  }
+
+  .contenedor-buscador {
+    max-width: 100%;
+  }
+
+  .modal-contenido {
+    margin: 20px;
+    padding: 20px;
+  }
+
+  .titulo-principal {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .barra-superior {
+    padding: 8px 15px;
+  }
+
+  .logo-inicio {
+    height: 30px;
+  }
+
+  .tarjeta-trabajo {
+    padding: 15px;
+  }
+
+  .titulo-trabajo {
+    font-size: 1.1rem;
+  }
+
+  .contenedor-contacto-mensaje {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .ver-mas-btn {
+    margin-left: 0;
+    width: 100%;
+  }
+}

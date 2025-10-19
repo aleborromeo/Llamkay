@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Lista de Trabajos - Llamkay{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/jobs/all_trabajos.css' %}">
+{% endblock %}
+
+{% block content %}
+  
+  <!-- BARRA SUPERIOR -->
+  <div class="barra-superior">
+    <a href="{% if user.is_authenticated %}{% url 'llamkay:dashboard' %}{% else %}{% url 'llamkay:index' %}{% endif %}">
+      <img src="{% static 'images/iconinicio.png' %}" alt="Logo" class="logo-inicio">
+    </a>
+    <h1 class="titulo-principal">LLAMKAY.PE</h1>
+  </div>
+
+  <!-- FORMULARIO FILTROS Y BUSCADOR -->
+  <div class="filtros">
+    <form method="GET" action="{% url 'jobs:filtrar_trabajos' %}" class="form-filtros">
+      
+      <!-- BUSCADOR -->
+      <div class="contenedor-buscador">
+        <input type="text" name="buscar" placeholder="Buscar trabajo..." class="input-buscar">
+        <button type="submit" class="btn-buscar">
+          <img src="{% static 'images/lupa.png' %}" alt="Buscar" class="icon-lupa">
+        </button>
+      </div>
+
+      <!-- FILTROS Y BOTONES -->
+      <div class="contenedor-filtros">
+        
+        <!-- Selects de Ubicación -->
+        <select name="departamento_id" id="departamento" class="select-ubicacion">
+          <option value="">Departamento</option>
+          {% for departamento in departamentos %}
+            <option value="{{ departamento.id_departamento }}">{{ departamento.nombre }}</option>
+          {% endfor %}
+        </select>
+
+        <select name="provincia_id" id="provincia" class="select-ubicacion">
+          <option value="">Ciudad</option>
+        </select>
+
+        <select name="distrito_id" id="distrito" class="select-ubicacion">
+          <option value="">Distrito</option>
+        </select>
+
+        <select name="comunidad_id" id="comunidad" class="select-ubicacion">
+          <option value="">Comunidad</option>
+        </select>
+
+        <!-- Botones tipo chip -->
+        <div class="contenedor-chips">
+          <button type="button" class="tipo-btn" data-tipo="empresa">Empresas</button>
+          <button type="button" class="tipo-btn" data-tipo="empleador">Empleadores</button>
+        </div>
+
+        <input type="hidden" name="tipo_usuario" id="tipoUsuarioInput">
+        <button type="submit" class="btn-filtrar">Filtrar</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- CONTENEDOR PRINCIPAL: tarjetas resumidas -->
+  <div class="container">
+    <div class="trabajos-grid">
+      {% for trabajo in trabajos %}
+        <div class="tarjeta-trabajo" data-id="{{ trabajo.id }}">
+          
+          <!-- Icono Guardar -->
+          <div class="iconos-tarjeta">
+            {% with id_str=trabajo.tipo|add:"_"|add:trabajo.id|stringformat:"s" %}
+              {% if id_str in trabajos_guardados_ids %}
+                <img src="{% static 'images/guardar.png' %}" alt="Guardado" class="guardar-icon" title="Ya guardado">
+              {% else %}
+                {% if user.is_authenticated %}
+                  <a href="{% url 'jobs:guardar_trabajo' trabajo.tipo trabajo.id %}?next={{ request.path }}" title="Guardar">
+                    <img src="{% static 'images/guardar1.png' %}" alt="Guardar" class="guardar-icon">
+                  </a>
+                {% else %}
+                  <a href="{% url 'users:login' %}?next={{ request.path }}" title="Inicia sesión para guardar">
+                    <img src="{% static 'images/guardar1.png' %}" alt="Guardar" class="guardar-icon">
+                  </a>
+                {% endif %}
+              {% endif %}
+            {% endwith %}
+          </div>
+
+          <!-- Info resumida -->
+          <p class="publicado-por">Publicado por: {{ trabajo.publicado_por }}</p>
+          <h3 class="titulo-trabajo">{{ trabajo.titulo }}</h3>
+          <p class="fecha-publicacion">
+            Publicado: {{ trabajo.fecha_registro.day }} de 
+            {% if trabajo.fecha_registro.month == 1 %}enero{% elif trabajo.fecha_registro.month == 2 %}febrero{% elif trabajo.fecha_registro.month == 3 %}marzo{% elif trabajo.fecha_registro.month == 4 %}abril{% elif trabajo.fecha_registro.month == 5 %}mayo{% elif trabajo.fecha_registro.month == 6 %}junio{% elif trabajo.fecha_registro.month == 7 %}julio{% elif trabajo.fecha_registro.month == 8 %}agosto{% elif trabajo.fecha_registro.month == 9 %}septiembre{% elif trabajo.fecha_registro.month == 10 %}octubre{% elif trabajo.fecha_registro.month == 11 %}noviembre{% elif trabajo.fecha_registro.month == 12 %}diciembre{% endif %} 
+            de {{ trabajo.fecha_registro.year }}
+          </p>
+
+          {% if trabajo.foto %}
+            <div class="contenedor-imagen">
+              <img src="{{ trabajo.foto.url }}" alt="{{ trabajo.titulo }}" class="imagen-trabajo" />
+            </div>
+          {% endif %}
+
+          <p class="direccion">
+            <img src="{% static 'images/ubicacion.png' %}" alt="Dirección" class="icono-direccion">
+            {% if trabajo.id_departamento %}{{ trabajo.id_departamento.nombre }}, {% endif %}
+            {% if trabajo.id_provincia %}{{ trabajo.id_provincia.nombre }}, {% endif %}
+            {% if trabajo.id_distrito %}{{ trabajo.id_distrito.nombre }}, {% endif %}
+            {% if trabajo.id_comunidad %}{{ trabajo.id_comunidad.nombre }}{% endif %}
+          </p>
+
+          <p class="fecha-limite">
+            <strong>Fecha Límite:</strong> {{ trabajo.fecha_limite|date:"d M Y" }}
+            {% if trabajo.horas_limite %} a las {{ trabajo.horas_limite }}{% endif %}
+          </p>
+
+          <!-- Botones -->
+          <div class="contenedor-contacto-mensaje">
+            {% if trabajo.numero_contacto %}
+              <a href="https://wa.me/{{ trabajo.numero_contacto }}?text=Hola%2C%20estoy%20interesado%20en%20la%20oferta%20de%20trabajo%3A%20{{ trabajo.titulo|urlencode }}" 
+                 target="_blank" 
+                 class="boton-contactar">
+                📱 Contactar 
+              </a>
+            {% else %}
+              <span class="boton-contactar-deshabilitado" title="Sin número de contacto disponible">
+                📱 Sin contacto
+              </span>
+            {% endif %}
+            <img src="{% static 'images/comentario.png' %}" alt="Mensajería" class="mensaje-icon-btn" title="Mensaje">
+            <button class="ver-mas-btn" data-modal-id="modal-{{ trabajo.id }}-{{ trabajo.tipo }}">Ver más</button>
+          </div>
+        </div>
+      {% empty %}
+        <p class="sin-trabajos">No hay trabajos disponibles.</p>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- MODALES -->
+  {% for trabajo in trabajos %}
+  <div id="modal-{{ trabajo.id }}-{{ trabajo.tipo }}" class="modal-trabajo">
+    <div class="modal-contenido">
+      <span class="cerrar-modal" data-modal-id="modal-{{ trabajo.id }}-{{ trabajo.tipo }}">&times;</span>
+
+      <h2 class="modal-titulo">{{ trabajo.titulo }}</h2>
+
+      {% if trabajo.foto %}
+        <img src="{{ trabajo.foto.url }}" class="modal-imagen" alt="imagen completa">
+      {% endif %}
+
+      <p><strong>Publicado por:</strong> {{ trabajo.publicado_por }}</p>
+      <p><strong>Publicado:</strong> {{ trabajo.fecha_registro|date:"d M Y" }}</p>
+
+      {% if trabajo.descripcion %}
+        <p><strong>Descripción:</strong><br>{{ trabajo.descripcion }}</p>
+      {% endif %}
+
+      {% if trabajo.tipo == 'usuario' %}
+        {% if trabajo.herramientas %}
+          <p><strong>Herramientas:</strong><br>{{ trabajo.herramientas }}</p>
+        {% endif %}
+      {% elif trabajo.tipo == "empresa" %}
+        {% if trabajo.experiencia_requerida %}
+          <p><strong>Experiencia:</strong> {{ trabajo.experiencia_requerida }}</p>
+        {% endif %}
+        {% if trabajo.modalidad_trabajo %}
+          <p><strong>Modalidad:</strong> {{ trabajo.modalidad_trabajo }}</p>
+        {% endif %}
+        {% if trabajo.requisitos_calificaciones %}
+          <p><strong>Requisitos:</strong> {{ trabajo.requisitos_calificaciones }}</p>
+        {% endif %}
+        {% if trabajo.beneficios_compensaciones %}
+          <p><strong>Beneficios:</strong> {{ trabajo.beneficios_compensaciones }}</p>
+        {% endif %}
+      {% endif %}
+
+      <p><strong>Dirección:</strong>
+        {% if trabajo.id_departamento %}{{ trabajo.id_departamento.nombre }}, {% endif %}
+        {% if trabajo.id_provincia %}{{ trabajo.id_provincia.nombre }}, {% endif %}
+        {% if trabajo.id_distrito %}{{ trabajo.id_distrito.nombre }}, {% endif %}
+        {% if trabajo.id_comunidad %}{{ trabajo.id_comunidad.nombre }}{% endif %}
+      </p>
+
+      {% if trabajo.pago %}
+        <p><strong>Pago:</strong> S/ {{ trabajo.pago }}</p>
+      {% elif trabajo.rango_salarial %}
+        <p><strong>Rango Salarial:</strong> {{ trabajo.rango_salarial }}</p>
+      {% endif %}
+
+      <p><strong>Fecha Límite:</strong> {{ trabajo.fecha_limite|date:"d M Y" }}
+        {% if trabajo.horas_limite %} a las {{ trabajo.horas_limite }}{% endif %}
+      </p>
+
+      {% if trabajo.numero_postulantes %}
+        <p><strong>Postulantes:</strong> {{ trabajo.numero_postulantes }}</p>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+  {% endblock %}
+
+  {% block extra_js %}
+  <!-- Scripts -->
+  <script>
+    const urlCargarProvincias = "{% url 'jobs:ajax_cargar_provincias' %}";
+    const urlCargarDistritos = "{% url 'jobs:ajax_cargar_distritos' %}";
+    const urlCargarComunidades = "{% url 'jobs:ajax_cargar_comunidades' %}";
+  </script>
+  <script src="{% static 'js/jobs/ubicacion.js' %}"></script>
+  <script src="{% static 'js/jobs/all_trabajos.js' %}"></script>
+  {% endblock %}
+</body>
+</html>

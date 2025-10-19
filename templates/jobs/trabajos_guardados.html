@@ -1,0 +1,101 @@
+{% load static %}
+
+<div class="container">
+  <h2>Mis Trabajos Guardados</h2>
+
+  {% if trabajos %}
+    <div class="trabajos-grid">
+      {% for trabajo in trabajos %}
+        <div class="tarjeta-trabajo">
+          <div class="acciones-trabajo">
+            <form method="post" 
+                  action="{% url 'jobs:quitar_guardado' trabajo.id %}" 
+                  class="form-quitar-guardado">
+              {% csrf_token %}
+              <input type="hidden" name="content_type_id" value="{{ trabajo.content_type.id }}">
+              <input type="hidden" name="object_id" value="{{ trabajo.object_id }}">
+              <button type="submit" 
+                      class="btn-quitar" 
+                      title="Quitar de guardados"
+                      data-confirm="¿Estás seguro de que deseas quitar este trabajo guardado?">
+                <img src="{% static 'images/delete.png' %}" alt="Quitar" />
+              </button>
+            </form>
+          </div>
+
+          <h3>{{ trabajo.oferta.titulo }}</h3>
+          <p class="fecha-publicacion">Publicado: {{ trabajo.oferta.fecha_registro|date:"d M Y" }}</p>
+          {% if trabajo.fecha_guardado %}
+            <p class="fecha-guardado">💾 Guardado: {{ trabajo.fecha_guardado|date:"d/m/Y H:i" }}</p>
+          {% else %}
+            <p class="fecha-guardado">💾 Guardado recientemente</p>
+          {% endif %}
+
+          {% if trabajo.oferta.foto %}
+            <img src="{{ trabajo.oferta.foto.url }}" alt="Imagen del trabajo" class="imagen-trabajo" />
+          {% endif %}
+
+          <div class="contenido-trabajo">
+            {% if trabajo.oferta.descripcion %}
+              <p><strong>Descripción:</strong><br>{{ trabajo.oferta.descripcion }}</p>
+            {% elif trabajo.oferta.descripcion_puesto %}
+              <p><strong>Descripción:</strong><br>{{ trabajo.oferta.descripcion_puesto }}</p>
+            {% endif %}
+
+            {% if trabajo.oferta.herramientas %}
+              <p><strong>Herramientas:</strong><br>{{ trabajo.oferta.herramientas }}</p>
+            {% endif %}
+
+            {% if trabajo.oferta.experiencia_requerida %}
+              <p><strong>Experiencia:</strong> {{ trabajo.oferta.experiencia_requerida }}</p>
+            {% endif %}
+
+            {% if trabajo.oferta.modalidad_trabajo %}
+              <p><strong>Modalidad:</strong> {{ trabajo.oferta.modalidad_trabajo }}</p>
+            {% endif %}
+
+            <p><strong>Dirección:</strong>
+              {% if trabajo.oferta.id_departamento %}{{ trabajo.oferta.id_departamento.nombre }}, {% endif %}
+              {% if trabajo.oferta.id_provincia %}{{ trabajo.oferta.id_provincia.nombre }}, {% endif %}
+              {% if trabajo.oferta.id_distrito %}{{ trabajo.oferta.id_distrito.nombre }}, {% endif %}
+              {% if trabajo.oferta.id_comunidad %}{{ trabajo.oferta.id_comunidad.nombre }}{% endif %}
+            </p>
+
+            {% if trabajo.oferta.pago %}
+              <p><strong>Pago:</strong> S/ {{ trabajo.oferta.pago }}</p>
+            {% elif trabajo.oferta.rango_salarial %}
+              <p><strong>Rango Salarial:</strong> {{ trabajo.oferta.rango_salarial }}</p>
+            {% endif %}
+
+            <p><strong>Fecha Límite:</strong> {{ trabajo.oferta.fecha_limite }}
+              {% if trabajo.oferta.horas_limite %} {{ trabajo.oferta.horas_limite }} {% endif %}
+            </p>
+
+            <!-- Botones de Acción -->
+            <div class="contenedor-contacto-mensaje">
+              {% if trabajo.oferta.numero_contacto %}
+                <a href="https://wa.me/{{ trabajo.oferta.numero_contacto }}?text=Hola%2C%20estoy%20interesado%20en%20la%20oferta%20de%20trabajo%3A%20{{ trabajo.oferta.titulo|urlencode }}" 
+                   target="_blank" 
+                   class="boton-contactar">
+                  📱 Contactar 
+                </a>
+              {% else %}
+                <span class="boton-contactar-deshabilitado" title="Sin número de contacto disponible">
+                  📱 Sin contacto
+                </span>
+              {% endif %}
+              <img src="{% static 'images/comentario.png' %}" 
+                   alt="Mensajería" 
+                   class="mensaje-icon-btn" 
+                   title="Mensaje">
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="sin-trabajos">No has guardado ningún trabajo aún.</p>
+  {% endif %}
+</div>
+
+<script src="{% static 'js/jobs/trabajos_guardados.js' %}"></script>

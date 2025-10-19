@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Confirmar Eliminación - Llamkay{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/jobs/confirmar_eliminar.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="confirmacion-card">
+    <h2>¿Estás seguro?</h2>
+    <p>Esta acción eliminará permanentemente el trabajo:</p>
+    <h3 class="trabajo-titulo">{{ trabajo.titulo }}</h3>
+
+    <form method="post">
+      {% csrf_token %}
+      <div class="form-buttons">
+        <button type="submit" class="btn danger">Sí, eliminar</button>
+        <a href="{% url 'jobs:mis_trabajos' %}" class="btn grey">Cancelar</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

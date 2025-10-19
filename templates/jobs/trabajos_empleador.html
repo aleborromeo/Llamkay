@@ -1,0 +1,74 @@
+{% load static %}
+
+<div class="container">
+  <h2>Mis Trabajos Publicados</h2>
+
+  {% if trabajos %}
+    <div class="trabajos-grid">
+      {% for trabajo in trabajos %}
+        <div class="tarjeta-trabajo">
+          <div class="acciones-trabajo">
+            <a href="{% url 'jobs:editar_oferta' trabajo.id %}" 
+               class="icon-editar" 
+               title="Editar trabajo">
+              <img src="{% static 'images/edit.png' %}" alt="Editar" />
+            </a>
+            <a href="{% url 'jobs:eliminar_oferta' trabajo.id %}" 
+               class="icon-eliminar"
+               data-confirm="¿Estás seguro de que deseas eliminar este trabajo?"
+               title="Eliminar trabajo">
+              <img src="{% static 'images/delete.png' %}" alt="Eliminar" />
+            </a>
+          </div>
+
+          <h3>{{ trabajo.titulo }}</h3>
+          <p class="fecha-publicacion">Publicado: {{ trabajo.fecha_registro|date:"d M Y" }}</p>
+
+          {% if trabajo.foto %}
+            <img src="{{ trabajo.foto.url }}" alt="Imagen del trabajo" class="imagen-trabajo" />
+          {% endif %}
+
+          <div class="contenido-trabajo">
+            {% if trabajo.descripcion %}
+              <p><strong>Descripción:</strong><br>{{ trabajo.descripcion }}</p>
+            {% endif %}
+
+            {% if trabajo.herramientas %}
+              <p><strong>Herramientas:</strong><br>{{ trabajo.herramientas }}</p>
+            {% else %}
+              <p><strong>Experiencia:</strong> {{ trabajo.experiencia_requerida }}</p>
+              <p><strong>Modalidad:</strong> {{ trabajo.modalidad_trabajo }}</p>
+              <p><strong>Requisitos:</strong> {{ trabajo.requisitos_calificaciones }}</p>
+              <p><strong>Beneficios:</strong> {{ trabajo.beneficios_compensaciones }}</p>
+            {% endif %}
+
+            <p><strong>Dirección:</strong>
+              {% if trabajo.id_departamento %}{{ trabajo.id_departamento.nombre }}, {% endif %}
+              {% if trabajo.id_provincia %}{{ trabajo.id_provincia.nombre }}, {% endif %}
+              {% if trabajo.id_distrito %}{{ trabajo.id_distrito.nombre }}, {% endif %}
+              {% if trabajo.id_comunidad %}{{ trabajo.id_comunidad.nombre }}{% endif %}
+            </p>
+
+            {% if trabajo.pago %}
+              <p><strong>Pago:</strong> S/ {{ trabajo.pago }}</p>
+            {% elif trabajo.rango_salarial %}
+              <p><strong>Rango Salarial:</strong> {{ trabajo.rango_salarial }}</p>
+            {% endif %}
+
+            <p><strong>Fecha Límite:</strong> {{ trabajo.fecha_limite }}
+              {% if trabajo.horas_limite %} {{ trabajo.horas_limite }} {% endif %}
+            </p>
+
+            {% if trabajo.numero_postulantes %}
+              <p><strong>Postulantes:</strong> {{ trabajo.numero_postulantes }}</p>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="sin-trabajos">No has publicado ningún trabajo aún.</p>
+  {% endif %}
+</div>
+
+<script src="{% static 'js/jobs/trabajos_empleador.js' %}"></script>
