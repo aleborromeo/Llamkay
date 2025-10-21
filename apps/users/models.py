@@ -1,392 +1,516 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-
-# Modelos completos del módulo de usuarios (versión extendida)
-# Incluye: autenticación personalizada, antecedentes, perfil público,
-# recordatorios, recomendaciones, historial de eventos, eliminación lógica y más.
-
-from django.db import models
-from django.contrib.auth.models import AbstractUser
-from django.utils.text import slugify
-from django.utils import timezone
-
-
+# ==================== UBICACIÓN ====================
 class Departamento(models.Model):
-    id_departamento = models.IntegerField(primary_key=True)
-    nombre = models.CharField(blank=True, null=True)
+    id_departamento = models.AutoField(primary_key=True)
+    nombre = models.CharField(max_length=100, unique=True)
+    codigo = models.CharField(max_length=10, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         db_table = 'departamento'
-    
+        indexes = [models.Index(fields=['nombre'])]
+
     def __str__(self):
         return self.nombre
-    
-    
+
+
 class Provincia(models.Model):
-    id_provincia = models.IntegerField(primary_key=True)
-    id_departamento = models.ForeignKey(Departamento, models.DO_NOTHING, db_column='id_departamento', blank=True, null=True)
-    nombre = models.CharField(blank=True, null=True)
+    id_provincia = models.AutoField(primary_key=True)
+    id_departamento = models.ForeignKey(
+        'Departamento', 
+        on_delete=models.CASCADE,
+        db_column='id_departamento'
+    )
+    nombre = models.CharField(max_length=100)
+    codigo = models.CharField(max_length=10, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         db_table = 'provincia'
+        unique_together = [['id_departamento', 'nombre']]
+        indexes = [
+            models.Index(fields=['id_departamento']),
+            models.Index(fields=['nombre'])
+        ]
+
+    def __str__(self):
+        return self.nombre
 
 
 class Distrito(models.Model):
-    id_distrito = models.IntegerField(primary_key=True)
-    id_provincia = models.ForeignKey('Provincia', models.DO_NOTHING, db_column='id_provincia', blank=True, null=True)
-    nombre = models.CharField(blank=True, null=True)
+    id_distrito = models.AutoField(primary_key=True)
+    id_provincia = models.ForeignKey(
+        'Provincia',
+        on_delete=models.CASCADE,
+        db_column='id_provincia'
+    )
+    nombre = models.CharField(max_length=100)
+    codigo = models.CharField(max_length=10, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         db_table = 'distrito'
-        
+        unique_together = [['id_provincia', 'nombre']]
+        indexes = [
+            models.Index(fields=['id_provincia']),
+            models.Index(fields=['nombre'])
+        ]
+
+    def __str__(self):
+        return self.nombre
+
 
 class Comunidad(models.Model):
-    id_comunidad = models.IntegerField(primary_key=True)
-    id_distrito = models.ForeignKey('Distrito', models.DO_NOTHING, db_column='id_distrito', blank=True, null=True)
-    nombre = models.CharField(blank=True, null=True)
+    id_comunidad = models.AutoField(primary_key=True)
+    id_distrito = models.ForeignKey(
+        'Distrito',
+        on_delete=models.CASCADE,
+        db_column='id_distrito'
+    )
+    nombre = models.CharField(max_length=100)
+    latitud = models.DecimalField(max_digits=10, decimal_places=7, null=True, blank=True)
+    longitud = models.DecimalField(max_digits=10, decimal_places=7, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         db_table = 'comunidad'
+        unique_together = [['id_distrito', 'nombre']]
+        indexes = [
+            models.Index(fields=['id_distrito']),
+            models.Index(fields=['nombre']),
+            models.Index(fields=['latitud', 'longitud'])
+        ]
+
+    def __str__(self):
+        return self.nombre
 
 
+# ==================== USUARIO ====================
 class Usuario(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='perfil') #para mantener la personalizacion
+    TIPO_USUARIO_CHOICES = [
+        ('trabajador', 'Trabajador'),
+        ('empleador', 'Empleador'),
+        ('ambos', 'Ambos'),
+        ('empresa', 'Empresa'),
+    ]
+
+    GENERO_CHOICES = [
+        ('masculino', 'Masculino'),
+        ('femenino', 'Femenino'),
+        ('otro', 'Otro'),
+        ('prefiero_no_decir', 'Prefiero no decir'),
+    ]
+
+    ESTADO_VERIFICACION_CHOICES = [
+        ('pendiente', 'Pendiente'),
+        ('verificado', 'Verificado'),
+        ('rechazado', 'Rechazado'),
+        ('expirado', 'Expirado'),
+    ]
+
+    # Relación con Django User
+    user = models.OneToOneField(
+        User, 
+        on_delete=models.CASCADE, 
+        related_name='perfil'
+    )
     
     id_usuario = models.AutoField(primary_key=True)
-    username = models.CharField(max_length=150, blank=False, null=False)
-    nombres = models.CharField(blank=True, null=True)
-    apellidos = models.CharField(blank=True, null=True)
-    dni = models.CharField(blank=True, null=True)
-    telefono = models.CharField(blank=True, null=True)
-    direccion = models.TextField(blank=True, null=True)
-    email = models.CharField(blank=True, null=True)
-    clave = models.TextField(blank=True, null=True)
-    fecha_nacimiento = models.DateField(blank=True, null=True)
-    tipo_usuario = models.TextField(blank=True, null=True)  # This field type is a guess.
-    id_comunidad = models.ForeignKey(Comunidad, models.DO_NOTHING, db_column='id_comunidad', blank=True, null=True)
-    habilitado = models.BooleanField(blank=True, null=True)
+    username = models.CharField(max_length=150, unique=True)
+    email = models.EmailField(max_length=254, unique=True)
     
-    genero = models.CharField(
-        max_length=10,
-        choices=[("masculino", "Masculino"), ("femenino", "Femenino"), ("otro", "Otro")],
-        default="otro"
+    # Información Personal
+    nombres = models.CharField(max_length=100)
+    apellidos = models.CharField(max_length=100)
+    dni = models.CharField(max_length=20, unique=True, null=True, blank=True)
+    telefono = models.CharField(max_length=20, null=True, blank=True)
+    fecha_nacimiento = models.DateField(null=True, blank=True)
+    genero = models.CharField(max_length=20, choices=GENERO_CHOICES, null=True, blank=True)
+    tipo_usuario = models.CharField(
+        max_length=20, 
+        choices=TIPO_USUARIO_CHOICES, 
+        default='trabajador'
     )
-
-    perfil_publico_activo = models.BooleanField(default=False, verbose_name="Perfil público activado")
-    biografia_flexible = models.TextField(blank=True, null=True, verbose_name="Descripción libre del usuario")
-    eliminado_en = models.DateTimeField(null=True, blank=True, verbose_name="Fecha de eliminación lógica")
-
-    def obtener_slug_publico(self):
-        return slugify(f"{self.username}-{self.id}")
-
-    def esta_eliminado(self):
-        return self.eliminado_en is not None
-
-    def eliminar_logicamente(self):
-        self.eliminado_en = timezone.now()
-        self.save()
+    
+    # Ubicación
+    id_comunidad = models.ForeignKey(
+        'Comunidad',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        db_column='id_comunidad'
+    )
+    direccion = models.TextField(null=True, blank=True)
+    latitud = models.DecimalField(max_digits=10, decimal_places=7, null=True, blank=True)
+    longitud = models.DecimalField(max_digits=10, decimal_places=7, null=True, blank=True)
+    radio_km = models.IntegerField(default=10)
+    
+    # Estado y Verificación
+    habilitado = models.BooleanField(default=True)
+    estado_verificacion = models.CharField(
+        max_length=20,
+        choices=ESTADO_VERIFICACION_CHOICES,
+        default='pendiente'
+    )
+    
+    # Estadísticas
+    rating_promedio = models.DecimalField(
+        max_digits=3, 
+        decimal_places=2, 
+        default=0.00
+    )
+    total_calificaciones = models.IntegerField(default=0)
+    trabajos_completados = models.IntegerField(default=0)
+    
+    # Auditoría
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
+    last_login = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         db_table = 'usuario'
+        indexes = [
+            models.Index(fields=['email']),
+            models.Index(fields=['tipo_usuario']),
+            models.Index(fields=['latitud', 'longitud']),
+            models.Index(fields=['estado_verificacion']),
+            models.Index(fields=['habilitado'])
+        ]
 
-
-class PerfilPublico(models.Model):
-    usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, related_name="perfil_publico")
-    slug = models.SlugField(unique=True)
-    resumen = models.TextField(verbose_name="Resumen público")
-    habilidades = models.JSONField(default=list, verbose_name="Lista de habilidades")
-    mostrar_email = models.BooleanField(default=False)
-    mostrar_telefono = models.BooleanField(default=False)
-
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = self.usuario.obtener_slug_publico()
-        super().save(*args, **kwargs)
-
-
-class Recomendacion(models.Model):
-    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name="recomendaciones")
-    autor = models.CharField(max_length=255, verbose_name="Nombre del recomendante")
-    comentario = models.TextField(verbose_name="Comentario")
-    fecha = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de emisión")
-    visible = models.BooleanField(default=True, verbose_name="¿Mostrar públicamente?")
-
-
-class ConfiguracionRecordatorio(models.Model):
-    usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE)
-    canal = models.CharField(
-        max_length=10,
-        choices=[
-            ("push", "Notificación Push"),
-            ("email", "Correo electrónico"),
-            ("sms", "Mensaje de texto")
-        ],
-        default="push",
-        verbose_name="Canal preferido"
-    )
-    anticipacion_horas = models.PositiveIntegerField(default=24, verbose_name="Horas de anticipación")
-    habilitado = models.BooleanField(default=True, verbose_name="¿Recordatorios habilitados?")
-
-
-class RegistroEvento(models.Model):
-    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name="eventos")
-    tipo_evento = models.CharField(max_length=100, verbose_name="Tipo de evento")
-    fecha_hora = models.DateTimeField(verbose_name="Fecha y hora")
-    canal = models.CharField(max_length=10, verbose_name="Canal utilizado")
-    estado = models.CharField(max_length=20, default="enviado", verbose_name="Estado del evento")
-
-
-class SolicitudEliminacion(models.Model):
-    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-    tipo = models.CharField(
-        max_length=20,
-        choices=[
-            ("cuenta", "Eliminar cuenta completa"),
-            ("historial", "Eliminar solo historial")
-        ],
-        verbose_name="Tipo de solicitud"
-    )
-    fecha_solicitud = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de solicitud")
-    confirmada = models.BooleanField(default=False, verbose_name="¿Confirmada por el usuario?")
-
-
-class RegistroError(models.Model):
-    usuario = models.ForeignKey(Usuario, on_delete=models.SET_NULL, null=True)
-    modulo = models.CharField(max_length=50, verbose_name="Módulo")
-    mensaje = models.TextField(verbose_name="Mensaje del error")
-    nivel = models.CharField(
-        max_length=10,
-        choices=[("WARNING", "Advertencia"), ("ERROR", "Error")],
-        default="ERROR",
-        verbose_name="Nivel de severidad"
-    )
-    timestamp = models.DateTimeField(auto_now_add=True, verbose_name="Fecha del evento")
-
-
-class ActividadReciente(models.Model):
-    usuario = models.ForeignKey('Usuario', models.DO_NOTHING)
-    titulo = models.CharField(max_length=255)
-    descripcion = models.TextField()
-    fecha = models.DateTimeField(blank=True, null=True)
-
-    class Meta:
-        db_table = 'actividad_reciente'
-
-
-class Avisos(models.Model):
-    id_aviso = models.IntegerField(primary_key=True)
-    id_usuario = models.ForeignKey('Usuario', models.DO_NOTHING, db_column='id_usuario', blank=True, null=True)
-    mensaje = models.CharField(blank=True, null=True)
-    fecha = models.DateField(blank=True, null=True)
-
-    class Meta:
-        db_table = 'avisos'
-
-
-class Calificacion(models.Model):
-    id_usuario = models.ForeignKey(Usuario, related_name='calificaciones_recibidas', on_delete=models.CASCADE)
-    autor = models.ForeignKey(Usuario, related_name='calificaciones_enviadas', on_delete=models.SET_NULL, null=True, blank=True)
-
-    puntuacion = models.PositiveSmallIntegerField()
-    comentario = models.TextField(blank=True)
-    fecha = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        unique_together = ('id_usuario', 'autor')  # Evita duplicados por usuario que califica
-
-
-class Categoriatrabajo(models.Model):
-    id_categoria = models.IntegerField(primary_key=True)
-    nombre = models.CharField(blank=True, null=True)
-    descripcion = models.TextField(blank=True, null=True)
-
-    class Meta:
-        db_table = 'categoriatrabajo'
-
-
-class Denuncia(models.Model):
-    id_denuncia = models.IntegerField(primary_key=True)
-    id_usuario = models.ForeignKey('Usuario', models.DO_NOTHING, db_column='id_usuario', blank=True, null=True)
-    id_empleador = models.ForeignKey('Empleador', models.DO_NOTHING, db_column='id_empleador', blank=True, null=True)
-    descripcion = models.TextField(blank=True, null=True)
-    fecha = models.DateField(blank=True, null=True)
-    estado = models.TextField(blank=True, null=True)  # This field type is a guess.
-
-    class Meta:
-        db_table = 'denuncia'
-
-
-class Disponibilidad(models.Model):
-    id_disponibilidad = models.IntegerField(primary_key=True)
-    descripcion = models.TextField(blank=True, null=True)
-
-    class Meta:
-        db_table = 'disponibilidad'
-    
-
-class Empleador(models.Model):
-    id_empleador = models.IntegerField(primary_key=True)
-    id_usuario = models.ForeignKey('Usuario', models.DO_NOTHING, db_column='id_usuario', blank=True, null=True)
-    nombre_empresa = models.CharField(blank=True, null=True)
-    ruc = models.CharField(blank=True, null=True)
-    verificado = models.BooleanField(blank=True, null=True)
-
-    class Meta:
-        db_table = 'empleador'
-
-
-class Filtrotrabajoporzona(models.Model):
-    id_filtro = models.IntegerField(primary_key=True)
-    id_usuario = models.ForeignKey('Usuario', models.DO_NOTHING, db_column='id_usuario', blank=True, null=True)
-    id_comunidad = models.ForeignKey(Comunidad, models.DO_NOTHING, db_column='id_comunidad', blank=True, null=True)
-    fecha_inicio = models.DateField(blank=True, null=True)
-    fecha_fin = models.DateField(blank=True, null=True)
-
-    class Meta:
-        db_table = 'filtrotrabajoporzona'
-
-
-class Habilidad(models.Model):
-    id_habilidad = models.IntegerField(primary_key=True)
-    nombre = models.CharField(blank=True, null=True)
-    descripcion = models.TextField(blank=True, null=True)
-
-    class Meta:
-        db_table = 'habilidad'
-
-
-class Ofertatrabajo(models.Model):
-    id_oferta = models.IntegerField(primary_key=True)
-    id_empleador = models.ForeignKey(Empleador, models.DO_NOTHING, db_column='id_empleador', blank=True, null=True)
-    id_categoria = models.ForeignKey(Categoriatrabajo, models.DO_NOTHING, db_column='id_categoria', blank=True, null=True)
-    titulo = models.CharField(blank=True, null=True)
-    descripcion = models.TextField(blank=True, null=True)
-    fecha_inicio = models.DateField(blank=True, null=True)
-    fecha_fin = models.DateField(blank=True, null=True)
-    sueldo = models.FloatField(blank=True, null=True)
-    estado = models.BooleanField(blank=True, null=True)
-    id_usuario = models.ForeignKey('Usuario', models.DO_NOTHING, db_column='id_usuario', blank=True, null=True)
-
-    class Meta:
-        db_table = 'ofertatrabajo'
-
-
-class Politicalegal(models.Model):
-    id_politica = models.IntegerField(primary_key=True)
-    nombre = models.TextField(blank=True, null=True)
-    descripcion = models.TextField(blank=True, null=True)
-    fecha_actualizacion = models.DateField(blank=True, null=True)
-
-    class Meta:
-        db_table = 'politicalegal'
-
-
-class Postulacion(models.Model):
-    id_postulacion = models.IntegerField(primary_key=True)
-    id_oferta = models.ForeignKey(Ofertatrabajo, models.DO_NOTHING, db_column='id_oferta', blank=True, null=True)
-    id_usuario = models.ForeignKey('Usuario', models.DO_NOTHING, db_column='id_usuario', blank=True, null=True)
-    estado = models.TextField(blank=True, null=True)
-    fecha_postulacion = models.DateField(blank=True, null=True)
-
-    class Meta:
-        db_table = 'postulacion'
+    def __str__(self):
+        return f"{self.nombres} {self.apellidos}"
 
 
 class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)  # Relación con auth.User
-    
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     id_profile = models.AutoField(primary_key=True)
-    id_usuario = models.OneToOneField('Usuario', models.DO_NOTHING, db_column='id_usuario')
-    fecha_registro = models.DateTimeField(blank=True, null=True)
-    bio = models.TextField(blank=True, null=True)
-    foto_url = models.ImageField(upload_to='fotos_perfil/', null=True, blank=True)
-    redes_sociales = models.JSONField(blank=True, null=True)
-    id_comunidad = models.ForeignKey(Comunidad, models.DO_NOTHING, db_column='id_comunidad', blank=True, null=True)
-    id_distrito = models.ForeignKey(Distrito, models.DO_NOTHING, db_column='id_distrito', blank=True, null=True)
-    id_provincia = models.ForeignKey('Provincia', models.DO_NOTHING, db_column='id_provincia', blank=True, null=True)
-    id_departamento = models.ForeignKey(Departamento, models.DO_NOTHING, db_column='id_departamento', blank=True, null=True)
-    categorias = models.TextField(blank=True, null=True)
-    habilidades = models.TextField(blank=True, null=True)
-    ocupacion = models.CharField(max_length=100)
-    experiencia = models.PositiveIntegerField(default=0, verbose_name="Años de experiencia")
-    portafolio_url = models.URLField(blank=True, null=True)
+    id_usuario = models.OneToOneField(
+        'Usuario',
+        on_delete=models.CASCADE,
+        db_column='id_usuario'
+    )
+    
+    # Información Profesional
+    bio = models.TextField(null=True, blank=True)
+    ocupacion = models.CharField(max_length=100, null=True, blank=True)
+    experiencia_anios = models.IntegerField(null=True, blank=True)
+    tarifa_hora = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        null=True, 
+        blank=True
+    )
+    foto_url = models.ImageField(
+        upload_to='fotos_perfil/', 
+        null=True, 
+        blank=True
+    )
+    portafolio_url = models.URLField(max_length=500, null=True, blank=True)
+    redes_sociales = models.JSONField(null=True, blank=True)
+    
+    # Ubicación Detallada
+    id_departamento = models.ForeignKey(
+        'Departamento',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        db_column='id_departamento'
+    )
+    id_provincia = models.ForeignKey(
+        'Provincia',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        db_column='id_provincia'
+    )
+    id_distrito = models.ForeignKey(
+        'Distrito',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        db_column='id_distrito'
+    )
+    id_comunidad = models.ForeignKey(
+        'Comunidad',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        db_column='id_comunidad'
+    )
+    
+    # Privacidad
+    perfil_publico_activo = models.BooleanField(default=True)
+    mostrar_email = models.BooleanField(default=False)
+    mostrar_telefono = models.BooleanField(default=False)
+    
+    # Auditoría
+    fecha_registro = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         db_table = 'profile'
+        indexes = [
+            models.Index(fields=['id_usuario']),
+            models.Index(fields=['id_departamento', 'id_provincia', 'id_distrito'])
+        ]
 
-        
-class TrabajosRealizados(models.Model):
-    usuario = models.ForeignKey('Usuario', models.DO_NOTHING)
-    descripcion = models.TextField(blank=True, null=True)
-    fecha_inicio = models.DateField(blank=True, null=True)
-    fecha_fin = models.DateField(blank=True, null=True)
-    empresa = models.CharField(max_length=255, blank=True, null=True)
-    rol = models.CharField(max_length=255, blank=True, null=True)
+
+# ==================== HABILIDADES ====================
+class Habilidad(models.Model):
+    NIVEL_CHOICES = [
+        ('basico', 'Básico'),
+        ('intermedio', 'Intermedio'),
+        ('avanzado', 'Avanzado'),
+        ('experto', 'Experto'),
+    ]
+
+    id_habilidad = models.AutoField(primary_key=True)
+    nombre = models.CharField(max_length=100, unique=True)
+    descripcion = models.TextField(null=True, blank=True)
+    categoria = models.CharField(max_length=50, null=True, blank=True)
+    activa = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        db_table = 'trabajos_realizados'
+        db_table = 'habilidad'
+        indexes = [
+            models.Index(fields=['nombre']),
+            models.Index(fields=['categoria', 'activa'])
+        ]
+
+    def __str__(self):
+        return self.nombre
+
+
+class UsuarioHabilidad(models.Model):
+    NIVEL_CHOICES = [
+        ('basico', 'Básico'),
+        ('intermedio', 'Intermedio'),
+        ('avanzado', 'Avanzado'),
+        ('experto', 'Experto'),
+    ]
+
+    id = models.AutoField(primary_key=True)
+    id_usuario = models.ForeignKey(
+        'Usuario',
+        on_delete=models.CASCADE,
+        db_column='id_usuario'
+    )
+    id_habilidad = models.ForeignKey(
+        'Habilidad',
+        on_delete=models.CASCADE,
+        db_column='id_habilidad'
+    )
+    nivel = models.CharField(max_length=20, choices=NIVEL_CHOICES, default='basico')
+    anios_experiencia = models.IntegerField(null=True, blank=True)
+    certificado = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'usuario_habilidad'
+        unique_together = [['id_usuario', 'id_habilidad']]
+        indexes = [
+            models.Index(fields=['id_usuario', 'nivel']),
+            models.Index(fields=['id_habilidad'])
+        ]
+
+
+# ==================== CATEGORÍAS ====================
+class CategoriaTrabajo(models.Model):
+    id_categoria = models.AutoField(primary_key=True)
+    nombre = models.CharField(max_length=100, unique=True)
+    descripcion = models.TextField(null=True, blank=True)
+    slug = models.SlugField(max_length=100, unique=True)
+    id_padre = models.ForeignKey(
+        'self',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        db_column='id_padre'
+    )
+    icono = models.CharField(max_length=50, null=True, blank=True)
+    activa = models.BooleanField(default=True)
+    orden = models.IntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'categoria_trabajo'
+        indexes = [
+            models.Index(fields=['slug']),
+            models.Index(fields=['activa', 'orden']),
+            models.Index(fields=['id_padre'])
+        ]
+
+    def __str__(self):
+        return self.nombre
+
+
+class UsuarioCategoria(models.Model):
+    id = models.AutoField(primary_key=True)
+    id_usuario = models.ForeignKey(
+        'Usuario',
+        on_delete=models.CASCADE,
+        db_column='id_usuario'
+    )
+    id_categoria = models.ForeignKey(
+        'CategoriaTrabajo',
+        on_delete=models.CASCADE,
+        db_column='id_categoria'
+    )
+    preferencia = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'usuario_categoria'
+        unique_together = [['id_usuario', 'id_categoria']]
+        indexes = [
+            models.Index(fields=['id_usuario']),
+            models.Index(fields=['id_categoria'])
+        ]
+
+
+# ==================== VERIFICACIÓN Y CERTIFICACIONES ====================
+class Verificacion(models.Model):
+    TIPO_VERIFICACION_CHOICES = [
+        ('dni', 'DNI'),
+        ('antecedentes', 'Antecedentes'),
+        ('rostro', 'Rostro'),
+        ('telefono', 'Teléfono'),
+        ('email', 'Email'),
+    ]
+
+    ESTADO_VERIFICACION_CHOICES = [
+        ('pendiente', 'Pendiente'),
+        ('verificado', 'Verificado'),
+        ('rechazado', 'Rechazado'),
+        ('expirado', 'Expirado'),
+    ]
+
+    id_verificacion = models.AutoField(primary_key=True)
+    id_usuario = models.ForeignKey(
+        'Usuario',
+        on_delete=models.CASCADE,
+        db_column='id_usuario'
+    )
+    tipo = models.CharField(max_length=20, choices=TIPO_VERIFICACION_CHOICES)
+    estado = models.CharField(
+        max_length=20,
+        choices=ESTADO_VERIFICACION_CHOICES,
+        default='pendiente'
+    )
+    
+    # Archivos
+    archivo_url = models.CharField(max_length=500, null=True, blank=True)
+    archivo_frontal = models.CharField(max_length=500, null=True, blank=True)
+    archivo_posterior = models.CharField(max_length=500, null=True, blank=True)
+    
+    # Observaciones
+    observaciones = models.TextField(null=True, blank=True)
+    motivo_rechazo = models.TextField(null=True, blank=True)
+    
+    # Fechas
+    fecha_solicitud = models.DateTimeField(auto_now_add=True)
+    fecha_revision = models.DateTimeField(null=True, blank=True)
+    fecha_expiracion = models.DateField(null=True, blank=True)
+    
+    # Revisor
+    id_revisado_por = models.ForeignKey(
+        'Usuario',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='verificaciones_revisadas',
+        db_column='id_revisado_por'
+    )
+
+    class Meta:
+        db_table = 'verificacion'
+        indexes = [
+            models.Index(fields=['id_usuario', 'tipo', 'estado']),
+            models.Index(fields=['estado', 'fecha_solicitud'])
+        ]
+
 
 class Certificacion(models.Model):
-    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-    archivo = models.FileField(upload_to='certificaciones/')
-    descripcion = models.CharField(max_length=255)
+    id = models.AutoField(primary_key=True)
+    id_usuario = models.ForeignKey(
+        'Usuario',
+        on_delete=models.CASCADE,
+        db_column='id_usuario'
+    )
+    
+    titulo = models.CharField(max_length=255)
+    institucion = models.CharField(max_length=255, null=True, blank=True)
+    descripcion = models.TextField(null=True, blank=True)
+    archivo = models.CharField(max_length=500, null=True, blank=True)
+    fecha_obtencion = models.DateField(null=True, blank=True)
+    fecha_expiracion = models.DateField(null=True, blank=True)
+    
+    verificada = models.BooleanField(default=False)
+    fecha_verificacion = models.DateTimeField(null=True, blank=True)
     fecha_subida = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         db_table = 'certificacion'
+        indexes = [
+            models.Index(fields=['id_usuario', 'verificada']),
+            models.Index(fields=['-fecha_obtencion'])
+        ]
 
 
-class AntecedentePenal(models.Model):
-    usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE)
-    archivo = models.FileField(upload_to='penales/')
-    aprobado = models.BooleanField(default=False)
-    observaciones = models.TextField(blank=True)
-
-    class Meta:
-        db_table = 'antecedente_penal'
-
-
-class Empresa(models.Model):
-    id_empresa = models.AutoField(primary_key=True)
-    nombre = models.CharField(max_length=255)
-    ruc = models.CharField(max_length=11, unique=True)
-    razon_social = models.CharField(max_length=255)
-    direccion = models.TextField(blank=True, null=True)
-    telefono = models.CharField(max_length=20, blank=True, null=True)
-    email = models.EmailField(blank=True, null=True)
-    representante = models.OneToOneField(Usuario, on_delete=models.CASCADE)
-    fecha_registro = models.DateField(auto_now_add=True)
-
-    class Meta:
-        db_table = 'empresa'
-
-
-class UsuarioCategoria(models.Model):
-    id_usuario = models.ForeignKey(Usuario, models.DO_NOTHING, db_column='id_usuario')
-    id_categoria = models.ForeignKey(Categoriatrabajo, models.DO_NOTHING, db_column='id_categoria')
-
-    class Meta:
-        db_table = 'usuario_categoria'
-        unique_together = (('id_usuario', 'id_categoria'),)
-
-
-class UsuarioHabilidad(models.Model):
+class TrabajosRealizados(models.Model):
     id = models.AutoField(primary_key=True)
-    id_usuario = models.ForeignKey(Usuario, models.DO_NOTHING, db_column='id_usuario')
-    id_habilidad = models.ForeignKey(Habilidad, models.DO_NOTHING, db_column='id_habilidad')
+    id_usuario = models.ForeignKey(
+        'Usuario',
+        on_delete=models.CASCADE,
+        db_column='id_usuario'
+    )
+    
+    titulo = models.CharField(max_length=255)
+    empresa = models.CharField(max_length=255, null=True, blank=True)
+    rol = models.CharField(max_length=255, null=True, blank=True)
+    descripcion = models.TextField(null=True, blank=True)
+    fecha_inicio = models.DateField(null=True, blank=True)
+    fecha_fin = models.DateField(null=True, blank=True)
+    actualmente = models.BooleanField(default=False)
+    
+    referencias = models.TextField(null=True, blank=True)
+    documentos = models.CharField(max_length=500, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        db_table = 'usuario_habilidad'
-        unique_together = (('id_usuario', 'id_habilidad'),)
+        db_table = 'trabajos_realizados'
+        indexes = [
+            models.Index(fields=['id_usuario', '-fecha_inicio'])
+        ]
 
 
-
-class Verificacion(models.Model):
-    id_verificacion = models.IntegerField(primary_key=True)
-    id_usuario = models.ForeignKey(Usuario, models.DO_NOTHING, db_column='id_usuario', blank=True, null=True)
-    estado = models.TextField(blank=True, null=True)  # This field type is a guess.
-    fecha = models.DateField(blank=True, null=True)
+# ==================== DISPONIBILIDAD ====================
+class Disponibilidad(models.Model):
+    id = models.AutoField(primary_key=True)
+    id_trabajador = models.ForeignKey(
+        'Usuario',
+        on_delete=models.CASCADE,
+        db_column='id_trabajador'
+    )
+    
+    dia_semana = models.IntegerField()  # 0=Domingo, 1=Lunes, ..., 6=Sábado
+    hora_inicio = models.TimeField()
+    hora_fin = models.TimeField()
+    activa = models.BooleanField(default=True)
 
     class Meta:
-        db_table = 'verificacion'
+        db_table = 'disponibilidad'
+        unique_together = [['id_trabajador', 'dia_semana', 'hora_inicio', 'hora_fin']]
+        indexes = [
+            models.Index(fields=['id_trabajador', 'dia_semana', 'activa'])
+        ]

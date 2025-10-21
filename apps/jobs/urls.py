@@ -7,6 +7,8 @@ urlpatterns = [
     # Listado y búsqueda de trabajos
     path('', views.all_trabajos, name='all_trabajos'),
     path('filtrar/', views.filtrar_trabajos, name='filtrar_trabajos'),
+    path('buscar/', views.buscar_trabajos, name='buscar_trabajos'),
+    path('detalle/<str:tipo>/<int:trabajo_id>/', views.detalle_trabajo, name='detalle_trabajo'),
     
     # Registro de ofertas
     path('registro-individual/', views.registro_individual, name='registro_individual'),
@@ -20,10 +22,17 @@ urlpatterns = [
     
     # Dashboard de trabajador (buscar trabajo)
     path('dashboard-trabajador/', views.dashboard_trabajador, name='dashboard_trabajador'),
-    path('guardar/<str:tipo_oferta>/<int:oferta_id>/', views.guardar_trabajo, name='guardar_trabajo'),
+    
+    # Trabajos guardados
+    path('guardar/<str:tipo>/<int:oferta_id>/', views.guardar_trabajo, name='guardar_trabajo'),
     path('trabajos-guardados/', views.trabajos_guardados, name='trabajos_guardados'),
-    path('trabajos-guardados-ajax/', views.trabajos_guardados_ajax, name='trabajos_guardados_ajax'),
-    path('quitar-guardado/<int:id>/', views.quitar_guardado, name='quitar_guardado'),
+    path('quitar-guardado/<int:guardado_id>/', views.quitar_guardado, name='quitar_guardado'),
+    path('agregar-nota/<int:guardado_id>/', views.agregar_nota_guardado, name='agregar_nota_guardado'),
+    
+    # Postulaciones
+    path('postular/<str:tipo>/<int:oferta_id>/', views.postular_trabajo, name='postular_trabajo'),
+    path('mis-postulaciones/', views.mis_postulaciones, name='mis_postulaciones'),
+    path('retirar-postulacion/<int:postulacion_id>/', views.retirar_postulacion, name='retirar_postulacion'),
     
     # AJAX para ubicación
     path('ajax/cargar-provincias/', views.cargar_provincias, name='ajax_cargar_provincias'),

@@ -79,5 +79,10 @@
 {% endblock %}
 
 {% block extra_js %}
+<script>
+    const urlProvincias = "{% url 'users:cargar_provincias' %}";
+    const urlDistritos = "{% url 'users:cargar_distritos' %}";
+    const urlValidarCorreo = "{% url 'users:validar_correo' %}";
+</script>
 <script src="{% static 'js/users/register/step_2.js' %}"></script>
 {% endblock %}

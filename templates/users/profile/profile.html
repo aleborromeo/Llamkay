@@ -8,61 +8,67 @@
 {% endblock %}
 
 {% block content %}
-<header>
+<!-- ========== HEADER ========== -->
+<header class="header">
     <nav class="navbar">
-        <div class="logo">Llamkay.pe</div>
-        <a href="{% url 'users:dashboard' %}" class="back-link">← Dashboard</a>
+        <div class="nav-container">
+            <a href="{% url 'llamkay:dashboard' %}" class="logo">
+                <span>Llamkay</span>
+            </a>
+            
+            <a href="{% url 'llamkay:dashboard' %}" class="btn-nav btn-ghost">← Dashboard</a>
 
-        <form action="{% url 'users:buscar_usuarios' %}" method="get" class="nav-search">
-            <input type="text" name="q" placeholder="Buscar profesionales...">
-        </form>
+            <form action="{% url 'users:buscar_usuarios' %}" method="get" class="nav-search">
+                <input type="text" name="q" placeholder="Buscar profesionales..." aria-label="Buscar profesionales">
+            </form>
+        </div>
     </nav>
 </header>
 
+<!-- ========== MODAL DE EDICIÓN ========== -->
 <div class="edit-profile-modal" id="editProfileModal">
-    <form method="POST" enctype="multipart/form-data" id="form-editar-perfil">
-        {% csrf_token %}
-        <h2>Editar Perfil</h2>
+    <div class="modal-content">
+        <form method="POST" enctype="multipart/form-data" id="form-editar-perfil">
+            {% csrf_token %}
+            <h2>Editar Perfil</h2>
 
-        <div class="form-grid">
-            <div class="form-group">
-                <label for="foto">Foto de perfil:</label>
-                <input type="file" name="foto" id="foto">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="foto">Foto de perfil:</label>
+                    <input type="file" name="foto" id="foto" accept="image/*">
+                </div>
+
+                <div class="form-group">
+                    <label for="telefono">Teléfono:</label>
+                    <input type="text" name="telefono" id="telefono" value="{{ usuario.telefono }}" placeholder="999999999">
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="descripcion">Descripción:</label>
+                    <textarea name="descripcion" id="descripcion" rows="4" placeholder="Cuéntanos sobre ti...">{{ profile.bio }}</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="disponibilidad">Disponibilidad:</label>
+                    <input type="text" name="disponibilidad" id="disponibilidad" value="{{ disponibilidad|default_if_none:'' }}" placeholder="Ej: Lunes a Viernes, 8am-6pm">
+                </div>
             </div>
 
-            <div class="form-group">
-                <label for="telefono">Teléfono:</label>
-                <input type="text" name="telefono" id="telefono" value="{{ usuario.telefono }}">
+            <input type="hidden" name="id_departamento" value="{{ profile.id_departamento.id_departamento }}">
+            <input type="hidden" name="id_provincia" value="{{ profile.id_provincia.id_provincia }}">
+            <input type="hidden" name="id_distrito" value="{{ profile.id_distrito.id_distrito }}">
+
+            <div class="modal-buttons">
+                <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                <button type="button" data-action="cerrar-modal" class="btn btn-secondary">Cancelar</button>
             </div>
-
-            <div class="form-group full-width">
-                <label for="descripcion">Descripción:</label>
-                <textarea name="descripcion" id="descripcion">{{ profile.bio }}</textarea>
-            </div>
-
-            <div class="form-group">
-                <label for="disponibilidad">Disponibilidad:</label>
-                <input type="text" name="disponibilidad" id="disponibilidad" value="{{ disponibilidad|default_if_none:'' }}">
-            </div>
-
-            <div class="form-group">
-                <label for="precio_hora">Precio por hora (S/):</label>
-                <input type="number" name="precio_hora" id="precio_hora" step="0.01" value="{{ precio_hora|default_if_none:'' }}">
-            </div>
-        </div>
-
-        <input type="hidden" name="id_departamento" value="{{ profile.id_departamento.id_departamento }}">
-        <input type="hidden" name="id_provincia" value="{{ profile.id_provincia.id_provincia }}">
-        <input type="hidden" name="id_distrito" value="{{ profile.id_distrito.id_distrito }}">
-
-        <div class="modal-buttons">
-            <button type="submit">Guardar</button>
-            <button type="button" data-action="cerrar-modal">Cancelar</button>
-        </div>
-    </form>
+        </form>
+    </div>
 </div>
 
+<!-- ========== CONTENIDO PRINCIPAL ========== -->
 <div class="container">
+    <!-- Profile Header -->
     <div class="profile-header">
         <div class="profile-hero">
             <div class="profile-avatar">
@@ -77,17 +83,30 @@
             <div class="profile-info">
                 <h1>{{ usuario.nombres }} {{ usuario.apellidos }}</h1>
                 <div class="profile-details">
-                    <span class="detail-item">📧 {{ usuario.email }}</span>
                     <span class="detail-item">
-                        {% if tipo_usuario == "trabajador" %}🔨 Trabajador
-                        {% elif tipo_usuario == "empleador" %}💼 Empleador
-                        {% elif tipo_usuario == "trabajador_empleador" %}⚡ Trabajador y Empleador
-                        {% elif tipo_usuario == "empresa" %}🏢 Empresa
-                        {% else %}❓ No especificado
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                            <polyline points="22,6 12,13 2,6"></polyline>
+                        </svg>
+                        {{ usuario.email }}
+                    </span>
+                    <span class="detail-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        {% if tipo_usuario == "trabajador" %}Trabajador
+                        {% elif tipo_usuario == "empleador" %}Empleador
+                        {% elif tipo_usuario == "trabajador_empleador" %}Trabajador y Empleador
+                        {% elif tipo_usuario == "empresa" %}Empresa
+                        {% else %}No especificado
                         {% endif %}
                     </span>
                     <span class="detail-item">
-                        📍 
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
                         {% if profile.id_distrito %}{{ profile.id_distrito.nombre }}{% else %}Sin ubicación{% endif %},
                         {% if profile.id_provincia %}{{ profile.id_provincia.nombre }}{% endif %}
                     </span>
@@ -102,21 +121,79 @@
         </div>
 
         <div class="profile-actions">
-            <button class="btn btn-primary" data-action="editar-perfil">✏️ Editar</button>
-            <a href="#" class="btn btn-secondary">📋 Referencias</a>
-            <a href="#" class="btn btn-secondary">📱 WhatsApp</a>
+            <button class="btn btn-primary" data-action="editar-perfil">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                </svg>
+                Editar
+            </button>
+            <a href="#" class="btn btn-secondary">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 11H3v2h6m-6-6h14v2H3m14 10h4v-8h-4m2 4v-4h-6v8h4"></path>
+                </svg>
+                Referencias
+            </a>
+            <a href="#" class="btn btn-secondary">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                </svg>
+                WhatsApp
+            </a>
         </div>
     </div>
 
+    <!-- Tabs -->
     <div class="tabs">
-        <button class="tab active" data-tab="general">📊 General</button>
-        <button class="tab" data-tab="skills">🛠️ Servicios</button>
-        <button class="tab" data-tab="portfolio">📸 Portafolio</button>
-        <button class="tab" data-tab="experience">💼 Experiencia</button>
-        <button class="tab" data-tab="certifications">🎓 Certificaciones</button>
-        <button class="tab" data-tab="history">📋 Historial</button>
+        <button class="tab active" data-tab="general">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="8" y1="6" x2="21" y2="6"></line>
+                <line x1="8" y1="12" x2="21" y2="12"></line>
+                <line x1="8" y1="18" x2="21" y2="18"></line>
+                <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                <line x1="3" y1="18" x2="3.01" y2="18"></line>
+            </svg>
+            General
+        </button>
+        <button class="tab" data-tab="skills">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+            </svg>
+            Servicios
+        </button>
+        <button class="tab" data-tab="portfolio">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                <polyline points="21 15 16 10 5 21"></polyline>
+            </svg>
+            Portafolio
+        </button>
+        <button class="tab" data-tab="experience">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+            </svg>
+            Experiencia
+        </button>
+        <button class="tab" data-tab="certifications">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+            </svg>
+            Certificaciones
+        </button>
+        <button class="tab" data-tab="history">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            Historial
+        </button>
     </div>
 
+    <!-- Tab: General -->
     <div id="general" class="tab-content active">
         <div class="content-grid">
             <div class="card">
@@ -170,6 +247,7 @@
         </div>
     </div>
     
+    <!-- Tab: Skills -->
     <div id="skills" class="tab-content">
         <div class="card">
             <h3>🛠️ Servicios Ofrecidos</h3>
@@ -186,13 +264,19 @@
         </div>
     </div>
 
+    <!-- Tab: Portfolio -->
     <div id="portfolio" class="tab-content">
         <div class="card">
             <h3>📸 Mi Portafolio</h3>
 
             <div class="export-actions">
-                <a href="{% url 'users:exportar_portafolio_pdf' %}" class="btn btn-outline" target="_blank">
-                    📄 Exportar PDF
+                <a href="{% url 'users:exportar_portafolio' %}" class="btn btn-secondary" target="_blank">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    Exportar PDF
                 </a>
             </div>
 
@@ -230,6 +314,7 @@
         </div>
     </div>
 
+    <!-- Tab: Experience -->
     <div id="experience" class="tab-content">
         <div class="content-grid">
             <div class="card">
@@ -286,6 +371,7 @@
         </div>
     </div>
 
+    <!-- Tab: Certifications -->
     <div id="certifications" class="tab-content">
         <div class="card">
             <h3>🎓 Certificaciones y Documentos</h3>
@@ -311,6 +397,7 @@
         </div>
     </div>
 
+    <!-- Tab: History -->
     <div id="history" class="tab-content">
         <div class="card">
             <h3>📋 Historial de Actividad</h3>

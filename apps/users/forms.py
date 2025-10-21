@@ -1,7 +1,7 @@
 # usuarios/forms.py
 from django import forms
-from apps.users.models import Usuario, Profile 
-from apps.users.models import Departamento, Provincia, Distrito, Certificacion, Calificacion
+from apps.users.models import Departamento, Provincia, Distrito
+from apps.jobs.models import Calificacion
 from apps.users.widgets import MultiFileInput  
 
 

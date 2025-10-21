@@ -1,334 +1,264 @@
-// ===== DASHBOARD LLAMKAY - Gestor de Dropdowns y Carrusel =====
+// =============================================
+// DASHBOARD JAVASCRIPT - LLAMKAY.PE
+// =============================================
 
-/**
- * Gestor de Dropdowns
- */
-class DropdownManager {
-    constructor() {
-        this.activeDropdown = null;
-        this.overlay = document.getElementById('dropdownOverlay');
-        this.init();
-    }
-
-    init() {
-        console.log('🔧 Inicializando DropdownManager...');
-        
-        // Notificaciones
-        const notificationsBtn = document.getElementById('notificationsBtn');
-        if (notificationsBtn) {
-            console.log('✅ Botón de notificaciones encontrado');
-            notificationsBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                console.log('🔔 Click en notificaciones');
-                this.toggleDropdown('notificationsDropdown');
-            });
-        }
-
-        // Mensajes
-        const messagesBtn = document.getElementById('messagesBtn');
-        if (messagesBtn) {
-            console.log('✅ Botón de mensajes encontrado');
-            messagesBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                console.log('💬 Click en mensajes');
-                this.toggleDropdown('messagesDropdown');
-            });
-        }
-
-        // Usuario
-        const userMenuBtn = document.getElementById('userMenuBtn');
-        if (userMenuBtn) {
-            console.log('✅ Menú de usuario encontrado');
-            userMenuBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                console.log('👤 Click en menú de usuario');
-                this.toggleDropdown('userDropdown');
-            });
-        }
-
-        // Overlay para cerrar dropdowns
-        if (this.overlay) {
-            console.log('✅ Overlay encontrado');
-            this.overlay.addEventListener('click', () => {
-                console.log('🖱️ Click en overlay - cerrando dropdowns');
-                this.closeAllDropdowns();
-            });
-        }
-
-        // ✅ CORRECCIÓN CRÍTICA: NO interferir con los enlaces
-        // Los enlaces deben funcionar naturalmente sin prevenir nada
-        
-        // Cerrar al hacer clic FUERA (pero NO dentro de dropdowns)
-        document.addEventListener('click', (e) => {
-            // Si el click es en un botón que abre dropdown, NO hacer nada
-            if (e.target.closest('#notificationsBtn') || 
-                e.target.closest('#messagesBtn') || 
-                e.target.closest('#userMenuBtn')) {
-                return;
-            }
-            
-            // Si el click es DENTRO de un dropdown visible, NO hacer nada
-            if (e.target.closest('.dropdown.show')) {
-                return;
-            }
-            
-            // En cualquier otro lugar, cerrar todos los dropdowns
-            this.closeAllDropdowns();
-        }, false); // ← false = fase de burbuja (después de que los enlaces se procesen)
-
-        // Cerrar con tecla ESC
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                this.closeAllDropdowns();
-            }
-        });
-
-        console.log('✅ Event listeners configurados');
-    }
-
-    toggleDropdown(dropdownId) {
-        const dropdown = document.getElementById(dropdownId);
-        if (!dropdown) {
-            console.error(`❌ Dropdown no encontrado: ${dropdownId}`);
-            return;
-        }
-
-        console.log(`🔄 Toggle dropdown: ${dropdownId}`);
-
-        if (this.activeDropdown === dropdownId) {
-            console.log(`🔥 Cerrando dropdown activo: ${dropdownId}`);
-            this.closeAllDropdowns();
-        } else {
-            console.log(`🔤 Abriendo dropdown: ${dropdownId}`);
-            this.closeAllDropdowns();
-            this.openDropdown(dropdownId);
-        }
-    }
-
-    openDropdown(dropdownId) {
-        const dropdown = document.getElementById(dropdownId);
-        if (!dropdown) {
-            console.error(`❌ No se puede abrir - Dropdown no encontrado: ${dropdownId}`);
-            return;
-        }
-
-        console.log(`📂 Abriendo dropdown: ${dropdownId}`);
-        
-        dropdown.classList.add('show');
-        
-        if (this.overlay) {
-            this.overlay.classList.add('active');
-        }
-        
-        this.activeDropdown = dropdownId;
-
-        // Añadir clase active al contenedor padre
-        const parentItem = dropdown.closest('.navbar-item');
-        if (parentItem) {
-            parentItem.classList.add('active');
-        }
-
-        // Añadir clase active al botón de usuario si corresponde
-        if (dropdownId === 'userDropdown') {
-            const userMenuBtn = document.getElementById('userMenuBtn');
-            if (userMenuBtn) {
-                userMenuBtn.classList.add('active');
-            }
-        }
-    }
-
-    closeAllDropdowns() {
-        console.log('🔒 Cerrando todos los dropdowns');
-        
-        document.querySelectorAll('.dropdown').forEach(dropdown => {
-            dropdown.classList.remove('show');
-        });
-        
-        if (this.overlay) {
-            this.overlay.classList.remove('active');
-        }
-        
-        // Remover clase active de todos los contenedores
-        document.querySelectorAll('.navbar-item').forEach(item => {
-            item.classList.remove('active');
-        });
-
-        // Remover clase active del botón de usuario
-        const userMenuBtn = document.getElementById('userMenuBtn');
-        if (userMenuBtn) {
-            userMenuBtn.classList.remove('active');
-        }
-        
-        this.activeDropdown = null;
-    }
-}
-
-/**
- * Gestor del Carrusel
- */
-class CarouselManager {
-    constructor() {
-        this.currentIndex = 0;
-        this.images = document.querySelectorAll('.carousel-image');
-        this.prevBtn = document.querySelector('.carousel-btn.prev');
-        this.nextBtn = document.querySelector('.carousel-btn.next');
-        this.autoPlayInterval = null;
-        this.autoPlayDelay = 5000;
-        
-        if (this.images.length > 0) {
-            console.log(`🎠 Carrusel inicializado con ${this.images.length} imágenes`);
-            this.init();
-        } else {
-            console.warn('⚠️ No se encontraron imágenes para el carrusel');
-        }
-    }
-
-    init() {
-        // Botones de navegación
-        if (this.prevBtn) {
-            this.prevBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                this.prev();
-            });
-        }
-        
-        if (this.nextBtn) {
-            this.nextBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                this.next();
-            });
-        }
-
-        // Buscar botones con data-action también
-        document.querySelectorAll('[data-action="prev-slide"]').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                this.prev();
-            });
-        });
-
-        document.querySelectorAll('[data-action="next-slide"]').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                this.next();
-            });
-        });
-
-        // Auto-play
-        this.startAutoPlay();
-
-        // Pausar auto-play al hacer hover
-        const carousel = document.querySelector('.carousel');
-        if (carousel) {
-            carousel.addEventListener('mouseenter', () => this.stopAutoPlay());
-            carousel.addEventListener('mouseleave', () => this.startAutoPlay());
-        }
-
-        // Soporte táctil
-        this.initTouchSupport();
-
-        // Pausar cuando la pestaña no está visible
-        document.addEventListener('visibilitychange', () => {
-            if (document.hidden) {
-                this.stopAutoPlay();
-            } else {
-                this.startAutoPlay();
-            }
-        });
-    }
-
-    showImage(index) {
-        this.images.forEach((img, i) => {
-            img.classList.remove('active');
-            if (i === index) {
-                img.classList.add('active');
-            }
-        });
-        this.currentIndex = index;
-    }
-
-    next() {
-        let newIndex = (this.currentIndex + 1) % this.images.length;
-        this.showImage(newIndex);
-    }
-
-    prev() {
-        let newIndex = (this.currentIndex - 1 + this.images.length) % this.images.length;
-        this.showImage(newIndex);
-    }
-
-    startAutoPlay() {
-        this.stopAutoPlay();
-        this.autoPlayInterval = setInterval(() => this.next(), this.autoPlayDelay);
-    }
-
-    stopAutoPlay() {
-        if (this.autoPlayInterval) {
-            clearInterval(this.autoPlayInterval);
-            this.autoPlayInterval = null;
-        }
-    }
-
-    initTouchSupport() {
-        const carousel = document.querySelector('.carousel');
-        if (!carousel) return;
-
-        let touchStartX = 0;
-        let touchEndX = 0;
-
-        carousel.addEventListener('touchstart', (e) => {
-            touchStartX = e.changedTouches[0].screenX;
-        }, { passive: true });
-
-        carousel.addEventListener('touchend', (e) => {
-            touchEndX = e.changedTouches[0].screenX;
-            this.handleSwipe(touchStartX, touchEndX);
-        }, { passive: true });
-    }
-
-    handleSwipe(startX, endX) {
-        const swipeThreshold = 50;
-        if (endX < startX - swipeThreshold) {
-            this.next();
-        }
-        if (endX > startX + swipeThreshold) {
-            this.prev();
-        }
-    }
-}
-
-/**
- * Inicializar Dashboard
- */
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('🎯 Dashboard JS iniciado');
-    console.log('📍 Ubicación:', window.location.pathname);
+document.addEventListener('DOMContentLoaded', function() {
     
-    // Verificar elementos críticos
-    const elementos = {
-        overlay: document.getElementById('dropdownOverlay'),
-        notificationsBtn: document.getElementById('notificationsBtn'),
-        messagesBtn: document.getElementById('messagesBtn'),
-        userMenuBtn: document.getElementById('userMenuBtn'),
-        notificationsDropdown: document.getElementById('notificationsDropdown'),
-        messagesDropdown: document.getElementById('messagesDropdown'),
-        userDropdown: document.getElementById('userDropdown')
-    };
+    // ==================== USER MENU DROPDOWN ====================
+    const userMenuBtn = document.getElementById('userMenuBtn');
+    const notificationsBtn = document.getElementById('notificationsBtn');
     
-    console.log('📋 Verificando elementos críticos:');
-    Object.entries(elementos).forEach(([key, value]) => {
-        console.log(`  ${key}: ${value ? '✅ OK' : '❌ FALTA'}`);
+    // Toggle user menu (ejemplo - agregar dropdown si es necesario)
+    if (userMenuBtn) {
+        userMenuBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            // Aquí puedes agregar la lógica para mostrar el dropdown del usuario
+            console.log('User menu clicked');
+        });
+    }
+    
+    // Toggle notifications (ejemplo)
+    if (notificationsBtn) {
+        notificationsBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            // Aquí puedes agregar la lógica para mostrar notificaciones
+            console.log('Notifications clicked');
+        });
+    }
+    
+    // ==================== SMOOTH SCROLL ====================
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            const href = this.getAttribute('href');
+            if (href !== '#') {
+                e.preventDefault();
+                const target = document.querySelector(href);
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            }
+        });
     });
     
-    // Inicializar gestor de dropdowns
-    const dropdownManager = new DropdownManager();
+    // ==================== APPLY BUTTON ANIMATION ====================
+    const applyButtons = document.querySelectorAll('.job-card .btn-small.btn-primary');
     
-    // Inicializar carrusel
-    const carouselManager = new CarouselManager();
+    applyButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Animación de click
+            this.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                this.style.transform = '';
+            }, 150);
+            
+            // Aquí puedes agregar la lógica para aplicar al trabajo
+            const jobCard = this.closest('.job-card');
+            const jobTitle = jobCard.querySelector('.job-info h3').textContent;
+            
+            // Mostrar mensaje de confirmación (ejemplo)
+            showNotification(`Aplicaste a: ${jobTitle}`, 'success');
+        });
+    });
     
-    console.log('✅ Dashboard completamente listo');
+    // ==================== NOTIFICATION SYSTEM ====================
+    function showNotification(message, type = 'info') {
+        // Crear elemento de notificación
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        notification.textContent = message;
+        
+        // Estilos inline
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: ${type === 'success' ? '#10b981' : type === 'error' ? '#dc2626' : '#3b82f6'};
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.16);
+            z-index: 9999;
+            animation: slideInRight 0.3s ease;
+            max-width: 300px;
+        `;
+        
+        document.body.appendChild(notification);
+        
+        // Remover después de 3 segundos
+        setTimeout(() => {
+            notification.style.animation = 'slideOutRight 0.3s ease';
+            setTimeout(() => {
+                notification.remove();
+            }, 300);
+        }, 3000);
+    }
     
-    // Hacer disponibles globalmente para debugging
-    window.dropdownManager = dropdownManager;
-    window.carouselManager = carouselManager;
+    // Agregar animaciones CSS
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideInRight {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    // ==================== ACTIVITY ITEMS ANIMATION ====================
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '0';
+                entry.target.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    entry.target.style.transition = 'all 0.5s ease';
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }, 100);
+                
+                observer.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+    
+    // Observar elementos de actividad
+    document.querySelectorAll('.activity-item, .job-card, .stat-card').forEach(item => {
+        observer.observe(item);
+    });
+    
+    // ==================== PROGRESS BAR ANIMATION ====================
+    const progressBar = document.querySelector('.progress-fill');
+    if (progressBar) {
+        const targetWidth = progressBar.style.width;
+        progressBar.style.width = '0%';
+        
+        setTimeout(() => {
+            progressBar.style.transition = 'width 1s ease';
+            progressBar.style.width = targetWidth;
+        }, 500);
+    }
+    
+    // ==================== CLOSE DROPDOWNS ON OUTSIDE CLICK ====================
+    document.addEventListener('click', function(e) {
+        // Aquí puedes agregar lógica para cerrar dropdowns cuando se hace click fuera
+    });
+    
+    // ==================== RESPONSIVE MENU (si se agrega) ====================
+    const menuToggle = document.querySelector('.menu-toggle');
+    if (menuToggle) {
+        menuToggle.addEventListener('click', function() {
+            document.querySelector('.nav-menu').classList.toggle('active');
+        });
+    }
+    
+    // ==================== LAZY LOADING DE IMÁGENES ====================
+    if ('IntersectionObserver' in window) {
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    if (img.dataset.src) {
+                        img.src = img.dataset.src;
+                        img.removeAttribute('data-src');
+                        imageObserver.unobserve(img);
+                    }
+                }
+            });
+        });
+        
+        document.querySelectorAll('img[data-src]').forEach(img => {
+            imageObserver.observe(img);
+        });
+    }
+    
+    // ==================== REFRESH STATS ====================
+    function updateStats() {
+        // Aquí puedes agregar lógica para actualizar las estadísticas vía AJAX
+        // Ejemplo: fetch('/api/user/stats').then(...)
+        console.log('Stats updated');
+    }
+    
+    // Actualizar stats cada 5 minutos
+    setInterval(updateStats, 300000);
+    
+    // ==================== WELCOME MESSAGE BASED ON TIME ====================
+    function updateWelcomeMessage() {
+        const hour = new Date().getHours();
+        const welcomeTitle = document.querySelector('.welcome-content h1');
+        
+        if (welcomeTitle) {
+            let greeting = '¡Bienvenido de vuelta';
+            
+            if (hour >= 5 && hour < 12) {
+                greeting = '¡Buenos días';
+            } else if (hour >= 12 && hour < 19) {
+                greeting = '¡Buenas tardes';
+            } else {
+                greeting = '¡Buenas noches';
+            }
+            
+            // Mantener el nombre del usuario
+            const nameSpan = welcomeTitle.querySelector('.text-highlight');
+            if (nameSpan) {
+                const userName = nameSpan.textContent;
+                welcomeTitle.innerHTML = `${greeting}, <span class="text-highlight">${userName}</span>!`;
+            }
+        }
+    }
+    
+    updateWelcomeMessage();
+    
+    // ==================== FORMATO DE FECHAS RELATIVAS ====================
+    function formatRelativeTime(date) {
+        const now = new Date();
+        const diff = now - date;
+        const seconds = Math.floor(diff / 1000);
+        const minutes = Math.floor(seconds / 60);
+        const hours = Math.floor(minutes / 60);
+        const days = Math.floor(hours / 24);
+        
+        if (seconds < 60) return 'Hace un momento';
+        if (minutes < 60) return `Hace ${minutes} ${minutes === 1 ? 'minuto' : 'minutos'}`;
+        if (hours < 24) return `Hace ${hours} ${hours === 1 ? 'hora' : 'horas'}`;
+        if (days < 7) return `Hace ${days} ${days === 1 ? 'día' : 'días'}`;
+        
+        return date.toLocaleDateString('es-PE');
+    }
+    
+    // Actualizar timestamps relativos
+    document.querySelectorAll('[data-timestamp]').forEach(element => {
+        const timestamp = parseInt(element.dataset.timestamp);
+        const date = new Date(timestamp);
+        element.textContent = formatRelativeTime(date);
+    });
+    
+    // ==================== CONSOLE LOG ====================
+    console.log('Dashboard loaded successfully! 🚀');
 });

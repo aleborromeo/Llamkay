@@ -6,7 +6,7 @@ from django.views.decorators.http import require_POST
 from django.utils import timezone
 from django.contrib import messages
 
-from .models import Chat, Mensaje
+from .models import Conversacion, Mensaje
 from .forms import MensajeForm, EditarMensajeForm
 from apps.users.models import Usuario, Profile
 
@@ -31,26 +31,28 @@ def lista_chats(request):
         todos_usuarios = todos_usuarios.filter(
             Q(nombres__icontains=search_query) |
             Q(apellidos__icontains=search_query) |
-            Q(user__username__icontains=search_query)
+            Q(username__icontains=search_query)
         )
     
     # Crear una lista de usuarios con información de chat
     usuarios_con_chat = []
     
     for usuario in todos_usuarios:
-        # Buscar si existe un chat con este usuario
-        chat_existente = Chat.objects.filter(
-            (Q(usuario_1=usuario_actual) & Q(usuario_2=usuario)) |
-            (Q(usuario_1=usuario) & Q(usuario_2=usuario_actual))
+        # Buscar si existe una conversación con este usuario
+        conversacion_existente = Conversacion.objects.filter(
+            (Q(id_usuario_1=usuario_actual) & Q(id_usuario_2=usuario)) |
+            (Q(id_usuario_1=usuario) & Q(id_usuario_2=usuario_actual))
         ).first()
         
-        # Obtener el último mensaje si existe el chat
+        # Obtener el último mensaje si existe la conversación
         ultimo_mensaje = None
         fecha_ultimo_mensaje = None
         mensajes_no_leidos = 0
         
-        if chat_existente:
-            ultimo_mensaje_obj = chat_existente.obtener_ultimo_mensaje()
+        if conversacion_existente:
+            ultimo_mensaje_obj = conversacion_existente.mensajes.filter(
+                eliminado=False
+            ).order_by('-fecha_envio').first()
             
             if ultimo_mensaje_obj:
                 ultimo_mensaje = ultimo_mensaje_obj.contenido
@@ -58,10 +60,10 @@ def lista_chats(request):
             
             # Contar mensajes no leídos
             mensajes_no_leidos = Mensaje.objects.filter(
-                id_chat=chat_existente,
+                id_conversacion=conversacion_existente,
                 eliminado=False,
                 leido=False
-            ).exclude(remitente=usuario_actual).count()
+            ).exclude(id_remitente=usuario_actual).count()
         
         # Obtener foto del perfil del usuario
         try:
@@ -72,12 +74,12 @@ def lista_chats(request):
         
         usuarios_con_chat.append({
             'usuario': usuario,
-            'chat': chat_existente,
+            'conversacion': conversacion_existente,
             'ultimo_mensaje': ultimo_mensaje,
             'fecha_ultimo_mensaje': fecha_ultimo_mensaje,
             'foto_url': foto_url,
             'mensajes_no_leidos': mensajes_no_leidos,
-            'nombre_completo': f"{usuario.nombres} {usuario.apellidos}" if usuario.nombres and usuario.apellidos else usuario.user.username
+            'nombre_completo': f"{usuario.nombres} {usuario.apellidos}" if usuario.nombres and usuario.apellidos else usuario.username
         })
     
     # Ordenar: primero por fecha de último mensaje (más reciente primero), luego alfabéticamente
@@ -110,44 +112,59 @@ def ver_chat(request, usuario_id):
         messages.warning(request, 'No puedes chatear contigo mismo.')
         return redirect('chats:lista_chats')
 
-    # Buscar chat existente sin importar el orden de los usuarios
-    chat = Chat.objects.filter(
-        Q(usuario_1=usuario_actual, usuario_2=otro_usuario) |
-        Q(usuario_1=otro_usuario, usuario_2=usuario_actual)
+    # Buscar conversación existente sin importar el orden de los usuarios
+    conversacion = Conversacion.objects.filter(
+        Q(id_usuario_1=usuario_actual, id_usuario_2=otro_usuario) |
+        Q(id_usuario_1=otro_usuario, id_usuario_2=usuario_actual)
     ).first()
 
-    # Si no existe, crear uno nuevo
-    if not chat:
-        chat = Chat.objects.create(
-            usuario_1=usuario_actual,
-            usuario_2=otro_usuario
-        )
+    # Si no existe, crear una nueva
+    if not conversacion:
+        # Asegurar que id_usuario_1 < id_usuario_2 (según constraint del SQL)
+        if usuario_actual.id_usuario < otro_usuario.id_usuario:
+            conversacion = Conversacion.objects.create(
+                id_usuario_1=usuario_actual,
+                id_usuario_2=otro_usuario
+            )
+        else:
+            conversacion = Conversacion.objects.create(
+                id_usuario_1=otro_usuario,
+                id_usuario_2=usuario_actual
+            )
 
     # Marcar mensajes como leídos
     Mensaje.objects.filter(
-        id_chat=chat,
+        id_conversacion=conversacion,
         eliminado=False,
         leido=False
-    ).exclude(remitente=usuario_actual).update(leido=True)
+    ).exclude(id_remitente=usuario_actual).update(
+        leido=True,
+        fecha_leido=timezone.now()
+    )
 
     # Procesar formulario si es POST
     if request.method == 'POST':
         form = MensajeForm(request.POST)
         if form.is_valid():
             mensaje = form.save(commit=False)
-            mensaje.id_chat = chat
-            mensaje.remitente = usuario_actual
+            mensaje.id_conversacion = conversacion
+            mensaje.id_remitente = usuario_actual
             mensaje.save()
+            
+            # Actualizar último mensaje de la conversación
+            conversacion.ultimo_mensaje_at = timezone.now()
+            conversacion.save(update_fields=['ultimo_mensaje_at'])
+            
             messages.success(request, 'Mensaje enviado correctamente.')
             return redirect('chats:ver_chat', usuario_id=otro_usuario.id_usuario)
     else:
         form = MensajeForm()
     
-    # Obtener mensajes del chat (solo no eliminados)
+    # Obtener mensajes de la conversación (solo no eliminados)
     mensajes = Mensaje.objects.filter(
-        id_chat=chat, 
+        id_conversacion=conversacion, 
         eliminado=False
-    ).select_related('remitente').order_by('fecha_envio')
+    ).select_related('id_remitente').order_by('fecha_envio')
     
     # Obtener foto del otro usuario
     try:
@@ -157,12 +174,12 @@ def ver_chat(request, usuario_id):
         foto_otro_usuario = None
     
     return render(request, 'chats/ver_chat.html', {
-        'chat': chat,
+        'conversacion': conversacion,
         'mensajes': mensajes,
         'form': form,
         'otro_usuario': otro_usuario,
         'foto_otro_usuario': foto_otro_usuario,
-        'nombre_otro_usuario': f"{otro_usuario.nombres} {otro_usuario.apellidos}" if otro_usuario.nombres and otro_usuario.apellidos else otro_usuario.user.username,
+        'nombre_otro_usuario': f"{otro_usuario.nombres} {otro_usuario.apellidos}" if otro_usuario.nombres and otro_usuario.apellidos else otro_usuario.username,
         'usuario_actual': usuario_actual
     })
 
@@ -176,42 +193,50 @@ def ver_chat_por_id(request, chat_id):
         messages.error(request, 'Debes completar tu perfil primero.')
         return redirect('users:perfil')
     
-    # Obtener el chat específico
-    chat = get_object_or_404(Chat, id_chat=chat_id)
+    # Obtener la conversación específica
+    conversacion = get_object_or_404(Conversacion, id_conversacion=chat_id)
     
-    # Verificar que el usuario actual participa en este chat
-    if chat.usuario_1.id_usuario != usuario_actual.id_usuario and chat.usuario_2.id_usuario != usuario_actual.id_usuario:
-        messages.error(request, 'No tienes permiso para ver este chat.')
+    # Verificar que el usuario actual participa en esta conversación
+    if conversacion.id_usuario_1.id_usuario != usuario_actual.id_usuario and conversacion.id_usuario_2.id_usuario != usuario_actual.id_usuario:
+        messages.error(request, 'No tienes permiso para ver esta conversación.')
         return redirect('chats:lista_chats')
     
     # Determinar el otro usuario usando el método del modelo
-    otro_usuario = chat.obtener_otro_usuario(usuario_actual)
+    otro_usuario = conversacion.obtener_otro_usuario(usuario_actual)
     
     # Marcar como leídos todos los mensajes que no fueron enviados por el usuario actual
     Mensaje.objects.filter(
-        id_chat=chat,
+        id_conversacion=conversacion,
         eliminado=False,
         leido=False
-    ).exclude(remitente=usuario_actual).update(leido=True)
+    ).exclude(id_remitente=usuario_actual).update(
+        leido=True,
+        fecha_leido=timezone.now()
+    )
 
     # Procesar formulario si es POST
     if request.method == 'POST':
         form = MensajeForm(request.POST)
         if form.is_valid():
             mensaje = form.save(commit=False)
-            mensaje.id_chat = chat
-            mensaje.remitente = usuario_actual
+            mensaje.id_conversacion = conversacion
+            mensaje.id_remitente = usuario_actual
             mensaje.save()
+            
+            # Actualizar último mensaje de la conversación
+            conversacion.ultimo_mensaje_at = timezone.now()
+            conversacion.save(update_fields=['ultimo_mensaje_at'])
+            
             messages.success(request, 'Mensaje enviado correctamente.')
-            return redirect('chats:ver_chat_por_id', chat_id=chat.id_chat)
+            return redirect('chats:ver_chat_por_id', chat_id=conversacion.id_conversacion)
     else:
         form = MensajeForm()
     
-    # Obtener mensajes del chat ordenados por fecha (solo los no eliminados)
+    # Obtener mensajes de la conversación ordenados por fecha (solo los no eliminados)
     mensajes = Mensaje.objects.filter(
-        id_chat=chat, 
+        id_conversacion=conversacion, 
         eliminado=False
-    ).select_related('remitente').order_by('fecha_envio')
+    ).select_related('id_remitente').order_by('fecha_envio')
     
     # Obtener foto del otro usuario
     try:
@@ -221,12 +246,12 @@ def ver_chat_por_id(request, chat_id):
         foto_otro_usuario = None
     
     return render(request, 'chats/ver_chat.html', {
-        'chat': chat,
+        'conversacion': conversacion,
         'mensajes': mensajes,
         'form': form,
         'otro_usuario': otro_usuario,
         'foto_otro_usuario': foto_otro_usuario,
-        'nombre_otro_usuario': f"{otro_usuario.nombres} {otro_usuario.apellidos}" if otro_usuario.nombres and otro_usuario.apellidos else otro_usuario.user.username,
+        'nombre_otro_usuario': f"{otro_usuario.nombres} {otro_usuario.apellidos}" if otro_usuario.nombres and otro_usuario.apellidos else otro_usuario.username,
         'usuario_actual': usuario_actual
     })
 
@@ -241,12 +266,7 @@ def editar_mensaje(request, mensaje_id):
         messages.error(request, 'Debes completar tu perfil primero.')
         return redirect('users:perfil')
     
-    mensaje = get_object_or_404(Mensaje, id_mensaje=mensaje_id, remitente=usuario_actual)
-    
-    # Verificar que el mensaje puede ser editado
-    if not mensaje.puede_editar(usuario_actual):
-        messages.error(request, 'No puedes editar este mensaje.')
-        return redirect('chats:lista_chats')
+    mensaje = get_object_or_404(Mensaje, id_mensaje=mensaje_id, id_remitente=usuario_actual)
     
     form = EditarMensajeForm(request.POST, instance=mensaje)
     if form.is_valid():
@@ -255,9 +275,9 @@ def editar_mensaje(request, mensaje_id):
         mensaje.save()
         messages.success(request, 'Mensaje editado correctamente.')
         
-        # Obtener el chat para redireccionar
-        chat = mensaje.id_chat
-        otro_usuario = chat.obtener_otro_usuario(usuario_actual)
+        # Obtener la conversación para redireccionar
+        conversacion = mensaje.id_conversacion
+        otro_usuario = conversacion.obtener_otro_usuario(usuario_actual)
         return redirect('chats:ver_chat', usuario_id=otro_usuario.id_usuario)
     else:
         messages.error(request, 'Error al editar el mensaje.')
@@ -275,11 +295,7 @@ def eliminar_mensaje(request, mensaje_id):
         return JsonResponse({'error': 'Usuario no encontrado'}, status=400)
     
     try:
-        mensaje = get_object_or_404(Mensaje, id_mensaje=mensaje_id, remitente=usuario_actual)
-        
-        # Verificar que el mensaje puede ser eliminado
-        if not mensaje.puede_eliminar(usuario_actual):
-            return JsonResponse({'error': 'No puedes eliminar este mensaje'}, status=403)
+        mensaje = get_object_or_404(Mensaje, id_mensaje=mensaje_id, id_remitente=usuario_actual)
         
         mensaje.eliminado = True
         mensaje.save(update_fields=['eliminado'])

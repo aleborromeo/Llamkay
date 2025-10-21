@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load usuarios_extras %}
 
 {% block title %}Dashboard - Llamkay.pe{% endblock %}
 
@@ -8,329 +9,457 @@
 {% endblock %}
 
 {% block content %}
-<div class="dropdown-overlay" id="dropdownOverlay"></div>
-
-<header>
-    <nav class="navbar">
-        <div class="logo">LLamkay.pe</div>
-        
-        <div class="navbar-center">
-            <a href="{% url 'llamkay:nosotros' %}">Nosotros</a>
-            <a href="{% url 'jobs:all_trabajos' %}">Trabajos</a>
-            <a href="#">Empresas</a>
-        </div>
-        
-        <div class="navbar-right">
-            <!-- Notificaciones -->
-            <div class="navbar-item">
-                <button class="icon-button" id="notificationsBtn">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
-                    </svg>
-                    <span class="notification-badge">3</span>
-                </button>
-                <div class="dropdown notifications-dropdown" id="notificationsDropdown">
-                    <div class="dropdown-header">Notificaciones</div>
-                    <div class="notification-item unread">
-                        <div class="notification-avatar">JD</div>
-                        <div class="notification-content">
-                            <div class="notification-text">Juan Díaz aplicó para tu trabajo de carpintería</div>
-                            <div class="notification-time">hace 5 minutos</div>
-                        </div>
-                    </div>
-                    <div class="notification-item unread">
-                        <div class="notification-avatar">MA</div>
-                        <div class="notification-content">
-                            <div class="notification-text">María Ayala publicó un nuevo trabajo en tu área</div>
-                            <div class="notification-time">hace 2 horas</div>
-                        </div>
-                    </div>
-                    <div class="notification-item">
-                        <div class="notification-avatar">CS</div>
-                        <div class="notification-content">
-                            <div class="notification-text">Carlos Silva aceptó tu propuesta de trabajo</div>
-                            <div class="notification-time">ayer</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Mensajes -->
-            <div class="navbar-item">
-                <button class="icon-button" id="messagesBtn">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/>
-                    </svg>
-                    {% if total_mensajes_no_leidos > 0 %}
-                        <span class="notification-badge">{{ total_mensajes_no_leidos }}</span>
-                    {% endif %}
-                </button>
-                <div class="dropdown messages-dropdown" id="messagesDropdown">
-                    <div class="dropdown-header">Mensajes</div>
+    <!-- ========== HEADER ========== -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-container">
+                <a href="{% url 'llamkay:dashboard' %}" class="logo">
+                    <span>Llamkay</span>
+                </a>
+                
+                <ul class="nav-menu">
+                    <li><a href="{% url 'llamkay:dashboard' %}" class="nav-link active">Inicio</a></li>
+                    <li><a href="{% url 'jobs:buscar_trabajos' %}" class="nav-link">Trabajos</a></li>
+                    <li><a href="{% url 'chats:lista_chats' %}">Ir al chat</a></li>
+                </ul>
+                
+                <div class="nav-actions">
+                    <button class="icon-button" id="notificationsBtn" aria-label="Notificaciones">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                        </svg>
+                        {% if notificaciones_count > 0 %}
+                        <span class="notification-badge">{{ notificaciones_count }}</span>
+                        {% endif %}
+                    </button>
                     
-                    {% if mensajes_recientes %}
-                        {% for mensaje in mensajes_recientes %}
-                            <a href="{% url 'chats:ver_chat_por_id' mensaje.chat_id %}" class="message-item">
-                                <div class="message-avatar">
-                                    {% if mensaje.foto_otro_usuario %}
-                                        <img src="{{ mensaje.foto_otro_usuario }}" alt="Avatar">
-                                    {% else %}
-                                        {{ mensaje.iniciales }}
-                                    {% endif %}
-                                </div>
-                                <div class="message-content">
-                                    <div class="message-name">{{ mensaje.nombre_otro_usuario }}</div>
-                                    <div class="message-preview">{{ mensaje.ultimo_mensaje }}</div>
-                                </div>
-                                <div class="message-time">
-                                    {% if mensaje.fecha_envio %}
-                                        {% now "Y-m-d H:i" as ahora %}
-                                        {% if mensaje.fecha_envio|date:"Y-m-d" == ahora|date:"Y-m-d" %}
-                                            {{ mensaje.fecha_envio|date:"H:i" }}
-                                        {% elif mensaje.fecha_envio|timesince|slice:":1" == "1" %}
-                                            {{ mensaje.fecha_envio|timesince|slice:":1" }}d
-                                        {% else %}
-                                            {{ mensaje.fecha_envio|date:"d/m" }}
-                                        {% endif %}
-                                    {% endif %}
-                                    {% if mensaje.no_leidos > 0 %}
-                                        <div class="unread-count">{{ mensaje.no_leidos }}</div>
-                                    {% endif %}
-                                </div>
-                            </a>
-                        {% endfor %}
-                        
-                        <div class="dropdown-footer">
-                            <a href="{% url 'chats:lista_chats' %}">Ver todos los mensajes</a>
-                        </div>
-                    {% else %}
-                        <div class="message-item empty">
-                            <div>No tienes mensajes aún</div>
-                            <div class="empty-link">
-                                <a href="{% url 'chats:lista_chats' %}">Iniciar una conversación</a>
-                            </div>
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
-
-            <!-- Menú de Usuario -->
-            <div class="navbar-item">
-                <div class="user-menu" id="userMenuBtn">
-                    {% if profile.foto_url %}
-                        <img src="{{ profile.foto_url.url }}" alt="Foto de perfil" class="profile-pic">
-                    {% else %}
-                        {% with usuario.nombres|default:"" as fn %}
-                        {% with usuario.apellidos|default:"" as ln %}
+                    <div class="user-menu" id="userMenuBtn">
                         <div class="profile-pic-placeholder">
-                            {{ fn|first|upper }}{{ ln|first|upper }}
+                            {% if usuario.profile.foto_url %}
+                                <img src="{{ usuario.profile.foto_url.url }}" alt="{{ usuario.nombres }}">
+                            {% else %}
+                                {{ usuario.nombres|first }}{{ usuario.apellidos|first }}
+                            {% endif %}
                         </div>
-                        {% endwith %}
-                        {% endwith %}
-                    {% endif %}
-                    <span class="username">
-                        {% if usuario.nombres or usuario.apellidos %}
-                            {{ usuario.nombres }} {{ usuario.apellidos }}
-                        {% else %}
-                            {{ user.username }}
-                        {% endif %}
-                    </span>
-                    <div class="dropdown-arrow"></div>
+                        <span class="username">{{ usuario.nombres }} {{ usuario.apellidos|truncatewords:1 }}</span>
+                        <svg class="dropdown-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </div>
                 </div>
+            </div>
+        </nav>
+    </header>
 
-                <div class="dropdown user-dropdown" id="userDropdown">
-                    <div class="user-profile-section">
-                        {% if profile.foto_url %}
-                            <img src="{{ profile.foto_url.url }}" alt="Foto de perfil" class="user-profile-pic">
-                        {% else %}
-                            {% with usuario.nombres|default:"" as fn %}
-                            {% with usuario.apellidos|default:"" as ln %}
-                            <div class="user-profile-pic-placeholder">
-                                {{ fn|first|upper }}{{ ln|first|upper }}
-                            </div>
-                            {% endwith %}
-                            {% endwith %}
-                        {% endif %}
-                        <div class="user-profile-info">
-                            <h3>{{ usuario.nombres|default:user.username }} {{ usuario.apellidos }}</h3>
-                            <p>Ver todos los perfiles</p>
+    <!-- ========== WELCOME SECTION ========== -->
+    <section class="welcome-section">
+        <div class="container">
+            <div class="welcome-content">
+                <h1>¡Bienvenido de vuelta, <span class="text-highlight">{{ usuario.nombres }}</span>!</h1>
+                <p>Aquí está un resumen de tu actividad reciente</p>
+            </div>
+            
+            <div class="quick-actions">
+                {% if usuario.tipo_usuario == 'trabajador' or usuario.tipo_usuario == 'ambos' %}
+                    <a href="{% url 'jobs:buscar_trabajos' %}" class="quick-action-btn btn-primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                        </svg>
+                        Buscar trabajos
+                    </a>
+                    <a href="{% url 'jobs:mis_postulaciones' %}" class="quick-action-btn btn-ghost">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                        </svg>
+                        Mis postulaciones
+                    </a>
+                {% endif %}
+                
+                {% if usuario.tipo_usuario == 'empleador' or usuario.tipo_usuario == 'ambos' or usuario.tipo_usuario == 'empresa' %}
+                    <a href="{% url 'jobs:registro_individual' %}" class="quick-action-btn btn-primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                        Publicar trabajo
+                    </a>
+                    <a href="{% url 'jobs:mis_trabajos' %}" class="quick-action-btn btn-ghost">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="9" y1="9" x2="15" y2="9"></line>
+                            <line x1="9" y1="15" x2="15" y2="15"></line>
+                        </svg>
+                        Mis ofertas
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== STATS CARDS ========== -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="stats-grid">
+                {% if usuario.tipo_usuario == 'trabajador' or usuario.tipo_usuario == 'ambos' %}
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #07734B, #15AC75);">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="8.5" cy="7" r="4"></circle>
+                                <polyline points="17 11 19 13 23 9"></polyline>
+                            </svg>
+                        </div>
+                        <div class="stat-content">
+                            <h3>{{ estadisticas.postulaciones_totales|default:0 }}</h3>
+                            <p>Trabajos aplicados</p>
                         </div>
                     </div>
-
-                    <!-- ✅ ENLACES CORREGIDOS -->
-                    <a href="{% url 'users:perfil' %}" class="dropdown-menu-item">
-                        <div class="dropdown-icon">
-                            <img src="{% static 'images/perfil.png' %}" alt="Usuario" class="icon">
-                        </div>
-                        Perfil
-                    </a>
                     
-                    <a href="{% url 'llamkay:configuracion' %}" class="dropdown-menu-item">
-                        <div class="dropdown-icon">
-                            <img src="{% static 'images/configuracion.png' %}" alt="Configuración" class="icon">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #9EBC8A, #B5C99A);">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                            </svg>
                         </div>
-                        Configuración y privacidad
-                    </a>
+                        <div class="stat-content">
+                            <h3>{{ usuario.trabajos_completados|default:0 }}</h3>
+                            <p>Trabajos completados</p>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #07734B, #15AC75);">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                            </svg>
+                        </div>
+                        <div class="stat-content">
+                            <h3>{{ estadisticas.ofertas_activas|default:0 }}</h3>
+                            <p>Ofertas activas</p>
+                        </div>
+                    </div>
                     
-                    <a href="{% url 'llamkay:ayuda' %}" class="dropdown-menu-item">
-                        <div class="dropdown-icon">
-                            <img src="{% static 'images/ayuda-soporte.png' %}" alt="Ayuda" class="icon">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #9EBC8A, #B5C99A);">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="9" cy="7" r="4"></circle>
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                            </svg>
                         </div>
-                        Ayuda y soporte técnico
-                    </a>
-                    
-                    <a href="{% url 'llamkay:accesibilidad' %}" class="dropdown-menu-item">
-                        <div class="dropdown-icon">
-                            <img src="{% static 'images/accesibilidad.png' %}" alt="Accesibilidad" class="icon">
+                        <div class="stat-content">
+                            <h3>{{ estadisticas.postulantes_totales|default:0 }}</h3>
+                            <p>Postulantes recibidos</p>
                         </div>
-                        Pantalla y accesibilidad
-                    </a>
-                    
-                    <a href="{% url 'llamkay:comentarios' %}" class="dropdown-menu-item">
-                        <div class="dropdown-icon">
-                            <img src="{% static 'images/comentarios.png' %}" alt="Comentarios" class="icon">
-                        </div>
-                        Enviar comentarios
-                    </a>
-                    
-                    <a href="{% url 'users:logout' %}" class="dropdown-menu-item logout">
-                        <div class="dropdown-icon">
-                            <img src="{% static 'images/cerrar-sesion.png' %}" alt="Cerrar sesión" class="icon">
-                        </div>
-                        Cerrar sesión
-                    </a>
+                    </div>
+                {% endif %}
+                
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #FFB020, #FFC857);">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                        </svg>
+                    </div>
+                    <div class="stat-content">
+                        <h3>{{ usuario.rating_promedio|floatformat:1|default:"0.0" }}</h3>
+                        <p>Calificación promedio</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #6366F1, #8B5CF6);">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                    </div>
+                    <div class="stat-content">
+                        <h3>{{ estadisticas.mensajes_no_leidos|default:0 }}</h3>
+                        <p>Mensajes nuevos</p>
+                    </div>
                 </div>
             </div>
         </div>
-    </nav>
-</header>
+    </section>
 
-<section class="hero">
-    <div class="carousel">
-        <img class="carousel-image active" src="{% static 'images/foto-index-1.jpg' %}" alt="Imagen 1">
-        <img class="carousel-image" src="{% static 'images/foto-index-2.jpg' %}" alt="Imagen 2">
-        <img class="carousel-image" src="{% static 'images/foto-index-3.jpg' %}" alt="Imagen 3">
-        <img class="carousel-image" src="{% static 'images/foto-index-4.jpg' %}" alt="Imagen 4">
+    <!-- ========== MAIN CONTENT ========== -->
+    <section class="main-content">
+        <div class="container">
+            <div class="content-grid">
+                <!-- Left Column -->
+                <div class="content-main">
+                    <!-- Recent Activity -->
+                    <div class="content-card">
+                        <div class="card-header">
+                            <h2>Actividad reciente</h2>
+                            <a href="#" class="view-all">Ver todo</a>
+                        </div>
+                        
+                        <div class="activity-list">
+                            {% for actividad in actividades_recientes %}
+                                <div class="activity-item">
+                                    <div class="activity-icon {{ actividad.tipo }}">
+                                        {% if actividad.tipo == 'success' %}
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                            </svg>
+                                        {% elif actividad.tipo == 'info' %}
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                                            </svg>
+                                        {% else %}
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <circle cx="12" cy="12" r="10"></circle>
+                                                <line x1="12" y1="8" x2="12" y2="12"></line>
+                                                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                                            </svg>
+                                        {% endif %}
+                                    </div>
+                                    <div class="activity-content">
+                                        <p>{{ actividad.mensaje|safe }}</p>
+                                        <span class="activity-time">{{ actividad.fecha|timesince }}</span>
+                                    </div>
+                                </div>
+                            {% empty %}
+                                <p style="text-align: center; color: #666; padding: 2rem;">No hay actividad reciente</p>
+                            {% endfor %}
+                        </div>
+                    </div>
 
-        <button class="carousel-btn prev" data-action="prev-slide">◄</button>
-        <button class="carousel-btn next" data-action="next-slide">►</button>
-    </div>
+                    <!-- Recommended Jobs / Postulantes (según tipo de usuario) -->
+                    <div class="content-card">
+                        <div class="card-header">
+                            {% if usuario.tipo_usuario == 'trabajador' or usuario.tipo_usuario == 'ambos' %}
+                                <h2>Trabajos recomendados para ti</h2>
+                                <a href="{% url 'jobs:buscar_trabajos' %}" class="view-all">Ver más</a>
+                            {% else %}
+                                <h2>Postulantes recientes</h2>
+                                <a href="{% url 'jobs:mis_trabajos' %}" class="view-all">Ver todas</a>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="jobs-list">
+                            {% for trabajo in trabajos_recomendados %}
+                                <div class="job-card">
+                                    <div class="job-header">
+                                        <div class="job-icon">
+                                            {% if trabajo.categoria %}
+                                                {{ trabajo.categoria.icono|default:"🔨" }}
+                                            {% else %}
+                                                🔨
+                                            {% endif %}
+                                        </div>
+                                        <div class="job-info">
+                                            <h3>
+                                                <a href="{% url 'jobs:detalle_trabajo' tipo=trabajo.tipo trabajo_id=trabajo.id %}">
+                                                    {{ trabajo.titulo }}
+                                                </a>
+                                            </h3>
+                                            <p class="job-company">
+                                                {{ trabajo.empleador.nombres }} {{ trabajo.empleador.apellidos }}
+                                                {% if trabajo.ubicacion.distrito %}
+                                                    · {{ trabajo.ubicacion.distrito }}
+                                                {% endif %}
+                                            </p>
+                                        </div>
+                                        {% if trabajo.urgente %}
+                                            <span class="job-badge urgent">Urgente</span>
+                                        {% elif trabajo.fecha_publicacion|timesince < "1 day" %}
+                                            <span class="job-badge new">Nuevo</span>
+                                        {% endif %}
+                                    </div>
+                                    <p class="job-description">{{ trabajo.descripcion|truncatewords:20 }}</p>
+                                    <div class="job-footer">
+                                        <span class="job-price">
+                                            {% if trabajo.pago %}
+                                                S/ {{ trabajo.pago }}
+                                            {% elif trabajo.rango_salarial %}
+                                                {{ trabajo.rango_salarial }}
+                                            {% endif %}
+                                        </span>
+                                        <span class="job-time">Publicado {{ trabajo.fecha_publicacion|timesince }}</span>
+                                        {% if usuario.tipo_usuario == 'trabajador' or usuario.tipo_usuario == 'ambos' %}
+                                            <a href="{% url 'jobs:postular_trabajo' tipo=trabajo.tipo oferta_id=trabajo.id %}" class="btn-small btn-primary">Aplicar</a>
+                                        {% else %}
+                                            <a href="{% url 'jobs:detalle_trabajo' tipo=trabajo.tipo trabajo_id=trabajo.id %}" class="btn-small btn-primary">Ver detalles</a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% empty %}
+                                <p style="text-align: center; color: #666; padding: 2rem;">No hay trabajos disponibles en este momento</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
 
-    <div class="hero-text">
-        <h1>Encuentra el trabajo ideal para ti</h1>
-        <p>LLamkay conecta a empleadores con trabajadores</p>
+                <!-- Right Sidebar -->
+                <div class="content-sidebar">
+                    <!-- Profile Completion -->
+                    <div class="sidebar-card">
+                        <h3>Completa tu perfil</h3>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: {{ perfil_completado }}%"></div>
+                        </div>
+                        <p class="progress-text">{{ perfil_completado }}% completado</p>
+                        
+                        <div class="profile-tasks">
+                            <div class="task-item {% if usuario.nombres and usuario.apellidos %}completed{% endif %}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    {% if usuario.nombres and usuario.apellidos %}
+                                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                    {% else %}
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                    {% endif %}
+                                </svg>
+                                <span>Información básica</span>
+                            </div>
+                            <div class="task-item {% if usuario.profile.foto_url %}completed{% endif %}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    {% if usuario.profile.foto_url %}
+                                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                    {% else %}
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                    {% endif %}
+                                </svg>
+                                <span>Foto de perfil</span>
+                            </div>
+                            <div class="task-item {% if usuario.estado_verificacion == 'verificado' %}completed{% endif %}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    {% if usuario.estado_verificacion == 'verificado' %}
+                                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                    {% else %}
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                    {% endif %}
+                                </svg>
+                                <span>Verificar identidad</span>
+                            </div>
+                            <div class="task-item {% if usuario.habilidades.count > 0 %}completed{% endif %}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    {% if usuario.habilidades.count > 0 %}
+                                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                    {% else %}
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                    {% endif %}
+                                </svg>
+                                <span>Agregar habilidades</span>
+                            </div>
+                        </div>
+                        
+                        <a href="{% url 'users:perfil' %}" class="btn-small btn-block btn-ghost">Completar perfil</a>
+                    </div>
 
-        <div class="hero-buttons">
-            {% if user.is_authenticated %}
-                {% if user.perfil.tipo_usuario == 'ofrecer-trabajo' or user.perfil.tipo_usuario == 'ambos' %}
-                    <a href="#" class="btn blue">Publica un trabajo</a>
-                {% elif user.perfil.tipo_usuario == 'empresa' %}
-                    <a href="#" class="btn blue">Publica un trabajo</a>
-                {% endif %}
+                    <!-- Quick Stats -->
+                    <div class="sidebar-card">
+                        <h3>Tu rendimiento</h3>
+                        {% if usuario.tipo_usuario == 'trabajador' or usuario.tipo_usuario == 'ambos' %}
+                            <div class="quick-stat">
+                                <span class="stat-label">Tasa de aceptación</span>
+                                <span class="stat-value">{{ estadisticas.tasa_aceptacion|default:"0" }}%</span>
+                            </div>
+                            <div class="quick-stat">
+                                <span class="stat-label">Trabajos completados</span>
+                                <span class="stat-value">{{ usuario.trabajos_completados }}</span>
+                            </div>
+                        {% else %}
+                            <div class="quick-stat">
+                                <span class="stat-label">Ofertas publicadas</span>
+                                <span class="stat-value">{{ estadisticas.ofertas_totales|default:0 }}</span>
+                            </div>
+                            <div class="quick-stat">
+                                <span class="stat-label">Contratos activos</span>
+                                <span class="stat-value">{{ estadisticas.contratos_activos|default:0 }}</span>
+                            </div>
+                            <div class="quick-stat">
+                                <span class="stat-label">Vistas totales</span>
+                                <span class="stat-value">{{ estadisticas.vistas_totales|default:0 }}</span>
+                            </div>
+                        {% endif %}
+                    </div>
 
-                {% if user.perfil.tipo_usuario == 'buscar-trabajo' %}
-                    <a href="#" class="btn green">Mis trabajos</a>
-                {% endif %}
-            {% endif %}
+                    <!-- Tips -->
+                    <div class="sidebar-card tips-card">
+                        <div class="tips-icon">💡</div>
+                        <h3>Consejo del día</h3>
+                        <p>{{ consejo_del_dia|default:"Responde rápido a los mensajes para aumentar tus posibilidades de conseguir trabajos. Los usuarios valoran la comunicación ágil." }}</p>
+                    </div>
 
-            <a href="{% url 'jobs:all_trabajos' %}" class="btn grey">Aplica para un trabajo</a>
+                    <!-- Mensajes recientes -->
+                    {% if conversaciones_recientes %}
+                    <div class="sidebar-card">
+                        <h3>Mensajes recientes</h3>
+                        <div class="mensajes-preview">
+                            {% for conv in conversaciones_recientes %}
+                                <a href="{% url 'chats:ver_conversacion' conversacion_id=conv.id_conversacion %}" class="mensaje-item">
+                                    <div class="mensaje-avatar">
+                                        {% with otro_usuario=conv.obtener_otro_usuario|usuario %}
+                                            {% if otro_usuario.profile.foto_url %}
+                                                <img src="{{ otro_usuario.profile.foto_url.url }}" alt="{{ otro_usuario.nombres }}">
+                                            {% else %}
+                                                {{ otro_usuario.nombres|first }}{{ otro_usuario.apellidos|first }}
+                                            {% endif %}
+                                        {% endwith %}
+                                    </div>
+                                    <div class="mensaje-info">
+                                        <strong>{{ conv.obtener_otro_usuario.nombres }}</strong>
+                                        <p>{{ conv.ultimo_mensaje|truncatewords:5 }}</p>
+                                    </div>
+                                </a>
+                            {% endfor %}
+                        </div>
+                        <a href="{% url 'chats:lista_conversaciones' %}" class="btn-small btn-block btn-ghost" style="margin-top: 1rem;">Ver todos</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
         </div>
-    </div>
-</section>
+    </section>
 
-{% if profile.tipo_usuario != 'empresa' and profile.tipo_usuario != 'ofrecer-trabajo' %}
-<section class="browse">
-    {# {% include 'jobs/partials/lista_trabajos.html' %} #}
-    <div class="center-button">
-        <a href="{% url 'jobs:all_trabajos' %}" class="btn blue ver-mas-trabajos">Ver más trabajos</a>
-    </div>
-</section>
-{% endif %}
-
-<footer class="footer">
-    <div class="footer-container">
-        <div class="footer-section">
-            <div class="footer-logo">
-                <h3>LLamkay.pe</h3>
+    <!-- ========== FOOTER ========== -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <div class="footer-logo">
+                    <span>Llamkay</span>
+                </div>
                 <p>Conectando talentos con oportunidades laborales en todo el Perú</p>
             </div>
-            <div class="footer-social">
-                <h4>Síguenos</h4>
-                <div class="social-links">
-                    <a href="https://www.facebook.com/llamkay" target="_blank" rel="noopener" class="social-link facebook">
-                        <img src="{% static 'images/facebook.png' %}" alt="Facebook" class="social-icon">
-                        <span>Facebook</span>
-                    </a>
-                    <a href="https://www.instagram.com/llamkay.pe" target="_blank" rel="noopener" class="social-link instagram">
-                        <img src="{% static 'images/instagram.png' %}" alt="Instagram" class="social-icon">
-                        <span>Instagram</span>
-                    </a>
-                    <a href="https://www.tiktok.com/@llamkay.pe" target="_blank" rel="noopener" class="social-link tiktok">
-                        <img src="{% static 'images/tiktok.png' %}" alt="TikTok" class="social-icon">
-                        <span>TikTok</span>
-                    </a>
-                    <a href="https://wa.me/51987654321" target="_blank" rel="noopener" class="social-link whatsapp">
-                        <img src="{% static 'images/whatsapp.png' %}" alt="WhatsApp" class="social-icon">
-                        <span>WhatsApp</span>
-                    </a>
+            
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h4>Plataforma</h4>
+                    <ul>
+                        <li><a href="{% url 'jobs:buscar_trabajos' %}">Buscar trabajos</a></li>
+                        <li><a href="{% url 'users:perfil' %}">Mi Perfil</a></li>
+                        <li><a href="{% url 'chats:lista_chats' %}">Mis Mensajes</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h4>Soporte</h4>
+                    <ul>
+                        <li><a href="#">Centro de ayuda</a></li>
+                        <li><a href="#">Términos de servicio</a></li>
+                        <li><a href="#">Política de privacidad</a></li>
+                    </ul>
                 </div>
             </div>
         </div>
-
-        <div class="footer-section">
-            <h4>Accesos Rápidos</h4>
-            <ul class="footer-links">
-                <li><a href="{% url 'jobs:all_trabajos' %}">Buscar Trabajos</a></li>
-                <li><a href="{% url 'users:perfil' %}">Mi Perfil</a></li>
-                <li><a href="{% url 'chats:lista_chats' %}">Mis Mensajes</a></li>
-                <li><a href="{% url 'llamkay:nosotros' %}">Sobre Nosotros</a></li>
-            </ul>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2025 Llamkay.pe. Todos los derechos reservados.</p>
         </div>
+    </footer>
 
-        <div class="footer-section">
-            <h4>Nuestros Servicios</h4>
-            <ul class="footer-links">
-                <li><a href="#">Para Empleadores</a></li>
-                <li><a href="#">Para Trabajadores</a></li>
-                <li><a href="#">Para Empresas</a></li>
-                <li><a href="#">Capacitaciones</a></li>
-                <li><a href="#">Consultorías</a></li>
-            </ul>
-        </div>
-
-        <div class="footer-section">
-            <h4>Contacto</h4>
-            <div class="contact-info">
-                <div class="contact-item">
-                    <img src="{% static 'images/email.png' %}" alt="Email" class="contact-icon">
-                    <span>contacto@llamkay.pe</span>
-                </div>
-                <div class="contact-item">
-                    <img src="{% static 'images/phone.png' %}" alt="Teléfono" class="contact-icon">
-                    <span>+51 987 654 321</span>
-                </div>
-                <div class="contact-item">
-                    <img src="{% static 'images/location.png' %}" alt="Ubicación" class="contact-icon">
-                    <span>Lima, Perú</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="footer-bottom">
-        <div class="footer-container">
-            <div class="copyright">
-                <p>&copy; 2025 LLamkay.pe. Todos los derechos reservados.</p>
-                <p>Desarrollado para conectar talentos peruanos</p>
-            </div>
-            <div class="footer-bottom-links">
-                <a href="#">Términos de Servicio</a>
-                <a href="#">Política de Privacidad</a>
-                <a href="#">Cookies</a>
-            </div>
-        </div>
-    </div>
-</footer>
 {% endblock %}
 
 {% block extra_js %}
