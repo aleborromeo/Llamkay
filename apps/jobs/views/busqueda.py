@@ -163,7 +163,7 @@ def buscar_trabajos(request):
         }
     }
     
-    return render(request, 'jobs/busqueda/buscar.html', context)
+    return render(request, 'jobs/all_trabajos.html', context)
 
 
 def detalle_trabajo(request, tipo, trabajo_id):

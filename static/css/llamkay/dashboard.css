@@ -154,6 +154,11 @@ body {
     border: 2px solid white;
 }
 
+/* ==================== USER MENU & DROPDOWN ==================== */
+.user-menu-wrapper {
+    position: relative;
+}
+
 .user-menu {
     display: flex;
     align-items: center;
@@ -171,6 +176,11 @@ body {
     border-color: var(--color-primary);
 }
 
+.user-menu.active {
+    background: white;
+    border-color: var(--color-primary);
+}
+
 .profile-pic-placeholder {
     width: 32px;
     height: 32px;
@@ -182,6 +192,14 @@ body {
     justify-content: center;
     font-weight: 600;
     font-size: 14px;
+    overflow: hidden;
+}
+
+.profile-pic-placeholder img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
 }
 
 .username {
@@ -192,6 +210,158 @@ body {
 
 .dropdown-icon {
     color: var(--color-text-light);
+    transition: transform 0.3s ease;
+}
+
+.user-menu.active .dropdown-icon {
+    transform: rotate(180deg);
+}
+
+/* ==================== DROPDOWN MENU ==================== */
+.user-dropdown {
+    position: absolute;
+    top: calc(100% + 0.75rem);
+    right: 0;
+    min-width: 280px;
+    background: white;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xl);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1000;
+    overflow: hidden;
+}
+
+.user-dropdown.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-header {
+    padding: 1.25rem;
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+    color: white;
+}
+
+.dropdown-user-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.dropdown-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 18px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.dropdown-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.dropdown-user-details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-width: 0;
+}
+
+.dropdown-user-details strong {
+    font-size: 1rem;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dropdown-user-details span {
+    font-size: 0.85rem;
+    opacity: 0.9;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dropdown-divider {
+    height: 1px;
+    background: var(--color-background-alt);
+    margin: 0;
+}
+
+.dropdown-menu {
+    padding: 0.5rem;
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    color: var(--color-text);
+    text-decoration: none;
+    border-radius: var(--radius-sm);
+    transition: var(--transition);
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.dropdown-item:hover {
+    background: var(--color-background-alt);
+    color: var(--color-primary);
+}
+
+.dropdown-item svg {
+    flex-shrink: 0;
+    stroke-width: 2;
+}
+
+.dropdown-item span {
+    flex: 1;
+}
+
+.dropdown-footer {
+    padding: 0.5rem;
+}
+
+.logout-item {
+    color: var(--color-danger);
+}
+
+.logout-item:hover {
+    background: rgba(220, 38, 38, 0.1);
+    color: var(--color-danger);
+}
+
+@keyframes dropdownFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.user-dropdown.active {
+    animation: dropdownFadeIn 0.2s ease;
 }
 
 /* ==================== WELCOME SECTION ==================== */
@@ -469,6 +639,16 @@ body {
     margin-bottom: 0.25rem;
 }
 
+.job-info h3 a {
+    color: var(--color-text);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.job-info h3 a:hover {
+    color: var(--color-primary);
+}
+
 .job-company {
     font-size: 0.9rem;
     color: var(--color-text-light);
@@ -656,6 +836,70 @@ body {
     line-height: 1.6;
 }
 
+.mensajes-preview {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.mensaje-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: var(--color-background-alt);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.mensaje-item:hover {
+    background: #e8f5f0;
+    transform: translateX(3px);
+}
+
+.mensaje-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 14px;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.mensaje-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.mensaje-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.mensaje-info strong {
+    display: block;
+    font-size: 0.9rem;
+    color: var(--color-text);
+    margin-bottom: 0.25rem;
+}
+
+.mensaje-info p {
+    font-size: 0.85rem;
+    color: var(--color-text-light);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;
+}
+
 /* ==================== FOOTER ==================== */
 .footer {
     background: var(--color-primary-dark);
@@ -779,6 +1023,22 @@ body {
     .footer-links {
         grid-template-columns: 1fr;
     }
+    
+    /* Dropdown responsive */
+    .user-dropdown {
+        position: fixed;
+        top: auto;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        min-width: 100%;
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        transform: translateY(100%);
+    }
+    
+    .user-dropdown.active {
+        transform: translateY(0);
+    }
 }
 
 @media (max-width: 480px) {
@@ -804,74 +1064,3 @@ body {
         width: 100%;
     }
 }
-
-.mensajes-preview {
-        display: flex;
-        flex-direction: column;
-        gap: 0.75rem;
-    }
-    
-    .mensaje-item {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        padding: 0.75rem;
-        background: var(--color-background-alt);
-        border-radius: var(--radius-md);
-        text-decoration: none;
-        transition: var(--transition);
-    }
-    
-    .mensaje-item:hover {
-        background: #e8f5f0;
-        transform: translateX(3px);
-    }
-    
-    .mensaje-avatar {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background: var(--color-primary);
-        color: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 600;
-        font-size: 14px;
-        flex-shrink: 0;
-        overflow: hidden;
-    }
-    
-    .mensaje-avatar img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-    
-    .mensaje-info {
-        flex: 1;
-        min-width: 0;
-    }
-    
-    .mensaje-info strong {
-        display: block;
-        font-size: 0.9rem;
-        color: var(--color-text);
-        margin-bottom: 0.25rem;
-    }
-    
-    .mensaje-info p {
-        font-size: 0.85rem;
-        color: var(--color-text-light);
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        margin: 0;
-    }
-    
-    .profile-pic-placeholder img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        border-radius: 50%;
-    }

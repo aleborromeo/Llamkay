@@ -6,23 +6,67 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // ==================== USER MENU DROPDOWN ====================
     const userMenuBtn = document.getElementById('userMenuBtn');
+    const userDropdown = document.getElementById('userDropdown');
     const notificationsBtn = document.getElementById('notificationsBtn');
     
-    // Toggle user menu (ejemplo - agregar dropdown si es necesario)
-    if (userMenuBtn) {
+    // Toggle user menu dropdown
+    if (userMenuBtn && userDropdown) {
         userMenuBtn.addEventListener('click', function(e) {
             e.stopPropagation();
-            // Aquí puedes agregar la lógica para mostrar el dropdown del usuario
-            console.log('User menu clicked');
+            
+            // Toggle dropdown
+            userDropdown.classList.toggle('active');
+            userMenuBtn.classList.toggle('active');
+            
+            console.log('User menu toggled');
         });
     }
     
-    // Toggle notifications (ejemplo)
+    // Toggle notifications
     if (notificationsBtn) {
         notificationsBtn.addEventListener('click', function(e) {
             e.stopPropagation();
-            // Aquí puedes agregar la lógica para mostrar notificaciones
+            
+            // Cerrar user menu si está abierto
+            if (userDropdown && userMenuBtn) {
+                userDropdown.classList.remove('active');
+                userMenuBtn.classList.remove('active');
+            }
+            
             console.log('Notifications clicked');
+            showNotification('No tienes notificaciones nuevas', 'info');
+        });
+    }
+    
+    // Cerrar dropdown cuando se hace click fuera
+    document.addEventListener('click', function(e) {
+        if (userDropdown && userMenuBtn && 
+            !userMenuBtn.contains(e.target) && 
+            !userDropdown.contains(e.target)) {
+            userDropdown.classList.remove('active');
+            userMenuBtn.classList.remove('active');
+        }
+    });
+    
+    // Cerrar dropdown con tecla ESC
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && userDropdown && userMenuBtn) {
+            userDropdown.classList.remove('active');
+            userMenuBtn.classList.remove('active');
+        }
+    });
+    
+    // Prevenir que los links dentro del dropdown cierren el menú inmediatamente
+    if (userDropdown) {
+        const dropdownLinks = userDropdown.querySelectorAll('.dropdown-item');
+        dropdownLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                // El link navegará normalmente
+                setTimeout(() => {
+                    userDropdown.classList.remove('active');
+                    userMenuBtn.classList.remove('active');
+                }, 100);
+            });
         });
     }
     
@@ -48,20 +92,14 @@ document.addEventListener('DOMContentLoaded', function() {
     
     applyButtons.forEach(button => {
         button.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            // Animación de click
-            this.style.transform = 'scale(0.95)';
-            setTimeout(() => {
-                this.style.transform = '';
-            }, 150);
-            
-            // Aquí puedes agregar la lógica para aplicar al trabajo
-            const jobCard = this.closest('.job-card');
-            const jobTitle = jobCard.querySelector('.job-info h3').textContent;
-            
-            // Mostrar mensaje de confirmación (ejemplo)
-            showNotification(`Aplicaste a: ${jobTitle}`, 'success');
+            // No prevenir default si es un link
+            if (this.tagName === 'A') {
+                // Animación de click
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 150);
+            }
         });
     });
     
@@ -164,11 +202,6 @@ document.addEventListener('DOMContentLoaded', function() {
             progressBar.style.width = targetWidth;
         }, 500);
     }
-    
-    // ==================== CLOSE DROPDOWNS ON OUTSIDE CLICK ====================
-    document.addEventListener('click', function(e) {
-        // Aquí puedes agregar lógica para cerrar dropdowns cuando se hace click fuera
-    });
     
     // ==================== RESPONSIVE MENU (si se agrega) ====================
     const menuToggle = document.querySelector('.menu-toggle');

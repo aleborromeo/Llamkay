@@ -1,0 +1,559 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Mis Postulaciones - Llamkay{% endblock %}
+
+{% block extra_css %}
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: #f8f9fa;
+        color: #1a1a1a;
+    }
+
+    .header {
+        background: linear-gradient(135deg, #07734B 0%, #15AC75 100%);
+        padding: 2rem 0;
+        color: white;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .header-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+    }
+
+    .header h1 {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .header p {
+        opacity: 0.9;
+        font-size: 1.1rem;
+    }
+
+    .nav-breadcrumb {
+        background: white;
+        padding: 1rem 0;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .breadcrumb {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        font-size: 0.9rem;
+    }
+
+    .breadcrumb a {
+        color: #07734B;
+        text-decoration: none;
+        transition: color 0.3s;
+    }
+
+    .breadcrumb a:hover {
+        color: #15AC75;
+        text-decoration: underline;
+    }
+
+    .breadcrumb span {
+        color: #666;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 2rem;
+    }
+
+    .filtros-postulaciones {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        margin-bottom: 2rem;
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    .filtros-postulaciones label {
+        font-weight: 600;
+        color: #1a1a1a;
+    }
+
+    .filtros-postulaciones select {
+        padding: 0.5rem 1rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        transition: all 0.3s;
+    }
+
+    .filtros-postulaciones select:focus {
+        outline: none;
+        border-color: #07734B;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        text-align: center;
+    }
+
+    .stat-card h3 {
+        font-size: 2rem;
+        color: #07734B;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-card p {
+        color: #666;
+        font-size: 0.9rem;
+    }
+
+    .postulaciones-lista {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .postulacion-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        transition: all 0.3s;
+        border-left: 4px solid #e0e0e0;
+    }
+
+    .postulacion-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    }
+
+    .postulacion-card.pendiente {
+        border-left-color: #f59e0b;
+    }
+
+    .postulacion-card.en_revision {
+        border-left-color: #3b82f6;
+    }
+
+    .postulacion-card.aceptada {
+        border-left-color: #10b981;
+    }
+
+    .postulacion-card.rechazada {
+        border-left-color: #dc2626;
+    }
+
+    .postulacion-card.retirada {
+        border-left-color: #666;
+    }
+
+    .postulacion-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        margin-bottom: 1rem;
+        gap: 1rem;
+    }
+
+    .postulacion-info h3 {
+        font-size: 1.3rem;
+        color: #1a1a1a;
+        margin-bottom: 0.5rem;
+    }
+
+    .postulacion-meta {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        font-size: 0.9rem;
+        color: #666;
+    }
+
+    .postulacion-meta span {
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+    }
+
+    .badge {
+        padding: 0.4rem 0.8rem;
+        border-radius: 50px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .badge.pendiente {
+        background: rgba(245, 158, 11, 0.1);
+        color: #f59e0b;
+    }
+
+    .badge.en_revision {
+        background: rgba(59, 130, 246, 0.1);
+        color: #3b82f6;
+    }
+
+    .badge.aceptada {
+        background: rgba(16, 185, 129, 0.1);
+        color: #10b981;
+    }
+
+    .badge.rechazada {
+        background: rgba(220, 38, 38, 0.1);
+        color: #dc2626;
+    }
+
+    .badge.retirada {
+        background: rgba(102, 102, 102, 0.1);
+        color: #666;
+    }
+
+    .postulacion-body {
+        margin-bottom: 1rem;
+    }
+
+    .postulacion-body p {
+        color: #666;
+        line-height: 1.6;
+        margin-bottom: 0.5rem;
+    }
+
+    .empleador-info {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        background: #f8f9fa;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+    }
+
+    .empleador-avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: #07734B;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 1.2rem;
+    }
+
+    .empleador-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+    }
+
+    .empleador-datos h4 {
+        font-size: 1rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .empleador-datos p {
+        font-size: 0.85rem;
+        color: #666;
+        margin: 0;
+    }
+
+    .postulacion-actions {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        padding: 0.6rem 1.2rem;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-primary {
+        background: #07734B;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #15AC75;
+        transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+        background: transparent;
+        color: #07734B;
+        border: 2px solid #07734B;
+    }
+
+    .btn-secondary:hover {
+        background: #07734B;
+        color: white;
+    }
+
+    .btn-danger {
+        background: #dc2626;
+        color: white;
+    }
+
+    .btn-danger:hover {
+        background: #b91c1c;
+    }
+
+    .sin-postulaciones {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .sin-postulaciones img {
+        width: 200px;
+        opacity: 0.5;
+        margin-bottom: 1rem;
+    }
+
+    .sin-postulaciones h3 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        color: #1a1a1a;
+    }
+
+    .sin-postulaciones p {
+        color: #666;
+        margin-bottom: 2rem;
+    }
+
+    @media (max-width: 768px) {
+        .header h1 {
+            font-size: 1.5rem;
+        }
+
+        .postulacion-header {
+            flex-direction: column;
+        }
+
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .postulacion-actions {
+            flex-direction: column;
+        }
+
+        .btn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Header -->
+<div class="header">
+    <div class="header-content">
+        <h1>📋 Mis Postulaciones</h1>
+        <p>Gestiona todas tus postulaciones a trabajos</p>
+    </div>
+</div>
+
+<!-- Breadcrumb -->
+<div class="nav-breadcrumb">
+    <div class="breadcrumb">
+        <a href="{% url 'llamkay:dashboard' %}">🏠 Inicio</a>
+        <span>›</span>
+        <span>Mis Postulaciones</span>
+    </div>
+</div>
+
+<!-- Contenido Principal -->
+<div class="container">
+    <!-- Estadísticas -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <h3>{{ postulaciones|length }}</h3>
+            <p>Total Postulaciones</p>
+        </div>
+        <div class="stat-card">
+            <h3 id="count-pendiente">0</h3>
+            <p>Pendientes</p>
+        </div>
+        <div class="stat-card">
+            <h3 id="count-aceptada">0</h3>
+            <p>Aceptadas</p>
+        </div>
+        <div class="stat-card">
+            <h3 id="count-rechazada">0</h3>
+            <p>Rechazadas</p>
+        </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="filtros-postulaciones">
+        <label for="filtro-estado">Filtrar por estado:</label>
+        <select id="filtro-estado">
+            <option value="todas">Todas</option>
+            <option value="pendiente">Pendientes</option>
+            <option value="en_revision">En Revisión</option>
+            <option value="aceptada">Aceptadas</option>
+            <option value="rechazada">Rechazadas</option>
+            <option value="retirada">Retiradas</option>
+        </select>
+    </div>
+
+    <!-- Lista de Postulaciones -->
+    <div class="postulaciones-lista">
+        {% if postulaciones %}
+            {% for post in postulaciones %}
+            <div class="postulacion-card {{ post.estado }}" data-estado="{{ post.estado }}">
+                <div class="postulacion-header">
+                    <div class="postulacion-info">
+                        <h3>{{ post.titulo }}</h3>
+                        <div class="postulacion-meta">
+                            <span>📅 Postulado: {{ post.fecha_postulacion|date:"d/m/Y H:i" }}</span>
+                            {% if not post.leida %}
+                            <span style="color: #f59e0b;">● Nueva respuesta</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <span class="badge {{ post.estado }}">
+                        {% if post.estado == 'pendiente' %}⏳ Pendiente
+                        {% elif post.estado == 'en_revision' %}👀 En Revisión
+                        {% elif post.estado == 'aceptada' %}✅ Aceptada
+                        {% elif post.estado == 'rechazada' %}❌ Rechazada
+                        {% elif post.estado == 'retirada' %}🚫 Retirada
+                        {% endif %}
+                    </span>
+                </div>
+
+                <div class="postulacion-body">
+                    <!-- Info del Empleador -->
+                    <div class="empleador-info">
+                        <div class="empleador-avatar">
+                            {% if post.empleador.profile.foto_url %}
+                                <img src="{{ post.empleador.profile.foto_url.url }}" alt="{{ post.empleador.nombres }}">
+                            {% else %}
+                                {{ post.empleador.nombres|first }}{{ post.empleador.apellidos|first }}
+                            {% endif %}
+                        </div>
+                        <div class="empleador-datos">
+                            <h4>{{ post.empleador.nombres }} {{ post.empleador.apellidos }}</h4>
+                            <p>Empleador</p>
+                        </div>
+                    </div>
+
+                    {% if post.mensaje %}
+                    <p><strong>Tu mensaje:</strong><br>{{ post.mensaje }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="postulacion-actions">
+                    <a href="{% url 'jobs:detalle_trabajo' post.tipo post.id %}" class="btn btn-primary">
+                        👁️ Ver Oferta
+                    </a>
+                    <a href="{% url 'chats:ver_chat' post.empleador.id_usuario %}" class="btn btn-secondary">
+                        💬 Contactar
+                    </a>
+                    {% if post.estado == 'pendiente' or post.estado == 'en_revision' %}
+                    <button class="btn btn-danger btn-retirar" data-id="{{ post.id }}" onclick="retirarPostulacion({{ post.id }})">
+                        🗑️ Retirar
+                    </button>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="sin-postulaciones">
+                <h3>No tienes postulaciones aún</h3>
+                <p>¡Explora las ofertas de trabajo disponibles y postúlate!</p>
+                <a href="{% url 'jobs:buscar_trabajos' %}" class="btn btn-primary">
+                    🔍 Buscar Trabajos
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Filtrar postulaciones por estado
+document.getElementById('filtro-estado').addEventListener('change', function() {
+    const estado = this.value;
+    const postulaciones = document.querySelectorAll('.postulacion-card');
+    
+    postulaciones.forEach(card => {
+        if (estado === 'todas' || card.dataset.estado === estado) {
+            card.style.display = 'block';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+});
+
+// Retirar postulación
+function retirarPostulacion(postulacionId) {
+    if (!confirm('¿Estás seguro de que deseas retirar esta postulación?')) {
+        return;
+    }
+    
+    fetch(`/jobs/retirar-postulacion/${postulacionId}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Postulación retirada correctamente');
+            location.reload();
+        } else {
+            alert('Error: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al retirar la postulación');
+    });
+}
+</script>
+{% endblock %}
