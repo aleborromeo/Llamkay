@@ -16,41 +16,48 @@
                 <span>Llamkay</span>
             </a>
             
-            <a href="{% url 'llamkay:dashboard' %}" class="btn-nav btn-ghost">← Dashboard</a>
-
-            <form action="{% url 'users:buscar_usuarios' %}" method="get" class="nav-search">
-                <input type="text" name="q" placeholder="Buscar profesionales..." aria-label="Buscar profesionales">
-            </form>
+            <button class="nav-toggle" aria-label="Abrir menú">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            
+            <ul class="nav-menu">
+                <li><a href="{% url 'llamkay:dashboard' %}" class="nav-link">Dashboard</a></li>
+                <li><a href="{% url 'jobs:all_trabajos' %}" class="nav-link">Trabajos</a></li>
+                <li><a href="{% url 'users:buscar_usuarios' %}" class="nav-link">Buscar</a></li>
+                <li><a href="{% url 'users:logout' %}" class="btn-nav btn-ghost">Cerrar Sesión</a></li>
+            </ul>
         </div>
     </nav>
 </header>
 
 <!-- ========== MODAL DE EDICIÓN ========== -->
-<div class="edit-profile-modal" id="editProfileModal">
+<div class="edit-profile-modal" id="editProfileModal" style="display: none;">
     <div class="modal-content">
-        <form method="POST" enctype="multipart/form-data" id="form-editar-perfil">
+        <form method="POST" enctype="multipart/form-data" id="form-editar-perfil" action="{% url 'users:actualizar_perfil' %}">
             {% csrf_token %}
-            <h2>Editar Perfil</h2>
+            <h2>✏️ Editar Perfil</h2>
 
             <div class="form-grid">
-                <div class="form-group">
-                    <label for="foto">Foto de perfil:</label>
+                <div class="form-group full-width">
+                    <label for="foto">📸 Foto de perfil:</label>
                     <input type="file" name="foto" id="foto" accept="image/*">
                 </div>
 
                 <div class="form-group">
-                    <label for="telefono">Teléfono:</label>
+                    <label for="telefono">📱 Teléfono:</label>
                     <input type="text" name="telefono" id="telefono" value="{{ usuario.telefono }}" placeholder="999999999">
                 </div>
 
-                <div class="form-group full-width">
-                    <label for="descripcion">Descripción:</label>
-                    <textarea name="descripcion" id="descripcion" rows="4" placeholder="Cuéntanos sobre ti...">{{ profile.bio }}</textarea>
+                <div class="form-group">
+                    <label for="disponibilidad">🕐 Disponibilidad:</label>
+                    <input type="text" name="disponibilidad" id="disponibilidad" value="{{ disponibilidad|default_if_none:'' }}" placeholder="Lunes a Viernes, 8am-6pm">
                 </div>
 
-                <div class="form-group">
-                    <label for="disponibilidad">Disponibilidad:</label>
-                    <input type="text" name="disponibilidad" id="disponibilidad" value="{{ disponibilidad|default_if_none:'' }}" placeholder="Ej: Lunes a Viernes, 8am-6pm">
+                <div class="form-group full-width">
+                    <label for="descripcion">💬 Descripción:</label>
+                    <textarea name="descripcion" id="descripcion" rows="4" placeholder="Cuéntanos sobre ti...">{{ profile.bio }}</textarea>
                 </div>
             </div>
 
@@ -95,10 +102,10 @@
                             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                             <circle cx="12" cy="7" r="4"></circle>
                         </svg>
-                        {% if tipo_usuario == "trabajador" %}Trabajador
-                        {% elif tipo_usuario == "empleador" %}Empleador
-                        {% elif tipo_usuario == "trabajador_empleador" %}Trabajador y Empleador
-                        {% elif tipo_usuario == "empresa" %}Empresa
+                        {% if usuario.tipo_usuario == "trabajador" %}Trabajador
+                        {% elif usuario.tipo_usuario == "empleador" %}Empleador
+                        {% elif usuario.tipo_usuario == "ambos" %}Trabajador y Empleador
+                        {% elif usuario.tipo_usuario == "empresa" %}Empresa
                         {% else %}No especificado
                         {% endif %}
                     </span>
@@ -113,8 +120,12 @@
                 </div>
 
                 <div class="profile-badges">
+                    {% if usuario.estado_verificacion == 'verificado' %}
                     <div class="profile-badge">✅ Verificado</div>
+                    {% endif %}
+                    {% if usuario.rating_promedio >= 4.5 %}
                     <div class="profile-badge">⭐ Confiable</div>
+                    {% endif %}
                     <div class="profile-badge">💪 Disponible</div>
                 </div>
             </div>
@@ -126,15 +137,17 @@
                     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
                     <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                 </svg>
-                Editar
+                Editar Perfil
             </button>
-            <a href="#" class="btn btn-secondary">
+            <a href="{% url 'users:exportar_portafolio' %}" class="btn btn-secondary" target="_blank">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M9 11H3v2h6m-6-6h14v2H3m14 10h4v-8h-4m2 4v-4h-6v8h4"></path>
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
                 </svg>
-                Referencias
+                Exportar PDF
             </a>
-            <a href="#" class="btn btn-secondary">
+            <a href="https://wa.me/51{{ usuario.telefono }}" class="btn btn-secondary" target="_blank">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
                 </svg>
@@ -147,28 +160,10 @@
     <div class="tabs">
         <button class="tab active" data-tab="general">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <line x1="8" y1="6" x2="21" y2="6"></line>
-                <line x1="8" y1="12" x2="21" y2="12"></line>
-                <line x1="8" y1="18" x2="21" y2="18"></line>
-                <line x1="3" y1="6" x2="3.01" y2="6"></line>
-                <line x1="3" y1="12" x2="3.01" y2="12"></line>
-                <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
             </svg>
             General
-        </button>
-        <button class="tab" data-tab="skills">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
-            </svg>
-            Servicios
-        </button>
-        <button class="tab" data-tab="portfolio">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                <polyline points="21 15 16 10 5 21"></polyline>
-            </svg>
-            Portafolio
         </button>
         <button class="tab" data-tab="experience">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -184,12 +179,11 @@
             </svg>
             Certificaciones
         </button>
-        <button class="tab" data-tab="history">
+        <button class="tab" data-tab="ratings">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="10"></circle>
-                <polyline points="12 6 12 12 16 14"></polyline>
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
             </svg>
-            Historial
+            Calificaciones
         </button>
     </div>
 
@@ -210,7 +204,7 @@
                     <div class="info-item">
                         <span class="info-label">Precio/hora:</span>
                         <span class="info-value">
-                            {% if precio_hora %}S/ {{ precio_hora|floatformat:2 }}{% else %}No especificado{% endif %}
+                            {% if profile.tarifa_hora %}S/ {{ profile.tarifa_hora|floatformat:2 }}{% else %}No especificado{% endif %}
                         </span>
                     </div>
                 </div>
@@ -220,20 +214,16 @@
                 <h3>📊 Estadísticas</h3>
                 <div class="stats-compact">
                     <div class="stat-item">
-                        <span class="stat-number">{{ estadisticas.trabajos_realizados }}</span>
-                        <span class="stat-label">Realizados</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number">{{ estadisticas.trabajos_activos }}</span>
-                        <span class="stat-label">Activos</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number">{{ estadisticas.trabajos_completados }}</span>
+                        <span class="stat-number">{{ usuario.trabajos_completados }}</span>
                         <span class="stat-label">Completados</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-number">S/ {{ estadisticas.ingresos_mes }}</span>
-                        <span class="stat-label">Ingresos/mes</span>
+                        <span class="stat-number">{{ usuario.total_calificaciones }}</span>
+                        <span class="stat-label">Calificaciones</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">{{ usuario.rating_promedio|floatformat:1 }}⭐</span>
+                        <span class="stat-label">Rating</span>
                     </div>
                 </div>
             </div>
@@ -246,128 +236,35 @@
             </div>
         </div>
     </div>
-    
-    <!-- Tab: Skills -->
-    <div id="skills" class="tab-content">
-        <div class="card">
-            <h3>🛠️ Servicios Ofrecidos</h3>
-            <div class="skills-grid">
-                {% for habilidad in habilidades %}
-                    <div class="skill-item">✅ {{ habilidad }}</div>
-                {% empty %}
-                    <div class="empty-state">
-                        <p>🔧 No has registrado servicios aún.</p>
-                        <small>Agrega los servicios que ofreces para aparecer en más búsquedas.</small>
-                    </div>
-                {% endfor %}
-            </div>
-        </div>
-    </div>
-
-    <!-- Tab: Portfolio -->
-    <div id="portfolio" class="tab-content">
-        <div class="card">
-            <h3>📸 Mi Portafolio</h3>
-
-            <div class="export-actions">
-                <a href="{% url 'users:exportar_portafolio' %}" class="btn btn-secondary" target="_blank">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                        <polyline points="7 10 12 15 17 10"></polyline>
-                        <line x1="12" y1="15" x2="12" y2="3"></line>
-                    </svg>
-                    Exportar PDF
-                </a>
-            </div>
-
-            {% if trabajos or certificaciones %}
-                {% if certificaciones %}
-                    <h4>📌 Certificaciones</h4>
-                    <div class="portfolio-list">
-                        {% for cert in certificaciones %}
-                            <div class="portfolio-item">
-                                <span class="portfolio-title">{{ cert.descripcion }}</span>
-                                <span class="portfolio-date">({{ cert.fecha_subida|date:"Y" }})</span>
-                                <a href="{{ cert.archivo.url }}" target="_blank" class="portfolio-link">Ver</a>
-                            </div>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-
-                {% if trabajos %}
-                    <h4>🛠️ Trabajos en Llamkay</h4>
-                    <div class="portfolio-list">
-                        {% for trabajo in trabajos %}
-                            <div class="portfolio-item">
-                                <span class="portfolio-title">{{ trabajo.titulo }}</span>
-                                <span class="portfolio-desc">{{ trabajo.descripcion|truncatechars:60 }}</span>
-                            </div>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-            {% else %}
-                <div class="empty-state">
-                    <p>📸 No hay elementos en tu portafolio aún.</p>
-                    <small>Sube certificaciones o aplica a trabajos para generar tu portafolio.</small>
-                </div>
-            {% endif %}
-        </div>
-    </div>
 
     <!-- Tab: Experience -->
     <div id="experience" class="tab-content">
-        <div class="content-grid">
-            <div class="card">
-                <h3>💼 Trabajos Realizados</h3>
-                {% if trabajos %}
-                    <div class="experience-list">
-                        {% for trabajo in trabajos %}
-                            <div class="experience-item">
-                                <h4>{{ trabajo.titulo }}</h4>
-                                <p class="experience-desc">{{ trabajo.descripcion|truncatechars:100 }}</p>
-                                <p class="experience-date">
-                                    {{ trabajo.fecha_inicio|date:"M Y" }} - 
-                                    {{ trabajo.fecha_fin|date:"M Y"|default:"En progreso" }}
-                                </p>
-                            </div>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    <div class="empty-state">
-                        <p>💼 No tienes trabajos realizados aún.</p>
-                    </div>
-                {% endif %}
-            </div>
-
-            <div class="card">
-                <h3>⭐ Calificaciones</h3>
-                {% if calificaciones %}
-                    <div class="ratings-list">
-                        {% for calificacion in calificaciones %}
-                            <div class="rating-item">
-                                <div class="rating-stars">
-                                    {% for i in "12345" %}
-                                        {% if forloop.counter <= calificacion.puntuacion %}⭐{% else %}☆{% endif %}
-                                    {% endfor %}
-                                    <span class="rating-score">({{ calificacion.puntuacion }}/5)</span>
-                                </div>
-                                <p class="rating-comment">"{{ calificacion.comentario|truncatechars:80 }}"</p>
-                                <small class="rating-author">
-                                    - {% if calificacion.autor %}
-                                        {{ calificacion.autor.nombres }} {{ calificacion.autor.apellidos }}
-                                    {% else %}
-                                        Usuario anónimo
-                                    {% endif %}, {{ calificacion.fecha|date:"M Y" }}
-                                </small>
-                            </div>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    <div class="empty-state">
-                        <p>⭐ No tienes calificaciones aún.</p>
-                    </div>
-                {% endif %}
-            </div>
+        <div class="card">
+            <h3>💼 Trabajos Realizados</h3>
+            {% if trabajos_realizados %}
+                <div class="experience-list">
+                    {% for trabajo in trabajos_realizados %}
+                        <div class="experience-item">
+                            <h4>{{ trabajo.titulo }}</h4>
+                            <p class="experience-company">{{ trabajo.empresa|default:"Independiente" }}</p>
+                            <p class="experience-desc">{{ trabajo.descripcion|truncatechars:150 }}</p>
+                            <p class="experience-date">
+                                {{ trabajo.fecha_inicio|date:"M Y" }} - 
+                                {% if trabajo.actualmente %}Presente{% else %}{{ trabajo.fecha_fin|date:"M Y" }}{% endif %}
+                            </p>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                        <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                    </svg>
+                    <p>No tienes trabajos registrados aún.</p>
+                    <small>Agrega tu experiencia laboral para mejorar tu perfil</small>
+                </div>
+            {% endif %}
         </div>
     </div>
 
@@ -381,48 +278,118 @@
                         <div class="cert-card">
                             <div class="cert-icon">📄</div>
                             <div class="cert-info">
-                                <h4>{{ cert.descripcion }}</h4>
+                                <h4>{{ cert.titulo }}</h4>
+                                <p>{{ cert.institucion|default:"Institución no especificada" }}</p>
                                 <small>{{ cert.fecha_subida|date:"d/m/Y" }}</small>
                             </div>
-                            <a href="{{ cert.archivo.url }}" target="_blank" class="cert-btn">Ver</a>
+                            {% if cert.archivo %}
+                            <a href="{{ cert.archivo }}" target="_blank" class="cert-btn">Ver</a>
+                            {% endif %}
                         </div>
                     {% endfor %}
                 </div>
             {% else %}
                 <div class="empty-state">
-                    <p>📄 No has subido certificaciones aún.</p>
-                    <small>Las certificaciones generan más confianza en tu perfil profesional.</small>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                        <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+                    </svg>
+                    <p>No has subido certificaciones aún.</p>
+                    <small>Las certificaciones generan más confianza en tu perfil</small>
+                    <a href="{% url 'users:subir_certificacion' %}" class="btn btn-primary" style="margin-top: 1rem;">Subir Certificación</a>
                 </div>
             {% endif %}
         </div>
     </div>
 
-    <!-- Tab: History -->
-    <div id="history" class="tab-content">
+    <!-- Tab: Ratings -->
+    <div id="ratings" class="tab-content">
         <div class="card">
-            <h3>📋 Historial de Actividad</h3>
-            {% if actividades %}
-                <div class="activity-list">
-                    {% for actividad in actividades %}
-                        <div class="activity-item">
-                            <div class="activity-content">
-                                <p>{{ actividad.descripcion }}</p>
-                                <small>{{ actividad.fecha|timesince }} atrás</small>
+            <h3>⭐ Calificaciones Recibidas</h3>
+            {% if calificaciones %}
+                <div class="ratings-summary">
+                    <div class="rating-big">
+                        <span class="rating-number">{{ usuario.rating_promedio|floatformat:1 }}</span>
+                        <div class="rating-stars-big">
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= usuario.rating_promedio %}⭐{% else %}☆{% endif %}
+                            {% endfor %}
+                        </div>
+                        <span class="rating-count">{{ usuario.total_calificaciones }} calificaciones</span>
+                    </div>
+                </div>
+                
+                <div class="ratings-list">
+                    {% for calificacion in calificaciones %}
+                        <div class="rating-item">
+                            <div class="rating-header">
+                                <div class="rating-author-info">
+                                    <span class="rating-author-avatar">{{ calificacion.id_autor.nombres|slice:":1" }}</span>
+                                    <div>
+                                        <strong>{{ calificacion.id_autor.nombres }} {{ calificacion.id_autor.apellidos }}</strong>
+                                        <small>{{ calificacion.fecha|date:"d/m/Y" }}</small>
+                                    </div>
+                                </div>
+                                <div class="rating-stars">
+                                    {% for i in "12345" %}
+                                        {% if forloop.counter <= calificacion.puntuacion %}⭐{% else %}☆{% endif %}
+                                    {% endfor %}
+                                </div>
                             </div>
+                            <p class="rating-comment">"{{ calificacion.comentario|default:"Sin comentario" }}"</p>
                         </div>
                     {% endfor %}
                 </div>
             {% else %}
                 <div class="empty-state">
-                    <p>📋 No hay actividad reciente.</p>
-                    <small>Tu actividad en la plataforma aparecerá aquí.</small>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                    </svg>
+                    <p>No tienes calificaciones aún.</p>
+                    <small>Completa trabajos para recibir calificaciones</small>
                 </div>
             {% endif %}
         </div>
     </div>
 </div>
+
+<!-- ========== WAVE DIVIDER ========== -->
+<div class="wave-divider">
+    <svg viewBox="0 0 1440 120" xmlns="http://www.w3.org/2000/svg">
+        <path fill="#f8f9fa" d="M0,64L80,69.3C160,75,320,85,480,80C640,75,800,53,960,48C1120,43,1280,53,1360,58.7L1440,64L1440,120L1360,120C1280,120,1120,120,960,120C800,120,640,120,480,120C320,120,160,120,80,120L0,120Z"></path>
+    </svg>
+</div>
 {% endblock %}
 
 {% block extra_js %}
 <script src="{% static 'js/users/profile/perfil.js' %}"></script>
+<script>
+// Tab Navigation
+document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+        const targetTab = tab.dataset.tab;
+        
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        
+        tab.classList.add('active');
+        document.getElementById(targetTab).classList.add('active');
+    });
+});
+
+// Modal Controls
+document.querySelector('[data-action="editar-perfil"]')?.addEventListener('click', () => {
+    document.getElementById('editProfileModal').style.display = 'flex';
+});
+
+document.querySelector('[data-action="cerrar-modal"]')?.addEventListener('click', () => {
+    document.getElementById('editProfileModal').style.display = 'none';
+});
+
+// Mobile Menu Toggle
+document.querySelector('.nav-toggle')?.addEventListener('click', function() {
+    document.querySelector('.nav-menu').classList.toggle('active');
+    this.classList.toggle('active');
+});
+</script>
 {% endblock %}

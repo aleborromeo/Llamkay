@@ -139,3 +139,19 @@ MESSAGE_TAGS = {
     messages.WARNING: 'warning',
     messages.ERROR: 'danger',
 }
+
+# ==================== API EXTERNA - APIS.NET.PE ====================
+# Token JWT para consultas de DNI (RENIEC) y RUC (SUNAT)
+APIPERU_TOKEN = 'apis-token-15994.QTKH6OudufG0IiLw5plIH9ucJ6MqNQSd'
+# URLs de las APIs
+APIPERU_BASE_URL = 'https://api.apis.net.pe/v1'
+APIPERU_TIMEOUT = 10  # segundos
+
+# ✅ DEBUG: Verificar que el token se cargó
+print("\n" + "="*60)
+print("⚙️  BASE.PY - Token configurado")
+print("="*60)
+print(f"🔑 APIPERU_TOKEN definido: {bool(APIPERU_TOKEN)}")
+if APIPERU_TOKEN:
+    print(f"🔑 APIPERU_TOKEN valor: {APIPERU_TOKEN[:30]}...")
+print("="*60 + "\n")

@@ -8,92 +8,341 @@
 {% endblock %}
 
 {% block content %}
-<div class="container perfil-publico">
-    <div class="card perfil-box">
-        <div class="perfil-header">
-            <div class="avatar">
-                {% if profile.foto_url %}
-                    <img src="{{ profile.foto_url.url }}" alt="Foto de perfil" class="foto-perfil">
-                {% else %}
-                    <span class="iniciales">{{ usuario.nombres|first }}{{ usuario.apellidos|first }}</span>
-                {% endif %}
-            </div>
-            <div class="perfil-info">
-                <h2>{{ usuario.nombres }} {{ usuario.apellidos }}</h2>
-                <p><strong>Correo:</strong> {{ usuario.email }}</p>
-                <p>
-                    <strong>Ubicación:</strong> 
-                    {% if profile.id_distrito %}{{ profile.id_distrito.nombre }}{% endif %}, 
-                    {% if profile.id_provincia %}{{ profile.id_provincia.nombre }}{% endif %}
-                </p>
-                <p><strong>Disponibilidad:</strong> {{ disponibilidad|default:'No especificada' }}</p>
-                <p><strong>Precio/hora:</strong> S/ {{ precio_hora|default:'-' }}</p>
-            </div>
-        </div>
-
-        <div class="perfil-seccion">
-            <h3>Sobre Mí</h3>
-            <p>{{ profile.bio|default:"Este usuario aún no ha agregado una descripción." }}</p>
-        </div>
-
-        <div class="perfil-seccion">
-            <h3>Servicios Ofrecidos</h3>
-            <ul class="lista-habilidades">
-                {% for habilidad in habilidades %}
-                    <li>✅ {{ habilidad }}</li>
-                {% empty %}
-                    <li>Este usuario aún no ha registrado servicios.</li>
-                {% endfor %}
+<!-- ========== HEADER ========== -->
+<header class="header">
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="{% url 'llamkay:index' %}" class="logo">
+                <span>Llamkay</span>
+            </a>
+            
+            <button class="nav-toggle" aria-label="Abrir menú">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            
+            <ul class="nav-menu">
+                <li><a href="{% url 'llamkay:dashboard' %}" class="nav-link">← Volver</a></li>
+                <li><a href="{% url 'users:buscar_usuarios' %}" class="nav-link">Buscar Profesionales</a></li>
+                <li><a href="{% url 'jobs:all_trabajos' %}" class="btn-nav btn-primary">Ver Trabajos</a></li>
             </ul>
         </div>
+    </nav>
+</header>
 
-        <div class="perfil-seccion">
-            <h3>Certificaciones</h3>
-            <ul class="lista-certificaciones">
-                {% for cert in certificaciones %}
-                    <li>
-                        {{ cert.descripcion }} ({{ cert.fecha_subida|date:"d/m/Y" }})
-                        {% if cert.archivo %}
-                            - <a href="{{ cert.archivo.url }}" target="_blank">Ver</a>
-                        {% endif %}
-                    </li>
-                {% empty %}
-                    <li>Este usuario no tiene certificaciones visibles.</li>
-                {% endfor %}
-            </ul>
-        </div>
+<!-- ========== HERO DEL PERFIL ========== -->
+<section class="profile-hero-section">
+    <div class="hero-background"></div>
+    <div class="container">
+        <div class="profile-hero-card">
+            <div class="profile-hero-content">
+                <div class="profile-avatar-large">
+                    {% if profile.foto_url %}
+                        <img src="{{ profile.foto_url.url }}" alt="Foto de perfil">
+                    {% else %}
+                        <span class="initials-large">{{ usuario.nombres|first }}{{ usuario.apellidos|first }}</span>
+                    {% endif %}
+                    <div class="status-badge">✓ Verificado</div>
+                </div>
 
-        <div class="perfil-seccion">
-            <h3>⭐ Comentarios y Calificaciones</h3>
-            {% if calificaciones %}
-                <ul class="lista-calificaciones">
-                    {% for c in calificaciones %}
-                        <li>
-                            <p>
-                                <strong>{{ c.autor.nombres }} {{ c.autor.apellidos }}:</strong>
-                                {{ c.puntuacion }}⭐ — "{{ c.comentario }}"
-                                <small>({{ c.fecha|date:"d/m/Y" }})</small>
-                            </p>
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <p>Este usuario aún no tiene calificaciones.</p>
-            {% endif %}
-        </div>
+                <div class="profile-hero-info">
+                    <h1 class="profile-name">{{ usuario.nombres }} {{ usuario.apellidos }}</h1>
+                    
+                    <div class="profile-rating">
+                        <div class="stars">
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= usuario.rating_promedio %}⭐{% else %}☆{% endif %}
+                            {% endfor %}
+                        </div>
+                        <span class="rating-text">{{ usuario.rating_promedio|floatformat:1 }} ({{ usuario.total_calificaciones }} calificaciones)</span>
+                    </div>
 
-        <div class="perfil-acciones">
-            <a href="{% url 'chats:iniciar_chat' usuario.id %}" class="btn btn-primary">
-                💬 Enviar Mensaje
-            </a>
-            <a href="{% url 'users:dashboard' %}" class="btn btn-secondary">
-                ← Volver
-            </a>
+                    <div class="profile-meta">
+                        <span class="meta-item">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                <circle cx="12" cy="10" r="3"></circle>
+                            </svg>
+                            {% if profile.id_distrito %}{{ profile.id_distrito.nombre }}, {{ profile.id_provincia.nombre }}{% else %}Ubicación no especificada{% endif %}
+                        </span>
+                        <span class="meta-item">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                            </svg>
+                            {{ usuario.trabajos_completados }} trabajos completados
+                        </span>
+                        <span class="meta-item">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                            {{ disponibilidad|default:"Disponibilidad no especificada" }}
+                        </span>
+                    </div>
+
+                    <div class="profile-actions-hero">
+                        <a href="{% url 'chats:iniciar_chat' usuario.id_usuario %}" class="btn btn-large btn-primary">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                            Enviar Mensaje
+                        </a>
+                        <a href="https://wa.me/51{{ usuario.telefono }}" class="btn btn-large btn-ghost" target="_blank">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                            </svg>
+                            WhatsApp
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+</section>
+
+<!-- ========== CONTENIDO PRINCIPAL ========== -->
+<div class="container profile-content">
+    <!-- Información de Contacto y Precio -->
+    <div class="info-cards-grid">
+        <div class="info-card">
+            <div class="info-card-icon">💰</div>
+            <div class="info-card-content">
+                <h3>Precio por Hora</h3>
+                <p class="info-card-value">S/ {{ precio_hora|default:"-" }}</p>
+            </div>
+        </div>
+        
+        <div class="info-card">
+            <div class="info-card-icon">📧</div>
+            <div class="info-card-content">
+                <h3>Correo Electrónico</h3>
+                <p class="info-card-value">{{ usuario.email }}</p>
+            </div>
+        </div>
+        
+        <div class="info-card">
+            <div class="info-card-icon">🕐</div>
+            <div class="info-card-content">
+                <h3>Disponibilidad</h3>
+                <p class="info-card-value">{{ disponibilidad|default:"No especificada" }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sobre Mí -->
+    <section class="profile-section">
+        <div class="section-header">
+            <h2>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                Sobre Mí
+            </h2>
+        </div>
+        <div class="card">
+            <p class="bio-text">
+                {{ profile.bio|default:"Este usuario aún no ha agregado una descripción sobre sí mismo." }}
+            </p>
+        </div>
+    </section>
+
+    <!-- Servicios Ofrecidos -->
+    <section class="profile-section">
+        <div class="section-header">
+            <h2>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+                </svg>
+                Servicios Ofrecidos
+            </h2>
+        </div>
+        <div class="card">
+            {% if habilidades %}
+                <div class="skills-showcase">
+                    {% for habilidad in habilidades %}
+                        <div class="skill-badge">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            {{ habilidad }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+                    </svg>
+                    <p>Este usuario aún no ha registrado servicios.</p>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <!-- Certificaciones -->
+    <section class="profile-section">
+        <div class="section-header">
+            <h2>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                    <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+                </svg>
+                Certificaciones
+            </h2>
+        </div>
+        <div class="card">
+            {% if certificaciones %}
+                <div class="certifications-list">
+                    {% for cert in certificaciones %}
+                        <div class="certification-item">
+                            <div class="cert-icon-large">📜</div>
+                            <div class="cert-details">
+                                <h4>{{ cert.descripcion }}</h4>
+                                <p class="cert-date">{{ cert.fecha_subida|date:"d/m/Y" }}</p>
+                            </div>
+                            {% if cert.archivo %}
+                                <a href="{{ cert.archivo.url }}" target="_blank" class="btn btn-ghost btn-sm">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                    Ver Certificado
+                                </a>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                        <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+                    </svg>
+                    <p>Este usuario no tiene certificaciones visibles.</p>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <!-- Calificaciones y Comentarios -->
+    <section class="profile-section">
+        <div class="section-header">
+            <h2>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+                Calificaciones y Comentarios
+            </h2>
+        </div>
+        <div class="card">
+            {% if calificaciones %}
+                <div class="ratings-overview">
+                    <div class="rating-summary-big">
+                        <div class="rating-number-big">{{ usuario.rating_promedio|floatformat:1 }}</div>
+                        <div class="rating-stars-display">
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= usuario.rating_promedio %}⭐{% else %}☆{% endif %}
+                            {% endfor %}
+                        </div>
+                        <p class="rating-count-text">{{ usuario.total_calificaciones }} calificaciones</p>
+                    </div>
+                </div>
+
+                <div class="reviews-list">
+                    {% for c in calificaciones %}
+                        <div class="review-card">
+                            <div class="review-header">
+                                <div class="reviewer-info">
+                                    <div class="reviewer-avatar">{{ c.autor.nombres|first }}</div>
+                                    <div>
+                                        <h4 class="reviewer-name">{{ c.autor.nombres }} {{ c.autor.apellidos }}</h4>
+                                        <p class="review-date">{{ c.fecha|date:"d/m/Y" }}</p>
+                                    </div>
+                                </div>
+                                <div class="review-rating">
+                                    {% for i in "12345" %}
+                                        {% if forloop.counter <= c.puntuacion %}⭐{% else %}☆{% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <p class="review-comment">"{{ c.comentario }}"</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                    </svg>
+                    <p>Este usuario aún no tiene calificaciones.</p>
+                    <small>Sé el primero en contratar sus servicios</small>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <!-- Acciones Finales -->
+    <div class="final-actions">
+        <a href="{% url 'chats:iniciar_chat' usuario.id_usuario %}" class="btn btn-xlarge btn-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+            Contactar Ahora
+        </a>
+        <a href="{% url 'llamkay:dashboard' %}" class="btn btn-xlarge btn-ghost">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+            Volver al Dashboard
+        </a>
+    </div>
 </div>
+
+<!-- ========== WAVE DIVIDER ========== -->
+<div class="wave-divider">
+    <svg viewBox="0 0 1440 120" xmlns="http://www.w3.org/2000/svg">
+        <path fill="#ffffff" d="M0,64L80,69.3C160,75,320,85,480,80C640,75,800,53,960,48C1120,43,1280,53,1360,58.7L1440,64L1440,0L1360,0C1280,0,1120,0,960,0C800,0,640,0,480,0C320,0,160,0,80,0L0,0Z"></path>
+    </svg>
+</div>
+
+<!-- ========== FOOTER ========== -->
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-content">
+            <p>&copy; 2025 Llamkay.pe - Conectando talentos con oportunidades</p>
+            <div class="footer-links">
+                <a href="{% url 'llamkay:nosotros' %}">Sobre Nosotros</a>
+                <a href="#">Términos de Servicio</a>
+                <a href="#">Privacidad</a>
+                <a href="#">Contacto</a>
+            </div>
+        </div>
+    </div>
+</footer>
 {% endblock %}
 
 {% block extra_js %}
 <script src="{% static 'js/users/profile/perfil_publico.js' %}"></script>
+<script>
+// Mobile Menu Toggle
+document.querySelector('.nav-toggle')?.addEventListener('click', function() {
+    document.querySelector('.nav-menu').classList.toggle('active');
+    this.classList.toggle('active');
+});
+
+// Smooth scroll for anchor links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    });
+});
+</script>
 {% endblock %}

@@ -1,18 +1,18 @@
 """
-Inicialización del paquete views
-Importa todos los módulos de vistas para facilitar el acceso
+Vistas del módulo Users - REFACTORIZADAS
+Divididas por responsabilidad siguiendo SRP
 """
 
-from . import api
-from . import auth
-from . import calificacion
-from . import perfil
-from . import verificacion
+from . import api_views
+from . import auth_views
+from . import calificacion_views
+from . import perfil_views
+from . import verificacion_views
 
 __all__ = [
-    'api',
-    'auth', 
-    'calificacion',
-    'perfil',
-    'verificacion',
+    'api_views',
+    'auth_views',
+    'calificacion_views',
+    'perfil_views',
+    'verificacion_views',
 ]

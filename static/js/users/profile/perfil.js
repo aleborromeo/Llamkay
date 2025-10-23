@@ -216,7 +216,7 @@ function handleEditFormSubmit() {
         const formData = new FormData(form);
         const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
-        fetch('/usuarios/actualizar_perfil/', {
+        fetch('/users/perfil/actualizar/', {
             method: 'POST',
             headers: {
                 'X-CSRFToken': csrfToken

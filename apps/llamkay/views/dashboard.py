@@ -5,7 +5,6 @@ from django.db.models import Q, Count, Avg, Sum
 from django.utils import timezone
 from datetime import timedelta
 import logging
-from apps.core.templatetags.usuarios_extras import usuario
 
 logger = logging.getLogger(__name__)
 
@@ -18,10 +17,14 @@ def dashboard(request):
         # Obtener el Usuario personalizado desde el User de Django
         from apps.users.models import Usuario, Profile, UsuarioHabilidad
         
-        usuario = Usuario.objects.select_related('profile').get(user=request.user)
+        # ❌ ERROR AQUÍ: Sobrescribes la variable usuario
+        # from apps.core.templatetags.usuarios_extras import usuario  # ❌ ELIMINAR ESTA LÍNEA
+        
+        # ✅ CORRECTO: Obtener el usuario desde la base de datos
+        usuario_obj = Usuario.objects.select_related('profile').get(user=request.user)
         profile, _ = Profile.objects.get_or_create(
             user=request.user,
-            defaults={'id_usuario': usuario}
+            defaults={'id_usuario': usuario_obj}
         )
         
         # ==================== ESTADÍSTICAS GENERALES ====================
@@ -37,19 +40,19 @@ def dashboard(request):
             
             # Obtener conversaciones del usuario
             conversaciones = Conversacion.objects.filter(
-                Q(id_usuario_1=usuario) | Q(id_usuario_2=usuario),
+                Q(id_usuario_1=usuario_obj) | Q(id_usuario_2=usuario_obj),
                 activa=True
             ).select_related('id_usuario_1', 'id_usuario_2').order_by('-ultimo_mensaje_at')
             
             mensajes_no_leidos = 0
             for conv in conversaciones[:5]:
-                otro_usuario = conv.obtener_otro_usuario(usuario)
+                otro_usuario = conv.obtener_otro_usuario(usuario_obj)
                 
                 # Contar mensajes no leídos en esta conversación
                 no_leidos = Mensaje.objects.filter(
                     id_conversacion=conv,
                     leido=False
-                ).exclude(id_remitente=usuario).count()
+                ).exclude(id_remitente=usuario_obj).count()
                 
                 mensajes_no_leidos += no_leidos
                 
@@ -77,38 +80,38 @@ def dashboard(request):
         
         # ==================== ESTADÍSTICAS POR TIPO DE USUARIO ====================
         
-        if usuario.tipo_usuario in ['trabajador', 'ambos']:
+        if usuario_obj.tipo_usuario in ['trabajador', 'ambos']:
             # ESTADÍSTICAS PARA TRABAJADORES
             try:
                 from apps.jobs.models import Postulacion, GuardarTrabajo, Contrato
                 
                 # Total de postulaciones
                 postulaciones_totales = Postulacion.objects.filter(
-                    id_trabajador=usuario
+                    id_trabajador=usuario_obj
                 ).count()
                 
                 estadisticas['postulaciones_totales'] = postulaciones_totales
                 
                 # Postulaciones pendientes
                 estadisticas['postulaciones_pendientes'] = Postulacion.objects.filter(
-                    id_trabajador=usuario,
+                    id_trabajador=usuario_obj,
                     estado='pendiente'
                 ).count()
                 
                 # Postulaciones aceptadas
                 estadisticas['postulaciones_aceptadas'] = Postulacion.objects.filter(
-                    id_trabajador=usuario,
+                    id_trabajador=usuario_obj,
                     estado='aceptada'
                 ).count()
                 
                 # Trabajos guardados
                 estadisticas['trabajos_guardados'] = GuardarTrabajo.objects.filter(
-                    id_usuario=usuario
+                    id_usuario=usuario_obj
                 ).count()
                 
                 # Contratos activos
                 estadisticas['contratos_activos'] = Contrato.objects.filter(
-                    id_trabajador=usuario,
+                    id_trabajador=usuario_obj,
                     estado='activo'
                 ).count()
                 
@@ -126,7 +129,7 @@ def dashboard(request):
                 
                 # Postulaciones aceptadas recientes
                 postulaciones_aceptadas = Postulacion.objects.filter(
-                    id_trabajador=usuario,
+                    id_trabajador=usuario_obj,
                     estado='aceptada'
                 ).select_related(
                     'id_oferta_usuario__id_empleador',
@@ -151,7 +154,7 @@ def dashboard(request):
                 mensajes_nuevos = Mensaje.objects.filter(
                     id_conversacion__in=conversaciones,
                     leido=False
-                ).exclude(id_remitente=usuario).select_related('id_remitente').order_by('-fecha_envio')[:2]
+                ).exclude(id_remitente=usuario_obj).select_related('id_remitente').order_by('-fecha_envio')[:2]
                 
                 for msg in mensajes_nuevos:
                     actividades_recientes.append({
@@ -163,7 +166,7 @@ def dashboard(request):
                 # Calificaciones recientes
                 from apps.jobs.models import Calificacion
                 calificaciones_nuevas = Calificacion.objects.filter(
-                    id_receptor=usuario,
+                    id_receptor=usuario_obj,
                     activa=True
                 ).select_related('id_autor').order_by('-fecha')[:1]
                 
@@ -181,14 +184,14 @@ def dashboard(request):
                 from apps.jobs.models import OfertaUsuario, OfertaEmpresa
                 
                 # Obtener categorías de interés del usuario
-                categorias_usuario = usuario.usuariocategoria_set.values_list('id_categoria', flat=True)
+                categorias_usuario = usuario_obj.usuariocategoria_set.values_list('id_categoria', flat=True)
                 
                 # Ofertas de usuarios
                 ofertas_usuario = OfertaUsuario.objects.filter(
                     estado='activa',
                     deleted_at__isnull=True
                 ).exclude(
-                    id_empleador=usuario
+                    id_empleador=usuario_obj
                 ).select_related(
                     'id_empleador',
                     'id_categoria',
@@ -221,7 +224,7 @@ def dashboard(request):
                     estado='activa',
                     deleted_at__isnull=True
                 ).exclude(
-                    id_empleador=usuario
+                    id_empleador=usuario_obj
                 ).select_related(
                     'id_empleador',
                     'id_categoria',
@@ -255,52 +258,52 @@ def dashboard(request):
             except Exception as e:
                 logger.error(f"Error cargando estadísticas de trabajador: {str(e)}")
         
-        elif usuario.tipo_usuario in ['empleador', 'empresa']:
+        elif usuario_obj.tipo_usuario in ['empleador', 'empresa']:
             # ESTADÍSTICAS PARA EMPLEADORES/EMPRESAS
             try:
                 from apps.jobs.models import OfertaUsuario, OfertaEmpresa, Postulacion, Contrato
                 
                 # Ofertas activas
-                if usuario.tipo_usuario == 'empresa':
+                if usuario_obj.tipo_usuario == 'empresa':
                     ofertas_activas = OfertaEmpresa.objects.filter(
-                        id_empleador=usuario,
+                        id_empleador=usuario_obj,
                         estado='activa',
                         deleted_at__isnull=True
                     ).count()
                     
                     ofertas_totales = OfertaEmpresa.objects.filter(
-                        id_empleador=usuario,
+                        id_empleador=usuario_obj,
                         deleted_at__isnull=True
                     ).count()
                     
                     # Postulantes totales
                     postulantes_totales = Postulacion.objects.filter(
-                        id_oferta_empresa__id_empleador=usuario
+                        id_oferta_empresa__id_empleador=usuario_obj
                     ).count()
                     
                     # Vistas totales
                     vistas_totales = OfertaEmpresa.objects.filter(
-                        id_empleador=usuario
+                        id_empleador=usuario_obj
                     ).aggregate(total=Sum('vistas'))['total'] or 0
                     
                 else:
                     ofertas_activas = OfertaUsuario.objects.filter(
-                        id_empleador=usuario,
+                        id_empleador=usuario_obj,
                         estado='activa',
                         deleted_at__isnull=True
                     ).count()
                     
                     ofertas_totales = OfertaUsuario.objects.filter(
-                        id_empleador=usuario,
+                        id_empleador=usuario_obj,
                         deleted_at__isnull=True
                     ).count()
                     
                     postulantes_totales = Postulacion.objects.filter(
-                        id_oferta_usuario__id_empleador=usuario
+                        id_oferta_usuario__id_empleador=usuario_obj
                     ).count()
                     
                     vistas_totales = OfertaUsuario.objects.filter(
-                        id_empleador=usuario
+                        id_empleador=usuario_obj
                     ).aggregate(total=Sum('vistas'))['total'] or 0
                 
                 estadisticas['ofertas_activas'] = ofertas_activas
@@ -310,16 +313,16 @@ def dashboard(request):
                 
                 # Contratos activos
                 estadisticas['contratos_activos'] = Contrato.objects.filter(
-                    id_empleador=usuario,
+                    id_empleador=usuario_obj,
                     estado='activo'
                 ).count()
                 
                 # ==================== ACTIVIDADES RECIENTES (EMPLEADOR) ====================
                 
                 # Nuevas postulaciones
-                if usuario.tipo_usuario == 'empresa':
+                if usuario_obj.tipo_usuario == 'empresa':
                     postulaciones_nuevas = Postulacion.objects.filter(
-                        id_oferta_empresa__id_empleador=usuario,
+                        id_oferta_empresa__id_empleador=usuario_obj,
                         estado='pendiente'
                     ).select_related(
                         'id_trabajador',
@@ -327,7 +330,7 @@ def dashboard(request):
                     ).order_by('-fecha_postulacion')[:3]
                 else:
                     postulaciones_nuevas = Postulacion.objects.filter(
-                        id_oferta_usuario__id_empleador=usuario,
+                        id_oferta_usuario__id_empleador=usuario_obj,
                         estado='pendiente'
                     ).select_related(
                         'id_trabajador',
@@ -383,7 +386,7 @@ def dashboard(request):
         tareas_totales = 4
         
         # Información básica
-        if usuario.nombres and usuario.apellidos:
+        if usuario_obj.nombres and usuario_obj.apellidos:
             tareas_completadas += 1
         
         # Foto de perfil
@@ -391,12 +394,12 @@ def dashboard(request):
             tareas_completadas += 1
         
         # Verificación
-        if usuario.estado_verificacion == 'verificado':
+        if usuario_obj.estado_verificacion == 'verificado':
             tareas_completadas += 1
         
         # Habilidades (solo para trabajadores)
-        if usuario.tipo_usuario in ['trabajador', 'ambos']:
-            if UsuarioHabilidad.objects.filter(id_usuario=usuario).exists():
+        if usuario_obj.tipo_usuario in ['trabajador', 'ambos']:
+            if UsuarioHabilidad.objects.filter(id_usuario=usuario_obj).exists():
                 tareas_completadas += 1
         else:
             tareas_completadas += 1  # No aplica para empleadores
@@ -417,7 +420,7 @@ def dashboard(request):
         
         # ==================== CONTEXTO FINAL ====================
         context = {
-            'usuario': usuario,
+            'usuario': usuario_obj,  # ✅ Usar usuario_obj en lugar de usuario
             'profile': profile,
             'estadisticas': estadisticas,
             'actividades_recientes': actividades_recientes[:5],
