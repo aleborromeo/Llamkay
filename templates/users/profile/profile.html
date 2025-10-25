@@ -1,7 +1,7 @@
 {% extends "users/base.html" %}
 {% load static %}
 
-{% block title %}Mi Perfil - Llamkay.pe{% endblock %}
+{% block title %}Mi Perfil - {{ usuario.nombres }} - Llamkay.pe{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/users/profile/perfil.css' %}">
@@ -12,7 +12,7 @@
 <header class="header">
     <nav class="navbar">
         <div class="nav-container">
-            <a href="{% url 'llamkay:dashboard' %}" class="logo">
+            <a href="{% url 'llamkay:index' %}" class="logo">
                 <span>Llamkay</span>
             </a>
             
@@ -26,370 +26,476 @@
                 <li><a href="{% url 'llamkay:dashboard' %}" class="nav-link">Dashboard</a></li>
                 <li><a href="{% url 'jobs:all_trabajos' %}" class="nav-link">Trabajos</a></li>
                 <li><a href="{% url 'users:buscar_usuarios' %}" class="nav-link">Buscar</a></li>
+                <li><a href="{% url 'users:perfil' %}" class="nav-link active">Mi Perfil</a></li>
                 <li><a href="{% url 'users:logout' %}" class="btn-nav btn-ghost">Cerrar Sesión</a></li>
             </ul>
         </div>
     </nav>
 </header>
 
-<!-- ========== MODAL DE EDICIÓN ========== -->
-<div class="edit-profile-modal" id="editProfileModal" style="display: none;">
-    <div class="modal-content">
-        <form method="POST" enctype="multipart/form-data" id="form-editar-perfil" action="{% url 'users:actualizar_perfil' %}">
-            {% csrf_token %}
-            <h2>✏️ Editar Perfil</h2>
-
-            <div class="form-grid">
-                <div class="form-group full-width">
-                    <label for="foto">📸 Foto de perfil:</label>
-                    <input type="file" name="foto" id="foto" accept="image/*">
+<!-- ========== PERFIL HERO ========== -->
+<section class="profile-hero">
+    <div class="profile-hero-bg"></div>
+    <div class="container">
+        <div class="profile-hero-content">
+            <div class="profile-avatar-large">
+                {% if profile.foto_url %}
+                    <img src="{{ profile.foto_url.url }}" alt="Foto de {{ usuario.nombres }}">
+                {% else %}
+                    <div class="avatar-placeholder">{{ usuario.nombres|slice:":1" }}{{ usuario.apellidos|slice:":1" }}</div>
+                {% endif %}
+                <div class="avatar-status"></div>
+            </div>
+            
+            <div class="profile-hero-info">
+                <div class="profile-badges-inline">
+                    {% if usuario.estado_verificacion == 'verificado' %}
+                    <span class="badge badge-success">✓ Verificado</span>
+                    {% endif %}
+                    {% if usuario.rating_promedio >= 4.5 %}
+                    <span class="badge badge-star">★ Top Rated</span>
+                    {% endif %}
                 </div>
-
-                <div class="form-group">
-                    <label for="telefono">📱 Teléfono:</label>
-                    <input type="text" name="telefono" id="telefono" value="{{ usuario.telefono }}" placeholder="999999999">
+                
+                <h1 class="profile-name">{{ usuario.nombres }} {{ usuario.apellidos }}</h1>
+                
+                <div class="profile-meta">
+                    <span class="meta-item">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                        {% if profile.id_distrito %}{{ profile.id_distrito.nombre }}, {% endif %}
+                        {% if profile.id_provincia %}{{ profile.id_provincia.nombre }}{% endif %}
+                    </span>
+                    <span class="meta-item">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        {% if usuario.tipo_usuario == 'trabajador' %}Trabajador
+                        {% elif usuario.tipo_usuario == 'empleador' %}Empleador
+                        {% elif usuario.tipo_usuario == 'ambos' %}Trabajador y Empleador
+                        {% elif usuario.tipo_usuario == 'empresa' %}Empresa
+                        {% else %}Usuario{% endif %}
+                    </span>
+                    <span class="meta-item rating">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="#fbbf24" stroke="#fbbf24" stroke-width="2">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                        </svg>
+                        {{ usuario.rating_promedio|default:"0.0"|floatformat:1 }} ({{ usuario.total_calificaciones|default:"0" }})
+                    </span>
                 </div>
-
-                <div class="form-group">
-                    <label for="disponibilidad">🕐 Disponibilidad:</label>
-                    <input type="text" name="disponibilidad" id="disponibilidad" value="{{ disponibilidad|default_if_none:'' }}" placeholder="Lunes a Viernes, 8am-6pm">
-                </div>
-
-                <div class="form-group full-width">
-                    <label for="descripcion">💬 Descripción:</label>
-                    <textarea name="descripcion" id="descripcion" rows="4" placeholder="Cuéntanos sobre ti...">{{ profile.bio }}</textarea>
+                
+                <div class="profile-actions">
+                    <button class="btn btn-primary" onclick="openEditModal()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Editar Perfil
+                    </button>
+                    <a href="{% url 'users:exportar_portafolio' %}" class="btn btn-secondary" target="_blank">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        Exportar PDF
+                    </a>
+                    <a href="https://wa.me/51{{ usuario.telefono }}" class="btn btn-whatsapp" target="_blank">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.304-1.654a11.882 11.882 0 005.713 1.456h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+                        </svg>
+                        WhatsApp
+                    </a>
                 </div>
             </div>
+        </div>
+    </div>
+</section>
 
-            <input type="hidden" name="id_departamento" value="{{ profile.id_departamento.id_departamento }}">
-            <input type="hidden" name="id_provincia" value="{{ profile.id_provincia.id_provincia }}">
-            <input type="hidden" name="id_distrito" value="{{ profile.id_distrito.id_distrito }}">
+<!-- ========== STATS RÁPIDAS ========== -->
+<section class="stats-section">
+    <div class="container">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-number">{{ usuario.trabajos_completados|default:"0" }}</div>
+                    <div class="stat-label">Trabajos Completados</div>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                    </svg>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-number">{{ usuario.rating_promedio|default:"0.0"|floatformat:1 }}</div>
+                    <div class="stat-label">Calificación Promedio</div>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-number">{{ usuario.total_calificaciones|default:"0" }}</div>
+                    <div class="stat-label">Calificaciones Recibidas</div>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-number">{{ disponibilidad|default:"No especificada"|truncatechars:15 }}</div>
+                    <div class="stat-label">Disponibilidad</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
-            <div class="modal-buttons">
-                <button type="submit" class="btn btn-primary">Guardar cambios</button>
-                <button type="button" data-action="cerrar-modal" class="btn btn-secondary">Cancelar</button>
+<!-- ========== CONTENIDO PRINCIPAL ========== -->
+<section class="profile-content">
+    <div class="container">
+        <!-- Tabs Navigation -->
+        <div class="tabs-nav">
+            <button class="tab-btn active" data-tab="about">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                Sobre Mí
+            </button>
+            <button class="tab-btn" data-tab="experience">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                </svg>
+                Experiencia
+            </button>
+            <button class="tab-btn" data-tab="certifications">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                    <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+                </svg>
+                Certificaciones
+            </button>
+            <button class="tab-btn" data-tab="reviews">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+                Calificaciones
+            </button>
+        </div>
+        
+        <!-- Tab: Sobre Mí -->
+        <div class="tab-content active" id="about">
+            <div class="content-grid">
+                <div class="content-card">
+                    <h3>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        </svg>
+                        Información Personal
+                    </h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">Email</span>
+                            <span class="info-value">{{ usuario.email }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Teléfono</span>
+                            <span class="info-value">{{ usuario.telefono|default:"No especificado" }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">DNI</span>
+                            <span class="info-value">{{ usuario.dni|default:"No especificado" }}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="content-card full-width">
+                    <h3>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                        Descripción
+                    </h3>
+                    <p class="bio-text">
+                        {{ profile.bio|default:"Aún no has agregado una descripción a tu perfil. Cuéntanos sobre ti, tus habilidades y experiencia para que los empleadores te conozcan mejor." }}
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tab: Experiencia -->
+        <div class="tab-content" id="experience">
+            <div class="content-card">
+                <h3>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                        <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                    </svg>
+                    Trabajos Realizados
+                </h3>
+                
+                {% if trabajos_realizados %}
+                <div class="timeline">
+                    {% for trabajo in trabajos_realizados %}
+                    <div class="timeline-item">
+                        <div class="timeline-marker"></div>
+                        <div class="timeline-content">
+                            <h4>{{ trabajo.titulo }}</h4>
+                            <p class="timeline-company">{{ trabajo.empresa|default:"Independiente" }}</p>
+                            <p class="timeline-description">{{ trabajo.descripcion|truncatechars:200 }}</p>
+                            <p class="timeline-date">
+                                {{ trabajo.fecha_inicio|date:"M Y" }} - 
+                                {% if trabajo.actualmente %}Presente{% else %}{{ trabajo.fecha_fin|date:"M Y" }}{% endif %}
+                            </p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="empty-state">
+                    <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                        <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                        <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                    </svg>
+                    <h4>No tienes experiencia registrada</h4>
+                    <p>Agrega tu experiencia laboral para mejorar tu perfil y aumentar tus oportunidades</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Tab: Certificaciones -->
+        <div class="tab-content" id="certifications">
+            <div class="content-card">
+                <div class="card-header">
+                    <h3>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                            <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+                        </svg>
+                        Mis Certificaciones
+                    </h3>
+                    <a href="{% url 'users:subir_certificacion' %}" class="btn btn-sm btn-primary">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                        Agregar
+                    </a>
+                </div>
+                
+                {% if certificaciones %}
+                <div class="certifications-grid">
+                    {% for cert in certificaciones %}
+                    <div class="cert-card">
+                        <div class="cert-icon">📄</div>
+                        <div class="cert-content">
+                            <h4>{{ cert.titulo }}</h4>
+                            <p class="cert-institution">{{ cert.institucion|default:"Institución no especificada" }}</p>
+                            <p class="cert-date">{{ cert.fecha_subida|date:"d/m/Y" }}</p>
+                        </div>
+                        {% if cert.archivo %}
+                        <a href="{{ cert.archivo.url }}" target="_blank" class="cert-action">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </a>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="empty-state">
+                    <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                        <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                        <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+                    </svg>
+                    <h4>No tienes certificaciones</h4>
+                    <p>Las certificaciones aumentan la confianza y credibilidad de tu perfil</p>
+                    <a href="{% url 'users:subir_certificacion' %}" class="btn btn-primary">Subir Certificación</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Tab: Calificaciones -->
+        <div class="tab-content" id="reviews">
+            <div class="content-card">
+                <h3>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                    </svg>
+                    Calificaciones Recibidas
+                </h3>
+                
+                {% if calificaciones %}
+                <div class="rating-summary">
+                    <div class="rating-overall">
+                        <div class="rating-number">{{ usuario.rating_promedio|floatformat:1 }}</div>
+                        <div class="rating-stars">
+                            {% for i in "12345" %}
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="{% if forloop.counter <= usuario.rating_promedio %}#fbbf24{% else %}#d1d5db{% endif %}" stroke="{% if forloop.counter <= usuario.rating_promedio %}#fbbf24{% else %}#d1d5db{% endif %}" stroke-width="1">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                            </svg>
+                            {% endfor %}
+                        </div>
+                        <p class="rating-count">{{ usuario.total_calificaciones }} calificaciones</p>
+                    </div>
+                </div>
+                
+                <div class="reviews-list">
+                    {% for calificacion in calificaciones %}
+                    <div class="review-item">
+                        <div class="review-header">
+                            <div class="review-author">
+                                <div class="author-avatar">{{ calificacion.id_autor.nombres|slice:":1" }}</div>
+                                <div class="author-info">
+                                    <div class="author-name">{{ calificacion.id_autor.nombres }} {{ calificacion.id_autor.apellidos }}</div>
+                                    <div class="review-date">{{ calificacion.fecha|date:"d/m/Y" }}</div>
+                                </div>
+                            </div>
+                            <div class="review-rating">
+                                {% for i in "12345" %}
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="{% if forloop.counter <= calificacion.puntuacion %}#fbbf24{% else %}#d1d5db{% endif %}" stroke="none">
+                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                                </svg>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <p class="review-comment">{{ calificacion.comentario|default:"Sin comentario" }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="empty-state">
+                    <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                    </svg>
+                    <h4>No tienes calificaciones aún</h4>
+                    <p>Completa trabajos para recibir calificaciones y mejorar tu reputación</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========== MODAL DE EDICIÓN ========== -->
+<div class="modal" id="editModal">
+    <div class="modal-overlay" onclick="closeEditModal()"></div>
+    <div class="modal-container">
+        <div class="modal-header">
+            <h2>Editar Perfil</h2>
+            <button class="modal-close" onclick="closeEditModal()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+        
+        <form method="POST" enctype="multipart/form-data" id="editProfileForm" action="{% url 'users:actualizar_perfil' %}">
+            {% csrf_token %}
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="foto">Foto de perfil</label>
+                    <input type="file" name="foto" id="foto" accept="image/*">
+                    <small>Tamaño máximo: 5MB. Formatos: JPG, PNG</small>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="telefono">Teléfono</label>
+                        <input type="tel" name="telefono" id="telefono" value="{{ usuario.telefono }}" placeholder="999999999" maxlength="9">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="disponibilidad">Disponibilidad</label>
+                    <input type="text" name="disponibilidad" id="disponibilidad" value="{{ disponibilidad }}" placeholder="Ej: Lunes a Viernes, 8am - 6pm">
+                </div>
+                
+                <div class="form-group">
+                    <label for="descripcion">Descripción</label>
+                    <textarea name="descripcion" id="descripcion" rows="5" placeholder="Cuéntanos sobre ti, tus habilidades y experiencia...">{{ profile.bio }}</textarea>
+                </div>
+                
+                <input type="hidden" name="id_departamento" value="{{ profile.id_departamento.id_departamento }}">
+                <input type="hidden" name="id_provincia" value="{{ profile.id_provincia.id_provincia }}">
+                <input type="hidden" name="id_distrito" value="{{ profile.id_distrito.id_distrito }}">
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
             </div>
         </form>
     </div>
 </div>
 
-<!-- ========== CONTENIDO PRINCIPAL ========== -->
-<div class="container">
-    <!-- Profile Header -->
-    <div class="profile-header">
-        <div class="profile-hero">
-            <div class="profile-avatar">
-                {% if profile.foto_url %}
-                    <img src="{{ profile.foto_url.url }}" alt="Foto de perfil" class="profile-photo">
-                {% else %}
-                    <span class="initials">{{ usuario.nombres|slice:":1" }}{{ usuario.apellidos|slice:":1" }}</span>
-                {% endif %}
-                <div class="profile-status"></div>
+<!-- ========== FOOTER ========== -->
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-brand">
+            <div class="footer-logo">
+                <span>Llamkay</span>
             </div>
-
-            <div class="profile-info">
-                <h1>{{ usuario.nombres }} {{ usuario.apellidos }}</h1>
-                <div class="profile-details">
-                    <span class="detail-item">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                            <polyline points="22,6 12,13 2,6"></polyline>
-                        </svg>
-                        {{ usuario.email }}
-                    </span>
-                    <span class="detail-item">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="12" cy="7" r="4"></circle>
-                        </svg>
-                        {% if usuario.tipo_usuario == "trabajador" %}Trabajador
-                        {% elif usuario.tipo_usuario == "empleador" %}Empleador
-                        {% elif usuario.tipo_usuario == "ambos" %}Trabajador y Empleador
-                        {% elif usuario.tipo_usuario == "empresa" %}Empresa
-                        {% else %}No especificado
-                        {% endif %}
-                    </span>
-                    <span class="detail-item">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                            <circle cx="12" cy="10" r="3"></circle>
-                        </svg>
-                        {% if profile.id_distrito %}{{ profile.id_distrito.nombre }}{% else %}Sin ubicación{% endif %},
-                        {% if profile.id_provincia %}{{ profile.id_provincia.nombre }}{% endif %}
-                    </span>
-                </div>
-
-                <div class="profile-badges">
-                    {% if usuario.estado_verificacion == 'verificado' %}
-                    <div class="profile-badge">✅ Verificado</div>
-                    {% endif %}
-                    {% if usuario.rating_promedio >= 4.5 %}
-                    <div class="profile-badge">⭐ Confiable</div>
-                    {% endif %}
-                    <div class="profile-badge">💪 Disponible</div>
-                </div>
-            </div>
+            <p>Conectando talentos con oportunidades laborales en todo el Perú</p>
         </div>
-
-        <div class="profile-actions">
-            <button class="btn btn-primary" data-action="editar-perfil">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                </svg>
-                Editar Perfil
-            </button>
-            <a href="{% url 'users:exportar_portafolio' %}" class="btn btn-secondary" target="_blank">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                    <polyline points="7 10 12 15 17 10"></polyline>
-                    <line x1="12" y1="15" x2="12" y2="3"></line>
-                </svg>
-                Exportar PDF
-            </a>
-            <a href="https://wa.me/51{{ usuario.telefono }}" class="btn btn-secondary" target="_blank">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-                </svg>
-                WhatsApp
-            </a>
-        </div>
-    </div>
-
-    <!-- Tabs -->
-    <div class="tabs">
-        <button class="tab active" data-tab="general">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                <circle cx="12" cy="7" r="4"></circle>
-            </svg>
-            General
-        </button>
-        <button class="tab" data-tab="experience">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
-                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
-            </svg>
-            Experiencia
-        </button>
-        <button class="tab" data-tab="certifications">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
-                <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
-            </svg>
-            Certificaciones
-        </button>
-        <button class="tab" data-tab="ratings">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-            </svg>
-            Calificaciones
-        </button>
-    </div>
-
-    <!-- Tab: General -->
-    <div id="general" class="tab-content active">
-        <div class="content-grid">
-            <div class="card">
-                <h3>📱 Contacto & Disponibilidad</h3>
-                <div class="info-list">
-                    <div class="info-item">
-                        <span class="info-label">Teléfono:</span>
-                        <span class="info-value">{{ usuario.telefono|default:"No especificado" }}</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">Disponibilidad:</span>
-                        <span class="info-value">{{ disponibilidad|default:"No especificada" }}</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">Precio/hora:</span>
-                        <span class="info-value">
-                            {% if profile.tarifa_hora %}S/ {{ profile.tarifa_hora|floatformat:2 }}{% else %}No especificado{% endif %}
-                        </span>
-                    </div>
-                </div>
+        
+        <div class="footer-links">
+            <div class="footer-column">
+                <h4>Plataforma</h4>
+                <ul>
+                    <li><a href="{% url 'jobs:all_trabajos' %}">Buscar trabajos</a></li>
+                    <li><a href="{% url 'llamkay:dashboard' %}">Dashboard</a></li>
+                    <li><a href="{% url 'users:buscar_usuarios' %}">Buscar usuarios</a></li>
+                </ul>
             </div>
-
-            <div class="card">
-                <h3>📊 Estadísticas</h3>
-                <div class="stats-compact">
-                    <div class="stat-item">
-                        <span class="stat-number">{{ usuario.trabajos_completados }}</span>
-                        <span class="stat-label">Completados</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number">{{ usuario.total_calificaciones }}</span>
-                        <span class="stat-label">Calificaciones</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number">{{ usuario.rating_promedio|floatformat:1 }}⭐</span>
-                        <span class="stat-label">Rating</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card full-width">
-                <h3>💤 Sobre Mí</h3>
-                <p class="bio">
-                    {{ profile.bio|default:"Sin descripción aún. Agrega información sobre ti para que los empleadores conozcan mejor tu perfil profesional." }}
-                </p>
+            
+            <div class="footer-column">
+                <h4>Soporte</h4>
+                <ul>
+                    <li><a href="#">Centro de ayuda</a></li>
+                    <li><a href="#">Términos de servicio</a></li>
+                    <li><a href="#">Política de privacidad</a></li>
+                </ul>
             </div>
         </div>
     </div>
-
-    <!-- Tab: Experience -->
-    <div id="experience" class="tab-content">
-        <div class="card">
-            <h3>💼 Trabajos Realizados</h3>
-            {% if trabajos_realizados %}
-                <div class="experience-list">
-                    {% for trabajo in trabajos_realizados %}
-                        <div class="experience-item">
-                            <h4>{{ trabajo.titulo }}</h4>
-                            <p class="experience-company">{{ trabajo.empresa|default:"Independiente" }}</p>
-                            <p class="experience-desc">{{ trabajo.descripcion|truncatechars:150 }}</p>
-                            <p class="experience-date">
-                                {{ trabajo.fecha_inicio|date:"M Y" }} - 
-                                {% if trabajo.actualmente %}Presente{% else %}{{ trabajo.fecha_fin|date:"M Y" }}{% endif %}
-                            </p>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <div class="empty-state">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
-                        <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
-                    </svg>
-                    <p>No tienes trabajos registrados aún.</p>
-                    <small>Agrega tu experiencia laboral para mejorar tu perfil</small>
-                </div>
-            {% endif %}
-        </div>
+    
+    <div class="footer-bottom">
+        <p>&copy; 2025 Llamkay.pe. Todos los derechos reservados.</p>
     </div>
-
-    <!-- Tab: Certifications -->
-    <div id="certifications" class="tab-content">
-        <div class="card">
-            <h3>🎓 Certificaciones y Documentos</h3>
-            {% if certificaciones %}
-                <div class="cert-grid">
-                    {% for cert in certificaciones %}
-                        <div class="cert-card">
-                            <div class="cert-icon">📄</div>
-                            <div class="cert-info">
-                                <h4>{{ cert.titulo }}</h4>
-                                <p>{{ cert.institucion|default:"Institución no especificada" }}</p>
-                                <small>{{ cert.fecha_subida|date:"d/m/Y" }}</small>
-                            </div>
-                            {% if cert.archivo %}
-                            <a href="{{ cert.archivo }}" target="_blank" class="cert-btn">Ver</a>
-                            {% endif %}
-                        </div>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <div class="empty-state">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
-                        <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
-                    </svg>
-                    <p>No has subido certificaciones aún.</p>
-                    <small>Las certificaciones generan más confianza en tu perfil</small>
-                    <a href="{% url 'users:subir_certificacion' %}" class="btn btn-primary" style="margin-top: 1rem;">Subir Certificación</a>
-                </div>
-            {% endif %}
-        </div>
-    </div>
-
-    <!-- Tab: Ratings -->
-    <div id="ratings" class="tab-content">
-        <div class="card">
-            <h3>⭐ Calificaciones Recibidas</h3>
-            {% if calificaciones %}
-                <div class="ratings-summary">
-                    <div class="rating-big">
-                        <span class="rating-number">{{ usuario.rating_promedio|floatformat:1 }}</span>
-                        <div class="rating-stars-big">
-                            {% for i in "12345" %}
-                                {% if forloop.counter <= usuario.rating_promedio %}⭐{% else %}☆{% endif %}
-                            {% endfor %}
-                        </div>
-                        <span class="rating-count">{{ usuario.total_calificaciones }} calificaciones</span>
-                    </div>
-                </div>
-                
-                <div class="ratings-list">
-                    {% for calificacion in calificaciones %}
-                        <div class="rating-item">
-                            <div class="rating-header">
-                                <div class="rating-author-info">
-                                    <span class="rating-author-avatar">{{ calificacion.id_autor.nombres|slice:":1" }}</span>
-                                    <div>
-                                        <strong>{{ calificacion.id_autor.nombres }} {{ calificacion.id_autor.apellidos }}</strong>
-                                        <small>{{ calificacion.fecha|date:"d/m/Y" }}</small>
-                                    </div>
-                                </div>
-                                <div class="rating-stars">
-                                    {% for i in "12345" %}
-                                        {% if forloop.counter <= calificacion.puntuacion %}⭐{% else %}☆{% endif %}
-                                    {% endfor %}
-                                </div>
-                            </div>
-                            <p class="rating-comment">"{{ calificacion.comentario|default:"Sin comentario" }}"</p>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <div class="empty-state">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                    </svg>
-                    <p>No tienes calificaciones aún.</p>
-                    <small>Completa trabajos para recibir calificaciones</small>
-                </div>
-            {% endif %}
-        </div>
-    </div>
-</div>
-
-<!-- ========== WAVE DIVIDER ========== -->
-<div class="wave-divider">
-    <svg viewBox="0 0 1440 120" xmlns="http://www.w3.org/2000/svg">
-        <path fill="#f8f9fa" d="M0,64L80,69.3C160,75,320,85,480,80C640,75,800,53,960,48C1120,43,1280,53,1360,58.7L1440,64L1440,120L1360,120C1280,120,1120,120,960,120C800,120,640,120,480,120C320,120,160,120,80,120L0,120Z"></path>
-    </svg>
-</div>
+</footer>
 {% endblock %}
 
 {% block extra_js %}
 <script src="{% static 'js/users/profile/perfil.js' %}"></script>
-<script>
-// Tab Navigation
-document.querySelectorAll('.tab').forEach(tab => {
-    tab.addEventListener('click', () => {
-        const targetTab = tab.dataset.tab;
-        
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-        
-        tab.classList.add('active');
-        document.getElementById(targetTab).classList.add('active');
-    });
-});
-
-// Modal Controls
-document.querySelector('[data-action="editar-perfil"]')?.addEventListener('click', () => {
-    document.getElementById('editProfileModal').style.display = 'flex';
-});
-
-document.querySelector('[data-action="cerrar-modal"]')?.addEventListener('click', () => {
-    document.getElementById('editProfileModal').style.display = 'none';
-});
-
-// Mobile Menu Toggle
-document.querySelector('.nav-toggle')?.addEventListener('click', function() {
-    document.querySelector('.nav-menu').classList.toggle('active');
-    this.classList.toggle('active');
-});
-</script>
 {% endblock %}
