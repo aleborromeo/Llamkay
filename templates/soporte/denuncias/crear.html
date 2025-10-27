@@ -1,0 +1,235 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Nueva Denuncia - Llamkay{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/soporte/denuncias.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="crear-denuncia-page">
+    <!-- Header -->
+    <div class="page-header">
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="{% url 'soporte:denuncias' %}">Denuncias</a>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+                <span>Nueva Denuncia</span>
+            </div>
+            
+            <h1>
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                    <line x1="12" y1="9" x2="12" y2="13"></line>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>
+                Reportar un Usuario
+            </h1>
+            <p class="header-description">
+                Completa el formulario con los detalles de tu denuncia. Toda la información será revisada por nuestro equipo.
+            </p>
+        </div>
+    </div>
+
+    <!-- Formulario -->
+    <div class="form-container">
+        <div class="container">
+            <div class="form-wrapper">
+                <!-- Info Alert -->
+                <div class="alert alert-info">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="16" x2="12" y2="12"></line>
+                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                    </svg>
+                    <div>
+                        <strong>Información Importante</strong>
+                        <p>Las denuncias falsas o mal intencionadas pueden resultar en la suspensión de tu cuenta. Asegúrate de proporcionar información veraz.</p>
+                    </div>
+                </div>
+
+                <form method="post" action="{% url 'soporte:crear_denuncia' %}" class="denuncia-form">
+                    {% csrf_token %}
+                    
+                    <!-- Usuario Denunciado -->
+                    <div class="form-group">
+                        <label for="id_denunciado" class="form-label required">
+                            Usuario Denunciado
+                        </label>
+                        <input 
+                            type="number" 
+                            id="id_denunciado" 
+                            name="id_denunciado" 
+                            class="form-control"
+                            value="{{ id_denunciado }}"
+                            required
+                            placeholder="ID del usuario a denunciar">
+                        <small class="form-help">Ingresa el ID del usuario que deseas reportar</small>
+                    </div>
+
+                    <!-- Motivo -->
+                    <div class="form-group">
+                        <label for="motivo" class="form-label required">
+                            Motivo de la Denuncia
+                        </label>
+                        <select id="motivo" name="motivo" class="form-control" required>
+                            <option value="">Selecciona un motivo</option>
+                            {% for motivo_id, motivo_nombre in motivos %}
+                            <option value="{{ motivo_id }}">{{ motivo_nombre }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Descripción -->
+                    <div class="form-group">
+                        <label for="descripcion" class="form-label required">
+                            Descripción Detallada
+                        </label>
+                        <textarea 
+                            id="descripcion" 
+                            name="descripcion" 
+                            class="form-control" 
+                            rows="6" 
+                            required
+                            placeholder="Describe detalladamente lo sucedido. Incluye fechas, contexto y cualquier información relevante..."></textarea>
+                        <small class="form-help">Mínimo 50 caracteres. Sé específico y objetivo.</small>
+                    </div>
+
+                    <!-- Evidencia (opcional) -->
+                    <div class="form-group">
+                        <label for="evidencia_url" class="form-label">
+                            URL de Evidencia (Opcional)
+                        </label>
+                        <input 
+                            type="url" 
+                            id="evidencia_url" 
+                            name="evidencia_url" 
+                            class="form-control"
+                            placeholder="https://ejemplo.com/evidencia.jpg">
+                        <small class="form-help">Si tienes capturas de pantalla o documentos, súbelos a un servicio externo y pega el enlace aquí</small>
+                    </div>
+
+                    <!-- Contrato Relacionado (opcional) -->
+                    {% if id_contrato %}
+                    <input type="hidden" name="id_contrato" value="{{ id_contrato }}">
+                    <div class="alert alert-success">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                        <span>Denuncia relacionada con el contrato #{{ id_contrato }}</span>
+                    </div>
+                    {% else %}
+                    <div class="form-group">
+                        <label for="id_contrato" class="form-label">
+                            ID de Contrato Relacionado (Opcional)
+                        </label>
+                        <input 
+                            type="number" 
+                            id="id_contrato" 
+                            name="id_contrato" 
+                            class="form-control"
+                            placeholder="Si la denuncia es sobre un contrato específico, ingresa su ID">
+                    </div>
+                    {% endif %}
+
+                    <!-- Mensaje Relacionado (opcional) -->
+                    {% if id_mensaje %}
+                    <input type="hidden" name="id_mensaje" value="{{ id_mensaje }}">
+                    <div class="alert alert-success">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                        <span>Denuncia relacionada con el mensaje #{{ id_mensaje }}</span>
+                    </div>
+                    {% endif %}
+
+                    <!-- Botones -->
+                    <div class="form-actions">
+                        <a href="{% url 'soporte:denuncias' %}" class="btn btn-ghost">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="19" y1="12" x2="5" y2="12"></line>
+                                <polyline points="12 19 5 12 12 5"></polyline>
+                            </svg>
+                            Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                            </svg>
+                            Enviar Denuncia
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Sidebar con ayuda -->
+            <div class="help-sidebar">
+                <div class="help-card">
+                    <h3>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                        ¿Cuándo denunciar?
+                    </h3>
+                    <ul>
+                        <li><strong>Fraude:</strong> Intentos de estafa o engaño</li>
+                        <li><strong>Acoso:</strong> Comportamiento ofensivo o amenazante</li>
+                        <li><strong>Spam:</strong> Mensajes no solicitados repetitivos</li>
+                        <li><strong>Incumplimiento:</strong> No cumplir con lo acordado</li>
+                        <li><strong>Contenido Inapropiado:</strong> Material ofensivo o ilegal</li>
+                    </ul>
+                </div>
+
+                <div class="help-card">
+                    <h3>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
+                        Proceso de Revisión
+                    </h3>
+                    <div class="proceso-steps">
+                        <div class="proceso-step">
+                            <span class="step-number">1</span>
+                            <p>Envías la denuncia</p>
+                        </div>
+                        <div class="proceso-step">
+                            <span class="step-number">2</span>
+                            <p>Equipo revisa en 24-48h</p>
+                        </div>
+                        <div class="proceso-step">
+                            <span class="step-number">3</span>
+                            <p>Se toma acción según caso</p>
+                        </div>
+                        <div class="proceso-step">
+                            <span class="step-number">4</span>
+                            <p>Recibes notificación</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="help-card help-contact">
+                    <h3>¿Necesitas ayuda urgente?</h3>
+                    <p>Si se trata de una emergencia o situación crítica, contáctanos directamente:</p>
+                    <a href="mailto:soporte@llamkay.pe" class="contact-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                            <polyline points="22,6 12,13 2,6"></polyline>
+                        </svg>
+                        soporte@llamkay.pe
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/soporte/denuncias.js' %}"></script>
+{% endblock %}

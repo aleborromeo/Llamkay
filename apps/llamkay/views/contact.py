@@ -8,7 +8,6 @@ def contacto(request):
     """
     Página de Contacto
     Solo muestra información - NO guarda en base de datos
-    Si quieres un formulario funcional, usa un servicio externo como Formspree
     """
     context = {
         'page_title': 'Contáctanos - Llamkay.pe',

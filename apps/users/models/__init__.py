@@ -1,6 +1,5 @@
 """
-Modelos del módulo Users
-Divididos por responsabilidad siguiendo SRP
+Modelos del módulo Users - Simplificado
 """
 
 from .ubicacion import Departamento, Provincia, Distrito, Comunidad

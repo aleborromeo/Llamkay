@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ titulo }} - Llamkay{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/soporte/denuncias.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="denuncias-page">
+    <!-- Header -->
+    <div class="page-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="header-text">
+                    <h1>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                            <line x1="12" y1="9" x2="12" y2="13"></line>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                        {{ titulo }}
+                    </h1>
+                    <p>Sistema de reporte y moderación</p>
+                </div>
+                
+                <div class="header-actions">
+                    <a href="{% url 'soporte:crear_denuncia' %}" class="btn btn-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                        Nueva Denuncia
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Filtros -->
+            <div class="filtros-container">
+                <div class="filtro-badge {% if not estado_actual %}active{% endif %}">
+                    <a href="{% url 'soporte:denuncias' %}">Todas</a>
+                </div>
+                {% for estado_id, estado_nombre in estados %}
+                <div class="filtro-badge {% if estado_actual == estado_id %}active{% endif %}">
+                    <a href="?estado={{ estado_id }}">{{ estado_nombre }}</a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Lista de Denuncias -->
+    <div class="denuncias-container">
+        <div class="container">
+            {% if denuncias %}
+                <div class="denuncias-grid">
+                    {% for denuncia in denuncias %}
+                    <div class="denuncia-card" data-estado="{{ denuncia.estado }}">
+                        <div class="denuncia-header">
+                            <div class="denuncia-badge estado-{{ denuncia.estado }}">
+                                {{ denuncia.get_estado_display }}
+                            </div>
+                            <div class="denuncia-motivo">
+                                {{ denuncia.get_motivo_display }}
+                            </div>
+                        </div>
+                        
+                        <div class="denuncia-info">
+                            <div class="info-row">
+                                <span class="info-label">Denunciado:</span>
+                                <strong>{{ denuncia.id_denunciado.nombres }} {{ denuncia.id_denunciado.apellidos }}</strong>
+                            </div>
+                            
+                            {% if user.is_staff or user.is_superuser %}
+                            <div class="info-row">
+                                <span class="info-label">Reportante:</span>
+                                <strong>{{ denuncia.id_reportante.nombres }} {{ denuncia.id_reportante.apellidos }}</strong>
+                            </div>
+                            {% endif %}
+                            
+                            <div class="info-row">
+                                <span class="info-label">Fecha:</span>
+                                <span>{{ denuncia.fecha|date:"d/m/Y H:i" }}</span>
+                            </div>
+                            
+                            {% if denuncia.id_moderador %}
+                            <div class="info-row">
+                                <span class="info-label">Moderador:</span>
+                                <span>{{ denuncia.id_moderador.nombres }}</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="denuncia-descripcion">
+                            <p>{{ denuncia.descripcion|truncatewords:30 }}</p>
+                        </div>
+                        
+                        <div class="denuncia-actions">
+                            <a href="{% url 'soporte:detalle_denuncia' denuncia.id_denuncia %}" class="btn btn-primary">
+                                Ver Detalles
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                    <polyline points="12 5 19 12 12 19"></polyline>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <!-- Paginación -->
+                {% if denuncias.has_other_pages %}
+                <div class="pagination">
+                    {% if denuncias.has_previous %}
+                    <a href="?page={{ denuncias.previous_page_number }}{% if estado_actual %}&estado={{ estado_actual }}{% endif %}" class="page-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                        Anterior
+                    </a>
+                    {% endif %}
+                    
+                    <span class="page-info">
+                        Página {{ denuncias.number }} de {{ denuncias.paginator.num_pages }}
+                    </span>
+                    
+                    {% if denuncias.has_next %}
+                    <a href="?page={{ denuncias.next_page_number }}{% if estado_actual %}&estado={{ estado_actual }}{% endif %}" class="page-link">
+                        Siguiente
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </a>
+                    {% endif %}
+                </div>
+                {% endif %}
+            {% else %}
+                <div class="empty-state">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                        <line x1="12" y1="9" x2="12" y2="13"></line>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                    <h2>No hay denuncias</h2>
+                    <p>{% if estado_actual %}No se encontraron denuncias con este estado{% else %}Aún no has realizado ninguna denuncia{% endif %}</p>
+                    <a href="{% url 'soporte:crear_denuncia' %}" class="btn btn-primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                        Crear Primera Denuncia
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/soporte/denuncias.js' %}"></script>
+{% endblock %}

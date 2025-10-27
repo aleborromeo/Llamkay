@@ -1,8 +1,3 @@
-"""
-Forms de Perfil
-Responsabilidad: Validación de actualización de perfil
-"""
-
 from django import forms
 from apps.users.models import Profile, Departamento, Provincia, Distrito
 
@@ -19,12 +14,12 @@ class PerfilUpdateForm(forms.ModelForm):
             'ocupacion',
             'experiencia_anios',
             'tarifa_hora',
-            'foto_url',
+            'foto_url',         
             'portafolio_url',
             'id_departamento',
             'id_provincia',
             'id_distrito',
-            'perfil_publico_activo',
+            'perfil_publico',    
             'mostrar_email',
             'mostrar_telefono',
         ]
@@ -48,9 +43,9 @@ class PerfilUpdateForm(forms.ModelForm):
                 'step': '0.01',
                 'min': 0
             }),
-            'foto_url': forms.ClearableFileInput(attrs={
+            'foto_url': forms.URLInput(attrs={  
                 'class': 'form-control',
-                'accept': 'image/*'
+                'placeholder': 'https://ejemplo.com/foto.jpg'
             }),
             'portafolio_url': forms.URLInput(attrs={
                 'class': 'form-control',
@@ -59,7 +54,7 @@ class PerfilUpdateForm(forms.ModelForm):
             'id_departamento': forms.Select(attrs={'class': 'form-control'}),
             'id_provincia': forms.Select(attrs={'class': 'form-control'}),
             'id_distrito': forms.Select(attrs={'class': 'form-control'}),
-            'perfil_publico_activo': forms.CheckboxInput(attrs={
+            'perfil_publico': forms.CheckboxInput(attrs={ 
                 'class': 'form-check-input'
             }),
             'mostrar_email': forms.CheckboxInput(attrs={
@@ -74,12 +69,12 @@ class PerfilUpdateForm(forms.ModelForm):
             'ocupacion': 'Ocupación',
             'experiencia_anios': 'Años de experiencia',
             'tarifa_hora': 'Tarifa por hora (S/)',
-            'foto_url': 'Foto de perfil',
+            'foto_url': 'URL de la foto de perfil',
             'portafolio_url': 'URL del portafolio',
             'id_departamento': 'Departamento',
             'id_provincia': 'Provincia',
             'id_distrito': 'Distrito',
-            'perfil_publico_activo': 'Perfil público',
+            'perfil_publico': 'Perfil público',  
             'mostrar_email': 'Mostrar email públicamente',
             'mostrar_telefono': 'Mostrar teléfono públicamente',
         }
@@ -87,31 +82,23 @@ class PerfilUpdateForm(forms.ModelForm):
     def clean_tarifa_hora(self):
         """Valida que la tarifa sea positiva"""
         tarifa = self.cleaned_data.get('tarifa_hora')
-        if tarifa and tarifa < 0:
+        if tarifa is not None and tarifa < 0:
             raise forms.ValidationError('La tarifa debe ser un valor positivo')
         return tarifa
     
     def clean_experiencia_anios(self):
         """Valida que los años de experiencia sean razonables"""
         experiencia = self.cleaned_data.get('experiencia_anios')
-        if experiencia and (experiencia < 0 or experiencia > 50):
+        if experiencia is not None and (experiencia < 0 or experiencia > 50):
             raise forms.ValidationError('Los años de experiencia deben estar entre 0 y 50')
         return experiencia
     
     def clean_foto_url(self):
-        """Valida el tamaño y tipo de la foto"""
-        foto = self.cleaned_data.get('foto_url')
-        
-        if foto:
-            max_size = 5 * 1024 * 1024  # 5MB
-            if foto.size > max_size:
-                raise forms.ValidationError('La foto no debe superar los 5MB')
-            
-            allowed_types = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
-            if foto.content_type not in allowed_types:
-                raise forms.ValidationError('Solo se permiten imágenes JPG, PNG o WebP')
-        
-        return foto
+        """Valida que la URL de la foto sea válida (opcional)"""
+        url = self.cleaned_data.get('foto_url')
+        if url and not url.startswith(('http://', 'https://')):
+            raise forms.ValidationError('La URL debe comenzar con http:// o https://')
+        return url
 
 
 class TarifaForm(forms.Form):
@@ -134,8 +121,6 @@ class TarifaForm(forms.Form):
     def clean_tarifa_hora(self):
         """Valida que la tarifa sea razonable"""
         tarifa = self.cleaned_data.get('tarifa_hora')
-        
         if tarifa and tarifa > 10000:
             raise forms.ValidationError('La tarifa parece demasiado alta. Verifica el valor.')
-        
         return tarifa

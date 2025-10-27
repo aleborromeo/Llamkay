@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'apps.jobs',
     'apps.llamkay',
     'apps.core',
+    'apps.soporte',
 ]
 
 MIDDLEWARE = [

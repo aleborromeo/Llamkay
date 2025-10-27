@@ -1,0 +1,397 @@
+/* =============================================
+   NOTIFICACIONES
+   ============================================= */
+
+:root {
+    --color-primary: #07734B;
+    --color-primary-dark: #034D31;
+    --color-primary-light: #15AC75;
+    --color-secondary: #9EBC8A;
+    --color-accent: #EEEDEB;
+    --color-text: #1a1a1a;
+    --color-text-light: #666666;
+    --color-background: #ffffff;
+    --color-background-alt: #f8f9fa;
+    --color-danger: #dc3545;
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
+    --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.16);
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.notificaciones-page {
+    min-height: 100vh;
+    background: var(--color-background-alt);
+}
+
+/* ==================== HEADER ==================== */
+.page-header {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+    color: white;
+    padding: 3rem 0 2rem;
+    margin-bottom: 2rem;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+}
+
+.header-text h1 {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.header-text p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+.header-actions .btn {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+}
+
+.header-actions .btn:hover {
+    background: white;
+    color: var(--color-primary);
+    border-color: white;
+}
+
+.notification-stats {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.stat-badge {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    padding: 1rem 1.5rem;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+.stat-secondary {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* ==================== NOTIFICACIONES LIST ==================== */
+.notificaciones-container {
+    padding: 0 0 4rem;
+}
+
+.notificaciones-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.notificacion-card {
+    position: relative;
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 1.5rem;
+    align-items: start;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+    border: 2px solid transparent;
+}
+
+.notificacion-card:hover {
+    border-color: var(--color-primary);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.notificacion-card.no-leida {
+    background: linear-gradient(to right, #f0f9ff 0%, white 100%);
+    border-left: 4px solid var(--color-primary);
+}
+
+.notificacion-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    flex-shrink: 0;
+}
+
+.notificacion-icon.postulacion {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+}
+
+.notificacion-icon.mensaje {
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+}
+
+.notificacion-icon.contrato {
+    background: linear-gradient(135deg, #10b981, #059669);
+}
+
+.notificacion-icon.pago {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+.notificacion-icon.calificacion {
+    background: linear-gradient(135deg, #eab308, #ca8a04);
+}
+
+.notificacion-icon.verificacion {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+}
+
+.notificacion-icon.sistema {
+    background: linear-gradient(135deg, #6b7280, #4b5563);
+}
+
+.notificacion-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.notificacion-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.notificacion-header h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--color-text);
+    margin: 0;
+}
+
+.notificacion-time {
+    font-size: 0.85rem;
+    color: var(--color-text-light);
+    white-space: nowrap;
+}
+
+.notificacion-message {
+    color: var(--color-text-light);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+.notificacion-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.btn-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--color-primary);
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: var(--transition);
+}
+
+.btn-link:hover {
+    gap: 0.75rem;
+    color: var(--color-primary-dark);
+}
+
+.btn-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: var(--color-background-alt);
+    border: none;
+    border-radius: var(--radius-sm);
+    color: var(--color-text);
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-action:hover {
+    background: var(--color-primary);
+    color: white;
+}
+
+.btn-action.btn-danger:hover {
+    background: var(--color-danger);
+    color: white;
+}
+
+.notificacion-indicator {
+    width: 12px;
+    height: 12px;
+    background: var(--color-primary);
+    border-radius: 50%;
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    box-shadow: 0 0 0 4px rgba(7, 115, 75, 0.1);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.7;
+        transform: scale(1.1);
+    }
+}
+
+/* ==================== EMPTY STATE ==================== */
+.empty-state {
+    text-align: center;
+    padding: 6rem 2rem;
+    background: white;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.empty-state svg {
+    color: var(--color-text-light);
+    opacity: 0.3;
+    margin-bottom: 2rem;
+}
+
+.empty-state h2 {
+    font-size: 1.75rem;
+    color: var(--color-text);
+    margin-bottom: 0.75rem;
+}
+
+.empty-state p {
+    color: var(--color-text-light);
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+}
+
+/* ==================== BUTTONS ==================== */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    text-decoration: none;
+    transition: var(--transition);
+    border: 2px solid transparent;
+    cursor: pointer;
+    font-size: 0.95rem;
+}
+
+.btn-primary {
+    background: var(--color-primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--color-primary-dark);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-ghost {
+    background: transparent;
+    color: currentColor;
+}
+
+.inline-form {
+    display: inline;
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 768px) {
+    .header-text h1 {
+        font-size: 2rem;
+    }
+    
+    .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .notificacion-card {
+        grid-template-columns: auto 1fr;
+        gap: 1rem;
+        padding: 1rem;
+    }
+    
+    .notificacion-indicator {
+        display: none;
+    }
+    
+    .notificacion-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .notificacion-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .btn-action {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .page-header {
+        padding: 2rem 0 1.5rem;
+    }
+    
+    .header-text h1 {
+        font-size: 1.75rem;
+    }
+    
+    .notification-stats {
+        width: 100%;
+    }
+    
+    .stat-badge {
+        flex: 1;
+        justify-content: center;
+    }
+}

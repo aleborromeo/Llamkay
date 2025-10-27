@@ -1,0 +1,236 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Nueva Disputa - Llamkay{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/soporte/disputas.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="crear-disputa-page">
+    <!-- Header -->
+    <div class="page-header">
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="{% url 'soporte:disputas' %}">Disputas</a>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+                <span>Nueva Disputa</span>
+            </div>
+            
+            <h1>
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+                Iniciar Disputa de Contrato
+            </h1>
+            <p class="header-description">
+                Inicia un proceso de mediación si consideras que hubo un incumplimiento o desacuerdo en el contrato.
+            </p>
+        </div>
+    </div>
+
+    <!-- Formulario -->
+    <div class="form-container">
+        <div class="container">
+            <div class="form-wrapper">
+                <!-- Alert Informativa -->
+                <div class="alert alert-warning">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                        <line x1="12" y1="9" x2="12" y2="13"></line>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                    <div>
+                        <strong>Antes de Continuar</strong>
+                        <p>Las disputas son para casos serios de incumplimiento. Intenta resolver el problema mediante comunicación directa primero. Las disputas quedan registradas en el historial del contrato.</p>
+                    </div>
+                </div>
+
+                <form method="post" action="{% url 'soporte:crear_disputa' %}" class="disputa-form">
+                    {% csrf_token %}
+                    
+                    <!-- Contrato -->
+                    {% if contrato %}
+                    <input type="hidden" name="id_contrato" value="{{ contrato.id_contrato }}">
+                    <div class="contrato-info-card">
+                        <h3>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                            </svg>
+                            Contrato Seleccionado
+                        </h3>
+                        <div class="contrato-details">
+                            <div class="detail-row">
+                                <span>ID:</span>
+                                <strong>#{{ contrato.id_contrato }}</strong>
+                            </div>
+                            <div class="detail-row">
+                                <span>Monto:</span>
+                                <strong>S/. {{ contrato.monto }}</strong>
+                            </div>
+                            <div class="detail-row">
+                                <span>Estado:</span>
+                                <span class="badge">{{ contrato.estado }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="form-group">
+                        <label for="id_contrato" class="form-label required">
+                            ID del Contrato
+                        </label>
+                        <input 
+                            type="number" 
+                            id="id_contrato" 
+                            name="id_contrato" 
+                            class="form-control"
+                            required
+                            placeholder="Ingresa el ID del contrato en disputa">
+                        <small class="form-help">Debes ser parte del contrato (empleador o trabajador)</small>
+                    </div>
+                    {% endif %}
+
+                    <!-- Motivo -->
+                    <div class="form-group">
+                        <label for="motivo" class="form-label required">
+                            Motivo de la Disputa
+                        </label>
+                        <textarea 
+                            id="motivo" 
+                            name="motivo" 
+                            class="form-control" 
+                            rows="6" 
+                            required
+                            placeholder="Explica detalladamente el motivo de la disputa. Incluye:
+- ¿Qué se acordó en el contrato?
+- ¿Qué no se cumplió?
+- ¿Cuál es el problema específico?
+- ¿Qué solución buscas?"></textarea>
+                        <small class="form-help">Sé específico y objetivo. Mínimo 100 caracteres.</small>
+                    </div>
+
+                    <!-- Evidencias -->
+                    <div class="form-group">
+                        <label for="evidencias" class="form-label">
+                            URLs de Evidencias (Opcional)
+                        </label>
+                        <textarea 
+                            id="evidencias" 
+                            name="evidencias" 
+                            class="form-control" 
+                            rows="3"
+                            placeholder="Pega enlaces a capturas de pantalla, documentos o cualquier evidencia que respalde tu caso. Una URL por línea."></textarea>
+                        <small class="form-help">Sube tus archivos a Google Drive, Dropbox o similar y pega los enlaces aquí</small>
+                    </div>
+
+                    <!-- Botones -->
+                    <div class="form-actions">
+                        <a href="{% url 'soporte:disputas' %}" class="btn btn-ghost">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="19" y1="12" x2="5" y2="12"></line>
+                                <polyline points="12 19 5 12 12 5"></polyline>
+                            </svg>
+                            Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                            </svg>
+                            Iniciar Disputa
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Sidebar con ayuda -->
+            <div class="help-sidebar">
+                <div class="help-card">
+                    <h3>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                        ¿Cuándo iniciar una disputa?
+                    </h3>
+                    <ul>
+                        <li><strong>Trabajo incompleto:</strong> No se entregó lo acordado</li>
+                        <li><strong>Calidad deficiente:</strong> El trabajo no cumple estándares</li>
+                        <li><strong>No pago:</strong> El empleador no pagó lo acordado</li>
+                        <li><strong>Cambios no autorizados:</strong> Se alteró el contrato sin consentimiento</li>
+                        <li><strong>Incumplimiento de plazos:</strong> No se respetaron las fechas</li>
+                    </ul>
+                </div>
+
+                <div class="help-card">
+                    <h3>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
+                        Proceso de Mediación
+                    </h3>
+                    <div class="proceso-steps">
+                        <div class="proceso-step">
+                            <span class="step-number">1</span>
+                            <p>Inicias la disputa con evidencias</p>
+                        </div>
+                        <div class="proceso-step">
+                            <span class="step-number">2</span>
+                            <p>Se notifica a la otra parte</p>
+                        </div>
+                        <div class="proceso-step">
+                            <span class="step-number">3</span>
+                            <p>Mediador revisa el caso</p>
+                        </div>
+                        <div class="proceso-step">
+                            <span class="step-number">4</span>
+                            <p>Se emite una resolución</p>
+                        </div>
+                        <div class="proceso-step">
+                            <span class="step-number">5</span>
+                            <p>Se ejecuta la resolución</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="help-card help-tips">
+                    <h3>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                        Consejos
+                    </h3>
+                    <ul class="tips-list">
+                        <li>Recopila toda la evidencia posible</li>
+                        <li>Sé claro y objetivo en tu descripción</li>
+                        <li>Mantén el tono profesional</li>
+                        <li>Incluye fechas y montos específicos</li>
+                        <li>Responde rápido a las solicitudes del mediador</li>
+                    </ul>
+                </div>
+
+                <div class="help-card help-contact">
+                    <h3>¿Necesitas asesoría?</h3>
+                    <p>Si tienes dudas sobre cómo proceder, contáctanos:</p>
+                    <a href="mailto:mediacion@llamkay.pe" class="contact-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                            <polyline points="22,6 12,13 2,6"></polyline>
+                        </svg>
+                        mediacion@llamkay.pe
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/soporte/disputas.js' %}"></script>
+{% endblock %}

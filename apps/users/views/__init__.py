@@ -1,5 +1,5 @@
 """
-Vistas del módulo Users - REFACTORIZADAS
+Vistas del módulo Users
 Divididas por responsabilidad siguiendo SRP
 """
 

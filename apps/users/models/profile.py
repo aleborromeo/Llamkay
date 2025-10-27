@@ -1,116 +1,58 @@
 """
-Modelo Profile y Estadísticas
-Responsabilidad: Información profesional y estadísticas del usuario
+Modelo Profile y Estadísticas - Simplificado
 """
-
 from django.db import models
-from django.contrib.auth.models import User
-from .usuario import Usuario
-from .ubicacion import Departamento, Provincia, Distrito, Comunidad
 
 
 class Profile(models.Model):
-    """
-    Perfil Profesional del Usuario
-    Separado del modelo Usuario para cumplir SRP
-    """
-    
-    # Relaciones
-    user = models.OneToOneField(
-        User,
-        on_delete=models.CASCADE,
-        related_name='profile'
-    )
     id_profile = models.AutoField(primary_key=True)
     id_usuario = models.OneToOneField(
-        Usuario,
+        'Usuario',
         on_delete=models.CASCADE,
-        related_name='profile_detalle',
-        db_column='id_usuario'
+        related_name='profile_detalle'
     )
     
     # Información Profesional
-    bio = models.TextField(
-        null=True,
-        blank=True,
-        help_text="Descripción profesional del usuario"
-    )
+    bio = models.TextField(null=True, blank=True)
     ocupacion = models.CharField(max_length=100, null=True, blank=True)
-    experiencia_anios = models.IntegerField(
-        null=True,
-        blank=True,
-        help_text="Años de experiencia"
-    )
-    tarifa_hora = models.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        null=True,
-        blank=True,
-        help_text="Tarifa por hora en soles"
-    )
+    experiencia_anios = models.IntegerField(null=True, blank=True)
+    tarifa_hora = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     
     # Medios
-    foto_url = models.ImageField(
-        upload_to='fotos_perfil/',
-        null=True,
-        blank=True
-    )
-    portafolio_url = models.URLField(
-        max_length=500,
-        null=True,
-        blank=True
-    )
-    redes_sociales = models.JSONField(
-        null=True,
-        blank=True,
-        help_text="JSON con enlaces a redes sociales"
-    )
+    foto_url = models.CharField(max_length=500, null=True, blank=True)
+    portafolio_url = models.URLField(max_length=500, null=True, blank=True)
     
-    # Ubicación Detallada (para búsquedas)
+    # Ubicación para búsquedas
     id_departamento = models.ForeignKey(
-        Departamento,
+        'Departamento',
         on_delete=models.SET_NULL,
         null=True,
-        blank=True,
-        db_column='id_departamento'
+        blank=True
     )
     id_provincia = models.ForeignKey(
-        Provincia,
+        'Provincia',
         on_delete=models.SET_NULL,
         null=True,
-        blank=True,
-        db_column='id_provincia'
+        blank=True
     )
     id_distrito = models.ForeignKey(
-        Distrito,
+        'Distrito',
         on_delete=models.SET_NULL,
         null=True,
-        blank=True,
-        db_column='id_distrito'
-    )
-    id_comunidad = models.ForeignKey(
-        Comunidad,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        db_column='id_comunidad'
+        blank=True
     )
     
     # Privacidad
-    perfil_publico_activo = models.BooleanField(default=True)
+    perfil_publico = models.BooleanField(default=True)
     mostrar_email = models.BooleanField(default=False)
     mostrar_telefono = models.BooleanField(default=False)
     
     # Auditoría
-    fecha_registro = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         db_table = 'profile'
-        indexes = [
-            models.Index(fields=['id_usuario']),
-            models.Index(fields=['id_departamento', 'id_provincia', 'id_distrito'])
-        ]
         verbose_name = 'Perfil'
         verbose_name_plural = 'Perfiles'
 
@@ -119,25 +61,15 @@ class Profile(models.Model):
 
 
 class UsuarioEstadisticas(models.Model):
-    """
-    Estadísticas calculadas del usuario
-    Separado para no mezclar datos con cálculos
-    """
-    
     id_estadistica = models.AutoField(primary_key=True)
     id_usuario = models.OneToOneField(
-        Usuario,
+        'Usuario',
         on_delete=models.CASCADE,
-        related_name='estadisticas',
-        db_column='id_usuario'
+        related_name='estadisticas'
     )
     
     # Calificaciones
-    rating_promedio = models.DecimalField(
-        max_digits=3,
-        decimal_places=2,
-        default=0.00
-    )
+    rating_promedio = models.DecimalField(max_digits=3, decimal_places=2, default=0.00)
     total_calificaciones = models.IntegerField(default=0)
     
     # Trabajos
@@ -146,25 +78,10 @@ class UsuarioEstadisticas(models.Model):
     trabajos_cancelados = models.IntegerField(default=0)
     
     # Financiero
-    ingresos_totales = models.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        default=0.00
-    )
-    ingresos_mes_actual = models.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        default=0.00
-    )
-    
-    # Tiempos
-    tiempo_respuesta_promedio = models.IntegerField(
-        default=0,
-        help_text="Tiempo promedio de respuesta en minutos"
-    )
+    ingresos_totales = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     
     # Auditoría
-    ultima_actualizacion = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         db_table = 'usuario_estadisticas'
@@ -173,14 +90,3 @@ class UsuarioEstadisticas(models.Model):
 
     def __str__(self):
         return f"Estadísticas de {self.id_usuario.nombre_completo}"
-
-    def actualizar_rating(self, nuevo_promedio, total):
-        """Actualiza el rating del usuario"""
-        self.rating_promedio = nuevo_promedio
-        self.total_calificaciones = total
-        self.save(update_fields=['rating_promedio', 'total_calificaciones', 'ultima_actualizacion'])
-
-    def incrementar_trabajos_completados(self):
-        """Incrementa el contador de trabajos completados"""
-        self.trabajos_completados += 1
-        self.save(update_fields=['trabajos_completados', 'ultima_actualizacion'])
