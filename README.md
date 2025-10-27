@@ -9,3 +9,5 @@ python manage.py makemigrations jobs
 python manage.py makemigrations
 ´´´
 Para finalmente: python manage.py migrate
+
+Para pasar datos: python manage.py seed_test_data
