@@ -23,45 +23,33 @@ logger = logging.getLogger(__name__)
 @login_required
 def listar_denuncias(request):
     """
-    Vista para listar denuncias
-    GET: Muestra denuncias según el rol del usuario
+    Lista todas las denuncias del usuario autenticado
     """
     try:
+        # IMPORTAR Usuario
+        from apps.users.models import Usuario
+        
+        # OBTENER el objeto Usuario (no User)
+        try:
+            usuario = Usuario.objects.get(user=request.user)
+        except Usuario.DoesNotExist:
+            messages.error(request, "No se encontró tu perfil de usuario.")
+            return redirect('llamkay:dashboard')  # ← Usa dashboard, no 'home'
+
+        # Servicio
         service = DenunciaService()
-        
-        # Determinar qué denuncias mostrar según el rol
-        if request.user.is_staff or request.user.is_superuser:
-            # Moderadores ven todas las denuncias
-            denuncias = service.obtener_todas_denuncias()
-            titulo = "Todas las Denuncias"
-        else:
-            # Usuarios normales ven sus denuncias realizadas
-            denuncias = service.obtener_denuncias_usuario(request.user)
-            titulo = "Mis Denuncias"
-        
-        # Filtros opcionales
-        estado = request.GET.get('estado')
-        if estado:
-            denuncias = denuncias.filter(estado=estado)
-        
-        # Paginación
-        paginator = Paginator(denuncias, 20)
-        page_number = request.GET.get('page')
-        page_obj = paginator.get_page(page_number)
-        
+        denuncias = service.obtener_denuncias_usuario(usuario)  # ← Pasa 'usuario', no 'request.user'
+
         context = {
-            'denuncias': page_obj,
-            'titulo': titulo,
-            'estados': Denuncia.ESTADO_DENUNCIA_CHOICES,
-            'estado_actual': estado,
+            'denuncias': denuncias,
+            'count': len(denuncias),
         }
-        
         return render(request, 'soporte/denuncias/lista.html', context)
-        
+
     except Exception as e:
-        logger.error(f"Error listando denuncias: {str(e)}")
-        messages.error(request, 'Error al cargar las denuncias')
-        return redirect('home')
+        logger.error(f"Error listando denuncias: {str(e)}", exc_info=True)
+        messages.error(request, "Error al cargar tus denuncias.")
+        return redirect('llamkay:dashboard')  # ← CORREGIDO
 
 
 @login_required

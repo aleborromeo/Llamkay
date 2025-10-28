@@ -34,14 +34,15 @@ class DenunciaRepository:
             return None
     
     @staticmethod
-    def get_by_reportante(id_reportante) -> QuerySet:
-        """Obtener denuncias realizadas por un usuario"""
+    def get_by_reportante(self, usuario):
+        """
+        usuario: instancia de Usuario
+        """
         return Denuncia.objects.filter(
-            id_reportante=id_reportante
+            id_reportante=usuario
         ).select_related(
-            'id_denunciado',
-            'id_moderador'
-        ).order_by('-fecha')
+            'id_reportado', 'id_contrato'
+        ).order_by('-created_at')
     
     @staticmethod
     def get_by_denunciado(id_denunciado) -> QuerySet:
