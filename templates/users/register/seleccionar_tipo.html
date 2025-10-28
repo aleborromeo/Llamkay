@@ -4,11 +4,15 @@
 {% block title %}Seleccionar Tipo de Usuario - Llamkay.pe{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/users/register/seleccionar_tipo.css' %}">
+<link rel="stylesheet" href="{% static 'css/users/register.css' %}">
 {% endblock %}
 
 {% block content %}
 <div class="registro-selector">
+    <div class="logo">
+        <h1>Llamkay</h1>
+    </div>
+    
     <h1>¿Cómo deseas registrarte?</h1>
     <p>Selecciona tu rol en la plataforma</p>
     
@@ -16,24 +20,41 @@
         {% csrf_token %}
         
         <button type="submit" name="tipo_usuario" value="trabajador">
-            🛠️ Buscar trabajo
+            <span style="font-size: 1.5rem;">🛠️</span>
+            <div style="flex: 1;">
+                <div style="font-weight: 700; margin-bottom: 0.25rem;">Buscar trabajo</div>
+                <div style="font-size: 0.85rem; color: #666;">Encuentra oportunidades laborales en tu zona</div>
+            </div>
         </button>
         
         <button type="submit" name="tipo_usuario" value="trabajador_empleador">
-            🔁 Buscar y Publicar
+            <span style="font-size: 1.5rem;">🔁</span>
+            <div style="flex: 1;">
+                <div style="font-weight: 700; margin-bottom: 0.25rem;">Buscar y Publicar</div>
+                <div style="font-size: 0.85rem; color: #666;">Trabaja y contrata según necesites</div>
+            </div>
         </button>
         
         <button type="submit" name="tipo_usuario" value="empleador">
-            📢 Solo Publicar trabajos
+            <span style="font-size: 1.5rem;">📢</span>
+            <div style="flex: 1;">
+                <div style="font-weight: 700; margin-bottom: 0.25rem;">Solo Publicar trabajos</div>
+                <div style="font-size: 0.85rem; color: #666;">Contrata profesionales verificados</div>
+            </div>
         </button>
         
         <button type="submit" name="tipo_usuario" value="empresa">
-            🏢 Soy una empresa
+            <span style="font-size: 1.5rem;">🏢</span>
+            <div style="flex: 1;">
+                <div style="font-weight: 700; margin-bottom: 0.25rem;">Soy una empresa</div>
+                <div style="font-size: 0.85rem; color: #666;">Registro corporativo con RUC</div>
+            </div>
         </button>
     </form>
+    
+    <p class="login-link">
+        ¿Ya tienes una cuenta? 
+        <a href="{% url 'users:login' %}">Inicia sesión aquí</a>
+    </p>
 </div>
-{% endblock %}
-
-{% block extra_js %}
-<script src="{% static 'js/users/auth/seleccionar_tipo.js' %}"></script>
 {% endblock %}
