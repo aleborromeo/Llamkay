@@ -7,11 +7,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // ==================== USER MENU DROPDOWN ====================
     const userMenuBtn = document.getElementById('userMenuBtn');
     const userDropdown = document.getElementById('userDropdown');
-    const notificationsBtn = document.getElementById('notificationsBtn');
     
     // Toggle user menu dropdown
     if (userMenuBtn && userDropdown) {
         userMenuBtn.addEventListener('click', function(e) {
+            e.preventDefault();
             e.stopPropagation();
             
             // Toggle dropdown
@@ -19,22 +19,6 @@ document.addEventListener('DOMContentLoaded', function() {
             userMenuBtn.classList.toggle('active');
             
             console.log('User menu toggled');
-        });
-    }
-    
-    // Toggle notifications
-    if (notificationsBtn) {
-        notificationsBtn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            
-            // Cerrar user menu si está abierto
-            if (userDropdown && userMenuBtn) {
-                userDropdown.classList.remove('active');
-                userMenuBtn.classList.remove('active');
-            }
-            
-            console.log('Notifications clicked');
-            showNotification('No tienes notificaciones nuevas', 'info');
         });
     }
     
@@ -56,16 +40,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // Prevenir que los links dentro del dropdown cierren el menú inmediatamente
+    // Los links dentro del dropdown navegarán normalmente
     if (userDropdown) {
         const dropdownLinks = userDropdown.querySelectorAll('.dropdown-item');
         dropdownLinks.forEach(link => {
             link.addEventListener('click', function(e) {
-                // El link navegará normalmente
-                setTimeout(() => {
-                    userDropdown.classList.remove('active');
-                    userMenuBtn.classList.remove('active');
-                }, 100);
+                // Permitir navegación normal de los links
+                console.log('Navegando a:', this.href);
             });
         });
     }
@@ -92,14 +73,11 @@ document.addEventListener('DOMContentLoaded', function() {
     
     applyButtons.forEach(button => {
         button.addEventListener('click', function(e) {
-            // No prevenir default si es un link
-            if (this.tagName === 'A') {
-                // Animación de click
-                this.style.transform = 'scale(0.95)';
-                setTimeout(() => {
-                    this.style.transform = '';
-                }, 150);
-            }
+            // Animación de click
+            this.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                this.style.transform = '';
+            }, 150);
         });
     });
     
@@ -203,7 +181,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 500);
     }
     
-    // ==================== RESPONSIVE MENU (si se agrega) ====================
+    // ==================== RESPONSIVE MENU ====================
     const menuToggle = document.querySelector('.menu-toggle');
     if (menuToggle) {
         menuToggle.addEventListener('click', function() {
@@ -230,16 +208,6 @@ document.addEventListener('DOMContentLoaded', function() {
             imageObserver.observe(img);
         });
     }
-    
-    // ==================== REFRESH STATS ====================
-    function updateStats() {
-        // Aquí puedes agregar lógica para actualizar las estadísticas vía AJAX
-        // Ejemplo: fetch('/api/user/stats').then(...)
-        console.log('Stats updated');
-    }
-    
-    // Actualizar stats cada 5 minutos
-    setInterval(updateStats, 300000);
     
     // ==================== WELCOME MESSAGE BASED ON TIME ====================
     function updateWelcomeMessage() {
@@ -293,5 +261,5 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // ==================== CONSOLE LOG ====================
-    console.log('Dashboard loaded successfully! 🚀');
+    console.log('✅ Dashboard loaded successfully! 🚀');
 });

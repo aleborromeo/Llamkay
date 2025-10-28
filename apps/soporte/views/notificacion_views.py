@@ -11,8 +11,8 @@ from django.contrib import messages
 from django.utils import timezone
 import logging
 
-from ..services import NotificacionService
-from ..models import Notificacion
+from apps.soporte.services import NotificacionService
+from apps.soporte.models import Notificacion
 
 logger = logging.getLogger(__name__)
 
@@ -26,11 +26,19 @@ def listar_notificaciones(request):
     try:
         service = NotificacionService()
         
+        # Obtener el Usuario correcto
+        from apps.users.models import Usuario
+        try:
+            usuario = Usuario.objects.get(user=request.user)
+        except Usuario.DoesNotExist:
+            messages.error(request, 'No se encontró tu perfil de usuario')
+            return redirect('llamkay:dashboard')
+        
         # Obtener notificaciones del usuario
-        notificaciones = service.obtener_notificaciones_usuario(request.user)
+        notificaciones = service.obtener_notificaciones_usuario(usuario)
         
         # Contar no leídas
-        count_no_leidas = service.contar_no_leidas(request.user)
+        count_no_leidas = service.contar_no_leidas(usuario)
         
         context = {
             'notificaciones': notificaciones[:50],  # Últimas 50
@@ -40,9 +48,9 @@ def listar_notificaciones(request):
         return render(request, 'soporte/notificaciones/lista.html', context)
         
     except Exception as e:
-        logger.error(f"Error listando notificaciones: {str(e)}")
+        logger.error(f"Error listando notificaciones: {str(e)}", exc_info=True)
         messages.error(request, 'Error al cargar las notificaciones')
-        return redirect('llamkay:home')
+        return redirect('llamkay:dashboard')
 
 
 @login_required
@@ -53,13 +61,16 @@ def marcar_notificacion_leida(request, id_notificacion):
     POST: Marca como leída y devuelve JSON
     """
     try:
+        from apps.users.models import Usuario
+        usuario = Usuario.objects.get(user=request.user)
+        
         service = NotificacionService()
         
         # Verificar que la notificación pertenece al usuario
         notificacion = get_object_or_404(
             Notificacion,
             id_notificacion=id_notificacion,
-            id_usuario=request.user
+            id_usuario=usuario
         )
         
         # Marcar como leída
@@ -92,10 +103,13 @@ def marcar_todas_leidas(request):
     POST: Marca todas las notificaciones no leídas del usuario
     """
     try:
+        from apps.users.models import Usuario
+        usuario = Usuario.objects.get(user=request.user)
+        
         service = NotificacionService()
         
         # Marcar todas como leídas
-        result = service.marcar_todas_leidas(request.user)
+        result = service.marcar_todas_leidas(usuario)
         
         if result['success']:
             messages.success(request, result['message'])
@@ -118,11 +132,14 @@ def eliminar_notificacion(request, id_notificacion):
     POST: Elimina la notificación y devuelve JSON
     """
     try:
+        from apps.users.models import Usuario
+        usuario = Usuario.objects.get(user=request.user)
+        
         # Verificar que la notificación pertenece al usuario
         notificacion = get_object_or_404(
             Notificacion,
             id_notificacion=id_notificacion,
-            id_usuario=request.user
+            id_usuario=usuario
         )
         
         # Eliminar
@@ -148,8 +165,11 @@ def check_new_notifications(request):
     GET: Devuelve JSON con cantidad de notificaciones nuevas
     """
     try:
+        from apps.users.models import Usuario
+        usuario = Usuario.objects.get(user=request.user)
+        
         service = NotificacionService()
-        count = service.contar_no_leidas(request.user)
+        count = service.contar_no_leidas(usuario)
         
         return JsonResponse({
             'success': True,

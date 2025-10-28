@@ -19,8 +19,7 @@ class ProfileRepository(IProfileRepository):
             return Profile.objects.select_related(
                 'id_departamento',
                 'id_provincia',
-                'id_distrito',
-                'id_comunidad'
+                'id_distrito'
             ).get(id_usuario=usuario)
         except Profile.DoesNotExist:
             return None
@@ -29,10 +28,9 @@ class ProfileRepository(IProfileRepository):
         """Obtiene o crea el perfil de un usuario"""
         return Profile.objects.get_or_create(
             id_usuario=usuario,
-            user=usuario.user,
             defaults={
                 'bio': '',
-                'perfil_publico_activo': True
+                'perfil_publico': True 
             }
         )
     
@@ -43,16 +41,6 @@ class ProfileRepository(IProfileRepository):
                 setattr(profile, campo, valor)
         profile.save()
         return profile
-    
-    def actualizar_tarifa(self, usuario: Usuario, tarifa: float) -> bool:
-        """Actualiza la tarifa por hora"""
-        try:
-            profile, _ = self.obtener_o_crear(usuario)
-            profile.tarifa_hora = tarifa
-            profile.save(update_fields=['tarifa_hora'])
-            return True
-        except Exception:
-            return False
     
     def actualizar_foto(self, usuario: Usuario, foto) -> bool:
         """Actualiza la foto de perfil"""
