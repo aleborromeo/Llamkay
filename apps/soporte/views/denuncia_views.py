@@ -67,7 +67,7 @@ def crear_denuncia(request):
         id_mensaje = request.GET.get('mensaje')
         
         context = {
-            'motivos': Denuncia.MOTIVO_DENUNCIA_CHOICES,
+            'motivos': Denuncia.MOTIVO_CHOICES,
             'id_denunciado': id_denunciado,
             'id_contrato': id_contrato,
             'id_mensaje': id_mensaje,
