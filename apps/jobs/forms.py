@@ -10,13 +10,26 @@ class OfertaUsuarioForm(forms.ModelForm):
     """
     class Meta:
         model = OfertaUsuario
-        exclude = ['empleador', 'estado', 'fecha_registro']
+        # ✅ Campos basados en el modelo actual
+        fields = [
+            'id_categoria',
+            'titulo',
+            'descripcion',
+            'modalidad_pago',
+            'pago',
+            'id_departamento',
+            'id_provincia',
+            'id_distrito',
+            'direccion_detalle',
+            'fecha_inicio_estimada',
+            'fecha_limite',
+            'urgente',
+        ]
         widgets = {
-            'horas_limite': forms.TimeInput(
-                format='%H:%M:%S', 
-                attrs={'type': 'time', 'class': 'form-control'}
-            ),
             'fecha_limite': forms.DateInput(
+                attrs={'type': 'date', 'class': 'form-control'}
+            ),
+            'fecha_inicio_estimada': forms.DateInput(
                 attrs={'type': 'date', 'class': 'form-control'}
             ),
             'titulo': forms.TextInput(
@@ -28,56 +41,26 @@ class OfertaUsuarioForm(forms.ModelForm):
             'descripcion': forms.Textarea(
                 attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Describe el trabajo...'}
             ),
-            'herramientas': forms.Textarea(
-                attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Herramientas necesarias...'}
-            ),
             'direccion_detalle': forms.Textarea(
                 attrs={'class': 'form-control', 'rows': 2, 'placeholder': 'Dirección específica...'}
             ),
-            'numero_contacto': forms.TextInput(
-                attrs={
-                    'class': 'form-control',
-                    'placeholder': '+51999123456',
-                    'pattern': r'^\+?[1-9]\d{8,14}$',
-                    'title': 'Formato: +51999123456 (8 a 15 dígitos)',
-                    'required': True
-                }
-            ),
+            'id_categoria': forms.Select(attrs={'class': 'form-control'}),
             'id_departamento': forms.Select(attrs={'class': 'form-control'}),
             'id_provincia': forms.Select(attrs={'class': 'form-control'}),
             'id_distrito': forms.Select(attrs={'class': 'form-control'}),
-            'id_comunidad': forms.Select(attrs={'class': 'form-control'}),
+            'modalidad_pago': forms.Select(attrs={'class': 'form-control'}),
+            'urgente': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
-
-    def clean_numero_contacto(self):
-        """Valida y formatea el número de WhatsApp"""
-        numero = self.cleaned_data.get('numero_contacto')
-        if not numero:
-            raise ValidationError("El número de WhatsApp es obligatorio.")
-        
-        # Limpiar espacios y caracteres especiales excepto +
-        numero_limpio = re.sub(r'[^\d+]', '', numero)
-        
-        # Validar formato básico
-        if not re.match(r'^\+?[1-9]\d{8,14}$', numero_limpio):
-            raise ValidationError("Formato inválido. Use: +51999123456 (8 a 15 dígitos)")
-        
-        # Asegurar que tenga el prefijo +
-        if not numero_limpio.startswith('+'):
-            numero_limpio = '+' + numero_limpio
-            
-        return numero_limpio
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         
         # Importar aquí para evitar circular imports
-        from apps.users.models import Provincia, Distrito, Comunidad
+        from apps.users.models import Provincia, Distrito
 
         # Inicializar querysets vacíos para ubicación
         self.fields['id_provincia'].queryset = Provincia.objects.none()
         self.fields['id_distrito'].queryset = Distrito.objects.none()
-        self.fields['id_comunidad'].queryset = Comunidad.objects.none()
 
         # Si hay datos en POST, cargar las opciones correspondientes
         if 'id_departamento' in self.data:
@@ -97,15 +80,6 @@ class OfertaUsuarioForm(forms.ModelForm):
                 )
             except (ValueError, TypeError):
                 pass
-
-        if 'id_distrito' in self.data:
-            try:
-                distrito_id = int(self.data.get('id_distrito'))
-                self.fields['id_comunidad'].queryset = Comunidad.objects.filter(
-                    id_distrito=distrito_id
-                )
-            except (ValueError, TypeError):
-                pass
         
         # Si estamos editando, cargar las opciones basadas en la instancia
         elif self.instance.pk:
@@ -117,10 +91,6 @@ class OfertaUsuarioForm(forms.ModelForm):
                 self.fields['id_distrito'].queryset = Distrito.objects.filter(
                     id_provincia=self.instance.id_provincia
                 )
-            if self.instance.id_distrito:
-                self.fields['id_comunidad'].queryset = Comunidad.objects.filter(
-                    id_distrito=self.instance.id_distrito
-                )
 
 
 class OfertaEmpresaForm(forms.ModelForm):
@@ -129,85 +99,51 @@ class OfertaEmpresaForm(forms.ModelForm):
     """
     class Meta:
         model = OfertaEmpresa
+        # ✅ Campos basados en el modelo actual
         fields = [
+            'id_categoria',
             'titulo_puesto',
-            'rango_salarial',
+            'descripcion',
+            'modalidad_pago',
+            'pago',
             'experiencia_requerida',
-            'modalidad_trabajo',
-            'descripcion_puesto',
-            'requisitos_calificaciones',
-            'beneficios_compensaciones',
-            'numero_postulantes',
-            'foto',
-            'fecha_limite',
+            'vacantes',
             'id_departamento',
             'id_provincia',
             'id_distrito',
-            'id_comunidad',
-            'direccion_detalle',
-            'numero_contacto',
         ]
         widgets = {
-            'fecha_limite': forms.DateInput(
-                attrs={'type': 'date', 'class': 'form-control'}
-            ),
             'titulo_puesto': forms.TextInput(
                 attrs={'class': 'form-control', 'placeholder': 'Ej: Desarrollador Full Stack'}
             ),
-            'rango_salarial': forms.TextInput(
-                attrs={'class': 'form-control', 'placeholder': 'Ej: S/2000 - S/3000'}
+            'pago': forms.NumberInput(
+                attrs={'class': 'form-control', 'placeholder': '0.00', 'step': '0.01'}
             ),
             'experiencia_requerida': forms.TextInput(
                 attrs={'class': 'form-control', 'placeholder': 'Ej: 2 años'}
             ),
-            'modalidad_trabajo': forms.Select(
-                choices=[
-                    ('', 'Seleccione...'),
-                    ('remoto', 'Remoto'),
-                    ('presencial', 'Presencial'),
-                    ('hibrido', 'Híbrido'),
-                ],
-                attrs={'class': 'form-control'}
-            ),
-            'descripcion_puesto': forms.Textarea(
+            'descripcion': forms.Textarea(
                 attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Descripción del puesto...'}
             ),
-            'requisitos_calificaciones': forms.Textarea(
-                attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Requisitos...'}
+            'vacantes': forms.NumberInput(
+                attrs={'class': 'form-control', 'placeholder': '1', 'min': '1'}
             ),
-            'beneficios_compensaciones': forms.Textarea(
-                attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Beneficios...'}
-            ),
-            'numero_postulantes': forms.NumberInput(
-                attrs={'class': 'form-control', 'placeholder': '0'}
-            ),
-            'direccion_detalle': forms.Textarea(
-                attrs={'class': 'form-control', 'rows': 2, 'placeholder': 'Dirección específica...'}
-            ),
-            'numero_contacto': forms.TextInput(
-                attrs={
-                    'class': 'form-control',
-                    'placeholder': '+51999123456',
-                    'pattern': r'^\+?[1-9]\d{8,14}$',
-                    'title': 'Formato: +51999123456 (8 a 15 dígitos)',
-                }
-            ),
+            'id_categoria': forms.Select(attrs={'class': 'form-control'}),
             'id_departamento': forms.Select(attrs={'class': 'form-control'}),
             'id_provincia': forms.Select(attrs={'class': 'form-control'}),
             'id_distrito': forms.Select(attrs={'class': 'form-control'}),
-            'id_comunidad': forms.Select(attrs={'class': 'form-control'}),
+            'modalidad_pago': forms.Select(attrs={'class': 'form-control'}),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         
         # Importar aquí para evitar circular imports
-        from apps.users.models import Provincia, Distrito, Comunidad
+        from apps.users.models import Provincia, Distrito
 
         # Inicializar querysets vacíos
         self.fields['id_provincia'].queryset = Provincia.objects.none()
         self.fields['id_distrito'].queryset = Distrito.objects.none()
-        self.fields['id_comunidad'].queryset = Comunidad.objects.none()
 
         # Cargar opciones según datos POST
         if 'id_departamento' in self.data:
@@ -227,15 +163,6 @@ class OfertaEmpresaForm(forms.ModelForm):
                 )
             except (ValueError, TypeError):
                 pass
-
-        if 'id_distrito' in self.data:
-            try:
-                distrito_id = int(self.data.get('id_distrito'))
-                self.fields['id_comunidad'].queryset = Comunidad.objects.filter(
-                    id_distrito=distrito_id
-                )
-            except (ValueError, TypeError):
-                pass
         
         # Si estamos editando, cargar las opciones basadas en la instancia
         elif self.instance.pk:
@@ -246,8 +173,4 @@ class OfertaEmpresaForm(forms.ModelForm):
             if self.instance.id_provincia:
                 self.fields['id_distrito'].queryset = Distrito.objects.filter(
                     id_provincia=self.instance.id_provincia
-                )
-            if self.instance.id_distrito:
-                self.fields['id_comunidad'].queryset = Comunidad.objects.filter(
-                    id_distrito=self.instance.id_distrito
                 )

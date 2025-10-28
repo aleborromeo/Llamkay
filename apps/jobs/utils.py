@@ -16,25 +16,20 @@ def obtener_trabajos_unificados(limit=None, filters=None):
         list: Lista de diccionarios con información unificada de trabajos
     """
     # Query base con select_related para optimizar consultas
-    # ✅ CORREGIDO: 'empleador__profile' en vez de 'empleador__perfil'
     ofertas_usuario = OfertaUsuario.objects.select_related(
-        'empleador',
-        'empleador__profile',  # ✅ Corregido
-        'empleador__empresa',
+        'id_empleador',
+        'id_categoria', 
         'id_departamento', 
         'id_provincia', 
-        'id_distrito', 
-        'id_comunidad'
+        'id_distrito'
     ).filter(estado='activa')
 
     ofertas_empresa = OfertaEmpresa.objects.select_related(
-        'empleador',
-        'empleador__profile',  # ✅ Corregido
-        'empleador__empresa', 
+        'id_empleador',
+        'id_categoria', 
         'id_departamento', 
         'id_provincia', 
-        'id_distrito', 
-        'id_comunidad'
+        'id_distrito'
     ).filter(estado='activa')
 
     # Aplicar filtros si existen
@@ -50,69 +45,61 @@ def obtener_trabajos_unificados(limit=None, filters=None):
 
     # Procesar ofertas de usuarios
     for o in ofertas_usuario:
-        profile = getattr(o.empleador, 'profile', None)  # ✅ Corregido
-        
-        # Determinar quién publicó
-        if profile and profile.tipo_usuario == 'empresa' and hasattr(o.empleador, 'empresa'):
-            publicado_por = o.empleador.empresa.nombre_empresa
-        elif profile:
-            publicado_por = f"{profile.nombres} {profile.apellidos}"
+        # ✅ Obtener nombre del publicador
+        empleador = o.id_empleador
+        if hasattr(empleador, 'empresa') and empleador.empresa:
+            publicado_por = empleador.empresa.nombre_empresa
         else:
-            publicado_por = "Usuario"
+            # ✅ Asumiendo que Usuario tiene estos campos directamente
+            # Ajusta según tu modelo real de Usuario
+            publicado_por = f"{empleador.nombres} {empleador.apellidos}" if hasattr(empleador, 'nombres') else "Usuario"
 
         trabajos.append({
             'tipo': 'usuario',
             'id': o.id,
             'titulo': o.titulo,
             'descripcion': o.descripcion,
-            'herramientas': o.herramientas,
             'pago': o.pago,
-            'foto': o.foto,
-            'fecha_registro': o.fecha_registro,
+            'moneda': o.moneda,
+            'modalidad_pago': o.get_modalidad_pago_display(),
+            'fecha_registro': o.created_at,  # ✅ Cambiado
             'fecha_limite': o.fecha_limite,
-            'horas_limite': o.horas_limite,
-            'rango_salarial': None,
-            'experiencia_requerida': None,
-            'modalidad_trabajo': None,
-            'requisitos_calificaciones': None,
-            'beneficios_compensaciones': None,
-            'numero_postulantes': None,
-            'numero_contacto': o.numero_contacto,
+            'fecha_inicio_estimada': o.fecha_inicio_estimada,
+            'urgente': o.urgente,
+            'direccion_detalle': o.direccion_detalle,
             'id_departamento': o.id_departamento,
             'id_provincia': o.id_provincia,
             'id_distrito': o.id_distrito,
-            'id_comunidad': o.id_comunidad,
             'publicado_por': publicado_por,
+            'categoria': o.id_categoria.nombre if o.id_categoria else None,
+            'vistas': o.vistas,
         })
 
     # Procesar ofertas de empresas
     for o in ofertas_empresa:
-        empresa = getattr(o.empleador, 'empresa', None)
-        publicado_por = empresa.nombre_empresa if empresa else "Empresa"
+        empleador = o.id_empleador
+        if hasattr(empleador, 'empresa') and empleador.empresa:
+            publicado_por = empleador.empresa.nombre_empresa
+        else:
+            publicado_por = "Empresa"
 
         trabajos.append({
             'tipo': 'empresa',
             'id': o.id,
             'titulo': o.titulo_puesto,
-            'descripcion': o.descripcion_puesto,
-            'herramientas': None,
-            'pago': None,
-            'foto': o.foto,
-            'fecha_registro': o.fecha_registro,
-            'fecha_limite': o.fecha_limite,
-            'horas_limite': None,
-            'rango_salarial': o.rango_salarial,
+            'descripcion': o.descripcion,
+            'pago': o.pago,
+            'moneda': o.moneda,
+            'modalidad_pago': o.get_modalidad_pago_display(),
             'experiencia_requerida': o.experiencia_requerida,
-            'modalidad_trabajo': o.modalidad_trabajo,
-            'requisitos_calificaciones': o.requisitos_calificaciones,
-            'beneficios_compensaciones': o.beneficios_compensaciones,
-            'numero_postulantes': o.numero_postulantes,
-            'numero_contacto': o.numero_contacto,
+            'vacantes': o.vacantes,
+            'fecha_registro': o.created_at,  # ✅ Cambiado
             'id_departamento': o.id_departamento,
             'id_provincia': o.id_provincia,
             'id_distrito': o.id_distrito,
-            'id_comunidad': o.id_comunidad,
             'publicado_por': publicado_por,
+            'categoria': o.id_categoria.nombre if o.id_categoria else None,
+            'vistas': o.vistas,
         })
 
     # Ordenar por fecha de registro (más recientes primero)
@@ -135,14 +122,15 @@ def obtener_publicador_nombre(oferta):
     Returns:
         str: Nombre del publicador
     """
-    profile = getattr(oferta.empleador, 'profile', None)  # ✅ Corregido
-    empresa = getattr(oferta.empleador, 'empresa', None)
+    empleador = oferta.id_empleador
     
-    if profile and profile.tipo_usuario == 'empresa' and empresa:
-        return empresa.nombre_empresa
-    elif profile:
-        return f"{profile.nombres} {profile.apellidos}"
-    elif empresa:
-        return empresa.nombre_empresa
+    # Intentar obtener empresa primero
+    if hasattr(empleador, 'empresa') and empleador.empresa:
+        return empleador.empresa.nombre_empresa
     
+    # Si no hay empresa, usar nombre del usuario
+    if hasattr(empleador, 'nombres') and hasattr(empleador, 'apellidos'):
+        return f"{empleador.nombres} {empleador.apellidos}"
+    
+    # Fallback
     return "Usuario"
