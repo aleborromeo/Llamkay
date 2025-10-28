@@ -27,7 +27,6 @@ urlpatterns = [
     path('guardar/<str:tipo>/<int:oferta_id>/', views.guardar_trabajo, name='guardar_trabajo'),
     path('trabajos-guardados/', views.trabajos_guardados, name='trabajos_guardados'),
     path('quitar-guardado/<int:guardado_id>/', views.quitar_guardado, name='quitar_guardado'),
-    path('agregar-nota/<int:guardado_id>/', views.agregar_nota_guardado, name='agregar_nota_guardado'),
     
     # Postulaciones
     path('postular/<str:tipo>/<int:oferta_id>/', views.postular_trabajo, name='postular_trabajo'),

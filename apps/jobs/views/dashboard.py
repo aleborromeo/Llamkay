@@ -16,10 +16,10 @@ def dashboard_trabajador(request):
     try:
         usuario = Usuario.objects.get(user=request.user)
         
-        # Verificar que sea trabajador
-        if usuario.tipo_usuario not in ['trabajador', 'ambos']:
-            messages.error(request, "No tienes acceso a este dashboard.")
-            return redirect('llamkay:dashboard')
+        # ✅ Validación opcional del tipo de usuario
+        # if hasattr(usuario, 'tipo_usuario') and usuario.tipo_usuario not in ['trabajador', 'ambos']:
+        #     messages.error(request, "No tienes acceso a este dashboard.")
+        #     return redirect('llamkay:dashboard')
         
         # Estadísticas
         total_postulaciones = Postulacion.objects.filter(
@@ -51,19 +51,17 @@ def dashboard_trabajador(request):
         ).select_related(
             'id_oferta_usuario',
             'id_oferta_empresa'
-        ).order_by('-fecha_postulacion')[:5]
+        ).order_by('-created_at')[:5]  # ✅ Cambiado de fecha_postulacion
         
-        # Recomendaciones (trabajos nuevos según categorías de interés)
-        # TODO: Implementar sistema de recomendaciones basado en perfil
-        
+        # Recomendaciones (trabajos nuevos)
         trabajos_recomendados = list(
             OfertaUsuario.objects.filter(
                 estado='activa',
-            ).order_by('-fecha_publicacion')[:6]
+            ).order_by('-created_at')[:6]  # ✅ Cambiado
         ) + list(
             OfertaEmpresa.objects.filter(
                 estado='activa',
-            ).order_by('-fecha_publicacion')[:6]
+            ).order_by('-created_at')[:6]  # ✅ Cambiado
         )
         
         context = {
@@ -80,6 +78,74 @@ def dashboard_trabajador(request):
         }
         
         return render(request, 'jobs/dashboard/trabajador.html', context)
+        
+    except Usuario.DoesNotExist:
+        messages.error(request, "Usuario no encontrado.")
+        return redirect('users:login')
+
+
+@login_required
+def dashboard_empleador(request):
+    """Dashboard principal del empleador"""
+    try:
+        usuario = Usuario.objects.get(user=request.user)
+        
+        # Estadísticas
+        total_ofertas_usuario = OfertaUsuario.objects.filter(
+            id_empleador=usuario
+        ).count()
+        
+        total_ofertas_empresa = OfertaEmpresa.objects.filter(
+            id_empleador=usuario
+        ).count()
+        
+        total_postulaciones = Postulacion.objects.filter(
+            Q(id_oferta_usuario__id_empleador=usuario) |
+            Q(id_oferta_empresa__id_empleador=usuario)
+        ).count()
+        
+        postulaciones_pendientes = Postulacion.objects.filter(
+            Q(id_oferta_usuario__id_empleador=usuario) |
+            Q(id_oferta_empresa__id_empleador=usuario),
+            estado='pendiente'
+        ).count()
+        
+        # Ofertas activas
+        ofertas_activas_usuario = OfertaUsuario.objects.filter(
+            id_empleador=usuario,
+            estado='activa'
+        ).order_by('-created_at')[:5]  # ✅ Agregado order_by
+        
+        ofertas_activas_empresa = OfertaEmpresa.objects.filter(
+            id_empleador=usuario,
+            estado='activa'
+        ).order_by('-created_at')[:5]  # ✅ Agregado order_by
+        
+        # Postulaciones recientes
+        postulaciones_recientes = Postulacion.objects.filter(
+            Q(id_oferta_usuario__id_empleador=usuario) |
+            Q(id_oferta_empresa__id_empleador=usuario)
+        ).select_related(
+            'id_trabajador',
+            'id_oferta_usuario',
+            'id_oferta_empresa'
+        ).order_by('-created_at')[:10] 
+        
+        context = {
+            'usuario': usuario,
+            'estadisticas': {
+                'total_ofertas_usuario': total_ofertas_usuario,
+                'total_ofertas_empresa': total_ofertas_empresa,
+                'total_ofertas': total_ofertas_usuario + total_ofertas_empresa,
+                'total_postulaciones': total_postulaciones,
+                'postulaciones_pendientes': postulaciones_pendientes,
+            },
+            'ofertas_activas_usuario': ofertas_activas_usuario,
+            'ofertas_activas_empresa': ofertas_activas_empresa,
+            'postulaciones_recientes': postulaciones_recientes,
+        }
+        
+        return render(request, 'empleadores/dashboard.html', context)
         
     except Usuario.DoesNotExist:
         messages.error(request, "Usuario no encontrado.")

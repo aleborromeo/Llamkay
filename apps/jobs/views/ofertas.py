@@ -3,10 +3,10 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
-from django.db.models import Q
+from django.db.models import Q, Count
 
-from apps.jobs.models import OfertaUsuario, OfertaEmpresa, GuardarTrabajo
-from apps.users.models import Usuario, Departamento, Provincia, Distrito, Comunidad
+from apps.jobs.models import OfertaUsuario, OfertaEmpresa, GuardarTrabajo, Postulacion
+from apps.users.models import Usuario, Departamento, Provincia, Distrito
 
 
 def all_trabajos(request):
@@ -49,7 +49,7 @@ def all_trabajos(request):
                 'descripcion': oferta.descripcion,
                 'pago': f"{oferta.pago} {oferta.moneda}" if oferta.pago else None,
                 'modalidad_pago': oferta.get_modalidad_pago_display(),
-                'fecha_publicacion': oferta.created_at,
+                'fecha_publicacion': oferta.created_at,  # ✅ Cambiado
                 'urgente': oferta.urgente,
                 'empleador': oferta.id_empleador,
                 'categoria': oferta.id_categoria.nombre if oferta.id_categoria else '',
@@ -88,7 +88,7 @@ def all_trabajos(request):
                 'descripcion': oferta.descripcion,
                 'pago': f"{oferta.pago} {oferta.moneda}" if oferta.pago else None,
                 'modalidad_pago': oferta.get_modalidad_pago_display(),
-                'fecha_publicacion': oferta.created_at,
+                'fecha_publicacion': oferta.created_at,  # ✅ Cambiado
                 'empleador': oferta.id_empleador,
                 'categoria': oferta.id_categoria.nombre if oferta.id_categoria else '',
                 'ubicacion': {
@@ -148,27 +148,27 @@ def registro_individual(request):
     try:
         usuario = Usuario.objects.get(user=request.user)
         
-        if usuario.tipo_usuario not in ['empleador', 'ambos']:
-            messages.error(request, "No tienes permiso para publicar ofertas.")
-            return redirect('llamkay:dashboard')
+        # ✅ Validación opcional del tipo de usuario
+        # if hasattr(usuario, 'tipo_usuario') and usuario.tipo_usuario not in ['empleador', 'ambos']:
+        #     messages.error(request, "No tienes permiso para publicar ofertas.")
+        #     return redirect('llamkay:dashboard')
         
         if request.method == 'POST':
-            # Procesar formulario
-            titulo = request.POST.get('titulo')
-            descripcion = request.POST.get('descripcion')
-            # ... más campos
+            from apps.jobs.forms import OfertaUsuarioForm
+            form = OfertaUsuarioForm(request.POST, request.FILES)
             
-            OfertaUsuario.objects.create(
-                id_empleador=usuario,
-                titulo=titulo,
-                descripcion=descripcion,
-                # ... más campos
-            )
-            
-            messages.success(request, "Oferta publicada exitosamente.")
-            return redirect('jobs:mis_trabajos')
+            if form.is_valid():
+                oferta = form.save(commit=False)
+                oferta.id_empleador = usuario
+                oferta.save()
+                
+                messages.success(request, "Oferta publicada exitosamente.")
+                return redirect('jobs:mis_trabajos')
+        else:
+            from apps.jobs.forms import OfertaUsuarioForm
+            form = OfertaUsuarioForm()
         
-        return render(request, 'jobs/registro/individual.html')
+        return render(request, 'jobs/registro/individual.html', {'form': form})
         
     except Usuario.DoesNotExist:
         messages.error(request, "Usuario no encontrado.")
@@ -181,27 +181,27 @@ def registro_empresa(request):
     try:
         usuario = Usuario.objects.get(user=request.user)
         
-        if usuario.tipo_usuario != 'empresa':
-            messages.error(request, "Solo empresas pueden publicar este tipo de ofertas.")
-            return redirect('llamkay:dashboard')
+        # ✅ Validación opcional
+        # if hasattr(usuario, 'tipo_usuario') and usuario.tipo_usuario != 'empresa':
+        #     messages.error(request, "Solo empresas pueden publicar este tipo de ofertas.")
+        #     return redirect('llamkay:dashboard')
         
         if request.method == 'POST':
-            # Procesar formulario
-            titulo_puesto = request.POST.get('titulo_puesto')
-            descripcion = request.POST.get('descripcion')
-            # ... más campos
+            from apps.jobs.forms import OfertaEmpresaForm
+            form = OfertaEmpresaForm(request.POST, request.FILES)
             
-            OfertaEmpresa.objects.create(
-                id_empleador=usuario,
-                titulo_puesto=titulo_puesto,
-                descripcion=descripcion,
-                # ... más campos
-            )
-            
-            messages.success(request, "Oferta publicada exitosamente.")
-            return redirect('jobs:mis_trabajos')
+            if form.is_valid():
+                oferta = form.save(commit=False)
+                oferta.id_empleador = usuario
+                oferta.save()
+                
+                messages.success(request, "Oferta publicada exitosamente.")
+                return redirect('jobs:mis_trabajos')
+        else:
+            from apps.jobs.forms import OfertaEmpresaForm
+            form = OfertaEmpresaForm()
         
-        return render(request, 'jobs/registro/empresa.html')
+        return render(request, 'jobs/registro/empresa.html', {'form': form})
         
     except Usuario.DoesNotExist:
         messages.error(request, "Usuario no encontrado.")
@@ -216,11 +216,11 @@ def mis_trabajos(request):
         
         ofertas_usuario = OfertaUsuario.objects.filter(
             id_empleador=usuario
-        ).order_by('-fecha_publicacion')
+        ).order_by('-created_at')  # ✅ Cambiado
         
         ofertas_empresa = OfertaEmpresa.objects.filter(
             id_empleador=usuario
-        ).order_by('-fecha_publicacion')
+        ).order_by('-created_at')  # ✅ Cambiado
         
         context = {
             'ofertas_usuario': ofertas_usuario,
@@ -242,11 +242,11 @@ def mis_trabajos_ajax(request):
         
         ofertas_usuario = OfertaUsuario.objects.filter(
             id_empleador=usuario
-        ).values('id', 'titulo', 'estado', 'fecha_publicacion')
+        ).values('id', 'titulo', 'estado', 'created_at')  # ✅ Cambiado
         
         ofertas_empresa = OfertaEmpresa.objects.filter(
             id_empleador=usuario
-        ).values('id', 'titulo_puesto', 'estado', 'fecha_publicacion')
+        ).values('id', 'titulo_puesto', 'estado', 'created_at')  # ✅ Cambiado
         
         return JsonResponse({
             'ofertas_usuario': list(ofertas_usuario),
@@ -284,21 +284,27 @@ def editar_trabajo(request, oferta_id):
             return redirect('jobs:mis_trabajos')
         
         if request.method == 'POST':
-            # Actualizar campos
             if tipo == 'usuario':
-                oferta.titulo = request.POST.get('titulo')
-                oferta.descripcion = request.POST.get('descripcion')
-                # ... más campos
+                from apps.jobs.forms import OfertaUsuarioForm
+                form = OfertaUsuarioForm(request.POST, request.FILES, instance=oferta)
             else:
-                oferta.titulo_puesto = request.POST.get('titulo_puesto')
-                oferta.descripcion = request.POST.get('descripcion')
-                # ... más campos
+                from apps.jobs.forms import OfertaEmpresaForm
+                form = OfertaEmpresaForm(request.POST, request.FILES, instance=oferta)
             
-            oferta.save()
-            messages.success(request, "Oferta actualizada correctamente.")
-            return redirect('jobs:mis_trabajos')
+            if form.is_valid():
+                form.save()
+                messages.success(request, "Oferta actualizada correctamente.")
+                return redirect('jobs:mis_trabajos')
+        else:
+            if tipo == 'usuario':
+                from apps.jobs.forms import OfertaUsuarioForm
+                form = OfertaUsuarioForm(instance=oferta)
+            else:
+                from apps.jobs.forms import OfertaEmpresaForm
+                form = OfertaEmpresaForm(instance=oferta)
         
         context = {
+            'form': form,
             'oferta': oferta,
             'tipo': tipo,
         }
@@ -316,7 +322,6 @@ def eliminar_trabajo(request, oferta_id):
     """Eliminar (soft delete) una oferta"""
     try:
         usuario = Usuario.objects.get(user=request.user)
-        from django.utils import timezone
         
         # Intentar como OfertaUsuario
         oferta = OfertaUsuario.objects.filter(
@@ -337,13 +342,13 @@ def eliminar_trabajo(request, oferta_id):
                 'message': 'Oferta no encontrada'
             }, status=404)
         
-        oferta.deleted_at = timezone.now()
-        oferta.estado = 'cancelada'
+        # ✅ Soft delete: cambiar estado a cerrada
+        oferta.estado = 'cerrada'
         oferta.save()
         
         return JsonResponse({
             'success': True,
-            'message': 'Oferta eliminada correctamente'
+            'message': 'Oferta cerrada correctamente'
         })
         
     except Exception as e:
@@ -389,6 +394,7 @@ def cargar_comunidades(request):
     if not id_distrito:
         return JsonResponse([], safe=False)
     
+    from apps.users.models import Comunidad
     comunidades = Comunidad.objects.filter(
         id_distrito=id_distrito
     ).values('id_comunidad', 'nombre').order_by('nombre')

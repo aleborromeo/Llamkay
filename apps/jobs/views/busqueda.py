@@ -1,8 +1,8 @@
-from django.shortcuts import render
-from django.db.models import Q
+from django.shortcuts import render, get_object_or_404
+from django.db.models import Q, Count
 from django.http import JsonResponse
 
-from apps.jobs.models import OfertaUsuario, OfertaEmpresa, GuardarTrabajo
+from apps.jobs.models import OfertaUsuario, OfertaEmpresa, GuardarTrabajo, Postulacion
 from apps.users.models import Departamento, Provincia, Distrito, Comunidad, Usuario
 
 
@@ -13,7 +13,6 @@ def buscar_trabajos(request):
     departamento_id = request.GET.get('departamento_id')
     provincia_id = request.GET.get('provincia_id')
     distrito_id = request.GET.get('distrito_id')
-    comunidad_id = request.GET.get('comunidad_id')
     tipo_usuario = request.GET.get('tipo_usuario')  # 'empleador' o 'empresa'
     modalidad = request.GET.get('modalidad')  # Para ofertas de empresa
     
@@ -23,12 +22,10 @@ def buscar_trabajos(request):
     if tipo_usuario in ('', 'empleador'):
         queryset_usuario = OfertaUsuario.objects.select_related(
             'id_empleador',
-            'id_empleador__profile',
             'id_categoria',
             'id_departamento',
             'id_provincia',
-            'id_distrito',
-            'id_comunidad'
+            'id_distrito'
         ).filter(estado='activa')
         
         if buscar:
@@ -44,8 +41,11 @@ def buscar_trabajos(request):
             queryset_usuario = queryset_usuario.filter(id_provincia=provincia_id)
         if distrito_id:
             queryset_usuario = queryset_usuario.filter(id_distrito=distrito_id)
-        if comunidad_id:
-            queryset_usuario = queryset_usuario.filter(id_comunidad=comunidad_id)
+        
+        # Agregar conteo de postulaciones
+        queryset_usuario = queryset_usuario.annotate(
+            postulaciones_count=Count('postulacion', filter=Q(postulacion__id_oferta_usuario__isnull=False))
+        )
         
         for oferta in queryset_usuario:
             trabajos.append({
@@ -55,7 +55,7 @@ def buscar_trabajos(request):
                 'descripcion': oferta.descripcion,
                 'pago': oferta.pago,
                 'modalidad_pago': oferta.get_modalidad_pago_display(),
-                'fecha_publicacion': oferta.created_at,
+                'fecha_publicacion': oferta.created_at,  # ✅ Cambiado de fecha_registro
                 'fecha_limite': oferta.fecha_limite,
                 'urgente': oferta.urgente,
                 'empleador': oferta.id_empleador,
@@ -64,7 +64,6 @@ def buscar_trabajos(request):
                     'departamento': oferta.id_departamento.nombre if oferta.id_departamento else '',
                     'provincia': oferta.id_provincia.nombre if oferta.id_provincia else '',
                     'distrito': oferta.id_distrito.nombre if oferta.id_distrito else '',
-                    'comunidad': oferta.id_comunidad.nombre if oferta.id_comunidad else '',
                 },
                 'vistas': oferta.vistas,
                 'postulaciones': oferta.postulaciones_count,
@@ -74,12 +73,10 @@ def buscar_trabajos(request):
     if tipo_usuario in ('', 'empresa'):
         queryset_empresa = OfertaEmpresa.objects.select_related(
             'id_empleador',
-            'id_empleador__profile',
             'id_categoria',
             'id_departamento',
             'id_provincia',
-            'id_distrito',
-            'id_comunidad'
+            'id_distrito'
         ).filter(estado='activa')
         
         if buscar:
@@ -95,10 +92,13 @@ def buscar_trabajos(request):
             queryset_empresa = queryset_empresa.filter(id_provincia=provincia_id)
         if distrito_id:
             queryset_empresa = queryset_empresa.filter(id_distrito=distrito_id)
-        if comunidad_id:
-            queryset_empresa = queryset_empresa.filter(id_comunidad=comunidad_id)
         if modalidad:
-            queryset_empresa = queryset_empresa.filter(modalidad_trabajo=modalidad)
+            queryset_empresa = queryset_empresa.filter(modalidad_pago=modalidad)
+        
+        # Agregar conteo de postulaciones
+        queryset_empresa = queryset_empresa.annotate(
+            postulaciones_count=Count('postulacion', filter=Q(postulacion__id_oferta_empresa__isnull=False))
+        )
         
         for oferta in queryset_empresa:
             trabajos.append({
@@ -109,15 +109,13 @@ def buscar_trabajos(request):
                 'rango_salarial': f"{oferta.pago} {oferta.moneda}" if oferta.pago else None,
                 'modalidad_pago': oferta.get_modalidad_pago_display(),
                 'experiencia_requerida': oferta.experiencia_requerida,
-                'fecha_publicacion': oferta.created_at,
-                'fecha_limite': oferta.fecha_limite,
+                'fecha_publicacion': oferta.created_at,  
                 'empleador': oferta.id_empleador,
                 'categoria': oferta.id_categoria.nombre if oferta.id_categoria else '',
                 'ubicacion': {
                     'departamento': oferta.id_departamento.nombre if oferta.id_departamento else '',
                     'provincia': oferta.id_provincia.nombre if oferta.id_provincia else '',
                     'distrito': oferta.id_distrito.nombre if oferta.id_distrito else '',
-                    'comunidad': oferta.id_comunidad.nombre if oferta.id_comunidad else '',
                 },
                 'vacantes': oferta.vacantes,
                 'vistas': oferta.vistas,
@@ -154,7 +152,6 @@ def buscar_trabajos(request):
             'departamento_id': departamento_id,
             'provincia_id': provincia_id,
             'distrito_id': distrito_id,
-            'comunidad_id': comunidad_id,
             'tipo_usuario': tipo_usuario,
             'modalidad': modalidad,
         }
@@ -166,22 +163,26 @@ def buscar_trabajos(request):
 def detalle_trabajo(request, tipo, trabajo_id):
     """Ver detalle de un trabajo específico"""
     if tipo == 'usuario':
-        trabajo = OfertaUsuario.objects.select_related(
-            'id_empleador',
-            'id_empleador__profile',
-            'id_categoria'
-        ).get(id=trabajo_id)
+        trabajo = get_object_or_404(
+            OfertaUsuario.objects.select_related(
+                'id_empleador',
+                'id_categoria'
+            ),
+            id=trabajo_id
+        )
         
         # Incrementar vistas
         trabajo.vistas += 1
         trabajo.save(update_fields=['vistas'])
         
     elif tipo == 'empresa':
-        trabajo = OfertaEmpresa.objects.select_related(
-            'id_empleador',
-            'id_empleador__profile',
-            'id_categoria'
-        ).get(id=trabajo_id)
+        trabajo = get_object_or_404(
+            OfertaEmpresa.objects.select_related(
+                'id_empleador',
+                'id_categoria'
+            ),
+            id=trabajo_id
+        )
         
         # Incrementar vistas
         trabajo.vistas += 1
@@ -193,7 +194,6 @@ def detalle_trabajo(request, tipo, trabajo_id):
     ya_postulo = False
     if request.user.is_authenticated:
         try:
-            from apps.jobs.models import Postulacion
             usuario = Usuario.objects.get(user=request.user)
             
             if tipo == 'usuario':
@@ -216,3 +216,5 @@ def detalle_trabajo(request, tipo, trabajo_id):
     }
     
     return render(request, 'jobs/busqueda/detalle.html', context)
+
+

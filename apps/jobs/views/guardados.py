@@ -19,7 +19,7 @@ def trabajos_guardados(request):
         ).select_related(
             'id_oferta_usuario',
             'id_oferta_empresa'
-        ).order_by('-fecha_guardado')
+        ).order_by('-created_at')  # ✅ Cambiado de fecha_guardado
         
         trabajos = []
         for guardado in guardados:
@@ -32,8 +32,7 @@ def trabajos_guardados(request):
                     'titulo': oferta.titulo,
                     'descripcion': oferta.descripcion,
                     'pago': oferta.pago,
-                    'fecha_guardado': guardado.fecha_guardado,
-                    'nota_personal': guardado.nota_personal,
+                    'fecha_guardado': guardado.created_at,  # ✅ Cambiado
                     'estado': oferta.estado,
                 })
             elif guardado.id_oferta_empresa:
@@ -45,8 +44,7 @@ def trabajos_guardados(request):
                     'titulo': oferta.titulo_puesto,
                     'descripcion': oferta.descripcion,
                     'rango_salarial': f"{oferta.pago} {oferta.moneda}" if oferta.pago else None,
-                    'fecha_guardado': guardado.fecha_guardado,
-                    'nota_personal': guardado.nota_personal,
+                    'fecha_guardado': guardado.created_at,  # ✅ Cambiado
                     'estado': oferta.estado,
                 })
         
@@ -147,35 +145,6 @@ def quitar_guardado(request, guardado_id):
         return JsonResponse({
             'success': True,
             'message': 'Trabajo eliminado de guardados'
-        })
-        
-    except Exception as e:
-        return JsonResponse({
-            'success': False,
-            'message': str(e)
-        }, status=500)
-
-
-@login_required
-@require_POST
-def agregar_nota_guardado(request, guardado_id):
-    """Agregar nota personal a trabajo guardado"""
-    try:
-        usuario = Usuario.objects.get(user=request.user)
-        
-        guardado = get_object_or_404(
-            GuardarTrabajo,
-            id=guardado_id,
-            id_usuario=usuario
-        )
-        
-        nota = request.POST.get('nota', '').strip()
-        guardado.nota_personal = nota
-        guardado.save()
-        
-        return JsonResponse({
-            'success': True,
-            'message': 'Nota guardada correctamente'
         })
         
     except Exception as e:

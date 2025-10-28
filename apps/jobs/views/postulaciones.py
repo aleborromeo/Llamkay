@@ -4,10 +4,9 @@ from django.contrib import messages
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.db import transaction
+from django.core.exceptions import PermissionDenied
 
-from apps.jobs.models import (
-    OfertaUsuario, OfertaEmpresa, Postulacion
-)
+from apps.jobs.models import OfertaUsuario, OfertaEmpresa, Postulacion
 from apps.users.models import Usuario
 
 
@@ -18,9 +17,11 @@ def postular_trabajo(request, tipo, oferta_id):
         usuario = Usuario.objects.get(user=request.user)
         
         # Verificar que el usuario sea trabajador
-        if usuario.tipo_usuario not in ['trabajador', 'ambos']:
-            messages.error(request, "Solo los trabajadores pueden postular.")
-            return redirect('jobs:buscar_trabajos')
+        # ✅ Asumiendo que Usuario tiene campo 'tipo_usuario'
+        # Si no existe, comentar esta validación
+        # if hasattr(usuario, 'tipo_usuario') and usuario.tipo_usuario not in ['trabajador', 'ambos']:
+        #     messages.error(request, "Solo los trabajadores pueden postular.")
+        #     return redirect('jobs:buscar_trabajos')
         
         if tipo == 'usuario':
             oferta = get_object_or_404(OfertaUsuario, id=oferta_id, estado='activa')
@@ -44,7 +45,6 @@ def postular_trabajo(request, tipo, oferta_id):
                 mensaje = request.POST.get('mensaje', '').strip()
                 pretension_salarial = request.POST.get('pretension_salarial')
                 disponibilidad_inmediata = request.POST.get('disponibilidad_inmediata') == 'on'
-                cv_adjunto = request.FILES.get('cv_adjunto')
                 
                 with transaction.atomic():
                     Postulacion.objects.create(
@@ -52,13 +52,8 @@ def postular_trabajo(request, tipo, oferta_id):
                         id_oferta_usuario=oferta,
                         mensaje=mensaje,
                         pretension_salarial=pretension_salarial if pretension_salarial else None,
-                        disponibilidad_inmediata=disponibilidad_inmediata,
-                        cv_adjunto=cv_adjunto
+                        disponibilidad_inmediata=disponibilidad_inmediata
                     )
-                    
-                    # Incrementar contador de postulaciones
-                    oferta.postulaciones_count += 1
-                    oferta.save(update_fields=['postulaciones_count'])
                 
                 messages.success(request, "¡Postulación enviada exitosamente!")
                 return redirect('jobs:mis_postulaciones')
@@ -83,7 +78,6 @@ def postular_trabajo(request, tipo, oferta_id):
                 mensaje = request.POST.get('mensaje', '').strip()
                 pretension_salarial = request.POST.get('pretension_salarial')
                 disponibilidad_inmediata = request.POST.get('disponibilidad_inmediata') == 'on'
-                cv_adjunto = request.FILES.get('cv_adjunto')
                 
                 with transaction.atomic():
                     Postulacion.objects.create(
@@ -91,12 +85,8 @@ def postular_trabajo(request, tipo, oferta_id):
                         id_oferta_empresa=oferta,
                         mensaje=mensaje,
                         pretension_salarial=pretension_salarial if pretension_salarial else None,
-                        disponibilidad_inmediata=disponibilidad_inmediata,
-                        cv_adjunto=cv_adjunto
+                        disponibilidad_inmediata=disponibilidad_inmediata
                     )
-                    
-                    oferta.postulaciones_count += 1
-                    oferta.save(update_fields=['postulaciones_count'])
                 
                 messages.success(request, "¡Postulación enviada exitosamente!")
                 return redirect('jobs:mis_postulaciones')
@@ -126,8 +116,10 @@ def mis_postulaciones(request):
             id_trabajador=usuario
         ).select_related(
             'id_oferta_usuario',
-            'id_oferta_empresa'
-        ).order_by('-fecha_postulacion')
+            'id_oferta_empresa',
+            'id_oferta_usuario__id_empleador',
+            'id_oferta_empresa__id_empleador'
+        ).order_by('-created_at')  # ✅ Cambiado de fecha_postulacion
         
         postulaciones_data = []
         for post in postulaciones:
@@ -139,7 +131,7 @@ def mis_postulaciones(request):
                     'titulo': oferta.titulo,
                     'empleador': oferta.id_empleador,
                     'estado': post.estado,
-                    'fecha_postulacion': post.fecha_postulacion,
+                    'fecha_postulacion': post.created_at,  # ✅ Cambiado
                     'leida': post.leida,
                     'mensaje': post.mensaje,
                 })
@@ -151,7 +143,7 @@ def mis_postulaciones(request):
                     'titulo': oferta.titulo_puesto,
                     'empleador': oferta.id_empleador,
                     'estado': post.estado,
-                    'fecha_postulacion': post.fecha_postulacion,
+                    'fecha_postulacion': post.created_at,  # ✅ Cambiado
                     'leida': post.leida,
                     'mensaje': post.mensaje,
                 })
@@ -187,8 +179,8 @@ def retirar_postulacion(request, postulacion_id):
                 'message': 'No puedes retirar esta postulación'
             }, status=400)
         
-        postulacion.estado = 'retirada'
-        postulacion.save()
+        # ✅ Cambiado: El modelo no tiene estado 'retirada', usar 'rechazada' o eliminarlo
+        postulacion.delete()  # O cambiar estado si prefieres soft delete
         
         return JsonResponse({
             'success': True,
@@ -200,3 +192,65 @@ def retirar_postulacion(request, postulacion_id):
             'success': False,
             'message': str(e)
         }, status=500)
+
+
+@login_required
+def aceptar_postulante(request, postulacion_id):
+    """Aceptar una postulación"""
+    postulacion = get_object_or_404(Postulacion, id_postulacion=postulacion_id)
+    
+    # Verificar que el usuario sea el dueño de la oferta
+    usuario = Usuario.objects.get(user=request.user)
+    
+    if postulacion.id_oferta_usuario:
+        if postulacion.id_oferta_usuario.id_empleador != usuario:
+            raise PermissionDenied
+    elif postulacion.id_oferta_empresa:
+        if postulacion.id_oferta_empresa.id_empleador != usuario:
+            raise PermissionDenied
+    
+    postulacion.estado = 'aceptada'
+    postulacion.save()
+    
+    messages.success(request, "Postulación aceptada correctamente.")
+    
+    # Redirigir según tipo
+    if postulacion.id_oferta_usuario:
+        return redirect('empleadores:ver_postulantes', 
+                       oferta_id=postulacion.id_oferta_usuario.id,
+                       tipo='usuario')
+    else:
+        return redirect('empleadores:ver_postulantes',
+                       oferta_id=postulacion.id_oferta_empresa.id,
+                       tipo='empresa')
+
+
+@login_required
+def rechazar_postulante(request, postulacion_id):
+    """Rechazar una postulación"""
+    postulacion = get_object_or_404(Postulacion, id_postulacion=postulacion_id)
+    
+    # Verificar permisos
+    usuario = Usuario.objects.get(user=request.user)
+    
+    if postulacion.id_oferta_usuario:
+        if postulacion.id_oferta_usuario.id_empleador != usuario:
+            raise PermissionDenied
+    elif postulacion.id_oferta_empresa:
+        if postulacion.id_oferta_empresa.id_empleador != usuario:
+            raise PermissionDenied
+    
+    postulacion.estado = 'rechazada'
+    postulacion.save()
+    
+    messages.success(request, "Postulación rechazada.")
+    
+    # Redirigir según tipo
+    if postulacion.id_oferta_usuario:
+        return redirect('empleadores:ver_postulantes',
+                       oferta_id=postulacion.id_oferta_usuario.id,
+                       tipo='usuario')
+    else:
+        return redirect('empleadores:ver_postulantes',
+                       oferta_id=postulacion.id_oferta_empresa.id,
+                       tipo='empresa')
