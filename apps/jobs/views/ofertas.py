@@ -11,49 +11,45 @@ from apps.users.models import Usuario, Departamento, Provincia, Distrito, Comuni
 
 def all_trabajos(request):
     """Vista principal que muestra todos los trabajos disponibles"""
+
     # Parámetros de búsqueda
     buscar = request.GET.get('buscar', '').strip()
     departamento_id = request.GET.get('departamento_id')
     provincia_id = request.GET.get('provincia_id')
     distrito_id = request.GET.get('distrito_id')
     tipo_usuario = request.GET.get('tipo_usuario', '')
-    
+
     trabajos = []
-    
-    # Filtrar ofertas de usuarios
+
+    # ================== OFERTAS DE USUARIOS ==================
     if tipo_usuario in ('', 'empleador'):
         queryset_usuario = OfertaUsuario.objects.select_related(
-            'id_empleador',
-            'id_categoria',
-            'id_departamento',
-            'id_provincia',
-            'id_distrito'
-        ).filter(estado='activa', deleted_at__isnull=True)
-        
+            'id_empleador', 'id_categoria', 'id_departamento', 'id_provincia', 'id_distrito'
+        ).filter(estado='activa')
+
         if buscar:
             queryset_usuario = queryset_usuario.filter(
                 Q(titulo__icontains=buscar) |
                 Q(descripcion__icontains=buscar) |
                 Q(id_categoria__nombre__icontains=buscar)
             )
-        
+
         if departamento_id:
             queryset_usuario = queryset_usuario.filter(id_departamento=departamento_id)
         if provincia_id:
             queryset_usuario = queryset_usuario.filter(id_provincia=provincia_id)
         if distrito_id:
             queryset_usuario = queryset_usuario.filter(id_distrito=distrito_id)
-        
+
         for oferta in queryset_usuario:
             trabajos.append({
                 'tipo': 'usuario',
                 'id': oferta.id,
                 'titulo': oferta.titulo,
                 'descripcion': oferta.descripcion,
-                'pago': oferta.pago,
+                'pago': f"{oferta.pago} {oferta.moneda}" if oferta.pago else None,
                 'modalidad_pago': oferta.get_modalidad_pago_display(),
-                'foto': oferta.foto,
-                'fecha_publicacion': oferta.fecha_publicacion,
+                'fecha_publicacion': oferta.created_at,
                 'urgente': oferta.urgente,
                 'empleador': oferta.id_empleador,
                 'categoria': oferta.id_categoria.nombre if oferta.id_categoria else '',
@@ -63,41 +59,36 @@ def all_trabajos(request):
                     'distrito': oferta.id_distrito.nombre if oferta.id_distrito else '',
                 },
             })
-    
-    # Filtrar ofertas de empresas
+
+    # ================== OFERTAS DE EMPRESAS ==================
     if tipo_usuario in ('', 'empresa'):
         queryset_empresa = OfertaEmpresa.objects.select_related(
-            'id_empleador',
-            'id_categoria',
-            'id_departamento',
-            'id_provincia',
-            'id_distrito'
-        ).filter(estado='activa', deleted_at__isnull=True)
-        
+            'id_empleador', 'id_categoria', 'id_departamento', 'id_provincia', 'id_distrito'
+        ).filter(estado='activa')
+
         if buscar:
             queryset_empresa = queryset_empresa.filter(
                 Q(titulo_puesto__icontains=buscar) |
                 Q(descripcion__icontains=buscar) |
                 Q(id_categoria__nombre__icontains=buscar)
             )
-        
+
         if departamento_id:
             queryset_empresa = queryset_empresa.filter(id_departamento=departamento_id)
         if provincia_id:
             queryset_empresa = queryset_empresa.filter(id_provincia=provincia_id)
         if distrito_id:
             queryset_empresa = queryset_empresa.filter(id_distrito=distrito_id)
-        
+
         for oferta in queryset_empresa:
             trabajos.append({
                 'tipo': 'empresa',
                 'id': oferta.id,
                 'titulo': oferta.titulo_puesto,
                 'descripcion': oferta.descripcion,
-                'rango_salarial': oferta.rango_salarial,
-                'modalidad_trabajo': oferta.get_modalidad_trabajo_display(),
-                'foto': oferta.foto,
-                'fecha_publicacion': oferta.fecha_publicacion,
+                'pago': f"{oferta.pago} {oferta.moneda}" if oferta.pago else None,
+                'modalidad_pago': oferta.get_modalidad_pago_display(),
+                'fecha_publicacion': oferta.created_at,
                 'empleador': oferta.id_empleador,
                 'categoria': oferta.id_categoria.nombre if oferta.id_categoria else '',
                 'ubicacion': {
@@ -107,27 +98,28 @@ def all_trabajos(request):
                 },
                 'vacantes': oferta.vacantes,
             })
-    
-    # Ordenar por fecha
+
+    # ================== ORDENAR RESULTADOS ==================
     trabajos.sort(key=lambda x: x['fecha_publicacion'], reverse=True)
-    
-    # Obtener trabajos guardados del usuario
+
+    # ================== TRABAJOS GUARDADOS ==================
     trabajos_guardados_ids = set()
     if request.user.is_authenticated:
         try:
             usuario = Usuario.objects.get(user=request.user)
             guardados = GuardarTrabajo.objects.filter(id_usuario=usuario)
-            
+
             for g in guardados:
                 if g.id_oferta_usuario:
                     trabajos_guardados_ids.add(f"usuario_{g.id_oferta_usuario.id}")
                 elif g.id_oferta_empresa:
                     trabajos_guardados_ids.add(f"empresa_{g.id_oferta_empresa.id}")
-        except:
+        except Usuario.DoesNotExist:
             pass
-    
+
+    # ================== CONTEXTO ==================
     departamentos = Departamento.objects.all().order_by('nombre')
-    
+
     context = {
         'trabajos': trabajos,
         'departamentos': departamentos,
@@ -138,9 +130,9 @@ def all_trabajos(request):
             'provincia_id': provincia_id,
             'distrito_id': distrito_id,
             'tipo_usuario': tipo_usuario,
-        }
+        },
     }
-    
+
     return render(request, 'jobs/all_trabajos.html', context)
 
 

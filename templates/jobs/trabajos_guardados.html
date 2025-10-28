@@ -31,10 +31,6 @@
             <p class="fecha-guardado">💾 Guardado recientemente</p>
           {% endif %}
 
-          {% if trabajo.oferta.foto %}
-            <img src="{{ trabajo.oferta.foto.url }}" alt="Imagen del trabajo" class="imagen-trabajo" />
-          {% endif %}
-
           <div class="contenido-trabajo">
             {% if trabajo.oferta.descripcion %}
               <p><strong>Descripción:</strong><br>{{ trabajo.oferta.descripcion }}</p>

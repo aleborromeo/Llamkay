@@ -21,8 +21,7 @@ class UsuarioRepository(IUsuarioRepository):
         """Obtiene un usuario por ID"""
         try:
             return Usuario.objects.select_related('user', 'id_comunidad').get(
-                id_usuario=usuario_id,
-                deleted_at__isnull=True
+                id_usuario=usuario_id
             )
         except Usuario.DoesNotExist:
             return None
@@ -31,8 +30,7 @@ class UsuarioRepository(IUsuarioRepository):
         """Obtiene un usuario por objeto User de Django"""
         try:
             return Usuario.objects.select_related('id_comunidad').get(
-                user=user,
-                deleted_at__isnull=True
+                user=user
             )
         except Usuario.DoesNotExist:
             return None
@@ -41,8 +39,7 @@ class UsuarioRepository(IUsuarioRepository):
         """Obtiene un usuario por email"""
         try:
             return Usuario.objects.select_related('user').get(
-                email=email,
-                deleted_at__isnull=True
+                email=email
             )
         except Usuario.DoesNotExist:
             return None
@@ -51,8 +48,7 @@ class UsuarioRepository(IUsuarioRepository):
         """Obtiene un usuario por DNI"""
         try:
             return Usuario.objects.get(
-                dni=dni,
-                deleted_at__isnull=True
+                dni=dni
             )
         except Usuario.DoesNotExist:
             return None
@@ -72,8 +68,7 @@ class UsuarioRepository(IUsuarioRepository):
     def listar_activos(self, tipo_usuario: Optional[str] = None) -> List[Usuario]:
         """Lista usuarios activos, opcionalmente filtrados por tipo"""
         queryset = Usuario.objects.filter(
-            habilitado=True,
-            deleted_at__isnull=True
+            habilitado=True
         ).select_related('id_comunidad')
         
         if tipo_usuario:
@@ -84,8 +79,7 @@ class UsuarioRepository(IUsuarioRepository):
     def buscar(self, query: str, tipo: Optional[str] = None) -> List[Usuario]:
         """Busca usuarios por nombre o habilidades"""
         queryset = Usuario.objects.filter(
-            habilitado=True,
-            deleted_at__isnull=True
+            habilitado=True
         )
         
         if tipo and tipo != 'todos':
