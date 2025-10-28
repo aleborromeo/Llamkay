@@ -44,7 +44,7 @@ def trabajos_guardados(request):
                     'id': oferta.id,
                     'titulo': oferta.titulo_puesto,
                     'descripcion': oferta.descripcion,
-                    'rango_salarial': oferta.rango_salarial,
+                    'rango_salarial': f"{oferta.pago} {oferta.moneda}" if oferta.pago else None,
                     'fecha_guardado': guardado.fecha_guardado,
                     'nota_personal': guardado.nota_personal,
                     'estado': oferta.estado,
