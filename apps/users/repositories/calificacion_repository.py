@@ -19,9 +19,8 @@ class CalificacionRepository(ICalificacionRepository):
         """Lista calificaciones recibidas por un usuario"""
         return list(
             Calificacion.objects.filter(
-                id_receptor=usuario,
-                activa=True
-            ).select_related('id_autor', 'id_contrato').order_by('-fecha')
+                id_receptor=usuario
+            ).select_related('id_autor', 'id_contrato')
         )
     
     def listar_por_autor(self, usuario: Usuario) -> List[Calificacion]:
