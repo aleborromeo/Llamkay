@@ -1,4 +1,4 @@
-{% extends "users/base.html" %}
+{% extends "base.html" %}
 {% load static %}
 
 {% block title %}Mi Perfil - Llamkay.pe{% endblock %}
@@ -16,18 +16,13 @@
                 <span>Llamkay</span>
             </a>
             
-            <button class="nav-toggle" aria-label="Abrir menú">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-            
             <ul class="nav-menu">
                 <li><a href="{% url 'llamkay:dashboard' %}" class="nav-link">Dashboard</a></li>
-                <li><a href="{% url 'jobs:all_trabajos' %}" class="nav-link">Trabajos</a></li>
-                <li><a href="{% url 'users:buscar_usuarios' %}" class="nav-link">Buscar</a></li>
-                <li><a href="{% url 'users:logout' %}" class="btn-nav btn-ghost">Cerrar Sesión</a></li>
+                <li><a href="{% url 'jobs:buscar_trabajos' %}" class="nav-link">Trabajos</a></li>
+                <li><a href="{% url 'users:perfil' %}" class="nav-link active">Mi Perfil</a></li>
             </ul>
+            
+            <a href="{% url 'users:logout' %}" class="btn-nav">Cerrar Sesión</a>
         </div>
     </nav>
 </header>
@@ -37,33 +32,34 @@
     <div class="modal-content">
         <form method="POST" enctype="multipart/form-data" id="form-editar-perfil" action="{% url 'users:actualizar_perfil' %}">
             {% csrf_token %}
-            <h2>✏️ Editar Perfil</h2>
+            <h2>Editar Perfil</h2>
 
             <div class="form-grid">
                 <div class="form-group full-width">
-                    <label for="foto">📸 Foto de perfil:</label>
+                    <label for="foto">Foto de perfil:</label>
                     <input type="file" name="foto" id="foto" accept="image/*">
                 </div>
 
                 <div class="form-group">
-                    <label for="telefono">📱 Teléfono:</label>
-                    <input type="text" name="telefono" id="telefono" value="{{ usuario.telefono }}" placeholder="999999999">
+                    <label for="telefono">Teléfono:</label>
+                    <input type="text" name="telefono" id="telefono" value="{{ usuario.telefono|default:'' }}" placeholder="999999999">
                 </div>
 
                 <div class="form-group">
-                    <label for="disponibilidad">🕐 Disponibilidad:</label>
-                    <input type="text" name="disponibilidad" id="disponibilidad" value="{{ disponibilidad|default_if_none:'' }}" placeholder="Lunes a Viernes, 8am-6pm">
+                    <label for="disponibilidad">Disponibilidad:</label>
+                    <input type="text" name="disponibilidad" id="disponibilidad" value="{{ disponibilidad|default:'' }}" placeholder="Lunes a Viernes, 8am-6pm">
                 </div>
 
                 <div class="form-group full-width">
-                    <label for="descripcion">💬 Descripción:</label>
-                    <textarea name="descripcion" id="descripcion" rows="4" placeholder="Cuéntanos sobre ti...">{{ profile.bio }}</textarea>
+                    <label for="descripcion">Descripción:</label>
+                    <textarea name="descripcion" id="descripcion" rows="4" placeholder="Cuéntanos sobre ti...">{{ profile.bio|default:'' }}</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="tarifa_hora">Tarifa por hora (S/):</label>
+                    <input type="number" step="0.01" name="tarifa_hora" id="tarifa_hora" value="{{ profile.tarifa_hora|default:'' }}" placeholder="0.00">
                 </div>
             </div>
-
-            <input type="hidden" name="id_departamento" value="{{ profile.id_departamento.id_departamento }}">
-            <input type="hidden" name="id_provincia" value="{{ profile.id_provincia.id_provincia }}">
-            <input type="hidden" name="id_distrito" value="{{ profile.id_distrito.id_distrito }}">
 
             <div class="modal-buttons">
                 <button type="submit" class="btn btn-primary">Guardar cambios</button>
@@ -79,7 +75,7 @@
     <div class="profile-header">
         <div class="profile-hero">
             <div class="profile-avatar">
-                {% if profile.foto_url %}
+                {% if profile and profile.foto_url %}
                     <img src="{{ profile.foto_url.url }}" alt="Foto de perfil" class="profile-photo">
                 {% else %}
                     <span class="initials">{{ usuario.nombres|slice:":1" }}{{ usuario.apellidos|slice:":1" }}</span>
@@ -89,16 +85,18 @@
 
             <div class="profile-info">
                 <h1>{{ usuario.nombres }} {{ usuario.apellidos }}</h1>
+                
                 <div class="profile-details">
                     <span class="detail-item">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
                             <polyline points="22,6 12,13 2,6"></polyline>
                         </svg>
                         {{ usuario.email }}
                     </span>
+
                     <span class="detail-item">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                             <circle cx="12" cy="7" r="4"></circle>
                         </svg>
@@ -109,78 +107,84 @@
                         {% else %}No especificado
                         {% endif %}
                     </span>
+
                     <span class="detail-item">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                             <circle cx="12" cy="10" r="3"></circle>
                         </svg>
-                        {% if profile.id_distrito %}{{ profile.id_distrito.nombre }}{% else %}Sin ubicación{% endif %},
-                        {% if profile.id_provincia %}{{ profile.id_provincia.nombre }}{% endif %}
+                        {% if usuario.id_comunidad and usuario.id_comunidad.id_distrito %}
+                            {{ usuario.id_comunidad.id_distrito.nombre }}, {{ usuario.id_comunidad.id_distrito.id_provincia.nombre }}
+                        {% else %}
+                            Sin ubicación
+                        {% endif %}
                     </span>
                 </div>
 
                 <div class="profile-badges">
-                    {% if usuario.estado_verificacion == 'verificado' %}
-                    <div class="profile-badge">✅ Verificado</div>
+                    <div class="profile-badge">Disponible</div>
+                    {% if usuario.verificado %}
+                        <div class="profile-badge">Verificado</div>
                     {% endif %}
                     {% if usuario.rating_promedio >= 4.5 %}
-                    <div class="profile-badge">⭐ Confiable</div>
+                        <div class="profile-badge">Confiable</div>
                     {% endif %}
-                    <div class="profile-badge">💪 Disponible</div>
                 </div>
             </div>
         </div>
 
         <div class="profile-actions">
             <button class="btn btn-primary" data-action="editar-perfil">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
                     <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                 </svg>
                 Editar Perfil
             </button>
             <a href="{% url 'users:exportar_portafolio' %}" class="btn btn-secondary" target="_blank">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                     <polyline points="7 10 12 15 17 10"></polyline>
                     <line x1="12" y1="15" x2="12" y2="3"></line>
                 </svg>
                 Exportar PDF
             </a>
+            {% if usuario.telefono %}
             <a href="https://wa.me/51{{ usuario.telefono }}" class="btn btn-secondary" target="_blank">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
                 </svg>
                 WhatsApp
             </a>
+            {% endif %}
         </div>
     </div>
 
     <!-- Tabs -->
     <div class="tabs">
         <button class="tab active" data-tab="general">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4* 0 0 0-4 4v2"></path>
                 <circle cx="12" cy="7" r="4"></circle>
             </svg>
             General
         </button>
         <button class="tab" data-tab="experience">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
                 <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
             </svg>
             Experiencia
         </button>
         <button class="tab" data-tab="certifications">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
                 <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
             </svg>
             Certificaciones
         </button>
         <button class="tab" data-tab="ratings">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
             </svg>
             Calificaciones
@@ -191,7 +195,7 @@
     <div id="general" class="tab-content active">
         <div class="content-grid">
             <div class="card">
-                <h3>📱 Contacto & Disponibilidad</h3>
+                <h3>Contacto & Disponibilidad</h3>
                 <div class="info-list">
                     <div class="info-item">
                         <span class="info-label">Teléfono:</span>
@@ -201,35 +205,29 @@
                         <span class="info-label">Disponibilidad:</span>
                         <span class="info-value">{{ disponibilidad|default:"No especificada" }}</span>
                     </div>
-                    <div class="info-item">
-                        <span class="info-label">Precio/hora:</span>
-                        <span class="info-value">
-                            {% if profile.tarifa_hora %}S/ {{ profile.tarifa_hora|floatformat:2 }}{% else %}No especificado{% endif %}
-                        </span>
-                    </div>
                 </div>
             </div>
 
             <div class="card">
-                <h3>📊 Estadísticas</h3>
+                <h3>Estadísticas</h3>
                 <div class="stats-compact">
                     <div class="stat-item">
-                        <span class="stat-number">{{ usuario.trabajos_completados }}</span>
+                        <span class="stat-number">{{ usuario.trabajos_completados|default:0 }}</span>
                         <span class="stat-label">Completados</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-number">{{ usuario.total_calificaciones }}</span>
+                        <span class="stat-number">{{ usuario.total_calificaciones|default:0 }}</span>
                         <span class="stat-label">Calificaciones</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-number">{{ usuario.rating_promedio|floatformat:1 }}⭐</span>
+                        <span class="stat-number">{{ usuario.rating_promedio|floatformat:1|default:"0.0" }}⭐</span>
                         <span class="stat-label">Rating</span>
                     </div>
                 </div>
             </div>
 
             <div class="card full-width">
-                <h3>💤 Sobre Mí</h3>
+                <h3>Sobre Mí</h3>
                 <p class="bio">
                     {{ profile.bio|default:"Sin descripción aún. Agrega información sobre ti para que los empleadores conozcan mejor tu perfil profesional." }}
                 </p>
@@ -240,7 +238,7 @@
     <!-- Tab: Experience -->
     <div id="experience" class="tab-content">
         <div class="card">
-            <h3>💼 Trabajos Realizados</h3>
+            <h3>Trabajos Realizados</h3>
             {% if trabajos_realizados %}
                 <div class="experience-list">
                     {% for trabajo in trabajos_realizados %}
@@ -271,19 +269,19 @@
     <!-- Tab: Certifications -->
     <div id="certifications" class="tab-content">
         <div class="card">
-            <h3>🎓 Certificaciones y Documentos</h3>
+            <h3>Certificaciones y Documentos</h3>
             {% if certificaciones %}
                 <div class="cert-grid">
                     {% for cert in certificaciones %}
                         <div class="cert-card">
-                            <div class="cert-icon">📄</div>
+                            <div class="cert-icon">Document</div>
                             <div class="cert-info">
                                 <h4>{{ cert.titulo }}</h4>
                                 <p>{{ cert.institucion|default:"Institución no especificada" }}</p>
-                                <small>{{ cert.fecha_subida|date:"d/m/Y" }}</small>
+                                <small>{{ cert.created_at|date:"d/m/Y" }}</small>
                             </div>
                             {% if cert.archivo %}
-                            <a href="{{ cert.archivo }}" target="_blank" class="cert-btn">Ver</a>
+                                <a href="{{ cert.archivo.url }}" target="_blank" class="cert-btn">Ver</a>
                             {% endif %}
                         </div>
                     {% endfor %}
@@ -305,7 +303,7 @@
     <!-- Tab: Ratings -->
     <div id="ratings" class="tab-content">
         <div class="card">
-            <h3>⭐ Calificaciones Recibidas</h3>
+            <h3>Calificaciones Recibidas</h3>
             {% if calificaciones %}
                 <div class="ratings-summary">
                     <div class="rating-big">
@@ -327,7 +325,7 @@
                                     <span class="rating-author-avatar">{{ calificacion.id_autor.nombres|slice:":1" }}</span>
                                     <div>
                                         <strong>{{ calificacion.id_autor.nombres }} {{ calificacion.id_autor.apellidos }}</strong>
-                                        <small>{{ calificacion.fecha|date:"d/m/Y" }}</small>
+                                        <small>{{ calificacion.created_at|date:"d/m/Y" }}</small>
                                     </div>
                                 </div>
                                 <div class="rating-stars">
@@ -353,43 +351,44 @@
     </div>
 </div>
 
-<!-- ========== WAVE DIVIDER ========== -->
-<div class="wave-divider">
-    <svg viewBox="0 0 1440 120" xmlns="http://www.w3.org/2000/svg">
-        <path fill="#f8f9fa" d="M0,64L80,69.3C160,75,320,85,480,80C640,75,800,53,960,48C1120,43,1280,53,1360,58.7L1440,64L1440,120L1360,120C1280,120,1120,120,960,120C800,120,640,120,480,120C320,120,160,120,80,120L0,120Z"></path>
-    </svg>
-</div>
+<!-- ========== FOOTER ========== -->
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-brand">
+            <div class="footer-logo">
+                <span>Llamkay</span>
+            </div>
+            <p>Conectando talentos con oportunidades laborales en todo el Perú</p>
+        </div>
+        
+        <div class="footer-links">
+            <div class="footer-column">
+                <h4>Plataforma</h4>
+                <ul>
+                    <li><a href="{% url 'jobs:buscar_trabajos' %}">Buscar trabajos</a></li>
+                    <li><a href="{% url 'users:perfil' %}">Mi Perfil</a></li>
+                    <li><a href="{% url 'chats:lista_chats' %}">Mis Mensajes</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h4>Soporte</h4>
+                <ul>
+                    <li><a href="#">Centro de ayuda</a></li>
+                    <li><a href="{% url 'soporte:denuncias' %}">Mis Denuncias</a></li>
+                    <li><a href="#">Términos de servicio</a></li>
+                    <li><a href="#">Política de privacidad</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer-bottom">
+        <p>&copy; 2025 Llamkay.pe. Todos los derechos reservados.</p>
+    </div>
+</footer>
 {% endblock %}
 
 {% block extra_js %}
 <script src="{% static 'js/users/profile/perfil.js' %}"></script>
-<script>
-// Tab Navigation
-document.querySelectorAll('.tab').forEach(tab => {
-    tab.addEventListener('click', () => {
-        const targetTab = tab.dataset.tab;
-        
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-        
-        tab.classList.add('active');
-        document.getElementById(targetTab).classList.add('active');
-    });
-});
-
-// Modal Controls
-document.querySelector('[data-action="editar-perfil"]')?.addEventListener('click', () => {
-    document.getElementById('editProfileModal').style.display = 'flex';
-});
-
-document.querySelector('[data-action="cerrar-modal"]')?.addEventListener('click', () => {
-    document.getElementById('editProfileModal').style.display = 'none';
-});
-
-// Mobile Menu Toggle
-document.querySelector('.nav-toggle')?.addEventListener('click', function() {
-    document.querySelector('.nav-menu').classList.toggle('active');
-    this.classList.toggle('active');
-});
-</script>
 {% endblock %}

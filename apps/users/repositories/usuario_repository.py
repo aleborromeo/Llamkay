@@ -3,133 +3,126 @@ Implementación del Repositorio de Usuario
 Desacopla la lógica de acceso a datos
 """
 
-from typing import List, Optional, Dict, Any
-from django.db.models import Q
-from django.contrib.auth.models import User
-
-from apps.users.models import Usuario
-from .interfaces import IUsuarioRepository
+from django.db.models import Q, Prefetch
+from apps.users.models import Usuario, Profile, UsuarioHabilidad
 
 
-class UsuarioRepository(IUsuarioRepository):
+class UsuarioRepository:
     """
-    Repositorio concreto para Usuario
-    Implementa la interfaz IUsuarioRepository
+    Repositorio para operaciones de base de datos de Usuario
     """
     
-    def obtener_por_id(self, usuario_id: int) -> Optional[Usuario]:
-        """Obtiene un usuario por ID"""
+    def obtener_por_id(self, id_usuario):
+        """Obtener usuario por ID con relaciones"""
         try:
-            return Usuario.objects.select_related('user', 'id_comunidad').get(
-                id_usuario=usuario_id,
-                deleted_at__isnull=True
-            )
+            return Usuario.objects.select_related(
+                'id_comunidad',
+                'profile_detalle',
+                'estadisticas'
+            ).prefetch_related(
+                'habilidades',
+                'categorias',
+                'certificaciones'
+            ).get(id_usuario=id_usuario)
         except Usuario.DoesNotExist:
             return None
     
-    def obtener_por_user(self, user: User) -> Optional[Usuario]:
-        """Obtiene un usuario por objeto User de Django"""
+    def obtener_por_user(self, user):
+        """Obtener usuario por objeto User de Django"""
         try:
-            return Usuario.objects.select_related('id_comunidad').get(
+            return Usuario.objects.select_related(
+                'id_comunidad'
+            ).get(
                 user=user,
-                deleted_at__isnull=True
+                habilitado=True  # Solo usuarios activos
             )
         except Usuario.DoesNotExist:
-            return None
+            raise ValueError(f"No se encontró usuario para: {user.username}")
     
-    def obtener_por_email(self, email: str) -> Optional[Usuario]:
-        """Obtiene un usuario por email"""
+    def obtener_completo(self, id_usuario):
+        """Obtener usuario con todas sus relaciones para perfil completo"""
         try:
-            return Usuario.objects.select_related('user').get(
-                email=email,
-                deleted_at__isnull=True
+            return Usuario.objects.select_related(
+                'id_comunidad__id_distrito__id_provincia__id_departamento',
+                'profile_detalle',
+                'estadisticas'
+            ).prefetch_related(
+                Prefetch('habilidades', queryset=UsuarioHabilidad.objects.select_related('id_habilidad')),
+                'categorias',
+                'certificaciones',
+                'calificaciones_recibidas__id_autor'
+            ).get(
+                id_usuario=id_usuario,
+                habilitado=True
             )
         except Usuario.DoesNotExist:
-            return None
+            raise ValueError(f"Usuario {id_usuario} no encontrado")
     
-    def obtener_por_dni(self, dni: str) -> Optional[Usuario]:
-        """Obtiene un usuario por DNI"""
-        try:
-            return Usuario.objects.get(
-                dni=dni,
-                deleted_at__isnull=True
-            )
-        except Usuario.DoesNotExist:
-            return None
-    
-    def crear(self, datos: Dict[str, Any]) -> Usuario:
-        """Crea un nuevo usuario"""
-        return Usuario.objects.create(**datos)
-    
-    def actualizar(self, usuario: Usuario, datos: Dict[str, Any]) -> Usuario:
-        """Actualiza un usuario existente"""
-        for campo, valor in datos.items():
-            if hasattr(usuario, campo):
-                setattr(usuario, campo, valor)
-        usuario.save()
-        return usuario
-    
-    def listar_activos(self, tipo_usuario: Optional[str] = None) -> List[Usuario]:
-        """Lista usuarios activos, opcionalmente filtrados por tipo"""
+    def buscar_usuarios(self, filtros):
+        """
+        Buscar usuarios con filtros dinámicos
+        filtros puede contener: tipo_usuario, categoria, ubicacion, etc.
+        """
         queryset = Usuario.objects.filter(
             habilitado=True,
-            deleted_at__isnull=True
-        ).select_related('id_comunidad')
-        
-        if tipo_usuario:
-            queryset = queryset.filter(tipo_usuario=tipo_usuario)
-        
-        return list(queryset.order_by('-created_at'))
-    
-    def buscar(self, query: str, tipo: Optional[str] = None) -> List[Usuario]:
-        """Busca usuarios por nombre o habilidades"""
-        queryset = Usuario.objects.filter(
-            habilitado=True,
-            deleted_at__isnull=True
+            verificado=True
+        ).select_related(
+            'id_comunidad',
+            'profile_detalle'
         )
         
-        if tipo and tipo != 'todos':
-            queryset = queryset.filter(tipo_usuario=tipo)
+        # Aplicar filtros
+        if 'tipo_usuario' in filtros:
+            queryset = queryset.filter(tipo_usuario=filtros['tipo_usuario'])
         
-        if query:
+        if 'categoria' in filtros:
+            queryset = queryset.filter(categorias__id_categoria=filtros['categoria'])
+        
+        if 'departamento' in filtros:
+            queryset = queryset.filter(id_comunidad__id_distrito__id_provincia__id_departamento=filtros['departamento'])
+        
+        if 'busqueda' in filtros:
+            busqueda = filtros['busqueda']
             queryset = queryset.filter(
-                Q(nombres__icontains=query) |
-                Q(apellidos__icontains=query) |
-                Q(username__icontains=query)
+                Q(nombres__icontains=busqueda) |
+                Q(apellidos__icontains=busqueda)
             )
         
-        # Ordenar por rating y total de calificaciones
-        return list(
-            queryset.select_related('id_comunidad')
-            .order_by('-estadisticas__rating_promedio', '-estadisticas__total_calificaciones')[:20]
-        )
+        return queryset.distinct()
     
-    def existe_email(self, email: str) -> bool:
-        """Verifica si existe un email"""
-        return Usuario.objects.filter(email=email).exists()
-    
-    def existe_dni(self, dni: str) -> bool:
-        """Verifica si existe un DNI"""
-        return Usuario.objects.filter(dni=dni).exists()
-    
-    def activar(self, usuario_id: int) -> bool:
-        """Activa un usuario"""
+    def actualizar_perfil(self, usuario, datos):
+        """Actualizar datos del usuario"""
         try:
-            usuario = self.obtener_por_id(usuario_id)
-            if usuario:
-                usuario.activar()
-                return True
-            return False
-        except Exception:
+            for campo, valor in datos.items():
+                if hasattr(usuario, campo):
+                    setattr(usuario, campo, valor)
+            usuario.save()
+            return True
+        except Exception as e:
+            print(f"Error actualizando perfil: {str(e)}")
             return False
     
-    def desactivar(self, usuario_id: int) -> bool:
-        """Desactiva un usuario"""
-        try:
-            usuario = self.obtener_por_id(usuario_id)
-            if usuario:
-                usuario.desactivar()
-                return True
-            return False
-        except Exception:
-            return False
+    def obtener_estadisticas(self, usuario):
+        """Obtener estadísticas del usuario"""
+        from apps.jobs.models import Contrato, Postulacion
+        
+        if hasattr(usuario, 'estadisticas'):
+            return {
+                'trabajos_completados': usuario.estadisticas.trabajos_completados or 0,
+                'total_calificaciones': usuario.estadisticas.total_calificaciones or 0,
+                'rating_promedio': usuario.estadisticas.rating_promedio or 0.0,
+            }
+        
+        # Si no existe estadisticas, calcular manualmente
+        trabajos = Contrato.objects.filter(
+            Q(id_empleador=usuario) | Q(id_trabajador=usuario),
+            estado='completado'
+        ).count()
+        
+        calificaciones = usuario.calificaciones_recibidas.count()
+        
+        return {
+            'trabajos_completados': trabajos,
+            'total_calificaciones': calificaciones,
+            'rating_promedio': usuario.rating_promedio or 0.0,
+        }

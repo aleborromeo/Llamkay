@@ -24,7 +24,8 @@
                 </ul>
                 
                 <div class="nav-actions">
-                    <button class="icon-button" id="notificationsBtn" aria-label="Notificaciones">
+                    <!-- BOTÓN DE NOTIFICACIONES -->
+                    <a href="{% url 'soporte:notificaciones' %}" class="icon-button" aria-label="Notificaciones">
                         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
                             <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
@@ -32,13 +33,13 @@
                         {% if notificaciones_count > 0 %}
                         <span class="notification-badge">{{ notificaciones_count }}</span>
                         {% endif %}
-                    </button>
+                    </a>
                     
                     <div class="user-menu-wrapper">
-                        <div class="user-menu" id="userMenuBtn">
+                        <button type="button" class="user-menu" id="userMenuBtn">
                             <div class="profile-pic-placeholder">
-                                {% if usuario.profile.foto_url %}
-                                    <img src="{{ usuario.profile.foto_url.url }}" alt="{{ usuario.nombres }}">
+                                {% if profile and profile.foto_url %}
+                                    <img src="{{ profile.foto_url.url }}" alt="{{ usuario.nombres }}">
                                 {% else %}
                                     {{ usuario.nombres|first }}{{ usuario.apellidos|first }}
                                 {% endif %}
@@ -47,15 +48,15 @@
                             <svg class="dropdown-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <polyline points="6 9 12 15 18 9"></polyline>
                             </svg>
-                        </div>
+                        </button>
                         
                         <!-- Dropdown Menu -->
                         <div class="user-dropdown" id="userDropdown">
                             <div class="dropdown-header">
                                 <div class="dropdown-user-info">
                                     <div class="dropdown-avatar">
-                                        {% if usuario.profile.foto_url %}
-                                            <img src="{{ usuario.profile.foto_url.url }}" alt="{{ usuario.nombres }}">
+                                        {% if profile and profile.foto_url %}
+                                            <img src="{{ profile.foto_url.url }}" alt="{{ usuario.nombres }}">
                                         {% else %}
                                             {{ usuario.nombres|first }}{{ usuario.apellidos|first }}
                                         {% endif %}
@@ -88,6 +89,18 @@
                                     <span>Dashboard</span>
                                 </a>
                                 
+                                <!-- ENLACES DE SOPORTE -->
+                                <a href="{% url 'soporte:notificaciones' %}" class="dropdown-item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                                    </svg>
+                                    <span>Notificaciones</span>
+                                    {% if notificaciones_count > 0 %}
+                                    <span class="badge" style="margin-left: auto; background: #07734B; color: white; padding: 2px 8px; border-radius: 12px; font-size: 11px;">{{ notificaciones_count }}</span>
+                                    {% endif %}
+                                </a>
+                                
                                 <a href="{% url 'chats:lista_chats' %}" class="dropdown-item">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
@@ -115,7 +128,21 @@
                                 </a>
                                 {% endif %}
                                 
-                                <a href="{% url 'users:actualizar_perfil' %}" class="dropdown-item">
+                                <div class="dropdown-divider"></div>
+                                
+                                <!-- SECCIÓN DE SOPORTE -->
+                                <a href="{% url 'soporte:denuncias' %}" class="dropdown-item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                                        <line x1="12" y1="9" x2="12" y2="13"></line>
+                                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                                    </svg>
+                                    <span>Mis Denuncias</span>
+                                </a>
+                                
+                                <div class="dropdown-divider"></div>
+                                
+                                <a href="{% url 'users:perfil' %}" class="dropdown-item">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <circle cx="12" cy="12" r="3"></circle>
                                         <path d="M12 1v6m0 6v6"></path>
@@ -279,7 +306,7 @@
         </div>
     </section>
 
-        <!-- ========== MAIN CONTENT ========== -->
+    <!-- ========== MAIN CONTENT ========== -->
     <section class="main-content">
         <div class="container">
             <div class="content-grid">
@@ -324,7 +351,7 @@
                         </div>
                     </div>
 
-                    <!-- Recommended Jobs / Postulantes (según tipo de usuario) -->
+                    <!-- Recommended Jobs -->
                     <div class="content-card">
                         <div class="card-header">
                             {% if usuario.tipo_usuario == 'trabajador' or usuario.tipo_usuario == 'ambos' %}
@@ -478,6 +505,54 @@
                         {% endif %}
                     </div>
 
+                    <!-- NOTIFICACIONES RECIENTES - INTEGRACIÓN SOPORTE -->
+                    {% if notificaciones_recientes %}
+                    <div class="sidebar-card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <h3 style="margin: 0;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 8px;">
+                                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                                    <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                                </svg>
+                                Notificaciones
+                            </h3>
+                            {% if notificaciones_count > 0 %}
+                            <span style="background: #07734B; color: white; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 600;">
+                                {{ notificaciones_count }}
+                            </span>
+                            {% endif %}
+                        </div>
+                        <div class="notificaciones-preview">
+                            {% for notif in notificaciones_recientes %}
+                            <a href="{{ notif.url|default:'#' }}" class="notificacion-preview-item {% if not notif.leida %}no-leida{% endif %}">
+                                <div class="notif-icon {{ notif.tipo }}">
+                                    {% if notif.tipo == 'postulacion' %}
+                                        📋
+                                    {% elif notif.tipo == 'mensaje' %}
+                                        💬
+                                    {% elif notif.tipo == 'contrato' %}
+                                        📝
+                                    {% elif notif.tipo == 'pago' %}
+                                        💰
+                                    {% elif notif.tipo == 'calificacion' %}
+                                        ⭐
+                                    {% else %}
+                                        🔔
+                                    {% endif %}
+                                </div>
+                                <div class="notif-content">
+                                    <strong>{{ notif.titulo|truncatewords:8 }}</strong>
+                                    <span class="notif-time">{{ notif.created_at|timesince }}</span>
+                                </div>
+                            </a>
+                            {% endfor %}
+                        </div>
+                        <a href="{% url 'soporte:notificaciones' %}" class="btn-small btn-block btn-ghost" style="margin-top: 1rem;">
+                            Ver todas las notificaciones
+                        </a>
+                    </div>
+                    {% endif %}
+
                     <!-- Tips -->
                     <div class="sidebar-card tips-card">
                         <div class="tips-icon">💡</div>
@@ -491,9 +566,9 @@
                         <h3>Mensajes recientes</h3>
                         <div class="mensajes-preview">
                             {% for conv in conversaciones_recientes %}
-                                <a href="{% url 'chats:ver_conversacion' conversacion_id=conv.id_conversacion %}" class="mensaje-item">
+                                <a href="{% url 'chats:ver_chat_por_id' chat_id=conv.id_conversacion %}" class="mensaje-item">
                                     <div class="mensaje-avatar">
-                                        {% with otro_usuario=conv.obtener_otro_usuario|usuario %}
+                                        {% with otro_usuario=conv.obtener_otro_usuario %}
                                             {% if otro_usuario.profile.foto_url %}
                                                 <img src="{{ otro_usuario.profile.foto_url.url }}" alt="{{ otro_usuario.nombres }}">
                                             {% else %}
@@ -508,7 +583,7 @@
                                 </a>
                             {% endfor %}
                         </div>
-                        <a href="{% url 'chats:lista_conversaciones' %}" class="btn-small btn-block btn-ghost" style="margin-top: 1rem;">Ver todos</a>
+                        <a href="{% url 'chats:lista_chats' %}" class="btn-small btn-block btn-ghost" style="margin-top: 1rem;">Ver todos</a>
                     </div>
                     {% endif %}
                 </div>
@@ -540,6 +615,7 @@
                     <h4>Soporte</h4>
                     <ul>
                         <li><a href="#">Centro de ayuda</a></li>
+                        <li><a href="{% url 'soporte:denuncias' %}">Mis Denuncias</a></li>
                         <li><a href="#">Términos de servicio</a></li>
                         <li><a href="#">Política de privacidad</a></li>
                     </ul>

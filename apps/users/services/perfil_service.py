@@ -56,10 +56,10 @@ class PerfilService:
             id_usuario=usuario
         ).select_related('id_habilidad')
         
-        # Obtener certificaciones
+        # ✅ CORRECCIÓN: Cambiar 'fecha_subida' por 'created_at'
         certificaciones = Certificacion.objects.filter(
             id_usuario=usuario
-        ).order_by('-fecha_subida')
+        ).order_by('-created_at')
         
         # Obtener trabajos realizados
         trabajos = TrabajosRealizados.objects.filter(
@@ -73,9 +73,18 @@ class PerfilService:
         disponibilidad = self._obtener_disponibilidad(usuario)
         
         # Obtener estadísticas
-        from .estadistica_service import EstadisticaService
-        estadistica_service = EstadisticaService()
-        estadisticas = estadistica_service.calcular_usuario(usuario)
+        try:
+            from .estadistica_service import EstadisticaService
+            estadistica_service = EstadisticaService()
+            estadisticas = estadistica_service.calcular_usuario(usuario)
+        except Exception as e:
+            # Si falla, usar valores por defecto
+            estadisticas = {
+                'trabajos_completados': 0,
+                'trabajos_activos': 0,
+                'rating_promedio': 0.0,
+                'total_calificaciones': 0
+            }
         
         return {
             'usuario': usuario,
@@ -87,7 +96,7 @@ class PerfilService:
             'trabajos': trabajos,
             'calificaciones': calificaciones,
             'disponibilidad': disponibilidad,
-            'precio_hora': profile.tarifa_hora,
+            'precio_hora': profile.tarifa_hora if profile else None,
             'estadisticas': estadisticas,
             'tipo_usuario': usuario.tipo_usuario,
         }
@@ -103,7 +112,7 @@ class PerfilService:
         
         profile = self.profile_repo.obtener_por_usuario(usuario)
         
-        # Solo certificaciones verificadas
+        # ✅ Solo certificaciones verificadas - ordenar por created_at
         certificaciones = Certificacion.objects.filter(
             id_usuario=usuario,
             verificada=True
@@ -155,7 +164,7 @@ class PerfilService:
             campos_profile = [
                 'bio', 'ocupacion', 'experiencia_anios', 'tarifa_hora',
                 'portafolio_url', 'id_departamento', 'id_provincia',
-                'id_distrito', 'perfil_publico_activo', 'mostrar_email',
+                'id_distrito', 'perfil_publico', 'mostrar_email',
                 'mostrar_telefono'
             ]
             
@@ -186,22 +195,25 @@ class PerfilService:
         if not hasattr(usuario, 'disponibilidad_set'):
             return None
         
-        disponibilidades = usuario.disponibilidad_set.filter(activa=True)
-        if not disponibilidades.exists():
+        try:
+            disponibilidades = usuario.disponibilidad_set.filter(activa=True)
+            if not disponibilidades.exists():
+                return None
+            
+            # Formatear horarios
+            dias = {
+                0: 'Dom', 1: 'Lun', 2: 'Mar', 3: 'Mié',
+                4: 'Jue', 5: 'Vie', 6: 'Sáb'
+            }
+            
+            horarios = [
+                f"{dias[d.dia_semana]} {d.hora_inicio.strftime('%H:%M')}-{d.hora_fin.strftime('%H:%M')}"
+                for d in disponibilidades[:3]
+            ]
+            
+            return ", ".join(horarios) if horarios else None
+        except Exception:
             return None
-        
-        # Formatear horarios
-        dias = {
-            0: 'Dom', 1: 'Lun', 2: 'Mar', 3: 'Mié',
-            4: 'Jue', 5: 'Vie', 6: 'Sáb'
-        }
-        
-        horarios = [
-            f"{dias[d.dia_semana]} {d.hora_inicio.strftime('%H:%M')}-{d.hora_fin.strftime('%H:%M')}"
-            for d in disponibilidades[:3]
-        ]
-        
-        return ", ".join(horarios) if horarios else None
     
     def exportar_portafolio(self, user: User) -> Dict[str, Any]:
         """
