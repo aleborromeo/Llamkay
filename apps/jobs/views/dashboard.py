@@ -59,12 +59,10 @@ def dashboard_trabajador(request):
         trabajos_recomendados = list(
             OfertaUsuario.objects.filter(
                 estado='activa',
-                deleted_at__isnull=True
             ).order_by('-fecha_publicacion')[:6]
         ) + list(
             OfertaEmpresa.objects.filter(
                 estado='activa',
-                deleted_at__isnull=True
             ).order_by('-fecha_publicacion')[:6]
         )
         

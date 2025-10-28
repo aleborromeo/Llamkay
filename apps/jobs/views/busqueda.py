@@ -29,7 +29,7 @@ def buscar_trabajos(request):
             'id_provincia',
             'id_distrito',
             'id_comunidad'
-        ).filter(estado='activa', deleted_at__isnull=True)
+        ).filter(estado='activa')
         
         if buscar:
             queryset_usuario = queryset_usuario.filter(
@@ -55,8 +55,7 @@ def buscar_trabajos(request):
                 'descripcion': oferta.descripcion,
                 'pago': oferta.pago,
                 'modalidad_pago': oferta.get_modalidad_pago_display(),
-                'foto': oferta.foto,
-                'fecha_publicacion': oferta.fecha_publicacion,
+                'fecha_publicacion': oferta.created_at,
                 'fecha_limite': oferta.fecha_limite,
                 'urgente': oferta.urgente,
                 'empleador': oferta.id_empleador,
@@ -81,7 +80,7 @@ def buscar_trabajos(request):
             'id_provincia',
             'id_distrito',
             'id_comunidad'
-        ).filter(estado='activa', deleted_at__isnull=True)
+        ).filter(estado='activa')
         
         if buscar:
             queryset_empresa = queryset_empresa.filter(
@@ -107,12 +106,10 @@ def buscar_trabajos(request):
                 'id': oferta.id,
                 'titulo': oferta.titulo_puesto,
                 'descripcion': oferta.descripcion,
-                'rango_salarial': oferta.rango_salarial,
+                'rango_salarial': f"{oferta.pago} {oferta.moneda}" if oferta.pago else None,
                 'modalidad_pago': oferta.get_modalidad_pago_display(),
-                'modalidad_trabajo': oferta.get_modalidad_trabajo_display(),
                 'experiencia_requerida': oferta.experiencia_requerida,
-                'foto': oferta.foto,
-                'fecha_publicacion': oferta.fecha_publicacion,
+                'fecha_publicacion': oferta.created_at,
                 'fecha_limite': oferta.fecha_limite,
                 'empleador': oferta.id_empleador,
                 'categoria': oferta.id_categoria.nombre if oferta.id_categoria else '',
