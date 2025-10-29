@@ -1,0 +1,455 @@
+{% extends "jobs/base_jobs.html" %}
+
+{% block title %}{% if modo_edicion %}Editar{% else %}Publicar{% endif %} Oferta Individual - Llamkay{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-container {
+        max-width: 800px;
+        margin: 30px auto;
+    }
+    
+    .form-header {
+        background: linear-gradient(135deg, #07734B, #15AC75);
+        color: white;
+        padding: 30px;
+        border-radius: 12px 12px 0 0;
+        text-align: center;
+    }
+    
+    .form-header h1 {
+        font-size: 28px;
+        margin-bottom: 10px;
+    }
+    
+    .form-header p {
+        opacity: 0.9;
+        font-size: 16px;
+    }
+    
+    .form-body {
+        background: white;
+        padding: 30px;
+        border-radius: 0 0 12px 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    
+    .form-section {
+        margin-bottom: 30px;
+        padding-bottom: 30px;
+        border-bottom: 2px solid #f0f0f0;
+    }
+    
+    .form-section:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+    }
+    
+    .form-section h3 {
+        color: #07734B;
+        margin-bottom: 20px;
+        font-size: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-bottom: 15px;
+    }
+    
+    .form-row.full {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #333;
+    }
+    
+    .form-group label.required::after {
+        content: " *";
+        color: #dc3545;
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 15px;
+        transition: border-color 0.3s;
+    }
+    
+    .form-control:focus {
+        outline: none;
+        border-color: #07734B;
+    }
+    
+    .form-control.error {
+        border-color: #dc3545;
+    }
+    
+    .help-text {
+        font-size: 13px;
+        color: #666;
+        margin-top: 5px;
+        display: block;
+    }
+    
+    .error-message {
+        color: #dc3545;
+        font-size: 13px;
+        margin-top: 5px;
+        display: block;
+    }
+    
+    .checkbox-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+    
+    .checkbox-group input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+    }
+    
+    .checkbox-group label {
+        margin: 0;
+        cursor: pointer;
+        flex: 1;
+    }
+    
+    .form-actions {
+        display: flex;
+        gap: 15px;
+        margin-top: 30px;
+    }
+    
+    .form-actions .btn {
+        flex: 1;
+        padding: 14px;
+        font-size: 16px;
+    }
+    
+    .info-box {
+        background: #e7f3ff;
+        border-left: 4px solid #2196F3;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+    
+    .info-box p {
+        margin: 0;
+        color: #1565C0;
+    }
+    
+    @media (max-width: 768px) {
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+        
+        .form-actions {
+            flex-direction: column;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <div class="form-header">
+        <h1>
+            {% if modo_edicion %}
+                ✏️ Editar Oferta de Trabajo
+            {% else %}
+                📝 Publicar Nueva Oferta de Trabajo
+            {% endif %}
+        </h1>
+        <p>
+            {% if modo_edicion %}
+                Actualiza la información de tu oferta de trabajo
+            {% else %}
+                Completa el formulario para publicar tu oferta de trabajo
+            {% endif %}
+        </p>
+    </div>
+    
+    <div class="form-body">
+        {% if not modo_edicion %}
+        <div class="info-box">
+            <p><strong>💡 Consejo:</strong> Mientras más detallada sea tu oferta, recibirás postulaciones de mejor calidad.</p>
+        </div>
+        {% endif %}
+        
+        <form method="POST" enctype="multipart/form-data" id="ofertaForm">
+            {% csrf_token %}
+            
+            <!-- Información Básica -->
+            <div class="form-section">
+                <h3>📋 Información Básica</h3>
+                
+                <div class="form-group">
+                    <label for="{{ form.titulo.id_for_label }}" class="required">Título del Trabajo</label>
+                    {{ form.titulo }}
+                    <span class="help-text">Ejemplo: "Jardinero por un día", "Pintor para casa"</span>
+                    {% if form.titulo.errors %}
+                        <span class="error-message">{{ form.titulo.errors.0 }}</span>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ form.id_categoria.id_for_label }}" class="required">Categoría</label>
+                    {{ form.id_categoria }}
+                    {% if form.id_categoria.errors %}
+                        <span class="error-message">{{ form.id_categoria.errors.0 }}</span>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ form.descripcion.id_for_label }}" class="required">Descripción del Trabajo</label>
+                    {{ form.descripcion }}
+                    <span class="help-text">Describe en detalle qué necesitas, requisitos, horario, etc.</span>
+                    {% if form.descripcion.errors %}
+                        <span class="error-message">{{ form.descripcion.errors.0 }}</span>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Pago -->
+            <div class="form-section">
+                <h3>💰 Información de Pago</h3>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="{{ form.modalidad_pago.id_for_label }}" class="required">Modalidad de Pago</label>
+                        {{ form.modalidad_pago }}
+                        {% if form.modalidad_pago.errors %}
+                            <span class="error-message">{{ form.modalidad_pago.errors.0 }}</span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.pago.id_for_label }}">Monto a Pagar (S/)</label>
+                        {{ form.pago }}
+                        <span class="help-text">Deja vacío si prefieres negociar</span>
+                        {% if form.pago.errors %}
+                            <span class="error-message">{{ form.pago.errors.0 }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Ubicación -->
+            <div class="form-section">
+                <h3>📍 Ubicación del Trabajo</h3>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="{{ form.id_departamento.id_for_label }}" class="required">Departamento</label>
+                        {{ form.id_departamento }}
+                        {% if form.id_departamento.errors %}
+                            <span class="error-message">{{ form.id_departamento.errors.0 }}</span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.id_provincia.id_for_label }}" class="required">Provincia</label>
+                        {{ form.id_provincia }}
+                        {% if form.id_provincia.errors %}
+                            <span class="error-message">{{ form.id_provincia.errors.0 }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="{{ form.id_distrito.id_for_label }}" class="required">Distrito</label>
+                        {{ form.id_distrito }}
+                        {% if form.id_distrito.errors %}
+                            <span class="error-message">{{ form.id_distrito.errors.0 }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ form.direccion_detalle.id_for_label }}">Dirección Detallada</label>
+                    {{ form.direccion_detalle }}
+                    <span class="help-text">Opcional: Calle, número, referencias</span>
+                    {% if form.direccion_detalle.errors %}
+                        <span class="error-message">{{ form.direccion_detalle.errors.0 }}</span>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Fechas -->
+            <div class="form-section">
+                <h3>📅 Fechas</h3>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="{{ form.fecha_inicio_estimada.id_for_label }}">Fecha de Inicio Estimada</label>
+                        {{ form.fecha_inicio_estimada }}
+                        <span class="help-text">¿Cuándo necesitas que empiece el trabajo?</span>
+                        {% if form.fecha_inicio_estimada.errors %}
+                            <span class="error-message">{{ form.fecha_inicio_estimada.errors.0 }}</span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.fecha_limite.id_for_label }}">Fecha Límite para Postular</label>
+                        {{ form.fecha_limite }}
+                        <span class="help-text">¿Hasta cuándo recibirás postulaciones?</span>
+                        {% if form.fecha_limite.errors %}
+                            <span class="error-message">{{ form.fecha_limite.errors.0 }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Opciones Adicionales -->
+            <div class="form-section">
+                <h3>⚙️ Opciones Adicionales</h3>
+                
+                <div class="checkbox-group">
+                    {{ form.urgente }}
+                    <label for="{{ form.urgente.id_for_label }}">
+                        <strong>🔥 Marcar como urgente</strong>
+                        <span class="help-text" style="display: block;">Tu oferta se destacará para recibir más postulaciones rápidamente</span>
+                    </label>
+                </div>
+            </div>
+            
+            <!-- Errores generales del formulario -->
+            {% if form.non_field_errors %}
+                <div class="alert alert-error">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+            
+            <!-- Acciones -->
+            <div class="form-actions">
+                <a href="{% url 'jobs:mis_trabajos' %}" class="btn btn-secondary">
+                    ❌ Cancelar
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    {% if modo_edicion %}
+                        ✅ Guardar Cambios
+                    {% else %}
+                        ✅ Publicar Oferta
+                    {% endif %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const departamentoSelect = document.getElementById('{{ form.id_departamento.id_for_label }}');
+    const provinciaSelect = document.getElementById('{{ form.id_provincia.id_for_label }}');
+    const distritoSelect = document.getElementById('{{ form.id_distrito.id_for_label }}');
+    
+    // Cargar provincias cuando cambia departamento
+    departamentoSelect.addEventListener('change', function() {
+        const departamentoId = this.value;
+        
+        provinciaSelect.innerHTML = '<option value="">Cargando...</option>';
+        distritoSelect.innerHTML = '<option value="">Seleccione distrito</option>';
+        
+        if (departamentoId) {
+            fetch(`/jobs/ajax/cargar-provincias/?id_departamento=${departamentoId}`)
+                .then(response => response.json())
+                .then(data => {
+                    provinciaSelect.innerHTML = '<option value="">Seleccione provincia</option>';
+                    data.forEach(prov => {
+                        const option = document.createElement('option');
+                        option.value = prov.id_provincia;
+                        option.textContent = prov.nombre;
+                        provinciaSelect.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    provinciaSelect.innerHTML = '<option value="">Error al cargar</option>';
+                });
+        } else {
+            provinciaSelect.innerHTML = '<option value="">Seleccione provincia</option>';
+        }
+    });
+    
+    // Cargar distritos cuando cambia provincia
+    provinciaSelect.addEventListener('change', function() {
+        const provinciaId = this.value;
+        
+        distritoSelect.innerHTML = '<option value="">Cargando...</option>';
+        
+        if (provinciaId) {
+            fetch(`/jobs/ajax/cargar-distritos/?id_provincia=${provinciaId}`)
+                .then(response => response.json())
+                .then(data => {
+                    distritoSelect.innerHTML = '<option value="">Seleccione distrito</option>';
+                    data.forEach(dist => {
+                        const option = document.createElement('option');
+                        option.value = dist.id_distrito;
+                        option.textContent = dist.nombre;
+                        distritoSelect.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    distritoSelect.innerHTML = '<option value="">Error al cargar</option>';
+                });
+        } else {
+            distritoSelect.innerHTML = '<option value="">Seleccione distrito</option>';
+        }
+    });
+    
+    // Validación del formulario antes de enviar
+    document.getElementById('ofertaForm').addEventListener('submit', function(e) {
+        let hasErrors = false;
+        
+        // Validar campos requeridos
+        const requiredFields = [
+            { id: '{{ form.titulo.id_for_label }}', name: 'Título' },
+            { id: '{{ form.descripcion.id_for_label }}', name: 'Descripción' },
+            { id: '{{ form.id_categoria.id_for_label }}', name: 'Categoría' },
+            { id: '{{ form.modalidad_pago.id_for_label }}', name: 'Modalidad de pago' },
+            { id: '{{ form.id_departamento.id_for_label }}', name: 'Departamento' },
+            { id: '{{ form.id_provincia.id_for_label }}', name: 'Provincia' },
+            { id: '{{ form.id_distrito.id_for_label }}', name: 'Distrito' }
+        ];
+        
+        requiredFields.forEach(field => {
+            const element = document.getElementById(field.id);
+            if (element && !element.value.trim()) {
+                element.classList.add('error');
+                hasErrors = true;
+            } else if (element) {
+                element.classList.remove('error');
+            }
+        });
+        
+        if (hasErrors) {
+            e.preventDefault();
+            alert('Por favor completa todos los campos requeridos (marcados con *)');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    });
+});
+</script>
+{% endblock %}

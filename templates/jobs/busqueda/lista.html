@@ -1,0 +1,318 @@
+{% extends "jobs/base_jobs.html" %}
+
+{% block title %}Buscar Trabajos - Llamkay{% endblock %}
+
+{% block extra_css %}
+<style>
+    .filters {
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .filter-form {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        align-items: end;
+    }
+    
+    .job-card {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+        position: relative;
+    }
+    
+    .job-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    }
+    
+    .job-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        margin-bottom: 15px;
+    }
+    
+    .job-title {
+        font-size: 20px;
+        font-weight: 700;
+        color: #07734B;
+        margin-bottom: 5px;
+    }
+    
+    .job-employer {
+        color: #666;
+        font-size: 14px;
+        margin-bottom: 10px;
+    }
+    
+    .job-description {
+        color: #555;
+        margin-bottom: 15px;
+        line-height: 1.5;
+    }
+    
+    .job-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-bottom: 15px;
+        font-size: 14px;
+        color: #666;
+    }
+    
+    .job-meta span {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    
+    .job-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+    
+    .badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+    
+    .badge-urgent {
+        background: #ff4444;
+        color: white;
+    }
+    
+    .badge-saved {
+        background: #ffc107;
+        color: #333;
+    }
+    
+    .pagination {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 30px;
+    }
+    
+    .pagination a, .pagination span {
+        padding: 8px 16px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        text-decoration: none;
+        color: #333;
+    }
+    
+    .pagination .current {
+        background: #07734B;
+        color: white;
+        border-color: #07734B;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 style="margin: 20px 0;">Buscar Trabajos</h1>
+    <p style="color: #666; margin-bottom: 20px;">{{ total_resultados }} trabajos encontrados</p>
+    
+    <!-- Filtros -->
+    <div class="filters">
+        <form method="GET" action="{% url 'jobs:buscar_trabajos' %}" class="filter-form">
+            <div class="form-group">
+                <label>Buscar</label>
+                <input type="text" name="buscar" class="form-control" placeholder="Título, descripción..." value="{{ filtros.buscar }}">
+            </div>
+            
+            <div class="form-group">
+                <label>Departamento</label>
+                <select name="departamento_id" id="departamento" class="form-control">
+                    <option value="">Todos</option>
+                    {% for dept in departamentos %}
+                        <option value="{{ dept.id_departamento }}" {% if filtros.departamento_id|stringformat:"s" == dept.id_departamento|stringformat:"s" %}selected{% endif %}>
+                            {{ dept.nombre }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Provincia</label>
+                <select name="provincia_id" id="provincia" class="form-control">
+                    <option value="">Todas</option>
+                    {% for prov in provincias %}
+                        <option value="{{ prov.id_provincia }}" {% if filtros.provincia_id|stringformat:"s" == prov.id_provincia|stringformat:"s" %}selected{% endif %}>
+                            {{ prov.nombre }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Distrito</label>
+                <select name="distrito_id" id="distrito" class="form-control">
+                    <option value="">Todos</option>
+                    {% for dist in distritos %}
+                        <option value="{{ dist.id_distrito }}" {% if filtros.distrito_id|stringformat:"s" == dist.id_distrito|stringformat:"s" %}selected{% endif %}>
+                            {{ dist.nombre }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Tipo</label>
+                <select name="tipo_usuario" class="form-control">
+                    <option value="">Todos</option>
+                    <option value="empleador" {% if filtros.tipo_usuario == 'empleador' %}selected{% endif %}>Empleadores</option>
+                    <option value="empresa" {% if filtros.tipo_usuario == 'empresa' %}selected{% endif %}>Empresas</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Buscar</button>
+            </div>
+        </form>
+    </div>
+    
+    <!-- Lista de Trabajos -->
+    <div class="grid">
+        {% for trabajo in trabajos %}
+        <div class="job-card">
+            <div class="job-header">
+                <div style="flex: 1;">
+                    <h3 class="job-title">{{ trabajo.titulo }}</h3>
+                    <p class="job-employer">📍 {{ trabajo.empleador.nombre }}</p>
+                </div>
+                <div>
+                    {% if trabajo.urgente %}
+                        <span class="badge badge-urgent">URGENTE</span>
+                    {% endif %}
+                    {% if trabajo.tipo|add:"_"|add:trabajo.id|stringformat:"s" in trabajos_guardados_ids %}
+                        <span class="badge badge-saved">⭐ Guardado</span>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <p class="job-description">{{ trabajo.descripcion|truncatewords:30 }}</p>
+            
+            <div class="job-meta">
+                {% if trabajo.pago %}
+                    <span>💰 S/ {{ trabajo.pago }} {{ trabajo.moneda }}</span>
+                {% endif %}
+                <span>📋 {{ trabajo.modalidad_pago }}</span>
+                {% if trabajo.ubicacion.distrito %}
+                    <span>📍 {{ trabajo.ubicacion.distrito }}</span>
+                {% endif %}
+                {% if trabajo.categoria %}
+                    <span>🏷️ {{ trabajo.categoria.nombre }}</span>
+                {% endif %}
+            </div>
+            
+            <div class="job-meta">
+                <span>👁️ {{ trabajo.vistas }} vistas</span>
+                <span>📄 {{ trabajo.postulaciones }} postulaciones</span>
+                <span>🕒 {{ trabajo.fecha_publicacion|timesince }} atrás</span>
+            </div>
+            
+            <div class="job-actions">
+                <a href="{% url 'jobs:detalle_trabajo' trabajo.tipo trabajo.id %}" class="btn btn-primary">Ver Detalles</a>
+                
+                {% if user.is_authenticated %}
+                    {% if not trabajo.ya_postulo %}
+                        <a href="{% url 'jobs:postular_trabajo' trabajo.tipo trabajo.id %}" class="btn btn-success">Postular</a>
+                    {% else %}
+                        <span class="badge" style="background: #28a745; color: white; padding: 10px 20px;">✓ Ya postulaste</span>
+                    {% endif %}
+                    
+                    <form method="POST" action="{% url 'jobs:guardar_trabajo' trabajo.tipo trabajo.id %}" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-secondary">⭐ Guardar</button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'users:login' %}" class="btn btn-success">Iniciar sesión para postular</a>
+                {% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <div class="card" style="grid-column: 1 / -1; text-align: center; padding: 60px 20px;">
+            <h2 style="color: #999;">No se encontraron trabajos</h2>
+            <p style="color: #666;">Intenta ajustar los filtros de búsqueda</p>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Paginación -->
+    {% if trabajos.has_other_pages %}
+    <div class="pagination">
+        {% if trabajos.has_previous %}
+            <a href="?page={{ trabajos.previous_page_number }}{% for key, value in filtros.items %}{% if value %}&{{ key }}={{ value }}{% endif %}{% endfor %}">← Anterior</a>
+        {% endif %}
+        
+        <span class="current">Página {{ trabajos.number }} de {{ trabajos.paginator.num_pages }}</span>
+        
+        {% if trabajos.has_next %}
+            <a href="?page={{ trabajos.next_page_number }}{% for key, value in filtros.items %}{% if value %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Siguiente →</a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Cargar provincias cuando cambia departamento
+document.getElementById('departamento').addEventListener('change', function() {
+    const departamentoId = this.value;
+    const provinciaSelect = document.getElementById('provincia');
+    const distritoSelect = document.getElementById('distrito');
+    
+    provinciaSelect.innerHTML = '<option value="">Cargando...</option>';
+    distritoSelect.innerHTML = '<option value="">Todos</option>';
+    
+    if (departamentoId) {
+        fetch(`/jobs/ajax/cargar-provincias/?id_departamento=${departamentoId}`)
+            .then(response => response.json())
+            .then(data => {
+                provinciaSelect.innerHTML = '<option value="">Todas</option>';
+                data.forEach(prov => {
+                    provinciaSelect.innerHTML += `<option value="${prov.id_provincia}">${prov.nombre}</option>`;
+                });
+            });
+    } else {
+        provinciaSelect.innerHTML = '<option value="">Todas</option>';
+    }
+});
+
+// Cargar distritos cuando cambia provincia
+document.getElementById('provincia').addEventListener('change', function() {
+    const provinciaId = this.value;
+    const distritoSelect = document.getElementById('distrito');
+    
+    distritoSelect.innerHTML = '<option value="">Cargando...</option>';
+    
+    if (provinciaId) {
+        fetch(`/jobs/ajax/cargar-distritos/?id_provincia=${provinciaId}`)
+            .then(response => response.json())
+            .then(data => {
+                distritoSelect.innerHTML = '<option value="">Todos</option>';
+                data.forEach(dist => {
+                    distritoSelect.innerHTML += `<option value="${dist.id_distrito}">${dist.nombre}</option>`;
+                });
+            });
+    } else {
+        distritoSelect.innerHTML = '<option value="">Todos</option>';
+    }
+});
+</script>
+{% endblock %}
