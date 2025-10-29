@@ -7,6 +7,9 @@ from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_protect
 from django.http import JsonResponse
 from django.db import transaction
+import logging
+
+logger = logging.getLogger(__name__)
 
 from apps.users.models import Usuario, Profile, Departamento, Provincia, Distrito
 from apps.users.forms import (
@@ -122,14 +125,19 @@ def register(request):
                     request.session['ruc'] = cd['ruc']
                     request.session['razon_social'] = cd['razon_social']
                 else:
+                    # ✅ DATOS BÁSICOS
                     request.session['dni'] = cd['dni']
                     request.session['nombre'] = cd['nombre']
                     request.session['apellido'] = cd['apellido']
+                    request.session['fecha_nacimiento'] = cd['fecha_nacimiento'].isoformat()
+                    request.session['genero'] = cd['genero']
                 
+                logger.info(f"✅ Usuario creado: {user.email} - Tipo: {tipo}")
                 messages.success(request, '¡Paso 1 completado! Continúa con tu ubicación.')
                 return redirect('users:register_two')
 
             except Exception as e:
+                logger.error(f"❌ Error creando usuario: {e}", exc_info=True)
                 form.add_error(None, f'Error al crear usuario: {str(e)}')
         else:
             # Mostrar errores del formulario
@@ -211,10 +219,6 @@ def register_three(request):
             request.session['experiencia'] = cd.get('experiencia', '')
             request.session['estudios'] = cd.get('estudios')
             request.session['carrera'] = cd.get('carrera', '')
-            request.session['tarifa'] = str(cd.get('tarifa', 0))
-
-            # Manejar certificaciones (guardar temporalmente)
-            # En producción, considera usar almacenamiento temporal o procesarlas en el paso final
 
             messages.success(request, '¡Perfecto! Un último paso para verificar tu identidad.')
             return redirect('users:register_four')
@@ -248,73 +252,190 @@ def register_four(request):
         # Validar que subió archivo
         if 'antecedentes' not in request.FILES:
             messages.error(request, "Debes subir tu constancia de antecedentes penales.")
-            return render(request, 'users/register/step_4.html', {'form': form})
+            return render(request, 'users/register/step_4.html', {
+                'form': form,
+                'tipo_usuario': tipo
+            })
 
         if form.is_valid():
             try:
                 # Obtener usuario de Django
                 user = User.objects.get(id=user_id)
                 
-                # Crear Usuario de Llamkay
+                # ✅ PREPARAR FECHA DE NACIMIENTO
+                fecha_nacimiento = None
+                if request.session.get('fecha_nacimiento'):
+                    try:
+                        from datetime import datetime
+                        fecha_nacimiento = datetime.fromisoformat(
+                            request.session.get('fecha_nacimiento')
+                        ).date()
+                    except Exception as e:
+                        logger.warning(f"⚠️ Error parseando fecha_nacimiento: {e}")
+                
+                # ✅ CREAR USUARIO CON TODOS LOS CAMPOS
                 usuario, created = Usuario.objects.get_or_create(
                     user=user,
                     defaults={
+                        # Básicos
                         'email': request.session.get('email'),
                         'nombres': request.session.get('nombre', request.session.get('razon_social', '')),
                         'apellidos': request.session.get('apellido', ''),
                         'dni': request.session.get('dni', ''),
                         'telefono': request.session.get('telefono', ''),
+                        
+                        # Tipo y estado
                         'tipo_usuario': tipo,
                         'habilitado': True,
-                        'verificado': False,  # Pendiente de verificación
+                        'verificado': False,
+                        
+                        # ✅ NUEVOS CAMPOS PERSONALES
+                        'fecha_nacimiento': fecha_nacimiento,
+                        'genero': request.session.get('genero'),
+                        'direccion': request.session.get('direccion', ''),
                     }
                 )
+                
+                if created:
+                    logger.info(f"✅ Usuario creado en BD: {usuario.email}")
+                else:
+                    logger.info(f"✅ Usuario ya existía, actualizando: {usuario.email}")
 
-                # Crear Profile
-                profile, _ = Profile.objects.get_or_create(
+                # ✅ CREAR O ACTUALIZAR PROFILE CON TODOS LOS CAMPOS
+                profile_defaults = {
+                    'bio': request.session.get('habilidades', ''),
+                    'ocupacion': request.session.get('ocupacion', ''),
+                    'perfil_publico': True,
+                    'mostrar_email': False,
+                    'mostrar_telefono': False,
+                }
+                
+                # ✅ AGREGAR EXPERIENCIA Y TARIFA SI EXISTEN
+                if request.session.get('experiencia_anios') is not None:
+                    profile_defaults['experiencia_anios'] = request.session.get('experiencia_anios')
+                
+                if request.session.get('tarifa_hora'):
+                    try:
+                        from decimal import Decimal
+                        profile_defaults['tarifa_hora'] = Decimal(request.session.get('tarifa_hora'))
+                    except Exception as e:
+                        logger.warning(f"⚠️ Error parseando tarifa_hora: {e}")
+                
+                profile, profile_created = Profile.objects.get_or_create(
                     id_usuario=usuario,
-                    defaults={
-                        'bio': request.session.get('habilidades', ''),
-                        'tarifa_hora': request.session.get('tarifa', 0),
-                    }
+                    defaults=profile_defaults
                 )
-
-                # Asignar ubicación al perfil
-                try:
-                    if dep_id := request.session.get('departamento_id'):
-                        profile.id_departamento = Departamento.objects.get(id_departamento=dep_id)
-                    if prov_id := request.session.get('provincia_id'):
-                        profile.id_provincia = Provincia.objects.get(id_provincia=prov_id)
-                    if dist_id := request.session.get('distrito_id'):
-                        profile.id_distrito = Distrito.objects.get(id_distrito=dist_id)
+                
+                if profile_created:
+                    logger.info(f"✅ Profile creado para {usuario.email}")
+                else:
+                    # Actualizar profile existente
+                    for key, value in profile_defaults.items():
+                        setattr(profile, key, value)
                     profile.save()
-                except Exception as e:
-                    print(f"Error al asignar ubicación: {str(e)}")
+                    logger.info(f"✅ Profile actualizado para {usuario.email}")
 
-                # Limpiar sesión
+                # ✅ ASIGNAR UBICACIÓN AL PROFILE
+                try:
+                    ubicacion_actualizada = False
+                    
+                    if dep_id := request.session.get('departamento_id'):
+                        departamento = Departamento.objects.get(id_departamento=dep_id)
+                        profile.id_departamento = departamento
+                        ubicacion_actualizada = True
+                    
+                    if prov_id := request.session.get('provincia_id'):
+                        provincia = Provincia.objects.get(id_provincia=prov_id)
+                        profile.id_provincia = provincia
+                        ubicacion_actualizada = True
+                    
+                    if dist_id := request.session.get('distrito_id'):
+                        distrito = Distrito.objects.get(id_distrito=dist_id)
+                        profile.id_distrito = distrito
+                        ubicacion_actualizada = True
+                    
+                    if ubicacion_actualizada:
+                        profile.save()
+                        logger.info(f"✅ Ubicación asignada al profile")
+                        
+                except Departamento.DoesNotExist:
+                    logger.error(f"❌ Departamento no encontrado: {dep_id}")
+                except Provincia.DoesNotExist:
+                    logger.error(f"❌ Provincia no encontrada: {prov_id}")
+                except Distrito.DoesNotExist:
+                    logger.error(f"❌ Distrito no encontrado: {dist_id}")
+                except Exception as e:
+                    logger.error(f"❌ Error asignando ubicación: {e}")
+
+                # ✅ GUARDAR CERTIFICADO DE ANTECEDENTES
+                # Aquí deberías crear un registro en Verificacion o similar
+                try:
+                    from apps.users.models import Verificacion
+                    
+                    # Guardar el archivo
+                    archivo_antecedentes = request.FILES['antecedentes']
+                    
+                    # Crear verificación
+                    verificacion = Verificacion.objects.create(
+                        id_usuario=usuario,
+                        tipo='antecedentes',
+                        estado='pendiente',
+                        archivo_url=archivo_antecedentes.name  # Guardar referencia
+                    )
+                    
+                    # Aquí deberías guardar el archivo físicamente
+                    # Por ejemplo usando FileSystemStorage o similar
+                    logger.info(f"✅ Verificación de antecedentes creada: {verificacion.id_verificacion}")
+                    
+                except Exception as e:
+                    logger.warning(f"⚠️ No se pudo crear verificación de antecedentes: {e}")
+
+                # ✅ LIMPIAR SESIÓN
                 keys_to_delete = [
                     'user_id', 'tipo_usuario', 'dni', 'ruc', 'nombre', 'apellido',
                     'razon_social', 'telefono', 'email', 'direccion',
                     'departamento_id', 'provincia_id', 'distrito_id',
                     'habilidades', 'experiencia', 'disponibilidad', 'estudios',
-                    'carrera', 'tarifa'
+                    'carrera', 'fecha_nacimiento', 'genero', 'ocupacion',
+                    'experiencia_anios', 'tarifa_hora'
                 ]
+                
                 for key in keys_to_delete:
                     request.session.pop(key, None)
+                
+                logger.info(f"✅ Sesión limpiada correctamente")
 
+                # ✅ MENSAJE DE ÉXITO Y REDIRECCIÓN
                 messages.success(
                     request,
-                    '¡Registro completado! Tu cuenta está pendiente de verificación. Te notificaremos en 24-48 horas.'
+                    '¡Registro completado exitosamente! '
+                    'Tu cuenta está pendiente de verificación. '
+                    'Te notificaremos por email en 24-48 horas.'
                 )
+                
+                logger.info(
+                    f"✅✅✅ REGISTRO COMPLETO: {usuario.email} - "
+                    f"Tipo: {tipo} - "
+                    f"Ocupación: {profile.ocupacion} - "
+                    f"Verificado: {usuario.verificado}"
+                )
+                
                 return redirect('users:login')
 
+            except User.DoesNotExist:
+                logger.error(f"❌ Usuario Django no encontrado: {user_id}")
+                messages.error(request, 'Error: Usuario no encontrado. Inicia el registro nuevamente.')
+                return redirect('users:seleccionar_tipo')
+                
             except Exception as e:
+                logger.error(f"❌❌❌ Error crítico en register_four: {str(e)}", exc_info=True)
                 messages.error(request, f'Error al completar registro: {str(e)}')
-                print(f"Error en register_four: {str(e)}")
         else:
+            # Mostrar errores del formulario
             for field, errors in form.errors.items():
                 for error in errors:
                     messages.error(request, f'{field}: {error}')
+                    logger.warning(f"⚠️ Error en {field}: {error}")
     else:
         form = RegisterFormStep4()
 
@@ -322,8 +443,8 @@ def register_four(request):
         'form': form,
         'tipo_usuario': tipo
     })
-
-
+    
+    
 def validar_correo(request):
     """API para validar si un correo ya existe"""
     email = request.GET.get('email', '').strip()

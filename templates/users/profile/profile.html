@@ -54,11 +54,6 @@
                     <label for="descripcion">Descripción:</label>
                     <textarea name="descripcion" id="descripcion" rows="4" placeholder="Cuéntanos sobre ti...">{{ profile.bio|default:'' }}</textarea>
                 </div>
-
-                <div class="form-group">
-                    <label for="tarifa_hora">Tarifa por hora (S/):</label>
-                    <input type="number" step="0.01" name="tarifa_hora" id="tarifa_hora" value="{{ profile.tarifa_hora|default:'' }}" placeholder="0.00">
-                </div>
             </div>
 
             <div class="modal-buttons">

@@ -1,348 +1,237 @@
-"""
-Forms de Autenticación y Registro
-Responsabilidad: Validación de datos de registro
-"""
-
 from django import forms
-from apps.users.models import Departamento, Provincia, Distrito
-from apps.users.widgets import MultipleFileInput
-
-
-class RegisterEmpresaForm(forms.Form):
-    """Formulario de registro para empresas"""
-    
-    ruc = forms.CharField(
-        max_length=11,
-        widget=forms.TextInput(attrs={
-            'placeholder': 'Ingresa el RUC',
-            'class': 'form-control',
-            'maxlength': '11'
-        }),
-        label='RUC'
-    )
-    
-    razon_social = forms.CharField(
-        max_length=255,
-        widget=forms.TextInput(attrs={
-            'readonly': True,
-            'placeholder': 'Se llenará automáticamente',
-            'class': 'form-control'
-        }),
-        label='Razón Social'
-    )
-    
-    telefono = forms.CharField(
-        max_length=15,
-        widget=forms.TextInput(attrs={
-            'placeholder': 'Ingresa el teléfono',
-            'class': 'form-control'
-        }),
-        label='Teléfono'
-    )
-    
-    email = forms.EmailField(
-        widget=forms.EmailInput(attrs={
-            'placeholder': 'Ingresa el correo electrónico',
-            'class': 'form-control'
-        }),
-        label='Email'
-    )
-    
-    password1 = forms.CharField(
-        widget=forms.PasswordInput(attrs={
-            'placeholder': 'Ingresa la contraseña',
-            'class': 'form-control'
-        }),
-        label='Contraseña'
-    )
-    
-    password2 = forms.CharField(
-        widget=forms.PasswordInput(attrs={
-            'placeholder': 'Confirma la contraseña',
-            'class': 'form-control'
-        }),
-        label='Confirmar Contraseña'
-    )
-
-    def clean_ruc(self):
-        """Valida el formato del RUC"""
-        ruc = self.cleaned_data.get('ruc')
-        if ruc and len(ruc) != 11:
-            raise forms.ValidationError('El RUC debe tener exactamente 11 dígitos.')
-        if ruc and not ruc.isdigit():
-            raise forms.ValidationError('El RUC debe contener solo números.')
-        return ruc
-    
-    def clean(self):
-        """Valida que las contraseñas coincidan"""
-        cleaned_data = super().clean()
-        password1 = cleaned_data.get('password1')
-        password2 = cleaned_data.get('password2')
-        
-        if password1 and password2 and password1 != password2:
-            raise forms.ValidationError('Las contraseñas no coinciden.')
-        
-        return cleaned_data
-
+from django.contrib.auth.models import User
+from apps.users.models import Usuario, Departamento, Provincia, Distrito
+from apps.users.widgets import MultipleFileInput 
 
 class RegisterFormStep1(forms.Form):
-    """Formulario Step 1: Datos personales básicos"""
-    
+    """Paso 1: Datos personales básicos"""
+    # Identificación
     dni = forms.CharField(
         max_length=8,
+        required=True,
         widget=forms.TextInput(attrs={
-            'placeholder': 'Ingresa tu DNI',
-            'class': 'form-control',
+            'placeholder': '00000000',
             'maxlength': '8'
-        }),
-        label='DNI'
+        })
+    )
+    nombre = forms.CharField(max_length=100, required=True)
+    apellido = forms.CharField(max_length=100, required=True)
+    
+    # NUEVOS CAMPOS
+    fecha_nacimiento = forms.DateField(
+        required=True,
+        widget=forms.DateInput(attrs={
+            'type': 'date',
+            'max': '2007-01-01'  # Mínimo 18 años
+        })
+    )
+    genero = forms.ChoiceField(
+        choices=Usuario.GENERO_CHOICES,
+        required=True
     )
     
-    nombre = forms.CharField(
-        max_length=100,
-        widget=forms.TextInput(attrs={
-            'readonly': True,
-            'placeholder': 'Se llenará automáticamente',
-            'class': 'form-control'
-        }),
-        label='Nombres'
-    )
+    # Contacto
+    telefono = forms.CharField(max_length=20, required=True)
+    email = forms.EmailField(required=True)
     
-    apellido = forms.CharField(
-        max_length=100,
-        widget=forms.TextInput(attrs={
-            'readonly': True,
-            'placeholder': 'Se llenará automáticamente',
-            'class': 'form-control'
-        }),
-        label='Apellidos'
-    )
-    
-    telefono = forms.CharField(
-        max_length=15,
-        widget=forms.TextInput(attrs={
-            'placeholder': 'Ingresa tu teléfono',
-            'class': 'form-control'
-        }),
-        label='Teléfono'
-    )
-    
-    email = forms.EmailField(
-        widget=forms.EmailInput(attrs={
-            'placeholder': 'Ingresa tu correo electrónico',
-            'class': 'form-control'
-        }),
-        label='Email'
-    )
-    
+    # Seguridad
     password1 = forms.CharField(
-        widget=forms.PasswordInput(attrs={
-            'placeholder': 'Ingresa tu contraseña',
-            'class': 'form-control'
-        }),
-        label='Contraseña'
+        widget=forms.PasswordInput,
+        min_length=8
     )
-    
-    password2 = forms.CharField(
-        widget=forms.PasswordInput(attrs={
-            'placeholder': 'Confirma tu contraseña',
-            'class': 'form-control'
-        }),
-        label='Confirmar Contraseña'
-    )
+    password2 = forms.CharField(widget=forms.PasswordInput)
     
     def clean_dni(self):
-        """Valida el formato del DNI"""
         dni = self.cleaned_data.get('dni')
-        if dni and len(dni) != 8:
-            raise forms.ValidationError('El DNI debe tener exactamente 8 dígitos.')
-        if dni and not dni.isdigit():
-            raise forms.ValidationError('El DNI debe contener solo números.')
+        if not dni.isdigit():
+            raise forms.ValidationError("El DNI debe contener solo números")
+        if len(dni) != 8:
+            raise forms.ValidationError("El DNI debe tener 8 dígitos")
+        if Usuario.objects.filter(dni=dni).exists():
+            raise forms.ValidationError("Este DNI ya está registrado")
         return dni
+    
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if User.objects.filter(email=email).exists():
+            raise forms.ValidationError("Este correo ya está en uso")
+        return email
 
 
 class RegisterFormStep2(forms.Form):
-    """Formulario Step 2: Ubicación"""
-    
+    """Paso 2: Ubicación"""
     direccion = forms.CharField(
         max_length=255,
         required=True,
         widget=forms.TextInput(attrs={
-            'placeholder': 'Ingresa tu dirección',
-            'class': 'form-control'
-        }),
-        label='Dirección'
+            'placeholder': 'Ej: Av. Larco 123, Dpto. 501'
+        })
     )
-
     departamento = forms.ModelChoiceField(
         queryset=Departamento.objects.all(),
-        required=True,
-        empty_label='Selecciona un departamento',
-        widget=forms.Select(attrs={'class': 'form-control'}),
-        label='Departamento'
+        required=True
     )
-    
     provincia = forms.ModelChoiceField(
-        queryset=Provincia.objects.all(),
-        required=True,
-        empty_label='Selecciona una provincia',
-        widget=forms.Select(attrs={'class': 'form-control'}),
-        label='Provincia'
+        queryset=Provincia.objects.none(),
+        required=True
+    )
+    distrito = forms.ModelChoiceField(
+        queryset=Distrito.objects.none(),
+        required=True
     )
     
-    distrito = forms.ModelChoiceField(
-        queryset=Distrito.objects.all(),
-        required=True,
-        empty_label='Selecciona un distrito',
-        widget=forms.Select(attrs={'class': 'form-control'}),
-        label='Distrito'
-    )
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if 'departamento' in self.data:
+            try:
+                departamento_id = int(self.data.get('departamento'))
+                self.fields['provincia'].queryset = Provincia.objects.filter(
+                    id_departamento=departamento_id
+                ).order_by('nombre')
+            except (ValueError, TypeError):
+                pass
+        
+        if 'provincia' in self.data:
+            try:
+                provincia_id = int(self.data.get('provincia'))
+                self.fields['distrito'].queryset = Distrito.objects.filter(
+                    id_provincia=provincia_id
+                ).order_by('nombre')
+            except (ValueError, TypeError):
+                pass
 
 
 class RegisterFormStep3(forms.Form):
-    """Formulario Step 3: Perfil Profesional"""
-    
+    """Paso 3: Perfil profesional - Solo trabajadores"""
+    # Habilidades
     habilidades = forms.CharField(
         widget=forms.Textarea(attrs={
-            'required': True,
             'rows': 4,
-            'placeholder': 'Describe tus habilidades y oficios principales...',
-            'class': 'form-control'
+            'placeholder': 'Describe tus habilidades y oficios...'
         }),
-        label='Habilidades y oficios'
+        required=True
     )
     
+    # NUEVO: Ocupación principal
+    ocupacion = forms.CharField(
+        max_length=100,
+        required=True,
+        widget=forms.TextInput(attrs={
+            'placeholder': 'Ej: Carpintero, Electricista, Plomero...'
+        })
+    )
+    
+    # Experiencia
     experiencia = forms.ChoiceField(
         choices=[
             ('', 'Selecciona tu experiencia'),
-            ('sin_experiencia', 'Sin experiencia'), 
+            ('sin_experiencia', 'Sin experiencia'),
             ('1', 'Menos de 1 año'),
             ('1-3', '1-3 años'),
             ('3-5', '3-5 años'),
-            ('5+', 'Más de 5 años')
+            ('5+', 'Más de 5 años'),
         ],
-        required=False,
-        widget=forms.Select(attrs={'class': 'form-control'}),
-        label='Experiencia'
+        required=False
     )
     
+    experiencia_anios = forms.IntegerField(
+        required=False,
+        min_value=0,
+        widget=forms.NumberInput(attrs={
+            'placeholder': 'Años de experiencia'
+        })
+    )
+    
+    # Disponibilidad
     disponibilidad = forms.ChoiceField(
         choices=[
             ('', 'Selecciona tu disponibilidad'),
             ('tiempo_completo', 'Tiempo completo'),
-            ('medio_tiempo', 'Medio tiempo'),        
-            ('por_horas', 'Por horas'), 
-            ('fines_semana', 'Fines de semana'),     
-            ('flexible', 'Flexible'),                
+            ('medio_tiempo', 'Medio tiempo'),
+            ('por_horas', 'Por horas'),
+            ('fines_semana', 'Fines de semana'),
+            ('flexible', 'Flexible'),
         ],
-        required=True,
-        widget=forms.Select(attrs={'class': 'form-control'}),
-        label='Disponibilidad'
+        required=True
     )
     
-    tarifa = forms.DecimalField(
-        required=False, 
-        min_value=0, 
-        max_digits=10,
-        decimal_places=2,
-        label='Tarifa por hora (opcional)', 
-        initial=0,
-        widget=forms.NumberInput(attrs={
-            'placeholder': 'Ej: 15.50',
-            'step': '0.01',
-            'class': 'form-control'
-        })
-    )
-    
+    # Educación
     estudios = forms.ChoiceField(
         choices=[
-            ('', 'Selecciona tu nivel de estudios'),
-            ('primaria', 'Primaria'),      
-            ('secundaria', 'Secundaria'),   
-            ('tecnico', 'Técnico'),          
+            ('', 'Selecciona tu nivel'),
+            ('primaria', 'Primaria'),
+            ('secundaria', 'Secundaria'),
+            ('tecnico', 'Técnico'),
             ('universitario', 'Universitario'),
-            ('posgrado', 'Posgrado')          
+            ('posgrado', 'Posgrado'),
         ],
-        required=True,
-        widget=forms.Select(attrs={'class': 'form-control'}),
-        label='Nivel de Estudios'
+        required=True
     )
     
     carrera = forms.CharField(
-        required=False, 
-        max_length=100, 
-        label='Carrera universitaria (si aplica)',
+        max_length=100,
+        required=False,
         widget=forms.TextInput(attrs={
-            'placeholder': 'Ej: Ingeniería Civil',
-            'class': 'form-control'
+            'placeholder': 'Ej: Ingeniería Civil'
         })
     )
     
     certificaciones = forms.FileField(
         required=False,
-        widget=MultipleFileInput(attrs={
-            'accept': '.pdf,image/*',
-            'multiple': True,
-            'class': 'form-control'
-        }),
-        help_text='Puedes subir varios archivos (PDF, JPG, PNG)',
-        label='Certificaciones (opcional)'
+        widget=MultipleFileInput(attrs={  
+            'accept': '.pdf,image/*'
+        })
     )
-    
-    def clean_certificaciones(self):
-        """Valida los archivos de certificación"""
-        files = self.files.getlist('certificaciones')
-        max_size = 5 * 1024 * 1024  # 5MB
-        
-        for file in files:
-            if file.size > max_size:
-                raise forms.ValidationError(
-                    f'El archivo {file.name} excede el tamaño máximo de 5MB'
-                )
-            
-            allowed_types = [
-                'application/pdf',
-                'image/jpeg',
-                'image/jpg',
-                'image/png'
-            ]
-            if file.content_type not in allowed_types:
-                raise forms.ValidationError(
-                    f'El archivo {file.name} no es un formato válido'
-                )
-        
-        return files
 
 
 class RegisterFormStep4(forms.Form):
-    """Formulario Step 4: Antecedentes penales"""
-    
+    """Paso 4: Antecedentes penales"""
     antecedentes = forms.FileField(
         required=True,
-        widget=forms.ClearableFileInput(attrs={
-            'accept': '.pdf,.jpg,.jpeg,.png',
-            'class': 'form-control'
-        }),
-        help_text='Sube un archivo PDF o imagen de tus antecedentes penales',
-        label='Antecedentes Penales'
+        widget=forms.FileInput(attrs={  
+            'accept': '.pdf,.jpg,.jpeg,.png'
+        })
     )
     
     def clean_antecedentes(self):
-        """Valida el archivo de antecedentes"""
         file = self.cleaned_data.get('antecedentes')
-        
         if file:
-            max_size = 5 * 1024 * 1024  # 5MB
-            if file.size > max_size:
-                raise forms.ValidationError('El archivo excede el tamaño máximo de 5MB')
-            
-            allowed_types = [
-                'application/pdf',
-                'image/jpeg',
-                'image/jpg',
-                'image/png'
-            ]
-            if file.content_type not in allowed_types:
-                raise forms.ValidationError('Formato de archivo no válido')
-        
+            # Validar tamaño (5MB)
+            if file.size > 5 * 1024 * 1024:
+                raise forms.ValidationError("El archivo no puede pesar más de 5MB")
+            # Validar extensión
+            ext = file.name.split('.')[-1].lower()
+            if ext not in ['pdf', 'jpg', 'jpeg', 'png']:
+                raise forms.ValidationError("Solo se permiten archivos PDF, JPG o PNG")
         return file
+
+
+class RegisterEmpresaForm(forms.Form):
+    """Paso 1 para empresas"""
+    ruc = forms.CharField(
+        max_length=11,
+        required=True,
+        widget=forms.TextInput(attrs={
+            'placeholder': '00000000000',
+            'maxlength': '11'
+        })
+    )
+    razon_social = forms.CharField(max_length=255, required=True)
+    telefono = forms.CharField(max_length=20, required=True)
+    email = forms.EmailField(required=True)
+    password1 = forms.CharField(widget=forms.PasswordInput, min_length=8)
+    password2 = forms.CharField(widget=forms.PasswordInput)
+    
+    def clean_ruc(self):
+        ruc = self.cleaned_data.get('ruc')
+        if not ruc.isdigit():
+            raise forms.ValidationError("El RUC debe contener solo números")
+        if len(ruc) != 11:
+            raise forms.ValidationError("El RUC debe tener 11 dígitos")
+        return ruc
+    
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if User.objects.filter(email=email).exists():
+            raise forms.ValidationError("Este correo ya está en uso")
+        return email

@@ -111,9 +111,13 @@ STATICFILES_FINDERS = [
 ]
 
 
-# Media files (uploads)
+# Media files (Uploads)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# Asegurar que la carpeta uploads existe
+UPLOADS_DIR = MEDIA_ROOT / 'uploads'
+UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
 
 
 # Default primary key field type

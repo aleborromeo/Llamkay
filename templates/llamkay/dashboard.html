@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load trabajo_filters %}
 {% load usuarios_extras %}
 
 {% block title %}Dashboard - Llamkay.pe{% endblock %}
@@ -368,45 +369,63 @@
                                 <div class="job-card">
                                     <div class="job-header">
                                         <div class="job-icon">
-                                            {% if trabajo.categoria %}
-                                                {{ trabajo.categoria.icono|default:"🔨" }}
+                                            {% if trabajo.id_categoria %}
+                                                {{ trabajo.id_categoria.icono|default:"🔨" }}
                                             {% else %}
                                                 🔨
                                             {% endif %}
                                         </div>
                                         <div class="job-info">
                                             <h3>
-                                                <a href="{% url 'jobs:detalle_trabajo' tipo=trabajo.tipo trabajo_id=trabajo.id %}">
-                                                    {{ trabajo.titulo }}
+                                                <a href="{% url_detalle_trabajo trabajo %}">
+                                                    {{ trabajo|get_titulo_trabajo }}
                                                 </a>
                                             </h3>
                                             <p class="job-company">
-                                                {{ trabajo.empleador.nombres }} {{ trabajo.empleador.apellidos }}
-                                                {% if trabajo.ubicacion.distrito %}
-                                                    · {{ trabajo.ubicacion.distrito }}
-                                                {% endif %}
+                                                {% with empleador=trabajo|get_empleador_trabajo %}
+                                                    {% if empleador %}
+                                                        {{ empleador.nombres }} {{ empleador.apellidos }}
+                                                    {% endif %}
+                                                {% endwith %}
+                                                {% with distrito=trabajo|get_distrito_trabajo %}
+                                                    {% if distrito %}
+                                                        · {{ distrito.nombre }}
+                                                    {% endif %}
+                                                {% endwith %}
                                             </p>
                                         </div>
-                                        {% if trabajo.urgente %}
+                                        {% if trabajo|is_urgente %}
                                             <span class="job-badge urgent">Urgente</span>
-                                        {% elif trabajo.fecha_publicacion|timesince < "1 day" %}
-                                            <span class="job-badge new">Nuevo</span>
+                                        {% else %}
+                                            {% with fecha=trabajo|get_created_at %}
+                                                {% if fecha %}
+                                                    {% if fecha|timesince < "1 day" %}
+                                                        <span class="job-badge new">Nuevo</span>
+                                                    {% endif %}
+                                                {% endif %}
+                                            {% endwith %}
                                         {% endif %}
                                     </div>
-                                    <p class="job-description">{{ trabajo.descripcion|truncatewords:20 }}</p>
+                                    <p class="job-description">{{ trabajo|get_descripcion_trabajo|truncatewords:20 }}</p>
                                     <div class="job-footer">
                                         <span class="job-price">
-                                            {% if trabajo.pago %}
-                                                S/ {{ trabajo.pago }}
-                                            {% elif trabajo.rango_salarial %}
-                                                {{ trabajo.rango_salarial }}
-                                            {% endif %}
+                                            {% with pago=trabajo|get_pago_trabajo %}
+                                                {% if pago %}
+                                                    S/ {{ pago }}
+                                                {% endif %}
+                                            {% endwith %}
                                         </span>
-                                        <span class="job-time">Publicado {{ trabajo.fecha_publicacion|timesince }}</span>
+                                        <span class="job-time">
+                                            {% with fecha=trabajo|get_created_at %}
+                                                {% if fecha %}
+                                                    Publicado {{ fecha|timesince }}
+                                                {% endif %}
+                                            {% endwith %}
+                                        </span>
                                         {% if usuario.tipo_usuario == 'trabajador' or usuario.tipo_usuario == 'ambos' %}
-                                            <a href="{% url 'jobs:postular_trabajo' tipo=trabajo.tipo oferta_id=trabajo.id %}" class="btn-small btn-primary">Aplicar</a>
+                                            <a href="{% url_postular_trabajo trabajo %}" class="btn-small btn-primary">Aplicar</a>
                                         {% else %}
-                                            <a href="{% url 'jobs:detalle_trabajo' tipo=trabajo.tipo trabajo_id=trabajo.id %}" class="btn-small btn-primary">Ver detalles</a>
+                                            <a href="{% url_detalle_trabajo trabajo %}" class="btn-small btn-primary">Ver detalles</a>
                                         {% endif %}
                                     </div>
                                 </div>

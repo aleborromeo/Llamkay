@@ -1,0 +1,546 @@
+{% extends "jobs/base_jobs.html" %}
+
+{% block title %}Mis Trabajos Publicados - Llamkay{% endblock %}
+
+{% block extra_css %}
+<style>
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 20px 0 30px;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+    
+    .page-title {
+        font-size: 32px;
+        font-weight: 700;
+        color: #333;
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: 10px;
+    }
+    
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+    
+    .stat-card {
+        background: white;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        text-align: center;
+        transition: all 0.3s;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    }
+    
+    .stat-number {
+        font-size: 42px;
+        font-weight: 700;
+        color: #07734B;
+        margin-bottom: 8px;
+    }
+    
+    .stat-label {
+        color: #666;
+        font-size: 15px;
+    }
+    
+    .tabs {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        border-bottom: 2px solid #e0e0e0;
+    }
+    
+    .tab {
+        padding: 12px 24px;
+        background: none;
+        border: none;
+        border-bottom: 3px solid transparent;
+        cursor: pointer;
+        font-weight: 600;
+        color: #666;
+        transition: all 0.3s;
+    }
+    
+    .tab:hover {
+        color: #07734B;
+    }
+    
+    .tab.active {
+        color: #07734B;
+        border-bottom-color: #07734B;
+    }
+    
+    .tab-content {
+        display: none;
+    }
+    
+    .tab-content.active {
+        display: block;
+    }
+    
+    .trabajo-card {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        transition: all 0.3s;
+        border-left: 4px solid #ddd;
+    }
+    
+    .trabajo-card:hover {
+        transform: translateX(5px);
+        box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    }
+    
+    .trabajo-card.activa {
+        border-left-color: #28a745;
+    }
+    
+    .trabajo-card.pausada {
+        border-left-color: #ffc107;
+    }
+    
+    .trabajo-card.cerrada {
+        border-left-color: #dc3545;
+        opacity: 0.7;
+    }
+    
+    .trabajo-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        margin-bottom: 15px;
+    }
+    
+    .trabajo-title {
+        font-size: 22px;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 8px;
+    }
+    
+    .trabajo-meta {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 15px;
+    }
+    
+    .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    
+    .estado-badge {
+        padding: 6px 16px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+    
+    .estado-activa {
+        background: #d4edda;
+        color: #155724;
+    }
+    
+    .estado-pausada {
+        background: #fff3cd;
+        color: #856404;
+    }
+    
+    .estado-cerrada {
+        background: #f8d7da;
+        color: #721c24;
+    }
+    
+    .trabajo-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 15px;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        margin-bottom: 15px;
+    }
+    
+    .stat-item {
+        text-align: center;
+    }
+    
+    .stat-value {
+        font-size: 24px;
+        font-weight: 700;
+        color: #07734B;
+    }
+    
+    .stat-text {
+        font-size: 12px;
+        color: #666;
+    }
+    
+    .trabajo-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 80px 20px;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .empty-icon {
+        font-size: 80px;
+        margin-bottom: 20px;
+        opacity: 0.3;
+    }
+    
+    @media (max-width: 768px) {
+        .page-header {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+        }
+        
+        .trabajo-header {
+            flex-direction: column;
+            gap: 10px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Header -->
+    <div class="page-header">
+        <h1 class="page-title">📋 Mis Trabajos Publicados</h1>
+        <div class="action-buttons">
+            <a href="{% url 'jobs:registro_individual' %}" class="btn btn-success">
+                ➕ Nueva Oferta Individual
+            </a>
+            <a href="{% url 'jobs:registro_empresa' %}" class="btn btn-primary">
+                ➕ Nueva Oferta Empresa
+            </a>
+        </div>
+    </div>
+    
+    <!-- Estadísticas -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-number">{{ estadisticas.total_ofertas_usuario|add:estadisticas.total_ofertas_empresa }}</div>
+            <div class="stat-label">Total Ofertas</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ estadisticas.ofertas_activas }}</div>
+            <div class="stat-label">Activas</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ estadisticas.total_postulaciones }}</div>
+            <div class="stat-label">Total Postulaciones</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ estadisticas.postulaciones_pendientes }}</div>
+            <div class="stat-label">Pendientes</div>
+        </div>
+    </div>
+    
+    <!-- Tabs -->
+    <div class="tabs">
+        <button class="tab active" onclick="switchTab('individuales')">
+            👤 Ofertas Individuales ({{ ofertas_usuario.count }})
+        </button>
+        <button class="tab" onclick="switchTab('empresas')">
+            🏢 Ofertas Empresas ({{ ofertas_empresa.count }})
+        </button>
+    </div>
+    
+    <!-- Ofertas Individuales -->
+    <div id="individuales" class="tab-content active">
+        {% for oferta in ofertas_usuario %}
+        <div class="trabajo-card {{ oferta.estado }}">
+            <div class="trabajo-header">
+                <div style="flex: 1;">
+                    <h3 class="trabajo-title">{{ oferta.titulo }}</h3>
+                    <div class="trabajo-meta">
+                        {% if oferta.pago %}
+                            <span class="meta-item">💰 S/ {{ oferta.pago }} - {{ oferta.get_modalidad_pago_display }}</span>
+                        {% endif %}
+                        {% if oferta.id_categoria %}
+                            <span class="meta-item">🏷️ {{ oferta.id_categoria.nombre }}</span>
+                        {% endif %}
+                        <span class="meta-item">📅 {{ oferta.created_at|date:"d/m/Y" }}</span>
+                        {% if oferta.urgente %}
+                            <span class="meta-item" style="color: #dc3545;">🔥 URGENTE</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <span class="estado-badge estado-{{ oferta.estado }}">
+                    {% if oferta.estado == 'activa' %}✓ Activa
+                    {% elif oferta.estado == 'pausada' %}⏸ Pausada
+                    {% elif oferta.estado == 'cerrada' %}✗ Cerrada
+                    {% endif %}
+                </span>
+            </div>
+            
+            <div class="trabajo-stats">
+                <div class="stat-item">
+                    <div class="stat-value">{{ oferta.vistas }}</div>
+                    <div class="stat-text">Vistas</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">{{ oferta.total_postulaciones_count }}</div>
+                    <div class="stat-text">Postulaciones</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">{{ oferta.postulaciones_pendientes_count }}</div>
+                    <div class="stat-text">Pendientes</div>
+                </div>
+            </div>
+            
+            <div class="trabajo-actions">
+                <a href="{% url 'jobs:detalle_trabajo' 'usuario' oferta.id %}" class="btn btn-primary">
+                    👁️ Ver Detalle
+                </a>
+                <a href="{% url 'jobs:ver_postulantes' 'usuario' oferta.id %}" class="btn btn-secondary">
+                    👥 Ver Postulantes ({{ oferta.postulaciones_pendientes_count }})
+                </a>
+                
+                {% if oferta.estado == 'activa' %}
+                    <button onclick="cambiarEstado({{ oferta.id }}, 'pausada', 'usuario')" class="btn" style="background: #ffc107; color: #333;">
+                        ⏸ Pausar
+                    </button>
+                {% elif oferta.estado == 'pausada' %}
+                    <button onclick="cambiarEstado({{ oferta.id }}, 'activa', 'usuario')" class="btn btn-success">
+                        ▶️ Activar
+                    </button>
+                {% endif %}
+                
+                <a href="{% url 'jobs:editar_oferta' oferta.id %}" class="btn btn-secondary">
+                    ✏️ Editar
+                </a>
+                
+                {% if oferta.estado != 'cerrada' %}
+                    <button onclick="cerrarOferta({{ oferta.id }}, '{{ oferta.titulo }}')" class="btn btn-danger">
+                        🗑️ Cerrar
+                    </button>
+                {% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <div class="empty-state">
+            <div class="empty-icon">👤</div>
+            <h2 style="color: #999; margin-bottom: 15px;">No tienes ofertas individuales</h2>
+            <p style="color: #666; margin-bottom: 30px;">Publica tu primera oferta de trabajo individual</p>
+            <a href="{% url 'jobs:registro_individual' %}" class="btn btn-success" style="font-size: 18px; padding: 12px 30px;">
+                ➕ Publicar Primera Oferta
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Ofertas Empresas -->
+    <div id="empresas" class="tab-content">
+        {% for oferta in ofertas_empresa %}
+        <div class="trabajo-card {{ oferta.estado }}">
+            <div class="trabajo-header">
+                <div style="flex: 1;">
+                    <h3 class="trabajo-title">{{ oferta.titulo_puesto }}</h3>
+                    <div class="trabajo-meta">
+                        {% if oferta.pago %}
+                            <span class="meta-item">💰 S/ {{ oferta.pago }} - {{ oferta.get_modalidad_pago_display }}</span>
+                        {% endif %}
+                        {% if oferta.id_categoria %}
+                            <span class="meta-item">🏷️ {{ oferta.id_categoria.nombre }}</span>
+                        {% endif %}
+                        <span class="meta-item">👥 {{ oferta.vacantes }} vacante{{ oferta.vacantes|pluralize }}</span>
+                        <span class="meta-item">📅 {{ oferta.created_at|date:"d/m/Y" }}</span>
+                    </div>
+                </div>
+                <span class="estado-badge estado-{{ oferta.estado }}">
+                    {% if oferta.estado == 'activa' %}✓ Activa
+                    {% elif oferta.estado == 'pausada' %}⏸ Pausada
+                    {% elif oferta.estado == 'cerrada' %}✗ Cerrada
+                    {% endif %}
+                </span>
+            </div>
+            
+            <div class="trabajo-stats">
+                <div class="stat-item">
+                    <div class="stat-value">{{ oferta.vistas }}</div>
+                    <div class="stat-text">Vistas</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">{{ oferta.postulaciones_pendientes_count }}</div>
+                    <div class="stat-text">Postulaciones</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">{{ oferta.postulaciones_pendientes_count }}</div>
+                    <div class="stat-text">Pendientes</div>
+                </div>
+            </div>
+            
+            <div class="trabajo-actions">
+                <a href="{% url 'jobs:detalle_trabajo' 'empresa' oferta.id %}" class="btn btn-primary">
+                    👁️ Ver Detalle
+                </a>
+                <a href="{% url 'jobs:ver_postulantes' 'empresa' oferta.id %}" class="btn btn-secondary">
+                    👥 Ver Postulantes ({{ oferta.postulaciones_pendientes_count }})
+                </a>
+                
+                {% if oferta.estado == 'activa' %}
+                    <button onclick="cambiarEstado({{ oferta.id }}, 'pausada', 'empresa')" class="btn" style="background: #ffc107; color: #333;">
+                        ⏸ Pausar
+                    </button>
+                {% elif oferta.estado == 'pausada' %}
+                    <button onclick="cambiarEstado({{ oferta.id }}, 'activa', 'empresa')" class="btn btn-success">
+                        ▶️ Activar
+                    </button>
+                {% endif %}
+                
+                <a href="{% url 'jobs:editar_oferta' oferta.id %}" class="btn btn-secondary">
+                    ✏️ Editar
+                </a>
+                
+                {% if oferta.estado != 'cerrada' %}
+                    <button onclick="cerrarOferta({{ oferta.id }}, '{{ oferta.titulo_puesto }}')" class="btn btn-danger">
+                        🗑️ Cerrar
+                    </button>
+                {% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <div class="empty-state">
+            <div class="empty-icon">🏢</div>
+            <h2 style="color: #999; margin-bottom: 15px;">No tienes ofertas de empresa</h2>
+            <p style="color: #666; margin-bottom: 30px;">Publica tu primera oferta de empleo empresarial</p>
+            <a href="{% url 'jobs:registro_empresa' %}" class="btn btn-primary" style="font-size: 18px; padding: 12px 30px;">
+                ➕ Publicar Primera Oferta
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function switchTab(tabName) {
+    // Ocultar todos los tabs
+    document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    
+    // Desactivar todos los botones
+    document.querySelectorAll('.tab').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
+    // Activar el tab seleccionado
+    document.getElementById(tabName).classList.add('active');
+    event.target.classList.add('active');
+}
+
+function cambiarEstado(ofertaId, nuevoEstado, tipo) {
+    const formData = new FormData();
+    formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+    formData.append('estado', nuevoEstado);
+    
+    fetch(`/jobs/cambiar-estado/${ofertaId}/`, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            mostrarMensaje('success', data.message);
+            setTimeout(() => location.reload(), 1000);
+        } else {
+            mostrarMensaje('error', data.message || 'Error al cambiar estado');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        mostrarMensaje('error', 'Error al procesar la solicitud');
+    });
+}
+
+function cerrarOferta(ofertaId, titulo) {
+    if (!confirm(`¿Estás seguro de cerrar "${titulo}"?\n\nLa oferta ya no aparecerá en las búsquedas.`)) {
+        return;
+    }
+    
+    const formData = new FormData();
+    formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+    
+    fetch(`/jobs/eliminar/${ofertaId}/`, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            mostrarMensaje('success', '✅ Oferta cerrada correctamente');
+            setTimeout(() => location.reload(), 1000);
+        } else {
+            mostrarMensaje('error', data.message || 'Error al cerrar oferta');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        mostrarMensaje('error', 'Error al procesar la solicitud');
+    });
+}
+
+function mostrarMensaje(tipo, mensaje) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${tipo === 'success' ? 'success' : 'error'}`;
+    alertDiv.textContent = mensaje;
+    alertDiv.style.position = 'fixed';
+    alertDiv.style.top = '20px';
+    alertDiv.style.right = '20px';
+    alertDiv.style.zIndex = '9999';
+    alertDiv.style.minWidth = '300px';
+    alertDiv.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+    
+    document.body.appendChild(alertDiv);
+    
+    setTimeout(() => {
+        alertDiv.style.transition = 'opacity 0.3s';
+        alertDiv.style.opacity = '0';
+        setTimeout(() => alertDiv.remove(), 300);
+    }, 3000);
+}
+</script>
+{% endblock %}

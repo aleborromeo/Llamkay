@@ -2,20 +2,24 @@
 Servicio de Perfil
 Responsabilidad: Lógica de negocio relacionada con perfiles
 """
-
+import logging
+import os
+import random
 from typing import Dict, Any, Optional
-from django.contrib.auth.models import User
+from decimal import Decimal
 
-from apps.users.repositories import (
-    UsuarioRepository,
-    ProfileRepository,
-    CalificacionRepository
-)
+from django.core.files.storage import default_storage
+from django.core.exceptions import ObjectDoesNotExist
+
 from apps.users.models import (
-    UsuarioHabilidad,
-    Certificacion,
-    TrabajosRealizados
+    Usuario, Profile, UsuarioHabilidad, Certificacion, 
+    TrabajosRealizados, Disponibilidad
 )
+from apps.users.repositories import (
+    UsuarioRepository, ProfileRepository, CalificacionRepository
+)
+
+logger = logging.getLogger(__name__)
 
 
 class PerfilService:
@@ -38,108 +42,118 @@ class PerfilService:
         self.profile_repo = profile_repo or ProfileRepository()
         self.calificacion_repo = calificacion_repo or CalificacionRepository()
     
-    def obtener_datos_completos(self, user: User) -> Dict[str, Any]:
+    def obtener_datos_completos(self, user) -> Dict[str, Any]:
         """
         Obtiene todos los datos del perfil de un usuario
         Coordina múltiples repositorios
         """
-        # Obtener usuario
-        usuario = self.usuario_repo.obtener_por_user(user)
-        if not usuario:
-            raise ValueError("Usuario no encontrado")
-        
-        # Obtener o crear profile
-        profile, _ = self.profile_repo.obtener_o_crear(usuario)
-        
-        # Obtener habilidades
-        habilidades = UsuarioHabilidad.objects.filter(
-            id_usuario=usuario
-        ).select_related('id_habilidad')
-        
-        # ✅ CORRECCIÓN: Cambiar 'fecha_subida' por 'created_at'
-        certificaciones = Certificacion.objects.filter(
-            id_usuario=usuario
-        ).order_by('-created_at')
-        
-        # Obtener trabajos realizados
-        trabajos = TrabajosRealizados.objects.filter(
-            id_usuario=usuario
-        ).order_by('-fecha_inicio')
-        
-        # Obtener calificaciones
-        calificaciones = self.calificacion_repo.listar_por_receptor(usuario)
-        
-        # Obtener disponibilidad
-        disponibilidad = self._obtener_disponibilidad(usuario)
-        
-        # Obtener estadísticas
         try:
-            from .estadistica_service import EstadisticaService
-            estadistica_service = EstadisticaService()
-            estadisticas = estadistica_service.calcular_usuario(usuario)
-        except Exception as e:
-            # Si falla, usar valores por defecto
-            estadisticas = {
-                'trabajos_completados': 0,
-                'trabajos_activos': 0,
-                'rating_promedio': 0.0,
-                'total_calificaciones': 0
+            # Obtener usuario
+            usuario = self.usuario_repo.obtener_por_user(user)
+            if not usuario:
+                raise ValueError("Usuario no encontrado")
+            
+            # Obtener o crear profile
+            profile, created = self.profile_repo.obtener_o_crear(usuario)
+            if created:
+                logger.info(f"✅ Profile creado para {usuario.email}")
+            
+            # Obtener habilidades
+            habilidades = UsuarioHabilidad.objects.filter(
+                id_usuario=usuario
+            ).select_related('id_habilidad')
+            
+            # Obtener certificaciones - ordenar por created_at
+            certificaciones = Certificacion.objects.filter(
+                id_usuario=usuario
+            ).order_by('-created_at')
+            
+            # Obtener trabajos realizados
+            trabajos = TrabajosRealizados.objects.filter(
+                id_usuario=usuario
+            ).order_by('-fecha_inicio')
+            
+            # Obtener calificaciones
+            calificaciones = self.calificacion_repo.listar_por_receptor(usuario)
+            
+            # Obtener disponibilidad
+            disponibilidad = self._obtener_disponibilidad(usuario)
+            
+            # Obtener estadísticas
+            try:
+                from apps.users.services.estadistica_service import EstadisticaService
+                estadistica_service = EstadisticaService()
+                estadisticas = estadistica_service.calcular_usuario(usuario)
+            except Exception as e:
+                logger.warning(f"No se pudieron cargar estadísticas: {e}")
+                estadisticas = {
+                    'trabajos_completados': 0,
+                    'trabajos_activos': 0,
+                    'rating_promedio': 0.0,
+                    'total_calificaciones': 0
+                }
+            
+            return {
+                'usuario': usuario,
+                'profile': profile,
+                'habilidades': [h.id_habilidad.nombre for h in habilidades],
+                'habilidades_detalle': habilidades,
+                'certificaciones': certificaciones,
+                'trabajos_realizados': trabajos,
+                'trabajos': trabajos,
+                'calificaciones': calificaciones,
+                'disponibilidad': disponibilidad,
+                'precio_hora': profile.tarifa_hora if profile else None,
+                'estadisticas': estadisticas,
+                'tipo_usuario': usuario.tipo_usuario,
             }
-        
-        return {
-            'usuario': usuario,
-            'profile': profile,
-            'habilidades': [h.id_habilidad.nombre for h in habilidades],
-            'habilidades_detalle': habilidades,
-            'certificaciones': certificaciones,
-            'trabajos_realizados': trabajos,
-            'trabajos': trabajos,
-            'calificaciones': calificaciones,
-            'disponibilidad': disponibilidad,
-            'precio_hora': profile.tarifa_hora if profile else None,
-            'estadisticas': estadisticas,
-            'tipo_usuario': usuario.tipo_usuario,
-        }
+        except Exception as e:
+            logger.error(f"Error en obtener_datos_completos: {e}")
+            raise
     
     def obtener_perfil_publico(self, usuario_id: int) -> Dict[str, Any]:
         """
         Obtiene datos del perfil público de un usuario
         Solo muestra información verificada y pública
         """
-        usuario = self.usuario_repo.obtener_por_id(usuario_id)
-        if not usuario or not usuario.habilitado:
-            raise ValueError("Usuario no encontrado o deshabilitado")
-        
-        profile = self.profile_repo.obtener_por_usuario(usuario)
-        
-        # ✅ Solo certificaciones verificadas - ordenar por created_at
-        certificaciones = Certificacion.objects.filter(
-            id_usuario=usuario,
-            verificada=True
-        ).order_by('-fecha_obtencion')
-        
-        # Solo habilidades
-        habilidades = UsuarioHabilidad.objects.filter(
-            id_usuario=usuario
-        ).select_related('id_habilidad')
-        
-        # Últimas 10 calificaciones
-        calificaciones = self.calificacion_repo.obtener_ultimas(usuario, limite=10)
-        
-        # Disponibilidad formateada
-        disponibilidad = self._obtener_disponibilidad(usuario)
-        
-        return {
-            'usuario': usuario,
-            'profile': profile or {},
-            'habilidades': [h.id_habilidad.nombre for h in habilidades],
-            'certificaciones': certificaciones,
-            'calificaciones': calificaciones,
-            'disponibilidad': disponibilidad,
-            'precio_hora': profile.tarifa_hora if profile else None,
-        }
+        try:
+            usuario = self.usuario_repo.obtener_por_id(usuario_id)
+            if not usuario or not usuario.habilitado:
+                raise ValueError("Usuario no encontrado o deshabilitado")
+            
+            profile = self.profile_repo.obtener_por_usuario(usuario)
+            
+            # Solo certificaciones verificadas
+            certificaciones = Certificacion.objects.filter(
+                id_usuario=usuario,
+                verificada=True
+            ).order_by('-fecha_obtencion')
+            
+            # Solo habilidades
+            habilidades = UsuarioHabilidad.objects.filter(
+                id_usuario=usuario
+            ).select_related('id_habilidad')
+            
+            # Últimas 10 calificaciones
+            calificaciones = self.calificacion_repo.obtener_ultimas(usuario, limite=10)
+            
+            # Disponibilidad formateada
+            disponibilidad = self._obtener_disponibilidad(usuario)
+            
+            return {
+                'usuario': usuario,
+                'profile': profile or {},
+                'habilidades': [h.id_habilidad.nombre for h in habilidades],
+                'certificaciones': certificaciones,
+                'calificaciones': calificaciones,
+                'disponibilidad': disponibilidad,
+                'precio_hora': profile.tarifa_hora if profile else None,
+            }
+        except Exception as e:
+            logger.error(f"Error en obtener_perfil_publico: {e}")
+            raise
     
-    def actualizar_perfil(self, user: User, datos: Dict[str, Any]) -> bool:
+    def actualizar_perfil(self, user, datos: Dict[str, Any]) -> bool:
         """
         Actualiza el perfil de un usuario
         Valida y coordina actualizaciones
@@ -147,44 +161,82 @@ class PerfilService:
         try:
             usuario = self.usuario_repo.obtener_por_user(user)
             if not usuario:
+                logger.error("Usuario no encontrado")
                 return False
             
-            # Actualizar datos básicos del usuario
+            # ==================== ACTUALIZAR USUARIO ====================
             datos_usuario = {}
-            if 'telefono' in datos:
-                datos_usuario['telefono'] = datos['telefono']
             
+            # Teléfono
+            if 'telefono' in datos and datos['telefono']:
+                datos_usuario['telefono'] = datos['telefono'].strip()
+            
+            # Foto de perfil - Guardar directamente en Usuario
+            if 'foto' in datos and datos['foto']:
+                # Eliminar foto anterior si existe
+                if usuario.foto:
+                    try:
+                        if default_storage.exists(usuario.foto.name):
+                            default_storage.delete(usuario.foto.name)
+                    except Exception as e:
+                        logger.warning(f"No se pudo eliminar foto anterior: {e}")
+                
+                # Guardar nueva foto
+                usuario.foto = datos['foto']
+                usuario.save()
+                logger.info(f"✅ Foto actualizada para {usuario.email}")
+            
+            # Actualizar otros campos de usuario
             if datos_usuario:
-                self.usuario_repo.actualizar(usuario, datos_usuario)
+                for key, value in datos_usuario.items():
+                    setattr(usuario, key, value)
+                usuario.save()
             
-            # Actualizar profile
-            profile, _ = self.profile_repo.obtener_o_crear(usuario)
+            # ==================== ACTUALIZAR PROFILE ====================
+            profile, created = self.profile_repo.obtener_o_crear(usuario)
+            
             datos_profile = {}
             
-            campos_profile = [
-                'bio', 'ocupacion', 'experiencia_anios', 'tarifa_hora',
-                'portafolio_url', 'id_departamento', 'id_provincia',
-                'id_distrito', 'perfil_publico', 'mostrar_email',
-                'mostrar_telefono'
-            ]
+            # Mapeo de campos
+            campos_profile = {
+                'bio': 'bio',
+                'descripcion': 'bio',  # Alias
+                'ocupacion': 'ocupacion',
+                'experiencia_anios': 'experiencia_anios',
+                'tarifa_hora': 'tarifa_hora',
+                'portafolio_url': 'portafolio_url',
+                'perfil_publico': 'perfil_publico',
+                'mostrar_email': 'mostrar_email',
+                'mostrar_telefono': 'mostrar_telefono',
+            }
             
-            for campo in campos_profile:
-                if campo in datos:
-                    datos_profile[campo] = datos[campo]
+            for campo_dato, campo_model in campos_profile.items():
+                if campo_dato in datos and datos[campo_dato] is not None:
+                    valor = datos[campo_dato]
+                    # Limpiar strings
+                    if isinstance(valor, str):
+                        valor = valor.strip()
+                    datos_profile[campo_model] = valor
             
-            if 'foto' in datos:
-                datos_profile['foto_url'] = datos['foto']
+            # Ubicación
+            if 'id_departamento' in datos:
+                datos_profile['id_departamento_id'] = datos['id_departamento']
+            if 'id_provincia' in datos:
+                datos_profile['id_provincia_id'] = datos['id_provincia']
+            if 'id_distrito' in datos:
+                datos_profile['id_distrito_id'] = datos['id_distrito']
             
-            if 'descripcion' in datos:
-                datos_profile['bio'] = datos['descripcion']
-            
+            # Actualizar profile
             if datos_profile:
-                self.profile_repo.actualizar(profile, datos_profile)
+                for key, value in datos_profile.items():
+                    setattr(profile, key, value)
+                profile.save()
+                logger.info(f"✅ Profile actualizado para {usuario.email}")
             
             return True
             
         except Exception as e:
-            print(f"Error al actualizar perfil: {str(e)}")
+            logger.error(f"❌ Error al actualizar perfil: {str(e)}", exc_info=True)
             return False
     
     def _obtener_disponibilidad(self, usuario) -> Optional[str]:
@@ -192,11 +244,14 @@ class PerfilService:
         Obtiene y formatea la disponibilidad del usuario
         Método privado interno
         """
-        if not hasattr(usuario, 'disponibilidad_set'):
-            return None
-        
         try:
-            disponibilidades = usuario.disponibilidad_set.filter(activa=True)
+            from apps.users.models import Disponibilidad
+            
+            disponibilidades = Disponibilidad.objects.filter(
+                id_usuario=usuario,
+                activa=True
+            )
+            
             if not disponibilidades.exists():
                 return None
             
@@ -206,30 +261,41 @@ class PerfilService:
                 4: 'Jue', 5: 'Vie', 6: 'Sáb'
             }
             
-            horarios = [
-                f"{dias[d.dia_semana]} {d.hora_inicio.strftime('%H:%M')}-{d.hora_fin.strftime('%H:%M')}"
-                for d in disponibilidades[:3]
-            ]
+            horarios = []
+            for d in disponibilidades[:3]:
+                try:
+                    horarios.append(
+                        f"{dias.get(d.dia_semana, 'N/A')} "
+                        f"{d.hora_inicio.strftime('%H:%M')}-{d.hora_fin.strftime('%H:%M')}"
+                    )
+                except Exception as e:
+                    logger.warning(f"Error formateando disponibilidad: {e}")
+                    continue
             
             return ", ".join(horarios) if horarios else None
-        except Exception:
+            
+        except Exception as e:
+            logger.warning(f"Error obteniendo disponibilidad: {e}")
             return None
     
-    def exportar_portafolio(self, user: User) -> Dict[str, Any]:
+    def exportar_portafolio(self, user) -> Dict[str, Any]:
         """
         Prepara datos para exportar portafolio (PDF)
         """
-        datos = self.obtener_datos_completos(user)
-        
-        # Agregar información adicional para el PDF
-        usuario = datos['usuario']
-        
-        return {
-            'usuario': usuario,
-            'profile': datos['profile'],
-            'habilidades': datos['habilidades'],
-            'certificaciones': datos['certificaciones'],
-            'trabajos': datos['trabajos_realizados'],
-            'calificaciones': datos['calificaciones'],
-            'estadisticas': datos['estadisticas'],
-        }
+        try:
+            datos = self.obtener_datos_completos(user)
+            
+            usuario = datos['usuario']
+            
+            return {
+                'usuario': usuario,
+                'profile': datos['profile'],
+                'habilidades': datos['habilidades'],
+                'certificaciones': datos['certificaciones'],
+                'trabajos': datos['trabajos_realizados'],
+                'calificaciones': datos['calificaciones'],
+                'estadisticas': datos['estadisticas'],
+            }
+        except Exception as e:
+            logger.error(f"Error exportando portafolio: {e}")
+            raise

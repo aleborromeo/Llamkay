@@ -1,5 +1,7 @@
-from .busqueda import *
-from .guardados import *
-from .postulaciones import *
-from .dashboard import *
-from .ofertas import *
+"""
+Vistas del módulo Jobs
+Organizadas por responsabilidad
+"""
+
+# No necesitamos importar aquí, las URLs lo hacen directamente
+# Esto mantiene el código limpio y evita imports circulares

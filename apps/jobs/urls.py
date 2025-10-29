@@ -1,41 +1,61 @@
+"""
+URLs del módulo Jobs - CORREGIDAS Y ORGANIZADAS
+"""
 from django.urls import path
-from . import views
+from .views import (
+    busqueda,
+    ofertas,
+    postulaciones,
+    guardados,
+    dashboard,
+)
 
 app_name = 'jobs'
 
 urlpatterns = [
-    # Listado y búsqueda de trabajos
-    path('', views.all_trabajos, name='all_trabajos'),
-    path('filtrar/', views.filtrar_trabajos, name='filtrar_trabajos'),
-    path('buscar/', views.buscar_trabajos, name='buscar_trabajos'),
-    path('detalle/<str:tipo>/<int:trabajo_id>/', views.detalle_trabajo, name='detalle_trabajo'),
+    # ==================== BÚSQUEDA Y LISTADO ====================
+    path('', busqueda.all_trabajos, name='all_trabajos'),
+    path('buscar/', busqueda.buscar_trabajos, name='buscar_trabajos'),
+    path('filtrar/', busqueda.filtrar_trabajos, name='filtrar_trabajos'),
+    path('detalle/<str:tipo>/<int:trabajo_id>/', busqueda.detalle_trabajo, name='detalle_trabajo'),
     
-    # Registro de ofertas
-    path('registro-individual/', views.registro_individual, name='registro_individual'),
-    path('registro-empresa/', views.registro_empresa, name='registro_empresa'),
+    # ==================== GESTIÓN DE OFERTAS ====================
+    # Registro
+    path('registro-individual/', ofertas.registro_individual, name='registro_individual'),
+    path('registro-empresa/', ofertas.registro_empresa, name='registro_empresa'),
     
-    # Administración de trabajos del empleador
-    path('mis-trabajos/', views.mis_trabajos, name='mis_trabajos'),
-    path('mis-trabajos/ajax/', views.mis_trabajos_ajax, name='mis_trabajos_ajax'),
-    path('editar/<int:oferta_id>/', views.editar_trabajo, name='editar_oferta'),
-    path('eliminar/<int:oferta_id>/', views.eliminar_trabajo, name='eliminar_oferta'),
+    # Administración
+    path('mis-trabajos/', ofertas.mis_trabajos, name='mis_trabajos'),
+    path('mis-trabajos/ajax/', ofertas.mis_trabajos_ajax, name='mis_trabajos_ajax'),
+    path('editar/<int:oferta_id>/', ofertas.editar_trabajo, name='editar_oferta'),
+    path('eliminar/<int:oferta_id>/', ofertas.eliminar_trabajo, name='eliminar_oferta'),
+    path('cambiar-estado/<int:oferta_id>/', ofertas.cambiar_estado_oferta, name='cambiar_estado_oferta'),
     
-    # Dashboard de trabajador (buscar trabajo)
-    path('dashboard-trabajador/', views.dashboard_trabajador, name='dashboard_trabajador'),
+    # ==================== DASHBOARDS ====================
+    path('dashboard-trabajador/', dashboard.dashboard_trabajador, name='dashboard_trabajador'),
+    path('dashboard-empleador/', dashboard.dashboard_empleador, name='dashboard_empleador'),
+    path('admin-empleador/', dashboard.admin_empleador, name='admin_empleador'),
+    path('admin-empresa/', dashboard.admin_empresa, name='admin_empresa'),
     
-    # Trabajos guardados
-    path('guardar/<str:tipo>/<int:oferta_id>/', views.guardar_trabajo, name='guardar_trabajo'),
-    path('trabajos-guardados/', views.trabajos_guardados, name='trabajos_guardados'),
-    path('quitar-guardado/<int:guardado_id>/', views.quitar_guardado, name='quitar_guardado'),
-    path('agregar-nota/<int:guardado_id>/', views.agregar_nota_guardado, name='agregar_nota_guardado'),
+    # ==================== TRABAJOS GUARDADOS ====================
+    path('guardar/<str:tipo>/<int:oferta_id>/', guardados.guardar_trabajo, name='guardar_trabajo'),
+    path('trabajos-guardados/', guardados.trabajos_guardados, name='trabajos_guardados'),
+    path('trabajos-guardados/ajax/', guardados.trabajos_guardados_ajax, name='trabajos_guardados_ajax'),
+    path('quitar-guardado/<int:guardado_id>/', guardados.quitar_guardado, name='quitar_guardado'),
     
-    # Postulaciones
-    path('postular/<str:tipo>/<int:oferta_id>/', views.postular_trabajo, name='postular_trabajo'),
-    path('mis-postulaciones/', views.mis_postulaciones, name='mis_postulaciones'),
-    path('retirar-postulacion/<int:postulacion_id>/', views.retirar_postulacion, name='retirar_postulacion'),
+    # ==================== POSTULACIONES ====================
+    # Trabajador
+    path('postular/<str:tipo>/<int:oferta_id>/', postulaciones.postular_trabajo, name='postular_trabajo'),
+    path('mis-postulaciones/', postulaciones.mis_postulaciones, name='mis_postulaciones'),
+    path('retirar-postulacion/<int:postulacion_id>/', postulaciones.retirar_postulacion, name='retirar_postulacion'),
     
-    # AJAX para ubicación
-    path('ajax/cargar-provincias/', views.cargar_provincias, name='ajax_cargar_provincias'),
-    path('ajax/cargar-distritos/', views.cargar_distritos, name='ajax_cargar_distritos'),
-    path('ajax/cargar-comunidades/', views.cargar_comunidades, name='ajax_cargar_comunidades'),
+    # Empleador
+    path('ver-postulantes/<str:tipo>/<int:oferta_id>/', postulaciones.ver_postulantes, name='ver_postulantes'),
+    path('aceptar-postulante/<int:postulacion_id>/', postulaciones.aceptar_postulante, name='aceptar_postulante'),
+    path('rechazar-postulante/<int:postulacion_id>/', postulaciones.rechazar_postulante, name='rechazar_postulante'),
+    
+    # ==================== AJAX UBICACIÓN ====================
+    path('ajax/cargar-provincias/', ofertas.cargar_provincias, name='ajax_cargar_provincias'),
+    path('ajax/cargar-distritos/', ofertas.cargar_distritos, name='ajax_cargar_distritos'),
+    path('ajax/cargar-comunidades/', ofertas.cargar_comunidades, name='ajax_cargar_comunidades'),
 ]
