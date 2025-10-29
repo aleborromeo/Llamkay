@@ -138,7 +138,6 @@ document.addEventListener('DOMContentLoaded', function () {
             if (Array.isArray(data) && data.length > 0) {
                 populateSelect(provinciaSelect, data, 'id_provincia', 'nombre', true);
                 console.log(`✅ ${data.length} provincias cargadas`);
-                showNotification(`${data.length} provincias cargadas`, 'success');
             } else {
                 resetSelect(provinciaSelect, 'No hay provincias disponibles', false);
                 console.warn('⚠️ Respuesta vacía de provincias');
@@ -192,7 +191,6 @@ document.addEventListener('DOMContentLoaded', function () {
             if (Array.isArray(data) && data.length > 0) {
                 populateSelect(distritoSelect, data, 'id_distrito', 'nombre', true);
                 console.log(`✅ ${data.length} distritos cargados`);
-                showNotification(`${data.length} distritos cargados`, 'success');
             } else {
                 resetSelect(distritoSelect, 'No hay distritos disponibles', false);
                 console.warn('⚠️ Respuesta vacía de distritos');

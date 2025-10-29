@@ -8,8 +8,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import JsonResponse, HttpResponse
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_POST, require_http_methods
 from django.db import transaction
+from decimal import Decimal
 import logging
 
 logger = logging.getLogger(__name__)
@@ -75,12 +76,17 @@ def perfil_publico(request, usuario_id):
 
 
 @login_required
-@require_POST
+@require_http_methods(["GET", "POST"])
 @transaction.atomic
 def actualizar_perfil(request):
     """
     Actualizar información del perfil
+    Soporta tanto peticiones normales como AJAX
     """
+    # Si es GET, redirigir a perfil
+    if request.method == 'GET':
+        return redirect('users:perfil')
+    
     try:
         perfil_service = PerfilService()
         
@@ -88,36 +94,88 @@ def actualizar_perfil(request):
         datos = {
             'telefono': request.POST.get('telefono', '').strip(),
             'descripcion': request.POST.get('descripcion', '').strip(),
-            'tarifa_hora': request.POST.get('tarifa_hora'),
-            'id_departamento': request.POST.get('id_departamento'),
-            'id_provincia': request.POST.get('id_provincia'),
-            'id_distrito': request.POST.get('id_distrito'),
+            'bio': request.POST.get('bio', '').strip(),
+            'ocupacion': request.POST.get('ocupacion', '').strip(),
         }
+        
+        # Ubicación
+        if request.POST.get('id_departamento'):
+            datos['id_departamento'] = request.POST.get('id_departamento')
+        if request.POST.get('id_provincia'):
+            datos['id_provincia'] = request.POST.get('id_provincia')
+        if request.POST.get('id_distrito'):
+            datos['id_distrito'] = request.POST.get('id_distrito')
+        
+        # Tarifa
+        tarifa_hora = request.POST.get('tarifa_hora', '').strip()
+        if tarifa_hora and tarifa_hora != 'None':
+            try:
+                datos['tarifa_hora'] = Decimal(tarifa_hora)
+            except Exception as e:
+                logger.warning(f"Tarifa inválida: {tarifa_hora} - {e}")
         
         # Agregar foto si existe
         if 'foto' in request.FILES:
-            datos['foto'] = request.FILES['foto']
+            foto = request.FILES['foto']
+            # Validar tamaño (máx 5MB)
+            if foto.size > 5 * 1024 * 1024:
+                raise ValueError("La foto no puede pesar más de 5MB")
+            # Validar tipo
+            if not foto.content_type.startswith('image/'):
+                raise ValueError("El archivo debe ser una imagen")
+            datos['foto'] = foto
         
         # Delegar al servicio
         exito = perfil_service.actualizar_perfil(request.user, datos)
         
         if exito:
-            return JsonResponse({
-                'status': 'ok',
-                'message': 'Perfil actualizado correctamente.'
-            })
+            logger.info(f"✅ Perfil actualizado: {request.user.email}")
+            
+            # Si es petición AJAX, devolver JSON
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({
+                    'status': 'ok',
+                    'message': 'Perfil actualizado correctamente.'
+                })
+            
+            # Si es petición normal, redirigir con mensaje
+            messages.success(request, '✅ Perfil actualizado correctamente.')
+            return redirect('users:perfil')
         else:
+            logger.error(f"❌ Error actualizando perfil de {request.user.email}")
+            
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({
+                    'status': 'error',
+                    'message': 'Error al actualizar perfil.'
+                }, status=500)
+            
+            messages.error(request, '❌ Error al actualizar perfil.')
+            return redirect('users:perfil')
+            
+    except ValueError as e:
+        logger.warning(f"⚠️ Validación fallida: {str(e)}")
+        
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
             return JsonResponse({
                 'status': 'error',
-                'message': 'Error al actualizar perfil.'
-            }, status=500)
-            
+                'message': str(e)
+            }, status=400)
+        
+        messages.error(request, f'❌ {str(e)}')
+        return redirect('users:perfil')
+        
     except Exception as e:
-        return JsonResponse({
-            'status': 'error',
-            'message': f'Error: {str(e)}'
-        }, status=500)
-
+        logger.error(f"❌ Error en actualizar_perfil: {str(e)}", exc_info=True)
+        
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({
+                'status': 'error',
+                'message': f'Error: {str(e)}'
+            }, status=500)
+        
+        messages.error(request, f'❌ Error: {str(e)}')
+        return redirect('users:perfil')
 
 @login_required
 def exportar_portafolio_pdf(request):
