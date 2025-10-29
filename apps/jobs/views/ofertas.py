@@ -104,7 +104,9 @@ def mis_trabajos(request):
     try:
         usuario = Usuario.objects.get(user=request.user)
         
-        # Obtener ofertas
+        # Obtener ofertas con anotaciones
+        from django.db.models import Count, Q
+        
         ofertas_usuario = OfertaUsuario.objects.filter(
             id_empleador=usuario
         ).select_related(
@@ -112,6 +114,9 @@ def mis_trabajos(request):
             'id_departamento',
             'id_provincia',
             'id_distrito'
+        ).annotate(
+            total_postulaciones_count=Count('postulaciones'),
+            postulaciones_pendientes_count=Count('postulaciones', filter=Q(postulaciones__estado='pendiente'))
         ).order_by('-created_at')
         
         ofertas_empresa = OfertaEmpresa.objects.filter(
@@ -121,8 +126,11 @@ def mis_trabajos(request):
             'id_departamento',
             'id_provincia',
             'id_distrito'
+        ).annotate(
+            total_postulaciones_count=Count('postulaciones'),
+            postulaciones_pendientes_count=Count('postulaciones', filter=Q(postulaciones__estado='pendiente'))
         ).order_by('-created_at')
-        
+                
         # Obtener estadísticas
         estadisticas = obtener_estadisticas_empleador(usuario)
         
@@ -138,7 +146,6 @@ def mis_trabajos(request):
     except Usuario.DoesNotExist:
         messages.error(request, "Usuario no encontrado.")
         return redirect('users:login')
-
 
 @login_required
 def mis_trabajos_ajax(request):
