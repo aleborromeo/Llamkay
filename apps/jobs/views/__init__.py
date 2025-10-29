@@ -1,7 +1,14 @@
 """
-Vistas del módulo Jobs
-Organizadas por responsabilidad
+Views del módulo Jobs
 """
+from .busqueda_views import busqueda_views
+from .postulacion_views import postulacion_views
+from .guardado_views import guardado_views
+from .dashboard_views import dashboard_views
 
-# No necesitamos importar aquí, las URLs lo hacen directamente
-# Esto mantiene el código limpio y evita imports circulares
+__all__ = [
+    'busqueda_views',
+    'postulacion_views',
+    'guardado_views',
+    'dashboard_views',
+]
