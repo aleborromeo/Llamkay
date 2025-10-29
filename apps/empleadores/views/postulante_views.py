@@ -1,82 +1,123 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
 
-from apps.jobs.models import Postulacion, OfertaUsuario, OfertaEmpresa
 from apps.users.models import Usuario
+from apps.empleadores.services import PostulanteService
+
+
+postulante_service = PostulanteService()
 
 
 @login_required
 def ver_postulantes(request, oferta_id, tipo):
-    """Ver postulantes de una oferta"""
-    usuario = Usuario.objects.get(user=request.user)
-    
-    if tipo == 'usuario':
-        oferta = get_object_or_404(OfertaUsuario, id=oferta_id, id_empleador=usuario)
-        postulaciones = Postulacion.objects.filter(
-            id_oferta_usuario=oferta
-        ).select_related('id_trabajador')
-    elif tipo == 'empresa':
-        oferta = get_object_or_404(OfertaEmpresa, id=oferta_id, id_empleador=usuario)
-        postulaciones = Postulacion.objects.filter(
-            id_oferta_empresa=oferta
-        ).select_related('id_trabajador')
-    else:
-        messages.error(request, "Tipo de oferta inválido.")
-        return redirect('empleadores:listar_ofertas')
-    
-    context = {
-        'oferta': oferta,
-        'postulaciones': postulaciones,
-        'tipo': tipo,
-    }
-    
-    return render(request, 'empleadores/postulantes/ver.html', context)
+    try:
+        usuario = Usuario.objects.get(user=request.user)
+        
+        if tipo not in ['usuario', 'empresa']:
+            messages.error(request, "Tipo de oferta inválido.")
+            return redirect('empleadores:mis_trabajos')
+        
+        estado_filtro = request.GET.get('estado')
+        
+        resultado = postulante_service.get_postulantes_oferta(
+            oferta_id,
+            tipo,
+            usuario.id_usuario,
+            estado=estado_filtro
+        )
+        
+        context = {
+            'postulaciones': resultado['postulaciones'],
+            'estadisticas': resultado['estadisticas'],
+            'oferta_id': oferta_id,
+            'tipo': tipo,
+            'estado_filtro': estado_filtro,
+            'usuario': usuario,
+        }
+        
+        return render(request, 'empleadores/postulantes/ver.html', context)
+        
+    except Usuario.DoesNotExist:
+        messages.error(request, "Usuario no encontrado.")
+        return redirect('users:login')
 
 
 @login_required
+@require_POST
 def aceptar_postulante(request, postulacion_id):
-    """Aceptar una postulación"""
-    postulacion = get_object_or_404(Postulacion, id_postulacion=postulacion_id)
-    
-    # Verificar que el usuario sea el dueño de la oferta
-    usuario = Usuario.objects.get(user=request.user)
-    
-    if postulacion.id_oferta_usuario:
-        if postulacion.id_oferta_usuario.id_empleador != usuario:
-            raise PermissionDenied
-    elif postulacion.id_oferta_empresa:
-        if postulacion.id_oferta_empresa.id_empleador != usuario:
-            raise PermissionDenied
-    
-    postulacion.estado = 'aceptada'
-    postulacion.save()
-    
-    messages.success(request, "Postulación aceptada correctamente.")
-    return redirect('empleadores:ver_postulantes', 
-                    oferta_id=postulacion.id_oferta_usuario.id if postulacion.id_oferta_usuario else postulacion.id_oferta_empresa.id,
-                    tipo='usuario' if postulacion.id_oferta_usuario else 'empresa')
+    try:
+        usuario = Usuario.objects.get(user=request.user)
+        
+        resultado = postulante_service.aceptar_postulante(
+            postulacion_id,
+            usuario.id_usuario
+        )
+        
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse(resultado)
+        
+        if resultado['success']:
+            messages.success(request, resultado['message'])
+        else:
+            messages.error(request, resultado['message'])
+        
+        return redirect(request.META.get('HTTP_REFERER', 'empleadores:mis_trabajos'))
+        
+    except Usuario.DoesNotExist:
+        return JsonResponse({
+            'success': False,
+            'message': 'Usuario no encontrado'
+        }, status=404)
 
 
 @login_required
+@require_POST
 def rechazar_postulante(request, postulacion_id):
-    """Rechazar una postulación"""
-    postulacion = get_object_or_404(Postulacion, id_postulacion=postulacion_id)
-    
-    # Verificar permisos
-    usuario = Usuario.objects.get(user=request.user)
-    
-    if postulacion.id_oferta_usuario:
-        if postulacion.id_oferta_usuario.id_empleador != usuario:
-            raise PermissionDenied
-    elif postulacion.id_oferta_empresa:
-        if postulacion.id_oferta_empresa.id_empleador != usuario:
-            raise PermissionDenied
-    
-    postulacion.estado = 'rechazada'
-    postulacion.save()
-    
-    messages.success(request, "Postulación rechazada.")
-    return redirect('empleadores:ver_postulantes',
-                    oferta_id=postulacion.id_oferta_usuario.id if postulacion.id_oferta_usuario else postulacion.id_oferta_empresa.id,
-                    tipo='usuario' if postulacion.id_oferta_usuario else 'empresa')
+    try:
+        usuario = Usuario.objects.get(user=request.user)
+        
+        resultado = postulante_service.rechazar_postulante(
+            postulacion_id,
+            usuario.id_usuario
+        )
+        
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse(resultado)
+        
+        if resultado['success']:
+            messages.success(request, resultado['message'])
+        else:
+            messages.error(request, resultado['message'])
+        
+        return redirect(request.META.get('HTTP_REFERER', 'empleadores:mis_trabajos'))
+        
+    except Usuario.DoesNotExist:
+        return JsonResponse({
+            'success': False,
+            'message': 'Usuario no encontrado'
+        }, status=404)
+
+
+@login_required
+def postulaciones_recientes(request):
+    try:
+        usuario = Usuario.objects.get(user=request.user)
+        
+        postulaciones = postulante_service.get_postulaciones_recientes(
+            usuario.id_usuario,
+            limit=10
+        )
+        
+        return JsonResponse({
+            'success': True,
+            'postulaciones': postulaciones
+        })
+        
+    except Usuario.DoesNotExist:
+        return JsonResponse({
+            'success': False,
+            'error': 'Usuario no encontrado'
+        }, status=404)

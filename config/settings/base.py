@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'apps.users',
     'apps.chats',
     'apps.jobs',
+    'apps.empleadores',
     'apps.llamkay',
     'apps.core',
     'apps.soporte',
