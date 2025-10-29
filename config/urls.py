@@ -15,6 +15,7 @@ urlpatterns = [
     path('', include('apps.llamkay.urls')),  # Home/landing
     path('users/', include('apps.users.urls')),
     path('jobs/', include('apps.jobs.urls')),
+    path('empleadores/', include('apps.empleadores.urls')),
     path('chats/', include('apps.chats.urls')),
     path('soporte/', include('apps.soporte.urls')),
 ]
