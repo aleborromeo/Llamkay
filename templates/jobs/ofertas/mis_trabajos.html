@@ -314,11 +314,11 @@
                     <div class="stat-text">Vistas</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-value">{{ oferta.postulaciones.count }}</div>
+                    <div class="stat-value">{{ oferta.total_postulaciones_count }}</div>
                     <div class="stat-text">Postulaciones</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-value">{{ oferta.postulaciones.filter.estado='pendiente'.count }}</div>
+                    <div class="stat-value">{{ oferta.postulaciones_pendientes_count }}</div>
                     <div class="stat-text">Pendientes</div>
                 </div>
             </div>
@@ -328,7 +328,7 @@
                     👁️ Ver Detalle
                 </a>
                 <a href="{% url 'jobs:ver_postulantes' 'usuario' oferta.id %}" class="btn btn-secondary">
-                    👥 Ver Postulantes ({{ oferta.postulaciones.count }})
+                    👥 Ver Postulantes ({{ oferta.postulaciones_pendientes_count }})
                 </a>
                 
                 {% if oferta.estado == 'activa' %}
@@ -396,11 +396,11 @@
                     <div class="stat-text">Vistas</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-value">{{ oferta.postulaciones.count }}</div>
+                    <div class="stat-value">{{ oferta.postulaciones_pendientes_count }}</div>
                     <div class="stat-text">Postulaciones</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-value">{{ oferta.postulaciones.filter.estado='pendiente'.count }}</div>
+                    <div class="stat-value">{{ oferta.postulaciones_pendientes_count }}</div>
                     <div class="stat-text">Pendientes</div>
                 </div>
             </div>
@@ -410,7 +410,7 @@
                     👁️ Ver Detalle
                 </a>
                 <a href="{% url 'jobs:ver_postulantes' 'empresa' oferta.id %}" class="btn btn-secondary">
-                    👥 Ver Postulantes ({{ oferta.postulaciones.count }})
+                    👥 Ver Postulantes ({{ oferta.postulaciones_pendientes_count }})
                 </a>
                 
                 {% if oferta.estado == 'activa' %}
