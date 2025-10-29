@@ -1,0 +1,459 @@
+{% extends "jobs/base_jobs.html" %}
+
+{% block title %}Postulantes - {{ oferta.titulo|default:oferta.titulo_puesto }} - Llamkay{% endblock %}
+
+{% block extra_css %}
+<style>
+    .oferta-header {
+        background: linear-gradient(135deg, #07734B, #15AC75);
+        color: white;
+        padding: 30px;
+        border-radius: 12px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 12px rgba(7, 115, 75, 0.2);
+    }
+    
+    .oferta-title {
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+    
+    .oferta-meta {
+        display: flex;
+        gap: 30px;
+        flex-wrap: wrap;
+        margin-top: 15px;
+        opacity: 0.95;
+    }
+    
+    .oferta-meta span {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .filters-bar {
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        display: flex;
+        gap: 15px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+    
+    .stats-summary {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 15px;
+        margin-bottom: 30px;
+    }
+    
+    .stat-box {
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        text-align: center;
+    }
+    
+    .stat-number {
+        font-size: 32px;
+        font-weight: 700;
+        color: #07734B;
+    }
+    
+    .stat-label {
+        color: #666;
+        margin-top: 5px;
+        font-size: 14px;
+    }
+    
+    .postulante-card {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        transition: all 0.3s;
+        border-left: 4px solid #ddd;
+    }
+    
+    .postulante-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    }
+    
+    .postulante-card.pendiente {
+        border-left-color: #ffc107;
+    }
+    
+    .postulante-card.en_revision {
+        border-left-color: #17a2b8;
+    }
+    
+    .postulante-card.aceptada {
+        border-left-color: #28a745;
+    }
+    
+    .postulante-card.rechazada {
+        border-left-color: #dc3545;
+        opacity: 0.7;
+    }
+    
+    .postulante-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        margin-bottom: 20px;
+    }
+    
+    .postulante-info {
+        flex: 1;
+    }
+    
+    .postulante-name {
+        font-size: 22px;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 8px;
+    }
+    
+    .postulante-details {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 15px;
+    }
+    
+    .postulante-details span {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    
+    .estado-badge {
+        padding: 8px 18px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+    
+    .estado-pendiente {
+        background: #fff3cd;
+        color: #856404;
+    }
+    
+    .estado-en_revision {
+        background: #d1ecf1;
+        color: #0c5460;
+    }
+    
+    .estado-aceptada {
+        background: #d4edda;
+        color: #155724;
+    }
+    
+    .estado-rechazada {
+        background: #f8d7da;
+        color: #721c24;
+    }
+    
+    .mensaje-box {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        border-left: 3px solid #07734B;
+    }
+    
+    .mensaje-box strong {
+        color: #07734B;
+        display: block;
+        margin-bottom: 8px;
+    }
+    
+    .postulante-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 15px;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 80px 20px;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .empty-icon {
+        font-size: 80px;
+        margin-bottom: 20px;
+        opacity: 0.3;
+    }
+    
+    @media (max-width: 768px) {
+        .postulante-header {
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .filters-bar {
+            flex-direction: column;
+            align-items: stretch;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <a href="{% url 'jobs:mis_trabajos' %}" class="btn btn-secondary" style="margin: 20px 0;">← Volver a Mis Trabajos</a>
+    
+    <!-- Header de la Oferta -->
+    <div class="oferta-header">
+        <h1 class="oferta-title">
+            👥 Postulantes para: 
+            {% if tipo == 'usuario' %}
+                {{ oferta.titulo }}
+            {% else %}
+                {{ oferta.titulo_puesto }}
+            {% endif %}
+        </h1>
+        <div class="oferta-meta">
+            <span>📅 Publicado: {{ oferta.created_at|date:"d/m/Y" }}</span>
+            <span>👁️ {{ oferta.vistas }} vistas</span>
+            <span>📝 {{ total_postulaciones }} postulaciones</span>
+            {% if tipo == 'usuario' %}
+                {% if oferta.pago %}
+                    <span>💰 S/ {{ oferta.pago }}</span>
+                {% endif %}
+            {% else %}
+                <span>👥 {{ oferta.vacantes }} vacante{{ oferta.vacantes|pluralize }}</span>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Estadísticas -->
+    <div class="stats-summary">
+        <div class="stat-box">
+            <div class="stat-number">{{ postulaciones|length }}</div>
+            <div class="stat-label">Total Postulaciones</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-number">{{ postulaciones|selectattr:"estado", "equalto", "pendiente"|list|length }}</div>
+            <div class="stat-label">Pendientes</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-number">{{ postulaciones|selectattr:"estado", "equalto", "aceptada"|list|length }}</div>
+            <div class="stat-label">Aceptadas</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-number">{{ postulaciones|selectattr:"estado", "equalto", "rechazada"|list|length }}</div>
+            <div class="stat-label">Rechazadas</div>
+        </div>
+    </div>
+    
+    <!-- Filtros -->
+    <div class="filters-bar">
+        <strong>Filtrar por estado:</strong>
+        <form method="GET" style="display: flex; gap: 10px; flex: 1; flex-wrap: wrap;">
+            <select name="estado" class="form-control" style="flex: 1; min-width: 200px;" onchange="this.form.submit()">
+                <option value="">Todos los estados</option>
+                <option value="pendiente" {% if estado_filtro == 'pendiente' %}selected{% endif %}>⏳ Pendientes</option>
+                <option value="en_revision" {% if estado_filtro == 'en_revision' %}selected{% endif %}>👀 En Revisión</option>
+                <option value="aceptada" {% if estado_filtro == 'aceptada' %}selected{% endif %}>✅ Aceptadas</option>
+                <option value="rechazada" {% if estado_filtro == 'rechazada' %}selected{% endif %}>❌ Rechazadas</option>
+            </select>
+        </form>
+    </div>
+    
+    <!-- Lista de Postulantes -->
+    {% for post in postulaciones %}
+    <div class="postulante-card {{ post.estado }}" id="postulacion-{{ post.id }}">
+        <div class="postulante-header">
+            <div class="postulante-info">
+                <h3 class="postulante-name">{{ post.trabajador.nombre }}</h3>
+                <div class="postulante-details">
+                    <span>📅 Postulado: {{ post.fecha_postulacion|date:"d/m/Y H:i" }}</span>
+                    {% if post.pretension_salarial %}
+                        <span>💰 Pretensión: S/ {{ post.pretension_salarial }}</span>
+                    {% endif %}
+                    {% if post.disponibilidad_inmediata %}
+                        <span>⚡ Disponibilidad inmediata</span>
+                    {% endif %}
+                </div>
+            </div>
+            <span class="estado-badge estado-{{ post.estado }}">
+                {% if post.estado == 'pendiente' %}⏳ Pendiente
+                {% elif post.estado == 'en_revision' %}👀 En Revisión
+                {% elif post.estado == 'aceptada' %}✅ Aceptada
+                {% elif post.estado == 'rechazada' %}❌ Rechazada
+                {% endif %}
+            </span>
+        </div>
+        
+        {% if post.mensaje %}
+        <div class="mensaje-box">
+            <strong>📝 Mensaje del postulante:</strong>
+            <p style="margin: 0; line-height: 1.6; color: #555;">{{ post.mensaje }}</p>
+        </div>
+        {% endif %}
+        
+        <div class="postulante-actions">
+            {% if post.estado in 'pendiente,en_revision' %}
+                <button onclick="aceptarPostulante({{ post.id }}, '{{ post.trabajador.nombre }}')" class="btn btn-success">
+                    ✅ Aceptar Postulante
+                </button>
+                <button onclick="rechazarPostulante({{ post.id }}, '{{ post.trabajador.nombre }}')" class="btn btn-danger">
+                    ❌ Rechazar
+                </button>
+            {% endif %}
+            
+            <a href="{% url 'chats:ver_chat' post.trabajador.id %}" class="btn btn-primary">
+                💬 Contactar
+            </a>
+            
+            <a href="{% url 'users:perfil_publico' post.trabajador.id %}" class="btn btn-secondary" target="_blank">
+                👤 Ver Perfil
+            </a>
+        </div>
+    </div>
+    {% empty %}
+    <div class="empty-state">
+        <div class="empty-icon">👥</div>
+        <h2 style="color: #999; margin-bottom: 15px;">No hay postulantes aún</h2>
+        <p style="color: #666; margin-bottom: 30px;">
+            {% if estado_filtro %}
+                No hay postulaciones con el estado "{{ estado_filtro }}"
+            {% else %}
+                Esta oferta aún no ha recibido postulaciones. Los trabajadores interesados aparecerán aquí.
+            {% endif %}
+        </p>
+        {% if estado_filtro %}
+            <a href="{% url 'jobs:ver_postulantes' tipo oferta.id %}" class="btn btn-primary">Ver Todas</a>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function aceptarPostulante(postulacionId, nombreTrabajador) {
+    if (!confirm(`¿Estás seguro de aceptar a ${nombreTrabajador}?`)) {
+        return;
+    }
+    
+    const formData = new FormData();
+    formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+    
+    fetch(`/jobs/aceptar-postulante/${postulacionId}/`, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            mostrarMensaje('success', data.message);
+            
+            // Actualizar el card
+            const card = document.getElementById(`postulacion-${postulacionId}`);
+            card.className = 'postulante-card aceptada';
+            
+            const badge = card.querySelector('.estado-badge');
+            badge.className = 'estado-badge estado-aceptada';
+            badge.textContent = '✅ Aceptada';
+            
+            // Ocultar botones de acción
+            const actions = card.querySelector('.postulante-actions');
+            const buttons = actions.querySelectorAll('button');
+            buttons.forEach(btn => btn.remove());
+            
+            setTimeout(() => location.reload(), 1500);
+        } else {
+            mostrarMensaje('error', data.message || 'Error al aceptar postulante');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        mostrarMensaje('error', 'Error al procesar la solicitud');
+    });
+}
+
+function rechazarPostulante(postulacionId, nombreTrabajador) {
+    if (!confirm(`¿Estás seguro de rechazar a ${nombreTrabajador}?`)) {
+        return;
+    }
+    
+    const formData = new FormData();
+    formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+    
+    fetch(`/jobs/rechazar-postulante/${postulacionId}/`, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            mostrarMensaje('success', data.message);
+            
+            // Actualizar el card
+            const card = document.getElementById(`postulacion-${postulacionId}`);
+            card.className = 'postulante-card rechazada';
+            
+            const badge = card.querySelector('.estado-badge');
+            badge.className = 'estado-badge estado-rechazada';
+            badge.textContent = '❌ Rechazada';
+            
+            // Ocultar botones de acción
+            const actions = card.querySelector('.postulante-actions');
+            const buttons = actions.querySelectorAll('button');
+            buttons.forEach(btn => btn.remove());
+            
+            setTimeout(() => location.reload(), 1500);
+        } else {
+            mostrarMensaje('error', data.message || 'Error al rechazar postulante');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        mostrarMensaje('error', 'Error al procesar la solicitud');
+    });
+}
+
+function mostrarMensaje(tipo, mensaje) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${tipo === 'success' ? 'success' : 'error'}`;
+    alertDiv.textContent = mensaje;
+    alertDiv.style.position = 'fixed';
+    alertDiv.style.top = '20px';
+    alertDiv.style.right = '20px';
+    alertDiv.style.zIndex = '9999';
+    alertDiv.style.minWidth = '300px';
+    alertDiv.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+    
+    document.body.appendChild(alertDiv);
+    
+    setTimeout(() => {
+        alertDiv.style.transition = 'opacity 0.3s';
+        alertDiv.style.opacity = '0';
+        setTimeout(() => alertDiv.remove(), 300);
+    }, 3000);
+}
+</script>
+{% endblock %}
