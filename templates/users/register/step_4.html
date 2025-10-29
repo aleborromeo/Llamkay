@@ -1,87 +1,225 @@
 {% extends "users/base.html" %}
 {% load static %}
 
-{% block title %}Registro - Paso 4 - Llamkay.pe{% endblock %}
+{% block title %}Crear Cuenta - Paso 4/4 - Llamkay.pe{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/users/register/step_4.css' %}">
+<link rel="stylesheet" href="{% static 'css/users/register/register-base.css' %}">
 {% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="logo">
-        <h2>Llamkay</h2>
-    </div>
-    
-    <h1>Verificación de antecedentes</h1>
-    <p class="subtitle">Paso 4 de 4: Documentación</p>
-
-    <div class="progress-bar">
-        <div class="progress active"></div>
-        <div class="progress active"></div>
-        <div class="progress active"></div>
-        <div class="progress active"></div>
-    </div>
-
-    {% if error %}
-    <div class="alert-error">{{ error }}</div>
-    {% endif %}
-
-    <form method="post" enctype="multipart/form-data" id="registerFourForm" novalidate>
-        {% csrf_token %}
+<div class="register-wrapper">
+    <!-- SIDEBAR INFORMATIVO -->
+    <aside class="register-sidebar">
+        <div class="register-logo">
+            <h1>🌱 Llamkay</h1>
+        </div>
         
-        <fieldset>
-            <legend>Constancia de Antecedentes Penales</legend>
-            <p class="form-subtitle">
-                Sube tu constancia de antecedentes penales. 
-                Este documento es obligatorio para completar el registro.
-            </p>
+        <h2>¡Último paso!</h2>
+        <p>Verifica tu identidad para garantizar la seguridad de todos.</p>
+        
+        <ul class="benefits-list">
+            <li>
+                <div class="benefit-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    </svg>
+                </div>
+                <div class="benefit-text">
+                    <strong>Comunidad segura</strong>
+                    <span>Todos los usuarios están verificados</span>
+                </div>
+            </li>
+            <li>
+                <div class="benefit-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                </div>
+                <div class="benefit-text">
+                    <strong>Mayor confianza</strong>
+                    <span>Aumenta tus posibilidades de contratación</span>
+                </div>
+            </li>
+            <li>
+                <div class="benefit-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                    </svg>
+                </div>
+                <div class="benefit-text">
+                    <strong>Proceso rápido</strong>
+                    <span>Revisión en 24-48 horas</span>
+                </div>
+            </li>
+            <li>
+                <div class="benefit-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                </div>
+                <div class="benefit-text">
+                    <strong>Información protegida</strong>
+                    <span>Tus documentos están seguros</span>
+                </div>
+            </li>
+        </ul>
+        
+        <div class="alert alert-info" style="margin-top: 2rem;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="16" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+            <div>
+                <strong>¿Dónde obtengo mi certificado?</strong>
+                <p style="margin-top: 0.5rem; font-size: 0.9rem;">Puedes obtenerlo gratuitamente en <a href="https://casillajudicial.pj.gob.pe" target="_blank" style="text-decoration: underline;">casillajudicial.pj.gob.pe</a></p>
+            </div>
+        </div>
+    </aside>
 
-            <div class="form-group">
-                <label for="antecedentes">
-                    Constancia de Antecedentes Penales *
-                </label>
-                
-                <div class="file-upload-container">
-                    <input 
-                        type="file" 
-                        name="antecedentes" 
-                        id="antecedentes"
-                        accept=".pdf,.jpg,.jpeg,.png"
-                        required
-                        class="file-input">
-                    
-                    <div class="file-upload-display" id="fileUploadDisplay">
-                        <div class="upload-icon">📄</div>
-                        <div class="upload-text">
-                            <span class="upload-title">Haz clic para subir archivo</span>
-                            <span class="upload-subtitle">o arrastra y suelta aquí</span>
-                        </div>
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="register-content">
+        <div class="register-header">
+            <h2>Verificación de antecedentes</h2>
+            <p class="register-subtitle">Sube tu certificado de antecedentes penales</p>
+        </div>
+
+        <!-- BARRA DE PROGRESO -->
+        <div class="progress-container">
+            <div class="progress-steps">
+                <div class="progress-step completed">
+                    <div class="step-circle">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
                     </div>
-                    
-                    <div class="selected-files" id="selectedFiles"></div>
+                    <span class="step-label">Información</span>
+                </div>
+                <div class="progress-step completed">
+                    <div class="step-circle">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                    </div>
+                    <span class="step-label">Ubicación</span>
+                </div>
+                <div class="progress-step completed">
+                    <div class="step-circle">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                    </div>
+                    <span class="step-label">Perfil</span>
+                </div>
+                <div class="progress-step active">
+                    <div class="step-circle">4</div>
+                    <span class="step-label">Verificación</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ALERTAS -->
+        {% if error %}
+        <div class="alert alert-error">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            <div>{{ error }}</div>
+        </div>
+        {% endif %}
+
+        <!-- FORMULARIO -->
+        <form method="post" enctype="multipart/form-data" class="register-form" id="registerFourForm" novalidate>
+            {% csrf_token %}
+            
+            <fieldset>
+                <legend>Constancia de Antecedentes Penales</legend>
+                
+                <div class="alert alert-info">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="16" x2="12" y2="12"></line>
+                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                    </svg>
+                    <div>
+                        <strong>Documento requerido</strong>
+                        <p style="margin-top: 0.5rem;">Este certificado garantiza la seguridad de toda la comunidad. Todos los usuarios deben presentarlo.</p>
+                    </div>
                 </div>
                 
-                <div class="file-info">
-                    Formatos permitidos: PDF, JPG, PNG. Tamaño máximo: 5MB
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="antecedentes">Archivo del certificado *</label>
+                        <input 
+                            type="file" 
+                            name="antecedentes" 
+                            id="antecedentes"
+                            accept=".pdf,.jpg,.jpeg,.png"
+                            required
+                            style="display: none;">
+                        
+                        <div class="file-upload-area" id="uploadArea">
+                            <div class="file-upload-icon">📄</div>
+                            <div class="file-upload-text">
+                                <h4>Arrastra tu archivo aquí</h4>
+                                <p>o haz clic para seleccionar</p>
+                            </div>
+                        </div>
+                        
+                        <div id="fileDisplay"></div>
+                        
+                        <span class="form-help">Formatos aceptados: PDF, JPG, PNG • Tamaño máximo: 5MB</span>
+                        
+                        {% if form.antecedentes.errors %}
+                        <span class="form-error">{{ form.antecedentes.errors.0 }}</span>
+                        {% endif %}
+                    </div>
                 </div>
-                
-                {% if form.antecedentes.errors %}
-                <div class="error-message">{{ form.antecedentes.errors.0 }}</div>
-                {% endif %}
+            </fieldset>
+
+            <!-- CONFIRMACIÓN FINAL -->
+            <div class="alert alert-success" style="margin-top: 2rem;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+                <div>
+                    <strong>¡Casi listo!</strong>
+                    <p style="margin-top: 0.5rem;">Una vez que envíes el formulario, revisaremos tu información y te notificaremos en 24-48 horas.</p>
+                </div>
             </div>
 
-            <div class="button-group">
-                <a href="{% url 'users:register_three' %}" class="btn-outline">← Anterior</a>
-                <button type="submit" class="btn-primary">Finalizar Registro</button>
+            <!-- BOTONES -->
+            <div class="form-actions">
+                <a href="{% url 'users:register_three' %}" class="btn btn-secondary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="19" y1="12" x2="5" y2="12"></line>
+                        <polyline points="12 19 5 12 12 5"></polyline>
+                    </svg>
+                    Anterior
+                </a>
+                <button type="submit" class="btn btn-primary" id="submitBtn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                    Finalizar Registro
+                </button>
             </div>
-        </fieldset>
-    </form>
+        </form>
 
-    <p class="login-link">
-        ¿Ya tienes una cuenta? 
-        <a href="{% url 'users:login' %}">Inicia sesión aquí</a>
-    </p>
+        <!-- FOOTER -->
+        <div class="register-footer">
+            <p>¿Ya tienes una cuenta? <a href="{% url 'users:login' %}">Inicia sesión aquí</a></p>
+        </div>
+    </main>
 </div>
 {% endblock %}
 

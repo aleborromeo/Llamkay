@@ -1,0 +1,694 @@
+/* =============================================
+   REGISTRO - DISEÑO UNIFICADO LLAMKAY.PE
+   ============================================= */
+
+:root {
+    --color-primary: #07734B;
+    --color-primary-dark: #034D31;
+    --color-primary-light: #15AC75;
+    --color-secondary: #9EBC8A;
+    --color-secondary-light: #B5C99A;
+    --color-accent: #EEEDEB;
+    --color-text: #1a1a1a;
+    --color-text-light: #666666;
+    --color-background: #ffffff;
+    --color-background-alt: #f8f9fa;
+    --color-danger: #dc2626;
+    --color-success: #10b981;
+    --color-warning: #f59e0b;
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
+    --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.16);
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    color: var(--color-text);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+}
+
+/* ==================== CONTENEDOR PRINCIPAL ==================== */
+.register-wrapper {
+    width: 100%;
+    max-width: 1200px;
+    display: grid;
+    grid-template-columns: 400px 1fr;
+    gap: 3rem;
+    align-items: start;
+}
+
+/* ==================== SIDEBAR INFORMATIVO ==================== */
+.register-sidebar {
+    position: sticky;
+    top: 2rem;
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: 2.5rem;
+    box-shadow: var(--shadow-md);
+}
+
+.register-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+}
+
+.register-logo h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--color-primary);
+}
+
+.register-sidebar h2 {
+    font-size: 1.5rem;
+    color: var(--color-text);
+    margin-bottom: 1rem;
+}
+
+.register-sidebar p {
+    color: var(--color-text-light);
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+
+.benefits-list {
+    list-style: none;
+    margin-bottom: 2rem;
+}
+
+.benefits-list li {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    background: var(--color-background-alt);
+    border-radius: var(--radius-md);
+    transition: var(--transition);
+}
+
+.benefits-list li:hover {
+    background: #e8f5f0;
+    transform: translateX(5px);
+}
+
+.benefit-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    flex-shrink: 0;
+}
+
+.benefit-text {
+    flex: 1;
+}
+
+.benefit-text strong {
+    display: block;
+    color: var(--color-text);
+    margin-bottom: 0.25rem;
+}
+
+.benefit-text span {
+    font-size: 0.9rem;
+    color: var(--color-text-light);
+}
+
+.help-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: 600;
+    margin-top: 1.5rem;
+    transition: var(--transition);
+}
+
+.help-link:hover {
+    color: var(--color-primary-dark);
+    gap: 0.75rem;
+}
+
+/* ==================== FORMULARIO PRINCIPAL ==================== */
+.register-content {
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: 3rem;
+    box-shadow: var(--shadow-md);
+}
+
+.register-header {
+    margin-bottom: 2rem;
+}
+
+.register-header h2 {
+    font-size: 2rem;
+    color: var(--color-text);
+    margin-bottom: 0.5rem;
+}
+
+.register-subtitle {
+    color: var(--color-text-light);
+    font-size: 1rem;
+}
+
+/* Barra de progreso */
+.progress-container {
+    margin-bottom: 3rem;
+}
+
+.progress-steps {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    position: relative;
+}
+
+.progress-steps::before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--color-background-alt);
+    z-index: 1;
+}
+
+.progress-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    position: relative;
+    z-index: 2;
+    flex: 1;
+}
+
+.step-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: white;
+    border: 2px solid var(--color-background-alt);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    color: var(--color-text-light);
+    transition: var(--transition);
+}
+
+.progress-step.active .step-circle {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: white;
+    transform: scale(1.1);
+}
+
+.progress-step.completed .step-circle {
+    background: var(--color-success);
+    border-color: var(--color-success);
+    color: white;
+}
+
+.step-label {
+    font-size: 0.85rem;
+    color: var(--color-text-light);
+    text-align: center;
+}
+
+.progress-step.active .step-label {
+    color: var(--color-primary);
+    font-weight: 600;
+}
+
+/* ==================== FORMULARIOS ==================== */
+.register-form fieldset {
+    border: none;
+    padding: 0;
+    margin-bottom: 2rem;
+}
+
+.register-form legend {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-text);
+    margin-bottom: 1rem;
+}
+
+.form-grid {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.form-grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-weight: 600;
+    color: var(--color-text);
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    padding: 0.875rem 1rem;
+    border: 2px solid #e2e8f0;
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    transition: var(--transition);
+    background: white;
+    font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(7, 115, 75, 0.1);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.form-group input[readonly] {
+    background: var(--color-background-alt);
+    cursor: not-allowed;
+    color: var(--color-text-light);
+}
+
+.form-help {
+    font-size: 0.85rem;
+    color: var(--color-text-light);
+    margin-top: 0.25rem;
+}
+
+.form-error {
+    color: var(--color-danger);
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+/* Input con botón */
+.input-with-button {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.input-with-button input {
+    flex: 1;
+}
+
+.btn-search {
+    padding: 0.875rem 1.5rem;
+    background: var(--color-primary);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    white-space: nowrap;
+}
+
+.btn-search:hover {
+    background: var(--color-primary-dark);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-search:active {
+    transform: translateY(0);
+}
+
+/* Password toggle */
+.password-wrapper {
+    position: relative;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    color: var(--color-text-light);
+    transition: var(--transition);
+}
+
+.password-toggle:hover {
+    color: var(--color-primary);
+}
+
+/* Checkbox personalizado */
+.custom-checkbox {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    cursor: pointer;
+}
+
+.custom-checkbox input[type="checkbox"] {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #d1d5db;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: var(--transition);
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.custom-checkbox input[type="checkbox"]:checked {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");
+}
+
+.custom-checkbox label {
+    font-weight: normal;
+    cursor: pointer;
+}
+
+.custom-checkbox a {
+    color: var(--color-primary);
+    text-decoration: none;
+}
+
+.custom-checkbox a:hover {
+    text-decoration: underline;
+}
+
+/* File upload */
+.file-upload-area {
+    border: 2px dashed #d1d5db;
+    border-radius: var(--radius-md);
+    padding: 2rem;
+    text-align: center;
+    background: var(--color-background-alt);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.file-upload-area:hover {
+    border-color: var(--color-primary);
+    background: #e8f5f0;
+}
+
+.file-upload-area.drag-over {
+    border-color: var(--color-primary);
+    background: #e8f5f0;
+    transform: scale(1.02);
+}
+
+.file-upload-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.file-upload-text h4 {
+    color: var(--color-text);
+    margin-bottom: 0.5rem;
+}
+
+.file-upload-text p {
+    color: var(--color-text-light);
+    font-size: 0.9rem;
+}
+
+.selected-file {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    background: var(--color-background-alt);
+    border-radius: var(--radius-md);
+    margin-top: 1rem;
+}
+
+.file-info-display {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.file-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--color-primary);
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.file-details h5 {
+    color: var(--color-text);
+    margin-bottom: 0.25rem;
+}
+
+.file-size {
+    font-size: 0.85rem;
+    color: var(--color-text-light);
+}
+
+/* ==================== BOTONES ==================== */
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-background-alt);
+}
+
+.btn {
+    padding: 0.875rem 2rem;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: var(--transition);
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    text-decoration: none;
+}
+
+.btn-primary {
+    background: var(--color-primary);
+    color: white;
+    flex: 1;
+}
+
+.btn-primary:hover {
+    background: var(--color-primary-dark);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-primary:disabled {
+    background: #d1d5db;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-secondary {
+    background: white;
+    color: var(--color-text);
+    border: 2px solid var(--color-background-alt);
+}
+
+.btn-secondary:hover {
+    background: var(--color-background-alt);
+}
+
+/* ==================== ALERTAS ==================== */
+.alert {
+    padding: 1rem 1.25rem;
+    border-radius: var(--radius-md);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: start;
+    gap: 0.75rem;
+}
+
+.alert-error {
+    background: #fef2f2;
+    border: 1px solid #fee2e2;
+    color: #991b1b;
+}
+
+.alert-success {
+    background: #f0fdf4;
+    border: 1px solid #dcfce7;
+    color: #166534;
+}
+
+.alert-info {
+    background: #eff6ff;
+    border: 1px solid #dbeafe;
+    color: #1e40af;
+}
+
+/* ==================== FOOTER LINKS ==================== */
+.register-footer {
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-background-alt);
+}
+
+.register-footer p {
+    color: var(--color-text-light);
+    font-size: 0.95rem;
+}
+
+.register-footer a {
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.register-footer a:hover {
+    text-decoration: underline;
+}
+
+/* ==================== LOADING STATE ==================== */
+.btn.loading {
+    position: relative;
+    color: transparent;
+}
+
+.btn.loading::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 1024px) {
+    .register-wrapper {
+        grid-template-columns: 1fr;
+        max-width: 700px;
+    }
+    
+    .register-sidebar {
+        position: static;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        padding: 1rem 0.5rem;
+    }
+    
+    .register-content {
+        padding: 2rem 1.5rem;
+    }
+    
+    .register-sidebar {
+        padding: 2rem 1.5rem;
+    }
+    
+    .form-grid-2 {
+        grid-template-columns: 1fr;
+    }
+    
+    .progress-steps {
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+    
+    .step-circle {
+        width: 35px;
+        height: 35px;
+        font-size: 0.9rem;
+    }
+    
+    .step-label {
+        font-size: 0.75rem;
+    }
+    
+    .form-actions {
+        flex-direction: column-reverse;
+    }
+    
+    .btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .register-header h2 {
+        font-size: 1.5rem;
+    }
+    
+    .register-content {
+        padding: 1.5rem 1rem;
+    }
+    
+    .benefits-list li {
+        padding: 0.75rem;
+    }
+    
+    .benefit-icon {
+        width: 35px;
+        height: 35px;
+    }
+}

@@ -1,88 +1,229 @@
 {% extends "users/base.html" %}
 {% load static %}
 
-{% block title %}Registro - Paso 2 - Llamkay.pe{% endblock %}
+{% block title %}Crear Cuenta - Paso 2/4 - Llamkay.pe{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/users/register/step_2.css' %}">
+<link rel="stylesheet" href="{% static 'css/users/register/register-base.css' %}">
 {% endblock %}
 
 {% block content %}
-<main class="container">
-    <div class="form-box">
-        <div class="logo">
-            <h1>Llamkay</h1>
+<div class="register-wrapper">
+    <!-- SIDEBAR INFORMATIVO -->
+    <aside class="register-sidebar">
+        <div class="register-logo">
+            <h1>🌱 Llamkay</h1>
         </div>
         
-        <h2>Crear cuenta de trabajador</h2>
-        <p class="step">Paso 2 de 4: Ubicación</p>
+        <h2>¿Por qué necesitamos tu ubicación?</h2>
+        <p>Tu ubicación nos ayuda a conectarte con oportunidades cerca de ti.</p>
         
-        <div class="progress-bar">
-            <div class="step-bar active"></div>
-            <div class="step-bar active"></div>
-            <div class="step-bar"></div>
-            <div class="step-bar"></div>
+        <ul class="benefits-list">
+            <li>
+                <div class="benefit-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                        <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                </div>
+                <div class="benefit-text">
+                    <strong>Trabajos cercanos</strong>
+                    <span>Encuentra oportunidades en tu zona</span>
+                </div>
+            </li>
+            <li>
+                <div class="benefit-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                    </svg>
+                </div>
+                <div class="benefit-text">
+                    <strong>Trabaja desde casa</strong>
+                    <span>Reduce tiempos de traslado</span>
+                </div>
+            </li>
+            <li>
+                <div class="benefit-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                </div>
+                <div class="benefit-text">
+                    <strong>Respuesta rápida</strong>
+                    <span>Conecta con usuarios locales</span>
+                </div>
+            </li>
+            <li>
+                <div class="benefit-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    </svg>
+                </div>
+                <div class="benefit-text">
+                    <strong>Privacidad garantizada</strong>
+                    <span>Tu dirección exacta está protegida</span>
+                </div>
+            </li>
+        </ul>
+        
+        <a href="#" class="help-link">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+            ¿Necesitas ayuda?
+        </a>
+    </aside>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="register-content">
+        <div class="register-header">
+            <h2>Tu ubicación</h2>
+            <p class="register-subtitle">Indícanos dónde te encuentras</p>
         </div>
 
+        <!-- BARRA DE PROGRESO -->
+        <div class="progress-container">
+            <div class="progress-steps">
+                <div class="progress-step completed">
+                    <div class="step-circle">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                    </div>
+                    <span class="step-label">Información</span>
+                </div>
+                <div class="progress-step active">
+                    <div class="step-circle">2</div>
+                    <span class="step-label">Ubicación</span>
+                </div>
+                <div class="progress-step">
+                    <div class="step-circle">3</div>
+                    <span class="step-label">Perfil</span>
+                </div>
+                <div class="progress-step">
+                    <div class="step-circle">4</div>
+                    <span class="step-label">Verificación</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ALERTAS -->
         {% if form.non_field_errors %}
-        <div class="alert-error">
-            {% for error in form.non_field_errors %}
-            <p>{{ error }}</p>
-            {% endfor %}
+        <div class="alert alert-error">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            <div>
+                {% for error in form.non_field_errors %}
+                <p>{{ error }}</p>
+                {% endfor %}
+            </div>
         </div>
         {% endif %}
 
-        <form id="location-form" method="post" novalidate>
+        <!-- FORMULARIO -->
+        <form method="post" class="register-form" id="location-form" novalidate>
             {% csrf_token %}
+            
+            <fieldset>
+                <legend>Dirección</legend>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="id_direccion">Dirección completa *</label>
+                        <input 
+                            type="text" 
+                            name="direccion" 
+                            id="id_direccion"
+                            value="{{ form.direccion.value|default_if_none:'' }}"
+                            placeholder="Ej: Av. Larco 123, Dpto. 501"
+                            required>
+                        {% if form.direccion.errors %}
+                        <span class="form-error">{{ form.direccion.errors.0 }}</span>
+                        {% endif %}
+                        <span class="form-help">Tu dirección exacta está protegida y no se muestra públicamente</span>
+                    </div>
+                </div>
+            </fieldset>
 
-            <label for="{{ form.direccion.id_for_label }}">Dirección *</label>
-            {{ form.direccion }}
-            {% if form.direccion.errors %}
-            <div class="error-message">{{ form.direccion.errors.0 }}</div>
-            {% endif %}
+            <fieldset>
+                <legend>Ubicación geográfica</legend>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="id_departamento">Departamento *</label>
+                        <select name="departamento" id="id_departamento" required>
+                            <option value="">Selecciona tu departamento</option>
+                            {% for departamento in form.departamento.field.queryset %}
+                            <option value="{{ departamento.id_departamento }}" {% if form.departamento.value == departamento.id_departamento|stringformat:"s" %}selected{% endif %}>
+                                {{ departamento.nombre }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        {% if form.departamento.errors %}
+                        <span class="form-error">{{ form.departamento.errors.0 }}</span>
+                        {% endif %}
+                    </div>
 
-            <label for="{{ form.departamento.id_for_label }}">Departamento *</label>
-            {{ form.departamento }}
-            {% if form.departamento.errors %}
-            <div class="error-message">{{ form.departamento.errors.0 }}</div>
-            {% endif %}
+                    <div class="form-group">
+                        <label for="id_provincia">Provincia *</label>
+                        <select name="provincia" id="id_provincia" required disabled>
+                            <option value="">Primero selecciona un departamento</option>
+                        </select>
+                        {% if form.provincia.errors %}
+                        <span class="form-error">{{ form.provincia.errors.0 }}</span>
+                        {% endif %}
+                    </div>
 
-            <label for="id_provincia">Provincia *</label>
-            <select name="provincia" id="id_provincia" required>
-                <option value="">Selecciona tu provincia</option>
-            </select>
-            {% if form.provincia.errors %}
-            <div class="error-message">{{ form.provincia.errors.0 }}</div>
-            {% endif %}
+                    <div class="form-group">
+                        <label for="id_distrito">Distrito *</label>
+                        <select name="distrito" id="id_distrito" required disabled>
+                            <option value="">Primero selecciona una provincia</option>
+                        </select>
+                        {% if form.distrito.errors %}
+                        <span class="form-error">{{ form.distrito.errors.0 }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </fieldset>
 
-            <label for="id_distrito">Distrito *</label>
-            <select name="distrito" id="id_distrito" required>
-                <option value="">Selecciona tu distrito</option>
-            </select>
-            {% if form.distrito.errors %}
-            <div class="error-message">{{ form.distrito.errors.0 }}</div>
-            {% endif %}
-
-            <div class="button-group">
-                <a href="{% url 'users:register' %}" class="btn-outline">Anterior</a>
-                <button type="submit" class="btn-primary">Siguiente</button>
+            <!-- BOTONES -->
+            <div class="form-actions">
+                <a href="{% url 'users:register' %}" class="btn btn-secondary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="19" y1="12" x2="5" y2="12"></line>
+                        <polyline points="12 19 5 12 12 5"></polyline>
+                    </svg>
+                    Anterior
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    Siguiente
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                </button>
             </div>
         </form>
 
-        <p class="login-link">
-            ¿Ya tienes una cuenta? 
-            <a href="{% url 'users:login' %}">Inicia sesión aquí</a>
-        </p>
-        <a href="#" class="back-link">← Volver al inicio</a>
-    </div>
-</main>
+        <!-- FOOTER -->
+        <div class="register-footer">
+            <p>¿Ya tienes una cuenta? <a href="{% url 'users:login' %}">Inicia sesión aquí</a></p>
+        </div>
+    </main>
+</div>
 {% endblock %}
 
 {% block extra_js %}
 <script>
     const urlProvincias = "{% url 'users:cargar_provincias' %}";
     const urlDistritos = "{% url 'users:cargar_distritos' %}";
-    const urlValidarCorreo = "{% url 'users:validar_correo' %}";
 </script>
 <script src="{% static 'js/users/register/step_2.js' %}"></script>
 {% endblock %}
