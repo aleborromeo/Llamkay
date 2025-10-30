@@ -1,205 +1,161 @@
-{% extends "jobs/base_jobs.html" %}
+{% extends "base.html" %}
+{% load static %}
 
 {% block title %}Buscar Trabajos - Llamkay{% endblock %}
 
 {% block extra_css %}
-<style>
-    .filters {
-        background: white;
-        padding: 20px;
-        border-radius: 12px;
-        margin-bottom: 20px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    
-    .filter-form {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 15px;
-        align-items: end;
-    }
-    
-    .job-card {
-        background: white;
-        border-radius: 12px;
-        padding: 20px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        transition: transform 0.3s, box-shadow 0.3s;
-        position: relative;
-    }
-    
-    .job-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 4px 16px rgba(0,0,0,0.15);
-    }
-    
-    .job-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: start;
-        margin-bottom: 15px;
-    }
-    
-    .job-title {
-        font-size: 20px;
-        font-weight: 700;
-        color: #07734B;
-        margin-bottom: 5px;
-    }
-    
-    .job-employer {
-        color: #666;
-        font-size: 14px;
-        margin-bottom: 10px;
-    }
-    
-    .job-description {
-        color: #555;
-        margin-bottom: 15px;
-        line-height: 1.5;
-    }
-    
-    .job-meta {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 15px;
-        margin-bottom: 15px;
-        font-size: 14px;
-        color: #666;
-    }
-    
-    .job-meta span {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-    }
-    
-    .job-actions {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-    }
-    
-    .badge {
-        display: inline-block;
-        padding: 4px 12px;
-        border-radius: 12px;
-        font-size: 12px;
-        font-weight: 600;
-    }
-    
-    .badge-urgent {
-        background: #ff4444;
-        color: white;
-    }
-    
-    .badge-saved {
-        background: #ffc107;
-        color: #333;
-    }
-    
-    .pagination {
-        display: flex;
-        justify-content: center;
-        gap: 10px;
-        margin-top: 30px;
-    }
-    
-    .pagination a, .pagination span {
-        padding: 8px 16px;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        text-decoration: none;
-        color: #333;
-    }
-    
-    .pagination .current {
-        background: #07734B;
-        color: white;
-        border-color: #07734B;
-    }
-</style>
+<link rel="stylesheet" href="{% static 'css/jobs/jobs-base.css' %}">
 {% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1 style="margin: 20px 0;">Buscar Trabajos</h1>
-    <p style="color: #666; margin-bottom: 20px;">{{ total_resultados }} trabajos encontrados</p>
-    
-    <!-- Filtros -->
-    <div class="filters">
-        <form method="GET" action="{% url 'jobs:buscar_trabajos' %}" class="filter-form">
-            <div class="form-group">
-                <label>Buscar</label>
-                <input type="text" name="buscar" class="form-control" placeholder="Título, descripción..." value="{{ filtros.buscar }}">
+<!-- Header -->
+<header class="header">
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="{% url 'llamkay:dashboard' %}" class="logo">
+                <span>Llamkay</span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="{% url 'jobs:buscar_trabajos' %}" class="nav-link">Buscar Trabajos</a></li>
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'jobs:mis_postulaciones' %}" class="nav-link">Mis Postulaciones</a></li>
+                    <li><a href="{% url 'jobs:trabajos_guardados' %}" class="nav-link">Guardados</a></li>
+                    <li><a href="{% url 'users:logout' %}" class="nav-link">Salir</a></li>
+                {% else %}
+                    <li><a href="{% url 'users:login' %}" class="nav-link">Iniciar Sesión</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<!-- Messages -->
+{% if messages %}
+    <div class="container" style="margin-top: 1rem;">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    {% if message.tags == 'success' %}
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    {% elif message.tags == 'error' %}
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="15" y1="9" x2="9" y2="15"></line>
+                        <line x1="9" y1="9" x2="15" y2="15"></line>
+                    {% else %}
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="16" x2="12" y2="12"></line>
+                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                    {% endif %}
+                </svg>
+                {{ message }}
             </div>
-            
-            <div class="form-group">
-                <label>Departamento</label>
-                <select name="departamento_id" id="departamento" class="form-control">
-                    <option value="">Todos</option>
-                    {% for dept in departamentos %}
-                        <option value="{{ dept.id_departamento }}" {% if filtros.departamento_id|stringformat:"s" == dept.id_departamento|stringformat:"s" %}selected{% endif %}>
-                            {{ dept.nombre }}
-                        </option>
-                    {% endfor %}
-                </select>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<!-- Page Header -->
+<section class="page-header">
+    <div class="container">
+        <div class="page-header-content">
+            <div>
+                <h1 class="page-title">Buscar Trabajos</h1>
+                <p class="page-subtitle">{{ total_resultados }} trabajos encontrados</p>
             </div>
-            
-            <div class="form-group">
-                <label>Provincia</label>
-                <select name="provincia_id" id="provincia" class="form-control">
-                    <option value="">Todas</option>
-                    {% for prov in provincias %}
-                        <option value="{{ prov.id_provincia }}" {% if filtros.provincia_id|stringformat:"s" == prov.id_provincia|stringformat:"s" %}selected{% endif %}>
-                            {{ prov.nombre }}
-                        </option>
-                    {% endfor %}
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label>Distrito</label>
-                <select name="distrito_id" id="distrito" class="form-control">
-                    <option value="">Todos</option>
-                    {% for dist in distritos %}
-                        <option value="{{ dist.id_distrito }}" {% if filtros.distrito_id|stringformat:"s" == dist.id_distrito|stringformat:"s" %}selected{% endif %}>
-                            {{ dist.nombre }}
-                        </option>
-                    {% endfor %}
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label>Tipo</label>
-                <select name="tipo_usuario" class="form-control">
-                    <option value="">Todos</option>
-                    <option value="empleador" {% if filtros.tipo_usuario == 'empleador' %}selected{% endif %}>Empleadores</option>
-                    <option value="empresa" {% if filtros.tipo_usuario == 'empresa' %}selected{% endif %}>Empresas</option>
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary" style="width: 100%;">Buscar</button>
+        </div>
+    </div>
+</section>
+
+<!-- Main Content -->
+<main class="container">
+    <!-- Filters -->
+    <div class="filters-section">
+        <form method="GET" action="{% url 'jobs:buscar_trabajos' %}">
+            <div class="filters-grid">
+                <div class="form-group">
+                    <label class="form-label">Buscar</label>
+                    <input type="text" name="buscar" class="form-control" placeholder="Título, descripción..." value="{{ filtros.buscar }}">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Departamento</label>
+                    <select name="departamento_id" id="departamento" class="form-control">
+                        <option value="">Todos</option>
+                        {% for dept in departamentos %}
+                            <option value="{{ dept.id_departamento }}" {% if filtros.departamento_id|stringformat:"s" == dept.id_departamento|stringformat:"s" %}selected{% endif %}>
+                                {{ dept.nombre }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Provincia</label>
+                    <select name="provincia_id" id="provincia" class="form-control">
+                        <option value="">Todas</option>
+                        {% for prov in provincias %}
+                            <option value="{{ prov.id_provincia }}" {% if filtros.provincia_id|stringformat:"s" == prov.id_provincia|stringformat:"s" %}selected{% endif %}>
+                                {{ prov.nombre }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Distrito</label>
+                    <select name="distrito_id" id="distrito" class="form-control">
+                        <option value="">Todos</option>
+                        {% for dist in distritos %}
+                            <option value="{{ dist.id_distrito }}" {% if filtros.distrito_id|stringformat:"s" == dist.id_distrito|stringformat:"s" %}selected{% endif %}>
+                                {{ dist.nombre }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Tipo</label>
+                    <select name="tipo_usuario" class="form-control">
+                        <option value="">Todos</option>
+                        <option value="empleador" {% if filtros.tipo_usuario == 'empleador' %}selected{% endif %}>Empleadores</option>
+                        <option value="empresa" {% if filtros.tipo_usuario == 'empresa' %}selected{% endif %}>Empresas</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1.7rem;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                        </svg>
+                        Buscar
+                    </button>
+                </div>
             </div>
         </form>
     </div>
     
-    <!-- Lista de Trabajos -->
-    <div class="grid">
+    <!-- Jobs Grid -->
+    <div class="jobs-grid">
         {% for trabajo in trabajos %}
         <div class="job-card">
-            <div class="job-header">
+            <div class="job-card-header">
                 <div style="flex: 1;">
                     <h3 class="job-title">{{ trabajo.titulo }}</h3>
-                    <p class="job-employer">📍 {{ trabajo.empleador.nombre }}</p>
+                    <div class="job-employer">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        {{ trabajo.empleador.nombre }}
+                    </div>
                 </div>
-                <div>
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
                     {% if trabajo.urgente %}
                         <span class="badge badge-urgent">URGENTE</span>
                     {% endif %}
                     {% if trabajo.tipo|add:"_"|add:trabajo.id|stringformat:"s" in trabajos_guardados_ids %}
-                        <span class="badge badge-saved">⭐ Guardado</span>
+                        <span class="badge badge-saved">Guardado</span>
                     {% endif %}
                 </div>
             </div>
@@ -208,111 +164,139 @@
             
             <div class="job-meta">
                 {% if trabajo.pago %}
-                    <span>💰 S/ {{ trabajo.pago }} {{ trabajo.moneda }}</span>
+                    <div class="meta-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="1" x2="12" y2="23"></line>
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                        </svg>
+                        <strong>S/ {{ trabajo.pago }}</strong> {{ trabajo.moneda }}
+                    </div>
                 {% endif %}
-                <span>📋 {{ trabajo.modalidad_pago }}</span>
+                
+                <div class="meta-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                    {{ trabajo.modalidad_pago }}
+                </div>
+                
                 {% if trabajo.ubicacion.distrito %}
-                    <span>📍 {{ trabajo.ubicacion.distrito }}</span>
+                    <div class="meta-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                        {{ trabajo.ubicacion.distrito }}
+                    </div>
                 {% endif %}
-                {% if trabajo.categoria %}
-                    <span>🏷️ {{ trabajo.categoria.nombre }}</span>
-                {% endif %}
+                
+                <div class="meta-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    {{ trabajo.fecha_publicacion|timesince }}
+                </div>
             </div>
             
-            <div class="job-meta">
-                <span>👁️ {{ trabajo.vistas }} vistas</span>
-                <span>📄 {{ trabajo.postulaciones }} postulaciones</span>
-                <span>🕒 {{ trabajo.fecha_publicacion|timesince }} atrás</span>
-            </div>
-            
-            <div class="job-actions">
-                <a href="{% url 'jobs:detalle_trabajo' trabajo.tipo trabajo.id %}" class="btn btn-primary">Ver Detalles</a>
+            <div class="job-footer">
+                <a href="{% url 'jobs:detalle_trabajo' trabajo.tipo trabajo.id %}" class="btn btn-primary btn-small">
+                    Ver Detalles
+                </a>
                 
                 {% if user.is_authenticated %}
                     {% if not trabajo.ya_postulo %}
-                        <a href="{% url 'jobs:postular_trabajo' trabajo.tipo trabajo.id %}" class="btn btn-success">Postular</a>
+                        <a href="{% url 'jobs:postular_trabajo' trabajo.tipo trabajo.id %}" class="btn btn-success btn-small">
+                            Postular
+                        </a>
                     {% else %}
-                        <span class="badge" style="background: #28a745; color: white; padding: 10px 20px;">✓ Ya postulaste</span>
+                        <span class="badge badge-accepted">Ya postulaste</span>
                     {% endif %}
                     
                     <form method="POST" action="{% url 'jobs:guardar_trabajo' trabajo.tipo trabajo.id %}" style="display: inline;">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-secondary">⭐ Guardar</button>
+                        <button type="submit" class="btn btn-secondary btn-small">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                            </svg>
+                            Guardar
+                        </button>
                     </form>
                 {% else %}
-                    <a href="{% url 'users:login' %}" class="btn btn-success">Iniciar sesión para postular</a>
+                    <a href="{% url 'users:login' %}" class="btn btn-primary btn-small">Iniciar sesión para postular</a>
                 {% endif %}
             </div>
         </div>
         {% empty %}
-        <div class="card" style="grid-column: 1 / -1; text-align: center; padding: 60px 20px;">
-            <h2 style="color: #999;">No se encontraron trabajos</h2>
-            <p style="color: #666;">Intenta ajustar los filtros de búsqueda</p>
+        <div class="empty-state" style="grid-column: 1 / -1;">
+            <div class="empty-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <path d="m21 21-4.35-4.35"></path>
+                </svg>
+            </div>
+            <h2 class="empty-title">No se encontraron trabajos</h2>
+            <p class="empty-text">Intenta ajustar los filtros de búsqueda</p>
         </div>
         {% endfor %}
     </div>
     
-    <!-- Paginación -->
+    <!-- Pagination -->
     {% if trabajos.has_other_pages %}
     <div class="pagination">
         {% if trabajos.has_previous %}
-            <a href="?page={{ trabajos.previous_page_number }}{% for key, value in filtros.items %}{% if value %}&{{ key }}={{ value }}{% endif %}{% endfor %}">← Anterior</a>
+            <a href="?page={{ trabajos.previous_page_number }}{% for key, value in filtros.items %}{% if value %}&{{ key }}={{ value }}{% endif %}{% endfor %}" class="pagination-item">
+                Anterior
+            </a>
         {% endif %}
         
-        <span class="current">Página {{ trabajos.number }} de {{ trabajos.paginator.num_pages }}</span>
+        <span class="pagination-item active">Página {{ trabajos.number }} de {{ trabajos.paginator.num_pages }}</span>
         
         {% if trabajos.has_next %}
-            <a href="?page={{ trabajos.next_page_number }}{% for key, value in filtros.items %}{% if value %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Siguiente →</a>
+            <a href="?page={{ trabajos.next_page_number }}{% for key, value in filtros.items %}{% if value %}&{{ key }}={{ value }}{% endif %}{% endfor %}" class="pagination-item">
+                Siguiente
+            </a>
         {% endif %}
     </div>
     {% endif %}
-</div>
+</main>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-brand">
+            <div class="footer-logo">Llamkay</div>
+            <p>Conectando talentos con oportunidades laborales en todo el Perú</p>
+        </div>
+        
+        <div class="footer-links">
+            <div class="footer-column">
+                <h4>Plataforma</h4>
+                <ul>
+                    <li><a href="{% url 'jobs:buscar_trabajos' %}">Buscar trabajos</a></li>
+                    <li><a href="{% url 'users:perfil' %}">Mi Perfil</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h4>Soporte</h4>
+                <ul>
+                    <li><a href="#">Centro de ayuda</a></li>
+                    <li><a href="#">Términos de servicio</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer-bottom">
+        <p>&copy; 2025 Llamkay.pe - Todos los derechos reservados</p>
+    </div>
+</footer>
 {% endblock %}
 
 {% block extra_js %}
-<script>
-// Cargar provincias cuando cambia departamento
-document.getElementById('departamento').addEventListener('change', function() {
-    const departamentoId = this.value;
-    const provinciaSelect = document.getElementById('provincia');
-    const distritoSelect = document.getElementById('distrito');
-    
-    provinciaSelect.innerHTML = '<option value="">Cargando...</option>';
-    distritoSelect.innerHTML = '<option value="">Todos</option>';
-    
-    if (departamentoId) {
-        fetch(`/jobs/ajax/cargar-provincias/?id_departamento=${departamentoId}`)
-            .then(response => response.json())
-            .then(data => {
-                provinciaSelect.innerHTML = '<option value="">Todas</option>';
-                data.forEach(prov => {
-                    provinciaSelect.innerHTML += `<option value="${prov.id_provincia}">${prov.nombre}</option>`;
-                });
-            });
-    } else {
-        provinciaSelect.innerHTML = '<option value="">Todas</option>';
-    }
-});
-
-// Cargar distritos cuando cambia provincia
-document.getElementById('provincia').addEventListener('change', function() {
-    const provinciaId = this.value;
-    const distritoSelect = document.getElementById('distrito');
-    
-    distritoSelect.innerHTML = '<option value="">Cargando...</option>';
-    
-    if (provinciaId) {
-        fetch(`/jobs/ajax/cargar-distritos/?id_provincia=${provinciaId}`)
-            .then(response => response.json())
-            .then(data => {
-                distritoSelect.innerHTML = '<option value="">Todos</option>';
-                data.forEach(dist => {
-                    distritoSelect.innerHTML += `<option value="${dist.id_distrito}">${dist.nombre}</option>`;
-                });
-            });
-    } else {
-        distritoSelect.innerHTML = '<option value="">Todos</option>';
-    }
-});
-</script>
+<script src="{% static 'js/jobs/jobs-base.js' %}"></script>
 {% endblock %}

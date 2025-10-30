@@ -1,361 +1,261 @@
-{% extends "jobs/base_jobs.html" %}
+{% extends "base.html" %}
+{% load static %}
 
 {% block title %}Trabajos Guardados - Llamkay{% endblock %}
 
 {% block extra_css %}
-<style>
-    .stats-card {
-        background: linear-gradient(135deg, #07734B, #15AC75);
-        color: white;
-        padding: 30px;
-        border-radius: 12px;
-        text-align: center;
-        margin-bottom: 30px;
-        box-shadow: 0 4px 12px rgba(7, 115, 75, 0.2);
-    }
-    
-    .stats-number {
-        font-size: 48px;
-        font-weight: 700;
-        margin-bottom: 10px;
-    }
-    
-    .stats-label {
-        font-size: 18px;
-        opacity: 0.9;
-    }
-    
-    .guardado-card {
-        background: white;
-        border-radius: 12px;
-        padding: 25px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        margin-bottom: 20px;
-        transition: all 0.3s;
-        position: relative;
-    }
-    
-    .guardado-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 4px 16px rgba(0,0,0,0.15);
-    }
-    
-    .guardado-card.inactivo {
-        opacity: 0.6;
-        border-left: 4px solid #dc3545;
-    }
-    
-    .guardado-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: start;
-        margin-bottom: 15px;
-    }
-    
-    .guardado-title {
-        font-size: 22px;
-        font-weight: 700;
-        color: #07734B;
-        margin-bottom: 8px;
-    }
-    
-    .guardado-employer {
-        color: #666;
-        font-size: 15px;
-        display: flex;
-        align-items: center;
-        gap: 5px;
-    }
-    
-    .guardado-description {
-        color: #555;
-        line-height: 1.6;
-        margin-bottom: 15px;
-    }
-    
-    .guardado-meta {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 20px;
-        margin-bottom: 15px;
-        padding: 15px;
-        background: #f8f9fa;
-        border-radius: 8px;
-    }
-    
-    .meta-item {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-size: 14px;
-        color: #666;
-    }
-    
-    .meta-icon {
-        font-size: 18px;
-    }
-    
-    .guardado-dates {
-        display: flex;
-        gap: 20px;
-        font-size: 13px;
-        color: #999;
-        margin-bottom: 15px;
-    }
-    
-    .guardado-actions {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-    }
-    
-    .estado-badge {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        padding: 6px 14px;
-        border-radius: 20px;
-        font-size: 12px;
-        font-weight: 600;
-    }
-    
-    .estado-activa {
-        background: #d4edda;
-        color: #155724;
-    }
-    
-    .estado-cerrada {
-        background: #f8d7da;
-        color: #721c24;
-    }
-    
-    .estado-pausada {
-        background: #fff3cd;
-        color: #856404;
-    }
-    
-    .empty-state {
-        text-align: center;
-        padding: 80px 20px;
-        background: white;
-        border-radius: 12px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    
-    .empty-icon {
-        font-size: 80px;
-        margin-bottom: 20px;
-        opacity: 0.3;
-    }
-    
-    .empty-title {
-        font-size: 28px;
-        color: #999;
-        margin-bottom: 15px;
-    }
-    
-    .empty-text {
-        color: #666;
-        font-size: 16px;
-        margin-bottom: 30px;
-    }
-</style>
+<link rel="stylesheet" href="{% static 'css/jobs/jobs-base.css' %}">
+<link rel="stylesheet" href="{% static 'css/jobs/guardados.css' %}">
 {% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1 style="margin: 20px 0; display: flex; align-items: center; gap: 10px;">
-        ⭐ Trabajos Guardados
-    </h1>
-    
-    <!-- Estadísticas -->
-    <div class="stats-card">
-        <div class="stats-number">{{ total_guardados }}</div>
-        <div class="stats-label">Trabajos Guardados</div>
-    </div>
-    
-    <!-- Lista de Trabajos Guardados -->
-    {% for trabajo in trabajos %}
-    <div class="guardado-card {% if trabajo.estado != 'activa' %}inactivo{% endif %}">
-        <span class="estado-badge estado-{{ trabajo.estado }}">
-            {% if trabajo.estado == 'activa' %}✓ Activa
-            {% elif trabajo.estado == 'cerrada' %}✗ Cerrada
-            {% elif trabajo.estado == 'pausada' %}⏸ Pausada
-            {% endif %}
-        </span>
-        
-        <div class="guardado-header">
-            <div style="flex: 1; padding-right: 100px;">
-                <h3 class="guardado-title">{{ trabajo.titulo }}</h3>
-                <p class="guardado-employer">
-                    <span class="meta-icon">👤</span>
-                    <strong>{{ trabajo.empleador.nombre }}</strong>
-                </p>
+<!-- Header -->
+<header class="header">
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="{% url 'llamkay:dashboard' %}" class="logo">
+                <span>Llamkay</span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="{% url 'jobs:buscar_trabajos' %}" class="nav-link">Buscar Trabajos</a></li>
+                <li><a href="{% url 'jobs:mis_postulaciones' %}" class="nav-link">Mis Postulaciones</a></li>
+                <li><a href="{% url 'jobs:trabajos_guardados' %}" class="nav-link">Guardados</a></li>
+                <li><a href="{% url 'users:logout' %}" class="nav-link">Salir</a></li>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<!-- Page Header -->
+<section class="page-header">
+    <div class="container">
+        <div class="page-header-content">
+            <div>
+                <h1 class="page-title">Trabajos Guardados</h1>
+                <p class="page-subtitle">{{ total_guardados }} trabajo{{ total_guardados|pluralize }} guardado{{ total_guardados|pluralize }}</p>
             </div>
         </div>
-        
-        <p class="guardado-description">
-            {{ trabajo.descripcion|truncatewords:40 }}
-        </p>
-        
-        <div class="guardado-meta">
-            {% if trabajo.pago %}
-            <div class="meta-item">
-                <span class="meta-icon">💰</span>
-                <span><strong>S/ {{ trabajo.pago }}</strong> {{ trabajo.moneda }}</span>
+    </div>
+</section>
+
+<!-- Main Content -->
+<main class="container">
+    <!-- Stats Card -->
+    <div class="stats-grid" style="grid-template-columns: 1fr;">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
             </div>
-            {% endif %}
+            <div class="stat-number">{{ total_guardados }}</div>
+            <div class="stat-label">Trabajos Guardados</div>
+        </div>
+    </div>
+    
+    <!-- Saved Jobs List -->
+    <div class="guardados-list">
+        {% for trabajo in trabajos %}
+        <div class="guardado-card {% if trabajo.estado != 'activa' %}inactivo{% endif %}">
+            <span class="estado-badge estado-{{ trabajo.estado }}">
+                {% if trabajo.estado == 'activa' %}Activa
+                {% elif trabajo.estado == 'cerrada' %}Cerrada
+                {% elif trabajo.estado == 'pausada' %}Pausada
+                {% endif %}
+            </span>
             
-            <div class="meta-item">
-                <span class="meta-icon">📋</span>
-                <span>{{ trabajo.modalidad_pago }}</span>
-            </div>
-            
-            {% if trabajo.ubicacion.distrito %}
-            <div class="meta-item">
-                <span class="meta-icon">📍</span>
-                <span>{{ trabajo.ubicacion.distrito }}, {{ trabajo.ubicacion.provincia }}</span>
-            </div>
-            {% elif trabajo.ubicacion.provincia %}
-            <div class="meta-item">
-                <span class="meta-icon">📍</span>
-                <span>{{ trabajo.ubicacion.provincia }}, {{ trabajo.ubicacion.departamento }}</span>
-            </div>
-            {% endif %}
-            
-            {% if trabajo.categoria %}
-            <div class="meta-item">
-                <span class="meta-icon">🏷️</span>
-                <span>{{ trabajo.categoria.nombre }}</span>
-            </div>
-            {% endif %}
-            
-            {% if trabajo.tipo == 'empresa' %}
-                {% if trabajo.experiencia_requerida %}
-                <div class="meta-item">
-                    <span class="meta-icon">🎓</span>
-                    <span>{{ trabajo.experiencia_requerida }}</span>
+            <div class="guardado-header">
+                <div>
+                    <h3 class="guardado-title">{{ trabajo.titulo }}</h3>
+                    <div class="guardado-employer">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        <strong>{{ trabajo.empleador.nombre }}</strong>
+                    </div>
                 </div>
+            </div>
+            
+            <p class="guardado-description">{{ trabajo.descripcion|truncatewords:40 }}</p>
+            
+            <div class="guardado-meta">
+                {% if trabajo.pago %}
+                    <div class="meta-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="1" x2="12" y2="23"></line>
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                        </svg>
+                        <strong>S/ {{ trabajo.pago }}</strong> {{ trabajo.moneda }}
+                    </div>
                 {% endif %}
                 
                 <div class="meta-item">
-                    <span class="meta-icon">👥</span>
-                    <span>{{ trabajo.vacantes }} vacante{{ trabajo.vacantes|pluralize }}</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                    {{ trabajo.modalidad_pago }}
                 </div>
-            {% endif %}
-        </div>
-        
-        <div class="guardado-dates">
-            <span>⭐ Guardado: {{ trabajo.fecha_guardado|date:"d/m/Y H:i" }}</span>
-            <span>•</span>
-            <span>📅 Publicado: {{ trabajo.fecha_publicacion|date:"d/m/Y" }}</span>
-        </div>
-        
-        <div class="guardado-actions">
-            <a href="{% url 'jobs:detalle_trabajo' trabajo.tipo trabajo.id %}" class="btn btn-primary">
-                👁️ Ver Detalles
-            </a>
+                
+                {% if trabajo.ubicacion.distrito %}
+                    <div class="meta-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                        {{ trabajo.ubicacion.distrito }}, {{ trabajo.ubicacion.provincia }}
+                    </div>
+                {% elif trabajo.ubicacion.provincia %}
+                    <div class="meta-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                        {{ trabajo.ubicacion.provincia }}, {{ trabajo.ubicacion.departamento }}
+                    </div>
+                {% endif %}
+                
+                {% if trabajo.categoria %}
+                    <div class="meta-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+                            <line x1="7" y1="7" x2="7.01" y2="7"></line>
+                        </svg>
+                        {{ trabajo.categoria.nombre }}
+                    </div>
+                {% endif %}
+                
+                {% if trabajo.tipo == 'empresa' %}
+                    {% if trabajo.experiencia_requerida %}
+                    <div class="meta-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                            <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+                        </svg>
+                        {{ trabajo.experiencia_requerida }}
+                    </div>
+                    {% endif %}
+                    
+                    <div class="meta-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                        {{ trabajo.vacantes }} vacante{{ trabajo.vacantes|pluralize }}
+                    </div>
+                {% endif %}
+            </div>
             
-            {% if trabajo.estado == 'activa' %}
-                <a href="{% url 'jobs:postular_trabajo' trabajo.tipo trabajo.id %}" class="btn btn-success">
-                    📝 Postular Ahora
+            <div class="guardado-dates">
+                <div class="date-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                    </svg>
+                    Guardado: {{ trabajo.fecha_guardado|date:"d/m/Y H:i" }}
+                </div>
+                <div class="date-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                    Publicado: {{ trabajo.fecha_publicacion|date:"d/m/Y" }}
+                </div>
+            </div>
+            
+            <div class="guardado-actions">
+                <a href="{% url 'jobs:detalle_trabajo' trabajo.tipo trabajo.id %}" class="btn btn-primary btn-small">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                    Ver Detalles
                 </a>
-            {% endif %}
+                
+                {% if trabajo.estado == 'activa' %}
+                    <a href="{% url 'jobs:postular_trabajo' trabajo.tipo trabajo.id %}" class="btn btn-success btn-small">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                        </svg>
+                        Postular Ahora
+                    </a>
+                {% endif %}
+                
+                <form method="POST" action="{% url 'jobs:quitar_guardado' trabajo.guardado_id %}" style="display: inline;" onsubmit="return confirmarQuitar(event, '{{ trabajo.titulo }}')">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger btn-small">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        </svg>
+                        Quitar de Guardados
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% empty %}
+        <div class="empty-state">
+            <div class="empty-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+            </div>
+            <h2 class="empty-title">No tienes trabajos guardados</h2>
+            <p class="empty-text">Explora las ofertas de trabajo y guarda las que te interesen para revisarlas más tarde</p>
+            <a href="{% url 'jobs:buscar_trabajos' %}" class="btn btn-primary btn-large">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <path d="m21 21-4.35-4.35"></path>
+                </svg>
+                Buscar Trabajos
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</main>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-brand">
+            <div class="footer-logo">Llamkay</div>
+            <p>Conectando talentos con oportunidades laborales en todo el Perú</p>
+        </div>
+        
+        <div class="footer-links">
+            <div class="footer-column">
+                <h4>Plataforma</h4>
+                <ul>
+                    <li><a href="{% url 'jobs:buscar_trabajos' %}">Buscar trabajos</a></li>
+                    <li><a href="{% url 'users:perfil' %}">Mi Perfil</a></li>
+                </ul>
+            </div>
             
-            <form method="POST" action="{% url 'jobs:quitar_guardado' trabajo.guardado_id %}" 
-                  style="display: inline;" 
-                  onsubmit="return confirmarQuitar(event, '{{ trabajo.titulo }}')">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-danger">
-                    🗑️ Quitar de Guardados
-                </button>
-            </form>
+            <div class="footer-column">
+                <h4>Soporte</h4>
+                <ul>
+                    <li><a href="#">Centro de ayuda</a></li>
+                    <li><a href="#">Términos de servicio</a></li>
+                </ul>
+            </div>
         </div>
     </div>
-    {% empty %}
-    <div class="empty-state">
-        <div class="empty-icon">⭐</div>
-        <h2 class="empty-title">No tienes trabajos guardados</h2>
-        <p class="empty-text">
-            Explora las ofertas de trabajo y guarda las que te interesen para revisarlas más tarde
-        </p>
-        <a href="{% url 'jobs:buscar_trabajos' %}" class="btn btn-primary" style="font-size: 18px; padding: 12px 30px;">
-            🔍 Buscar Trabajos
-        </a>
+    
+    <div class="footer-bottom">
+        <p>&copy; 2025 Llamkay.pe - Todos los derechos reservados</p>
     </div>
-    {% endfor %}
-</div>
+</footer>
 {% endblock %}
 
 {% block extra_js %}
-<script>
-function confirmarQuitar(event, titulo) {
-    event.preventDefault();
-    const form = event.target;
-    
-    if (confirm(`¿Estás seguro de que deseas quitar "${titulo}" de tus guardados?`)) {
-        // Enviar formulario via AJAX
-        const formData = new FormData(form);
-        
-        fetch(form.action, {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest'
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Remover el card con animación
-                const card = form.closest('.guardado-card');
-                card.style.transition = 'all 0.3s';
-                card.style.opacity = '0';
-                card.style.transform = 'translateX(-20px)';
-                
-                setTimeout(() => {
-                    card.remove();
-                    
-                    // Si no quedan más trabajos, recargar página
-                    const remainingCards = document.querySelectorAll('.guardado-card');
-                    if (remainingCards.length === 0) {
-                        location.reload();
-                    }
-                }, 300);
-                
-                // Mostrar mensaje de éxito
-                mostrarMensaje('success', data.message);
-            } else {
-                mostrarMensaje('error', data.message || 'Error al quitar de guardados');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            mostrarMensaje('error', 'Error al procesar la solicitud');
-        });
-    }
-    
-    return false;
-}
-
-function mostrarMensaje(tipo, mensaje) {
-    const alertDiv = document.createElement('div');
-    alertDiv.className = `alert alert-${tipo === 'success' ? 'success' : 'error'}`;
-    alertDiv.textContent = mensaje;
-    alertDiv.style.position = 'fixed';
-    alertDiv.style.top = '20px';
-    alertDiv.style.right = '20px';
-    alertDiv.style.zIndex = '9999';
-    alertDiv.style.minWidth = '300px';
-    alertDiv.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
-    
-    document.body.appendChild(alertDiv);
-    
-    setTimeout(() => {
-        alertDiv.style.transition = 'opacity 0.3s';
-        alertDiv.style.opacity = '0';
-        setTimeout(() => alertDiv.remove(), 300);
-    }, 3000);
-}
-</script>
+<script src="{% static 'js/llamkay/jobs.js' %}"></script>
 {% endblock %}

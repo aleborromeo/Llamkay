@@ -1,272 +1,308 @@
-{% extends "jobs/base_jobs.html" %}
+{% extends "base.html" %}
+{% load static %}
 
-{% block title %}{% if tipo == 'usuario' %}{{ trabajo.titulo }}{% else %}{{ trabajo.titulo_puesto }}{% endif %} - Llamkay{% endblock %}
+{% block title %}
+{% if tipo == 'usuario' %}{{ oferta.titulo }}{% else %}{{ oferta.titulo_puesto }}{% endif %} - Llamkay
+{% endblock %}
 
 {% block extra_css %}
-<style>
-    .detail-container {
-        max-width: 900px;
-        margin: 0 auto;
-    }
-    
-    .detail-header {
-        background: white;
-        padding: 30px;
-        border-radius: 12px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        margin-bottom: 20px;
-    }
-    
-    .detail-title {
-        font-size: 28px;
-        font-weight: 700;
-        color: #07734B;
-        margin-bottom: 10px;
-    }
-    
-    .detail-employer {
-        font-size: 18px;
-        color: #666;
-        margin-bottom: 20px;
-    }
-    
-    .detail-badges {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-        margin-bottom: 20px;
-    }
-    
-    .badge {
-        padding: 6px 16px;
-        border-radius: 20px;
-        font-size: 14px;
-        font-weight: 600;
-    }
-    
-    .badge-urgent {
-        background: #ff4444;
-        color: white;
-    }
-    
-    .badge-saved {
-        background: #ffc107;
-        color: #333;
-    }
-    
-    .detail-actions {
-        display: flex;
-        gap: 15px;
-        flex-wrap: wrap;
-    }
-    
-    .detail-body {
-        background: white;
-        padding: 30px;
-        border-radius: 12px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        margin-bottom: 20px;
-    }
-    
-    .detail-section {
-        margin-bottom: 25px;
-    }
-    
-    .detail-section h3 {
-        color: #07734B;
-        margin-bottom: 15px;
-        font-size: 20px;
-    }
-    
-    .detail-info {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 15px;
-        margin-bottom: 20px;
-    }
-    
-    .info-item {
-        padding: 15px;
-        background: #f8f9fa;
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-    
-    .info-label {
-        font-weight: 600;
-        color: #333;
-    }
-    
-    .info-value {
-        color: #666;
-    }
-</style>
+<link rel="stylesheet" href="{% static 'css/jobs/jobs-base.css' %}">
+<link rel="stylesheet" href="{% static 'css/jobs/detalle.css' %}">
 {% endblock %}
 
 {% block content %}
-<div class="container detail-container">
-    <a href="{% url 'jobs:buscar_trabajos' %}" class="btn btn-secondary" style="margin: 20px 0;">← Volver a la búsqueda</a>
-    
-    <!-- Header -->
-    <div class="detail-header">
-        <h1 class="detail-title">
-            {% if tipo == 'usuario' %}
-                {{ trabajo.titulo }}
-            {% else %}
-                {{ trabajo.titulo_puesto }}
-            {% endif %}
-        </h1>
-        
-        <p class="detail-employer">
-            Publicado por: <strong>{{ trabajo.id_empleador.nombre_completo }}</strong>
-        </p>
-        
-        <div class="detail-badges">
-            {% if tipo == 'usuario' and trabajo.urgente %}
-                <span class="badge badge-urgent">🔥 URGENTE</span>
-            {% endif %}
-            {% if es_guardado %}
-                <span class="badge badge-saved">⭐ Guardado</span>
-            {% endif %}
-            {% if ya_postulo %}
-                <span class="badge" style="background: #28a745; color: white;">✓ Ya postulaste</span>
-            {% endif %}
-            <span class="badge" style="background: #e9ecef; color: #495057;">👁️ {{ trabajo.vistas }} vistas</span>
-            <span class="badge" style="background: #e9ecef; color: #495057;">📝 {{ total_postulaciones }} postulaciones</span>
-        </div>
-        
-        <div class="detail-actions">
-            {% if not es_dueno %}
+<!-- Header -->
+<header class="header">
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="{% url 'llamkay:dashboard' %}" class="logo">
+                <span>Llamkay</span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="{% url 'jobs:buscar_trabajos' %}" class="nav-link">Buscar Trabajos</a></li>
                 {% if user.is_authenticated %}
-                    {% if not ya_postulo %}
-                        <a href="{% url 'jobs:postular_trabajo' tipo trabajo.id %}" class="btn btn-success">📝 Postular Ahora</a>
-                    {% endif %}
-                    
-                    {% if not es_guardado %}
-                        <form method="POST" action="{% url 'jobs:guardar_trabajo' tipo trabajo.id %}" style="display: inline;">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-secondary">⭐ Guardar</button>
-                        </form>
-                    {% endif %}
+                    <li><a href="{% url 'jobs:mis_postulaciones' %}" class="nav-link">Mis Postulaciones</a></li>
+                    <li><a href="{% url 'users:logout' %}" class="nav-link">Salir</a></li>
                 {% else %}
-                    <a href="{% url 'users:login' %}" class="btn btn-success">Iniciar sesión para postular</a>
+                    <li><a href="{% url 'users:login' %}" class="nav-link">Iniciar Sesión</a></li>
                 {% endif %}
-            {% else %}
-                <a href="{% url 'jobs:editar_oferta' trabajo.id %}" class="btn btn-primary">✏️ Editar</a>
-                <a href="{% url 'jobs:ver_postulantes' tipo trabajo.id %}" class="btn btn-secondary">👥 Ver Postulantes ({{ total_postulaciones }})</a>
-            {% endif %}
+            </ul>
         </div>
-    </div>
-    
-    <!-- Información Principal -->
-    <div class="detail-body">
-        <div class="detail-section">
-            <h3>📋 Información General</h3>
-            <div class="detail-info">
-                {% if trabajo.pago %}
-                <div class="info-item">
-                    <span style="font-size: 24px;">💰</span>
-                    <div>
-                        <div class="info-label">Pago</div>
-                        <div class="info-value">S/ {{ trabajo.pago }} {{ trabajo.moneda }}</div>
+    </nav>
+</header>
+
+<!-- Back Button -->
+<div class="container" style="margin-top: 2rem;">
+    <a href="{% url 'jobs:buscar_trabajos' %}" class="btn btn-secondary">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        Volver a la búsqueda
+    </a>
+</div>
+
+<!-- Main Content -->
+<main class="container">
+    <div class="detail-grid">
+        <!-- Main Column -->
+        <div class="detail-main">
+            <!-- Job Header -->
+            <div class="card">
+                <div class="detail-header">
+                    <div class="detail-title-section">
+                        <h1 class="detail-title">
+                            {% if tipo == 'usuario' %}
+                                {{ oferta.titulo }}
+                            {% else %}
+                                {{ oferta.titulo_puesto }}
+                            {% endif %}
+                        </h1>
+                        <div class="detail-employer">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                            Publicado por: <strong>{{ oferta.id_empleador.nombre_completo }}</strong>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-badges">
+                        {% if tipo == 'usuario' and oferta.urgente %}
+                            <span class="badge badge-urgent">URGENTE</span>
+                        {% endif %}
+                        {% if es_guardado %}
+                            <span class="badge badge-saved">Guardado</span>
+                        {% endif %}
+                        {% if ya_postulo %}
+                            <span class="badge badge-accepted">Ya postulaste</span>
+                        {% endif %}
                     </div>
                 </div>
-                {% endif %}
                 
-                <div class="info-item">
-                    <span style="font-size: 24px;">📅</span>
-                    <div>
-                        <div class="info-label">Modalidad</div>
-                        <div class="info-value">{{ trabajo.get_modalidad_pago_display }}</div>
-                    </div>
+                <div class="detail-actions">
+                    {% if not es_dueno %}
+                        {% if user.is_authenticated %}
+                            {% if not ya_postulo %}
+                                {% if oferta.id %}
+                                    <form method="POST" action="{% url 'jobs:postular_trabajo' tipo oferta.id %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-success btn-large">
+                                            Postular Ahora
+                                        </button>
+                                    </form>
+                                {% else %}
+                                    <button class="btn btn-secondary btn-large" disabled>No disponible</button>
+                                {% endif %}
+                            {% else %}
+                                <button class="btn btn-secondary btn-large" disabled>Ya postulaste</button>
+                            {% endif %}
+                            
+                            {% if not es_guardado %}
+                                {% if oferta.id %}
+                                    <form method="POST" action="{% url 'jobs:guardar_trabajo' tipo oferta.id %}" style="display: inline;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-secondary">
+                                            Guardar
+                                        </button>
+                                    </form>
+                                {% else %}
+                                    <button class="btn btn-secondary" disabled>No disponible</button>
+                                {% endif %}
+                            {% endif %}
+                        {% else %}
+                            <a href="{% url 'users:login' %}" class="btn btn-success btn-large">Iniciar sesión para postular</a>
+                        {% endif %}
+                    {% else %}
+                        {% if oferta.id %}
+                            <a href="{% url 'jobs:editar_oferta' oferta.id %}" class="btn btn-primary">
+                                Editar
+                            </a>
+                            <a href="{% url 'jobs:ver_postulantes' tipo oferta.id %}" class="btn btn-secondary">
+                                Ver Postulantes ({{ total_postulaciones }})
+                            </a>
+                        {% endif %}
+                    {% endif %}
                 </div>
-                
-                {% if tipo == 'empresa' %}
-                    {% if trabajo.experiencia_requerida %}
+            </div>
+            
+            <!-- Job Info Grid -->
+            <div class="card">
+                <h2 class="card-title">Información General</h2>
+                <div class="info-grid">
+                    {% if oferta.pago %}
                     <div class="info-item">
-                        <span style="font-size: 24px;">🎓</span>
-                        <div>
-                            <div class="info-label">Experiencia</div>
-                            <div class="info-value">{{ trabajo.experiencia_requerida }}</div>
+                        <div class="info-content">
+                            <div class="info-label">Pago</div>
+                            <div class="info-value">S/ {{ oferta.pago }} {{ oferta.moneda }}</div>
                         </div>
                     </div>
                     {% endif %}
                     
                     <div class="info-item">
-                        <span style="font-size: 24px;">👥</span>
-                        <div>
-                            <div class="info-label">Vacantes</div>
-                            <div class="info-value">{{ trabajo.vacantes }}</div>
+                        <div class="info-content">
+                            <div class="info-label">Modalidad</div>
+                            <div class="info-value">{{ oferta.get_modalidad_pago_display }}</div>
                         </div>
                     </div>
-                {% endif %}
-                
-                {% if tipo == 'usuario' and trabajo.fecha_limite %}
-                <div class="info-item">
-                    <span style="font-size: 24px;">⏰</span>
-                    <div>
-                        <div class="info-label">Fecha Límite</div>
-                        <div class="info-value">{{ trabajo.fecha_limite|date:"d/m/Y" }}</div>
+                    
+                    {% if tipo == 'empresa' %}
+                        {% if oferta.experiencia_requerida %}
+                        <div class="info-item">
+                            <div class="info-content">
+                                <div class="info-label">Experiencia</div>
+                                <div class="info-value">{{ oferta.experiencia_requerida }}</div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        <div class="info-item">
+                            <div class="info-content">
+                                <div class="info-label">Vacantes</div>
+                                <div class="info-value">{{ oferta.vacantes }}</div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    
+                    {% if tipo == 'usuario' and oferta.fecha_limite %}
+                    <div class="info-item">
+                        <div class="info-content">
+                            <div class="info-label">Fecha Límite</div>
+                            <div class="info-value">{{ oferta.fecha_limite|date:"d/m/Y" }}</div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="info-item">
+                        <div class="info-content">
+                            <div class="info-label">Publicado</div>
+                            <div class="info-value">{{ oferta.created_at|timesince }}</div>
+                        </div>
                     </div>
                 </div>
-                {% endif %}
-                
-                <div class="info-item">
-                    <span style="font-size: 24px;">🕒</span>
+            </div>
+            
+            <!-- Description -->
+            <div class="card">
+                <h2 class="card-title">Descripción</h2>
+                <div class="job-description-full">
+                    {{ oferta.descripcion|linebreaks }}
+                </div>
+            </div>
+            
+            <!-- Location -->
+            <div class="card">
+                <h2 class="card-title">Ubicación</h2>
+                <div class="location-info">
                     <div>
-                        <div class="info-label">Publicado</div>
-                        <div class="info-value">{{ trabajo.created_at|timesince }} atrás</div>
+                        <p>
+                            {% if oferta.id_departamento %}{{ oferta.id_departamento.nombre }}{% endif %}
+                            {% if oferta.id_provincia %}, {{ oferta.id_provincia.nombre }}{% endif %}
+                            {% if oferta.id_distrito %}, {{ oferta.id_distrito.nombre }}{% endif %}
+                        </p>
+                        {% if tipo == 'usuario' and oferta.direccion_detalle %}
+                            <p style="color: var(--color-text-light); margin-top: 0.5rem;">{{ oferta.direccion_detalle }}</p>
+                        {% endif %}
                     </div>
                 </div>
             </div>
         </div>
         
-        <div class="detail-section">
-            <h3>📝 Descripción</h3>
-            <p style="line-height: 1.8; color: #555;">{{ trabajo.descripcion|linebreaks }}</p>
-        </div>
-        
-        {% if trabajo.id_categoria %}
-        <div class="detail-section">
-            <h3>🏷️ Categoría</h3>
-            <p>{{ trabajo.id_categoria.nombre }}</p>
-        </div>
-        {% endif %}
-        
-        <div class="detail-section">
-            <h3>📍 Ubicación</h3>
-            <p>
-                {% if trabajo.id_departamento %}{{ trabajo.id_departamento.nombre }}{% endif %}
-                {% if trabajo.id_provincia %}, {{ trabajo.id_provincia.nombre }}{% endif %}
-                {% if trabajo.id_distrito %}, {{ trabajo.id_distrito.nombre }}{% endif %}
-            </p>
-            {% if tipo == 'usuario' and trabajo.direccion_detalle %}
-                <p style="color: #666; margin-top: 10px;">{{ trabajo.direccion_detalle }}</p>
+        <!-- Sidebar -->
+        <div class="detail-sidebar">
+            <!-- Stats -->
+            <div class="card">
+                <h3 class="card-title">Estadísticas</h3>
+                <div class="stats-list">
+                    <div class="stat-item-horizontal">
+                        <div>
+                            <div class="stat-label">Vistas</div>
+                            <div class="stat-value">{{ oferta.vistas }}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-item-horizontal">
+                        <div>
+                            <div class="stat-label">Postulaciones</div>
+                            <div class="stat-value">{{ total_postulaciones }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Employer Info -->
+            <div class="card">
+                <h3 class="card-title">Información del Empleador</h3>
+                <div class="employer-info">
+                    <div class="employer-avatar">
+                        {{ oferta.id_empleador.nombres|first }}{{ oferta.id_empleador.apellidos|first }}
+                    </div>
+                    <div class="employer-details">
+                        <p><strong>{{ oferta.id_empleador.nombre_completo }}</strong></p>
+                        <p style="color: var(--color-text-light); font-size: 0.9rem;">{{ oferta.id_empleador.email }}</p>
+                        {% if oferta.id_empleador.telefono %}
+                            <p style="color: var(--color-text-light); font-size: 0.9rem;">{{ oferta.id_empleador.telefono }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                {% if not es_dueno and user.is_authenticated %}
+                    {% if oferta.id_empleador and oferta.id_empleador.id_usuario %}
+                        <a href="{% url 'chats:ver_chat' oferta.id_empleador.id_usuario %}" class="btn btn-primary btn-block" style="margin-top: 1rem;">
+                            Enviar Mensaje
+                        </a>
+                    {% else %}
+                        <button class="btn btn-secondary btn-block" disabled style="margin-top: 1rem;">Chat no disponible</button>
+                    {% endif %}
+                {% endif %}
+            </div>
+            
+            {% if oferta.id_categoria %}
+            <div class="card">
+                <h3 class="card-title">Categoría</h3>
+                <div class="category-badge">
+                    {{ oferta.id_categoria.nombre }}
+                </div>
+            </div>
             {% endif %}
         </div>
-        
-        {% if tipo == 'usuario' and trabajo.fecha_inicio_estimada %}
-        <div class="detail-section">
-            <h3>📅 Fecha de Inicio Estimada</h3>
-            <p>{{ trabajo.fecha_inicio_estimada|date:"d/m/Y" }}</p>
+    </div>
+</main>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-brand">
+            <div class="footer-logo">Llamkay</div>
+            <p>Conectando talentos con oportunidades laborales en todo el Perú</p>
         </div>
-        {% endif %}
+        
+        <div class="footer-links">
+            <div class="footer-column">
+                <h4>Plataforma</h4>
+                <ul>
+                    <li><a href="{% url 'jobs:buscar_trabajos' %}">Buscar trabajos</a></li>
+                    <li><a href="{% url 'users:perfil' %}">Mi Perfil</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h4>Soporte</h4>
+                <ul>
+                    <li><a href="#">Centro de ayuda</a></li>
+                    <li><a href="#">Términos de servicio</a></li>
+                </ul>
+            </div>
+        </div>
     </div>
     
-    <!-- Información del Empleador -->
-    <div class="detail-body">
-        <h3>👤 Información del Empleador</h3>
-        <p><strong>Nombre:</strong> {{ trabajo.id_empleador.nombre_completo }}</p>
-        <p><strong>Email:</strong> {{ trabajo.id_empleador.email }}</p>
-        {% if trabajo.id_empleador.telefono %}
-            <p><strong>Teléfono:</strong> {{ trabajo.id_empleador.telefono }}</p>
-        {% endif %}
-        
-        {% if not es_dueno and user.is_authenticated %}
-            <a href="{% url 'chats:ver_chat' trabajo.id_empleador.id_usuario %}" class="btn btn-primary" style="margin-top: 15px;">💬 Enviar Mensaje</a>
-        {% endif %}
+    <div class="footer-bottom">
+        <p>&copy; 2025 Llamkay.pe - Todos los derechos reservados</p>
     </div>
-</div>
+</footer>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/jobs/jobs-base.js' %}"></script>
+<script src="{% static 'js/jobs/filtros-ubicacion.js' %}"></script>
 {% endblock %}
