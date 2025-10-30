@@ -52,11 +52,12 @@ def lista_chats(request):
         if conversacion_existente:
             ultimo_mensaje_obj = conversacion_existente.mensajes.filter(
                 eliminado=False
-            ).order_by('-fecha_envio').first()
+            ).order_by('-created_at').first()
             
             if ultimo_mensaje_obj:
                 ultimo_mensaje = ultimo_mensaje_obj.contenido
-                fecha_ultimo_mensaje = ultimo_mensaje_obj.fecha_envio
+                fecha_ultimo_mensaje = ultimo_mensaje_obj.created_at
+
             
             # Contar mensajes no leídos
             mensajes_no_leidos = Mensaje.objects.filter(
@@ -67,7 +68,7 @@ def lista_chats(request):
         
         # Obtener foto del perfil del usuario
         try:
-            perfil_usuario = usuario.profile
+            perfil_usuario = usuario.profile_detalle
             foto_url = perfil_usuario.foto_url.url if perfil_usuario.foto_url else None
         except Profile.DoesNotExist:
             foto_url = None
@@ -164,11 +165,11 @@ def ver_chat(request, usuario_id):
     mensajes = Mensaje.objects.filter(
         id_conversacion=conversacion, 
         eliminado=False
-    ).select_related('id_remitente').order_by('fecha_envio')
+    ).select_related('id_remitente').order_by('created_at')
     
     # Obtener foto del otro usuario
     try:
-        perfil_otro_usuario = otro_usuario.profile
+        perfil_otro_usuario = otro_usuario.profile_detalle
         foto_otro_usuario = perfil_otro_usuario.foto_url.url if perfil_otro_usuario.foto_url else None
     except Profile.DoesNotExist:
         foto_otro_usuario = None
