@@ -1,0 +1,25 @@
+{% extends "soporte/base.html" %}
+{% load static %}
+
+{% block title %}Confirmar Pago - Llamkasy{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/monetizacion/pagos.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="pago-qr-container">
+    <div class="pago-qr-card">
+        <h1 class="pago-titulo">Escanea el código QR</h1>
+        <p class="pago-subtitulo">Completa tu pago con {{ metodo }}</p>
+        
+        <img src="{{ qr_url }}" alt="QR de pago" style="width: 250px; margin: 1rem auto; display: block;">
+        
+        <p style="margin-top: 1rem;">Monto: <strong>S/ {{ monto }}</strong></p>
+        <p style="color: #6b7280;">Plan: {{ plan.nombre }}</p>
+        
+        <div style="margin-top: 2rem;">
+            <a href="{% url 'soporte:planes_list' %}" class="btn-volver">← Volver</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,69 @@
+{% extends "monetizacion/base.html" %}
+{% load static %}
+
+{% block title %}Planes de Suscripción - Llamkasy{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/monetizacion/pagos.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="planes-header">
+        <h1>🎯 Elige Tu Plan Perfecto</h1>
+        <p>Acceso a las mejores oportunidades laborales adaptadas a tus necesidades</p>
+    </div>
+
+    <!-- 🔘 Botones de Selección de Plan -->
+    <div class="planes-selector">
+        {% for plan in planes %}
+        <form method="post" action="{% if plan.price == 0 %}
+            {% url 'monetizacion:crear_pago_gratis' plan.id %}
+        {% else %}
+            {% url 'monetizacion:elegir_metodo_pago' plan.id %}
+        {% endif %}">
+            {% csrf_token %}
+            <button type="submit" class="plan-option-btn {% if suscripcion_actual and suscripcion_actual.plan.id == plan.id and suscripcion_actual.is_active %}active{% endif %}">
+                {{ plan.name }}
+                {% if plan.price == 0 %}
+                    <span class="plan-option-price">Gratis</span>
+                {% else %}
+                    <span class="plan-option-price">${{ plan.price }}/mes</span>
+                {% endif %}
+            </button>
+        </form>
+        {% endfor %}
+    </div>
+
+    <!-- 🔰 Comparación Detallada -->
+    <div class="comparison-note">
+        <h3>📊 Comparación Detallada de Beneficios</h3>
+        <table class="comparison-table">
+            <thead>
+                <tr>
+                    <th>Característica</th>
+                    <th>Básico</th>
+                    <th>Premium</th>
+                    <th>Empresa</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td><strong>Postulaciones por día</strong></td><td>4</td><td>∞ Ilimitadas</td><td>N/A</td></tr>
+                <tr><td><strong>Crear trabajos</strong></td><td>❌ No</td><td>❌ No</td><td>✓ Ilimitados</td></tr>
+                <tr><td><strong>Ciudades disponibles</strong></td><td>Misma ciudad</td><td>Todas</td><td>Todas</td></tr>
+                <tr><td><strong>Editar perfil</strong></td><td>✓ Sí</td><td>✓ Sí</td><td>✓ Sí</td></tr>
+                <tr><td><strong>Perfil destacado</strong></td><td>❌ No</td><td>✓ Sí</td><td>✓ Sí</td></tr>
+                <tr><td><strong>Analytics</strong></td><td>❌ No</td><td>❌ No</td><td>✓ Completo</td></tr>
+                <tr><td><strong>Monetización</strong></td><td>Email</td><td>Prioritaria</td><td>Dedicada 24/7</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<footer>
+    <p>&copy; 2025 Llamkasy. Todos los derechos reservados. | 
+        <a href="mailto:monetizacion@llamkasy.com">Contáctanos</a>
+    </p>
+</footer>
+{% endblock %}
+

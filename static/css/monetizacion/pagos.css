@@ -1,0 +1,315 @@
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f0fdf4 0%, #f8fafb 100%);
+            color: #1f2937;
+            line-height: 1.6;
+        }
+
+        .navbar {
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .navbar-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .navbar-brand {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #10b981, #059669);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .navbar-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .navbar-links a {
+            color: #1f2937;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .navbar-links a:hover {
+            color: #10b981;
+        }
+
+        .user-welcome {
+            color: #6b7280;
+            font-size: 0.95rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .planes-header {
+            text-align: center;
+            margin-bottom: 4rem;
+            animation: fadeIn 0.8s ease-in;
+        }
+
+        .planes-header h1 {
+            font-size: 2.8rem;
+            color: #1f2937;
+            margin-bottom: 1rem;
+            font-weight: 800;
+        }
+
+        .planes-header p {
+            font-size: 1.1rem;
+            color: #6b7280;
+            margin-bottom: 1rem;
+        }
+
+        .planes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+            margin-bottom: 4rem;
+        }
+
+        .plan-card {
+            background: white;
+            border-radius: 1.3rem;
+            padding: 2.5rem;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid transparent;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .plan-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #10b981, #059669);
+        }
+
+        .plan-card:hover {
+            box-shadow: 0 12px 35px rgba(16, 185, 129, 0.18);
+            transform: translateY(-8px);
+        }
+
+        .plan-card.active {
+            border: 2px solid #10b981;
+            box-shadow: 0 15px 40px rgba(16, 185, 129, 0.25);
+            transform: scale(1.03);
+        }
+
+        .plan-badge {
+            display: inline-block;
+            background: #d1fae5;
+            color: #059669;
+            padding: 0.6rem 1.2rem;
+            border-radius: 2rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 1.2rem;
+            width: fit-content;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+        }
+
+        .plan-name {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #1f2937;
+            margin-bottom: 0.8rem;
+        }
+
+        .plan-price {
+            font-size: 3.2rem;
+            font-weight: 900;
+            color: #10b981;
+            margin: 1.5rem 0;
+            line-height: 1;
+        }
+
+        .plan-price span {
+            font-size: 1rem;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .plan-description {
+            color: #6b7280;
+            font-size: 0.95rem;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .plan-features {
+            list-style: none;
+            margin-bottom: 2rem;
+            flex-grow: 1;
+        }
+
+        .plan-features li {
+            padding: 0.9rem 0;
+            color: #374151;
+            display: flex;
+            align-items: flex-start;
+            font-size: 0.95rem;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .plan-features li:last-child {
+            border-bottom: none;
+        }
+
+        .plan-features li::before {
+            content: '✓';
+            color: #10b981;
+            font-weight: 900;
+            margin-right: 0.8rem;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .btn-plan {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 0.7rem;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-plan-primary {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-plan-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-plan-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-plan-current {
+            background: #f0fdf4;
+            color: #059669;
+            border: 2px solid #10b981;
+            font-weight: 700;
+            cursor: default;
+        }
+
+        footer {
+            background: #1f2937;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 4rem;
+        }
+
+        footer p {
+            font-size: 0.95rem;
+        }
+
+        footer a {
+            color: #10b981;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .comparison-note {
+            text-align: center;
+            margin-top: 2rem;
+            padding: 2rem;
+            background: #f0fdf4;
+            border-radius: 1rem;
+            border-left: 4px solid #10b981;
+        }
+
+        .comparison-note h3 {
+            color: #059669;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            background: white;
+            border-radius: 0.7rem;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .comparison-table th {
+            background: #f9fafb;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .comparison-table td {
+            color: #6b7280;
+        }
+
+        .comparison-table tr:hover {
+            background: #f9fafb;
+        }

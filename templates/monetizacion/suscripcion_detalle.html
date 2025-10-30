@@ -1,0 +1,31 @@
+{% extends "monetizacion/base.html" %}
+
+{% block title %}Mi Suscripción - Llamkasy{% endblock %}
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/monetizacion/suscripcion.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="suscripcion-container">
+    <div class="suscripcion-card">
+        <div class="suscripcion-header">
+            <h2>Tu Plan Actual</h2>
+            <span class="badge-active">Activo</span>
+        </div>
+
+        <p><strong>Plan:</strong> {{ suscripcion.plan.name }}</p>
+        <p><strong>Duración:</strong> {{ suscripcion.plan.duration_days }} días</p>
+        <p><strong>Inicio:</strong> {{ suscripcion.fecha_inicio }}</p>
+        <p><strong>Vence:</strong> {{ suscripcion.fecha_fin }}</p>
+
+        {% if not suscripcion.is_active %}
+            <p class="suscripcion-expirada">⚠️ Tu suscripción ha expirado. Elige un nuevo plan.</p>
+        {% endif %}
+
+        <div style="margin-top: 2rem;">
+            <a href="{% url 'monetizacion:planes_list' %}" class="btn-volver">← Ver planes disponibles</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

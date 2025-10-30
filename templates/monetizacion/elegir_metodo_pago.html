@@ -1,0 +1,69 @@
+{% extends "monetizacion/base.html" %}
+{% load static %}
+
+{% block title %}Elegir Método de Pago - Llamkasy{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/monetizacion/pagos.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="pago-container">
+    <div class="pago-header">
+        <h1>💳 Selecciona Método de Pago</h1>
+        <p style="color: #6b7280; margin-top: 0.5rem;">Elige cómo deseas realizar tu pago</p>
+    </div>
+    
+    <div class="plan-resumen">
+        <div class="plan-resumen-item">
+            <span>Plan seleccionado:</span>
+            <strong>{{ plan.name }}</strong>
+        </div>
+        <div class="plan-resumen-item">
+            <span>Duración:</span>
+            <span>{{ plan.duration_days }} días</span>
+        </div>
+        <div class="plan-resumen-item">
+            <span>Total a pagar:</span>
+            <span>${{ plan.price }}</span>
+        </div>
+    </div>
+    
+    <form method="post" action="{% url 'soporte:procesar_pago_yape_plin' plan.id %}" id="form-pago">
+        {% csrf_token %}
+        
+        <div class="metodos-container">
+            {% for metodo in metodos_pago %}
+            <label class="metodo-card" id="metodo-{{ metodo.codigo }}">
+                <input type="radio" name="metodo_pago" value="{{ metodo.codigo }}" required>
+                <div class="metodo-contenido">
+                    <div class="metodo-icono">{{ metodo.icono }}</div>
+                    <div class="metodo-nombre">{{ metodo.nombre }}</div>
+                    <div class="metodo-desc">
+                        {% if metodo.codigo == 'yape' %}
+                            Transfiere desde tu app Yape
+                        {% else %}
+                            Transfiere desde tu app Plin
+                        {% endif %}
+                    </div>
+                </div>
+            </label>
+            {% endfor %}
+        </div>
+        
+        <div class="btn-container">
+            <a href="{% url 'soporte:planes_list' %}" class="btn-volver">← Volver</a>
+            <button type="submit" class="btn-pagar" disabled id="btn-submit">Continuar</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.querySelectorAll('input[name="metodo_pago"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            document.getElementById('btn-submit').disabled = false;
+            document.querySelectorAll('.metodo-card').forEach(card => card.classList.remove('selected'));
+            document.getElementById(`metodo-${this.value}`).classList.add('selected');
+        });
+    });
+</script>
+{% endblock %}

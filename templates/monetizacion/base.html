@@ -1,0 +1,48 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Llamkasy - Planes{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/monetizacion/base.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="/" class="navbar-brand">🚀 Llamkasy</a>
+            <div class="navbar-links">
+                {% if user.is_authenticated %}
+                    <span class="user-welcome">Hola, {{ user.first_name|default:user.username }}👋</span>
+                    <a href="{% url 'monetizacion:suscripcion_detalle' %}">Mi Suscripción</a>
+                    <a href="/admin/">Panel</a>
+                    <a href="/accounts/logout/">Cerrar Sesión</a>
+                {% else %}
+                    <a href="/accounts/login/">Iniciar Sesión</a>
+                    <a href="/accounts/signup/">Registrarse</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+    
+    <main class="main-content">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{% if message.tags %}{{ message.tags }}{% else %}success{% endif %} alert-dismissible">
+                    {{ message }}
+                    <button type="button" class="btn-close" onclick="this.parentElement.style.display='none';">×</button>
+                </div>
+            {% endfor %}
+        {% endif %}
+        
+        <div class="container">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+    
+    <footer class="footer">
+        <p>&copy; 2025 Llamkasy. Todos los derechos reservados. | Encuentra tu trabajo ideal</p>
+    </footer>
+</body>
+</html>
