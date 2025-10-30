@@ -3,7 +3,7 @@ URLs del módulo Jobs - Refactorizado
 Rutas solo para trabajadores
 """
 from django.urls import path
-from apps.jobs.views import busqueda_views, postulacion_views, guardado_views, dashboard_views
+from apps.jobs.views import busqueda_views, postulacion_views, guardado_views, dashboard_views, ajax_views
 
 app_name = 'jobs'
 
@@ -27,4 +27,7 @@ urlpatterns = [
     path('postular/<str:tipo>/<int:oferta_id>/', postulacion_views.postular_trabajo, name='postular_trabajo'),
     path('mis-postulaciones/', postulacion_views.mis_postulaciones, name='mis_postulaciones'),
     path('retirar-postulacion/<int:postulacion_id>/', postulacion_views.retirar_postulacion, name='retirar_postulacion'),
+    
+    path('ajax/cargar-provincias/', ajax_views.cargar_provincias, name='ajax_cargar_provincias'),
+    path('ajax/cargar-distritos/', ajax_views.cargar_distritos, name='ajax_cargar_distritos'),
 ]

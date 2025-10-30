@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.models import User
 from apps.users.models import Usuario, Departamento, Provincia, Distrito
 from apps.users.widgets import MultipleFileInput 
+from datetime import date
 
 class RegisterFormStep1(forms.Form):
     """Paso 1: Datos personales básicos"""
@@ -17,16 +18,22 @@ class RegisterFormStep1(forms.Form):
     nombre = forms.CharField(max_length=100, required=True)
     apellido = forms.CharField(max_length=100, required=True)
     
-    # NUEVOS CAMPOS
+    # ✅ CAMPOS FECHA Y GENERO (AGREGADOS)
     fecha_nacimiento = forms.DateField(
         required=True,
         widget=forms.DateInput(attrs={
             'type': 'date',
-            'max': '2007-01-01'  # Mínimo 18 años
+            'max': str(date.today().replace(year=date.today().year - 18))  # Mínimo 18 años
         })
     )
     genero = forms.ChoiceField(
-        choices=Usuario.GENERO_CHOICES,
+        choices=[
+            ('', 'Selecciona tu género'),
+            ('masculino', 'Masculino'),
+            ('femenino', 'Femenino'),
+            ('otro', 'Otro'),
+            ('prefiero_no_decir', 'Prefiero no decir'),
+        ],
         required=True
     )
     
@@ -56,6 +63,15 @@ class RegisterFormStep1(forms.Form):
         if User.objects.filter(email=email).exists():
             raise forms.ValidationError("Este correo ya está en uso")
         return email
+    
+    def clean_fecha_nacimiento(self):
+        fecha = self.cleaned_data.get('fecha_nacimiento')
+        if fecha:
+            today = date.today()
+            edad = today.year - fecha.year - ((today.month, today.day) < (fecha.month, fecha.day))
+            if edad < 18:
+                raise forms.ValidationError("Debes ser mayor de 18 años")
+        return fecha
 
 
 class RegisterFormStep2(forms.Form):

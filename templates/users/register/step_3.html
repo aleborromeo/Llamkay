@@ -128,14 +128,33 @@
                 <legend>Habilidades y oficios</legend>
                 
                 <div class="form-grid">
+                    <!-- ✅ CAMPO OCUPACIÓN PRINCIPAL (REQUERIDO) -->
+                    <div class="form-group">
+                        <label for="id_ocupacion">Ocupación Principal *</label>
+                        <input 
+                            type="text" 
+                            name="ocupacion" 
+                            id="id_ocupacion"
+                            value="{{ form.ocupacion.value|default_if_none:'' }}"
+                            placeholder="Ej: Carpintero, Electricista, Plomero..."
+                            required>
+                        {% if form.ocupacion.errors %}
+                        <span class="form-error">{{ form.ocupacion.errors.0 }}</span>
+                        {% endif %}
+                        <span class="form-help">Tu oficio o profesión principal</span>
+                    </div>
+                    
                     <div class="form-group">
                         <label for="id_habilidades">Describe tus habilidades *</label>
                         <textarea 
                             name="habilidades" 
                             id="id_habilidades"
                             rows="4"
-                            placeholder="Ej: Carpintería, instalación de muebles, reparaciones en general..."
+                            placeholder="Ej: Instalación eléctrica, reparaciones, mantenimiento..."
                             required>{{ form.habilidades.value|default_if_none:'' }}</textarea>
+                        {% if form.habilidades.errors %}
+                        <span class="form-error">{{ form.habilidades.errors.0 }}</span>
+                        {% endif %}
                         <span class="form-help">Describe lo que sabes hacer para que los empleadores te encuentren fácilmente</span>
                     </div>
                 </div>
@@ -167,6 +186,9 @@
                             <option value="fines_semana">Fines de semana</option>
                             <option value="flexible">Flexible</option>
                         </select>
+                        {% if form.disponibilidad.errors %}
+                        <span class="form-error">{{ form.disponibilidad.errors.0 }}</span>
+                        {% endif %}
                     </div>
                 </div>
             </fieldset>
@@ -185,6 +207,9 @@
                             <option value="universitario">Universitario</option>
                             <option value="posgrado">Posgrado</option>
                         </select>
+                        {% if form.estudios.errors %}
+                        <span class="form-error">{{ form.estudios.errors.0 }}</span>
+                        {% endif %}
                     </div>
 
                     <div class="form-group" id="field-carrera" style="display: none;">
@@ -193,6 +218,7 @@
                             type="text" 
                             name="carrera" 
                             id="id_carrera"
+                            value="{{ form.carrera.value|default_if_none:'' }}"
                             placeholder="Ej: Ingeniería Civil">
                     </div>
                 </div>
