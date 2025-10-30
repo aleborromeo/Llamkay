@@ -3,6 +3,8 @@ from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
 from django.utils import timezone
 from decimal import Decimal
+from django.db import transaction
+from apps.monetizacion.models import Plan
 import random
 
 # === IMPORTA TUS MODELOS ===
@@ -261,3 +263,61 @@ class Command(BaseCommand):
         # FINAL
         # ===================================================================
         self.stdout.write(self.style.SUCCESS("¡Datos de prueba cargados con éxito! (4+ por tabla)"))
+    @transaction.atomic
+    def handle(self, *args, **kwargs):
+        # Eliminar planes existentes (opcional)
+        Plan.objects.all().delete()
+        
+        # Crear planes
+        planes = [
+            {
+                'plan_type': 'free',
+                'name': 'Básico',
+                'description': 'Perfecto para comenzar tu búsqueda de empleo',
+                'price': 0,
+                'duration_days': 30,
+                'max_applications_per_day': 4,
+                'can_edit_profile': True,
+                'can_create_jobs': False,
+                'job_creation_limit': 0,
+                'location_restriction': 'same_city',
+            },
+            {
+                'plan_type': 'premium',
+                'name': 'Premium',
+                'description': 'Para los que buscan oportunidades sin límites',
+                'price': 9.99,
+                'duration_days': 30,
+                'max_applications_per_day': -1,  # Ilimitado
+                'can_edit_profile': True,
+                'can_create_jobs': False,
+                'job_creation_limit': 0,
+                'location_restriction': 'all_cities',
+            },
+            {
+                'plan_type': 'empresa',
+                'name': 'Empresa',
+                'description': 'Solución completa para empresas que contratan',
+                'price': 29.99,
+                'duration_days': 30,
+                'max_applications_per_day': 0,
+                'can_edit_profile': True,
+                'can_create_jobs': True,
+                'job_creation_limit': -1,  # Ilimitado
+                'location_restriction': 'all_cities',
+            },
+        ]
+        
+        for plan_data in planes:
+            plan, created = Plan.objects.get_or_create(
+                plan_type=plan_data['plan_type'],
+                defaults=plan_data
+            )
+            status = "✓ Creado" if created else "✗ Ya existe"
+            self.stdout.write(
+                self.style.SUCCESS(f"{status}: {plan.name}")
+            )
+        
+        self.stdout.write(
+            self.style.SUCCESS('\n✅ Datos de prueba cargados correctamente')
+        )

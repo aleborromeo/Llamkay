@@ -1,25 +1,227 @@
-{% extends "soporte/base.html" %}
+{% extends "monetizacion/base.html" %}
 {% load static %}
 
 {% block title %}Confirmar Pago - Llamkasy{% endblock %}
+
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/monetizacion/pagos.css' %}">
+<link rel="stylesheet" href="{% static 'css/monetizacion/confirmar_pago.css' %}">
 {% endblock %}
 
 {% block content %}
-<div class="pago-qr-container">
-    <div class="pago-qr-card">
-        <h1 class="pago-titulo">Escanea el código QR</h1>
-        <p class="pago-subtitulo">Completa tu pago con {{ metodo }}</p>
-        
-        <img src="{{ qr_url }}" alt="QR de pago" style="width: 250px; margin: 1rem auto; display: block;">
-        
-        <p style="margin-top: 1rem;">Monto: <strong>S/ {{ monto }}</strong></p>
-        <p style="color: #6b7280;">Plan: {{ plan.nombre }}</p>
-        
-        <div style="margin-top: 2rem;">
-            <a href="{% url 'soporte:planes_list' %}" class="btn-volver">← Volver</a>
+<div class="pago-container">
+    <div class="pago-wrapper">
+        <!-- Header -->
+        <div class="pago-header">
+            <div class="pago-header-content">
+                <h1 class="pago-titulo">
+                    <span class="pago-icono">💳</span>
+                    Completa tu Pago
+                </h1>
+                <p class="pago-subtitulo">Escanea el código QR desde tu app {{ metodo_nombre }}</p>
+            </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="pago-content-grid">
+            <!-- QR Section -->
+            <div class="qr-section">
+                <div class="qr-card">
+                    <div class="qr-header">
+                        <span class="qr-badge">{{ metodo_nombre }}</span>
+                        <p class="qr-instrucciones">Abre tu app y escanea este código</p>
+                    </div>
+
+                    <div class="qr-container">
+                        <div class="qr-box">
+                            <img src="{{ qr_url }}" alt="Código QR de pago" class="qr-image">
+                        </div>
+                        <p class="qr-hint">O copia el código de referencia manualmente</p>
+                    </div>
+
+                    <div class="referencia-pago">
+                        <div class="ref-label">Código de Referencia</div>
+                        <div class="ref-codigo">
+                            <span id="referencia-text">PAY-ABC123XYZ</span>
+                            <button class="btn-copiar" onclick="copiarReferencia()">
+                                📋 Copiar
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="tiempo-pago">
+                        <span class="tiempo-icono">⏱️</span>
+                        <span class="tiempo-texto">Tiempo para pagar: <strong id="countdown">14:59</strong> minutos</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Details Section -->
+            <div class="detalles-section">
+                <!-- Resumen Plan -->
+                <div class="resumen-card">
+                    <div class="resumen-titulo">📦 Resumen de tu Compra</div>
+                    
+                    <div class="resumen-item">
+                        <span class="item-label">Plan</span>
+                        <span class="item-valor">{{ plan.nombre }}</span>
+                    </div>
+
+                    <div class="resumen-item">
+                        <span class="item-label">Duración</span>
+                        <span class="item-valor">{{ plan.duration_days }} días</span>
+                    </div>
+
+                    <div class="resumen-item">
+                        <span class="item-label">Método de Pago</span>
+                        <span class="item-valor metodo-badge">
+                            {% if metodo_nombre == 'Yape' %}
+                                📱 Yape
+                            {% else %}
+                                📲 Plin
+                            {% endif %}
+                        </span>
+                    </div>
+
+                    <div class="resumen-divider"></div>
+
+                    <div class="resumen-monto">
+                        <span class="monto-label">Total a Pagar</span>
+                        <span class="monto-valor">S/ {{ monto }}</span>
+                    </div>
+                </div>
+
+                <!-- Beneficios Incluidos -->
+                <div class="beneficios-card">
+                    <div class="beneficios-titulo">✨ Beneficios Incluidos</div>
+                    
+                    <div class="beneficio-item">
+                        <span class="beneficio-icono">✓</span>
+                        <span class="beneficio-texto">
+                            {% if plan.plan_type == 'premium' %}
+                                Postulaciones ilimitadas
+                            {% elif plan.plan_type == 'empresa' %}
+                                Crear trabajos ilimitados
+                            {% else %}
+                                4 postulaciones por día
+                            {% endif %}
+                        </span>
+                    </div>
+
+                    <div class="beneficio-item">
+                        <span class="beneficio-icono">✓</span>
+                        <span class="beneficio-texto">Acceso completo a la plataforma</span>
+                    </div>
+
+                    <div class="beneficio-item">
+                        <span class="beneficio-icono">✓</span>
+                        <span class="beneficio-texto">Soporte prioritario</span>
+                    </div>
+
+                    <div class="beneficio-item">
+                        <span class="beneficio-icono">✓</span>
+                        <span class="beneficio-texto">Renovación automática al vencer</span>
+                    </div>
+                </div>
+
+                <!-- Info Importante -->
+                <div class="info-card">
+                    <div class="info-icono">ℹ️</div>
+                    <div class="info-contenido">
+                        <strong>Información Importante</strong>
+                        <p>Tu pago debe completarse dentro de <strong>15 minutos</strong>. Después de este tiempo, la transacción será cancelada automáticamente.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="pago-acciones">
+            <button class="btn-confirmar" onclick="confirmarPago()">
+                <span>✓</span> Confirmé mi Pago
+            </button>
+            <a href="{% url 'monetizacion:planes_list' %}" class="btn-volver">
+                <span>←</span> Volver
+            </a>
+        </div>
+
+        <!-- Instrucciones -->
+        <div class="instrucciones-card">
+            <div class="instrucciones-titulo">📋 Pasos para completar el pago</div>
+            <ol class="instrucciones-lista">
+                <li>
+                    <span class="paso-numero">1</span>
+                    <span class="paso-texto">Abre tu aplicación de <strong>{{ metodo_nombre }}</strong></span>
+                </li>
+                <li>
+                    <span class="paso-numero">2</span>
+                    <span class="paso-texto">Selecciona la opción de <strong>Escanear QR</strong></span>
+                </li>
+                <li>
+                    <span class="paso-numero">3</span>
+                    <span class="paso-texto">Apunta tu cámara al código QR de arriba</span>
+                </li>
+                <li>
+                    <span class="paso-numero">4</span>
+                    <span class="paso-texto">Revisa los datos y confirma la transferencia</span>
+                </li>
+                <li>
+                    <span class="paso-numero">5</span>
+                    <span class="paso-texto">Regresa y haz clic en "Confirmé mi Pago"</span>
+                </li>
+            </ol>
         </div>
     </div>
 </div>
+
+<script>
+    // Copiar referencia al portapapeles
+    function copiarReferencia() {
+        const texto = document.getElementById('referencia-text').textContent;
+        navigator.clipboard.writeText(texto).then(() => {
+            const btn = event.target;
+            const textoOriginal = btn.textContent;
+            btn.textContent = '✓ Copiado!';
+            setTimeout(() => {
+                btn.textContent = textoOriginal;
+            }, 2000);
+        });
+    }
+
+    // Countdown timer
+    function iniciarContador() {
+        let minutos = 14;
+        let segundos = 59;
+
+        const intervalId = setInterval(() => {
+            if (segundos === 0) {
+                if (minutos === 0) {
+                    clearInterval(intervalId);
+                    document.querySelector('.tiempo-pago').classList.add('tiempo-vencido');
+                    document.getElementById('countdown').textContent = '00:00';
+                    alert('Tiempo de pago expirado');
+                    return;
+                }
+                minutos--;
+                segundos = 59;
+            } else {
+                segundos--;
+            }
+
+            const formatoSegundos = segundos < 10 ? '0' + segundos : segundos;
+            const formatoMinutos = minutos < 10 ? '0' + minutos : minutos;
+            document.getElementById('countdown').textContent = `${formatoMinutos}:${formatoSegundos}`;
+        }, 1000);
+    }
+
+    // Confirmar pago
+    function confirmarPago() {
+        if (confirm('¿Completaste el pago en tu app?')) {
+            // Aquí iría la lógica para confirmar el pago
+            alert('Pago confirmado. Procesando...');
+        }
+    }
+
+    // Iniciar contador al cargar la página
+    document.addEventListener('DOMContentLoaded', iniciarContador);
+</script>
 {% endblock %}

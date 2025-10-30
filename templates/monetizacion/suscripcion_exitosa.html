@@ -1,0 +1,341 @@
+<!-- ============================================
+     TEMPLATES/SOPORTE/SUSCRIPCION_EXITOSA.HTML
+     ============================================ -->
+
+{% extends "monetizacion/base.html" %}
+{% load static %}
+{% block title %}¡Suscripción Exitosa! - Llamkasy{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/monetizacion/suscripcion_exitosa.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="exito-container">
+    <!-- Header -->
+    <div class="exito-header">
+        <div class="exito-icono">✅</div>
+        <h1 class="exito-titulo">¡Suscripción Exitosa!</h1>
+        <p class="exito-subtitulo">Bienvenido a Llamkasy, tu acceso a mejores oportunidades comienza ahora</p>
+    </div>
+    
+    <!-- Plan Destacado -->
+    {% if suscripcion %}
+    <div class="plan-destacado">
+        <div class="plan-nombre">📦 {{ suscripcion.plan.name }}</div>
+        <div class="detalles-grid">
+            <div class="detalle-item">
+                <div class="detalle-label">Fecha de inicio</div>
+                <div class="detalle-valor">{{ suscripcion.start_date|date:"d/m/Y" }}</div>
+            </div>
+            <div class="detalle-item">
+                <div class="detalle-label">Fecha de vencimiento</div>
+                <div class="detalle-valor">{{ suscripcion.end_date|date:"d/m/Y" }}</div>
+            </div>
+            <div class="detalle-item">
+                <div class="detalle-label">Duración</div>
+                <div class="detalle-valor">{{ suscripcion.plan.duration_days }} días</div>
+            </div>
+            <div class="detalle-item">
+                <div class="detalle-label">Estado</div>
+                <div class="detalle-valor" style="color: #10b981;">Activo ✓</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Contador Regresivo -->
+    <div class="contador-regresivo">
+        <div class="contador-titulo">⏱️ Tu suscripción vence en:</div>
+        <div class="contador-valor" id="contador">{{ dias_restantes }} días</div>
+    </div>
+    
+    <!-- Beneficios -->
+    <div class="beneficios-card">
+        <div class="beneficios-titulo">Tus Beneficios Incluidos</div>
+        <ul class="beneficios-lista">
+            {% if suscripcion.plan.plan_type == 'free' %}
+                <li>
+                    <div class="beneficio-icono">📮</div>
+                    <div class="beneficio-contenido">
+                        <div class="beneficio-nombre">4 Postulaciones por Día</div>
+                        <div class="beneficio-desc">Acceso limitado pero suficiente para empezar</div>
+                    </div>
+                </li>
+                <li>
+                    <div class="beneficio-icono">✏️</div>
+                    <div class="beneficio-contenido">
+                        <div class="beneficio-nombre">Editar Perfil Completo</div>
+                        <div class="beneficio-desc">Personaliza tu perfil con toda la información</div>
+                    </div>
+                </li>
+                <li>
+                    <div class="beneficio-icono">🏙️</div>
+                    <div class="beneficio-contenido">
+                        <div class="beneficio-nombre">Trabajos en tu Ciudad</div>
+                        <div class="beneficio-desc">Acceso a ofertas laborales locales</div>
+                    </div>
+                </li>
+                <li>
+                    <div class="beneficio-icono">📧</div>
+                    <div class="beneficio-contenido">
+                        <div class="beneficio-nombre">Soporte por Email</div>
+                        <div class="beneficio-desc">Asistencia cuando la necesites</div>
+                    </div>
+                </li>
+            {% elif suscripcion.plan.plan_type == 'premium' %}
+                <li>
+                    <div class="beneficio-icono">♾️</div>
+                    <div class="beneficio-contenido">
+                        <div class="beneficio-nombre">Postulaciones Ilimitadas</div>
+                        <div class="beneficio-desc">Aplica a todos los trabajos que desees 24/7</div>
+                    </div>
+                </li>
+                <li>
+                    <div class="beneficio-icono">🌍</div>
+                    <div class="beneficio-contenido">
+                        <div class="beneficio-nombre">Cualquier Ciudad</div>
+                        <div class="beneficio-desc">Acceso a trabajos en toda la región</div>
+                    </div>
+                </li>
+                <li>
+                    <div class="beneficio-icono">🔍</div>
+                    <div class="beneficio-contenido">
+                        <div class="beneficio-nombre">Filtros Avanzados</div>
+                        <div class="beneficio-desc">Búsqueda personalizada de oportunidades</div>
+                    </div>
+                </li>
+                <li>
+                    <div class="beneficio-icono">⭐</div>
+                    <div class="beneficio-contenido">
+                        <div class="beneficio-nombre">Perfil Destacado</div>
+                        <div class="beneficio-desc">Tu perfil será visible para reclutadores</div>
+                    </div>
+                </li>
+                <li>
+                    <div class="beneficio-icono">🚀</div>
+                    <div class="beneficio-contenido">
+                        <div class="beneficio-nombre">Soporte Prioritario</div>
+                        <div class="beneficio-desc">Atención rápida a tus consultas</div>
+                    </div>
+                </li>
+            {% elif suscripcion.plan.plan_type == 'empresa' %}
+                <li>
+                    <div class="beneficio-icono">📝</div>
+                    <div class="beneficio-contenido">
+                        <div class="beneficio-nombre">Crear Trabajos Ilimitados</div>
+                        <div class="beneficio-desc">Publica todas las vacantes que necesites</div>
+                    </div>
+                </li>
+                <li>
+                    <div class="beneficio-icono">👥</div>
+                    <div class="beneficio-contenido">
+                        <div class="beneficio-nombre">Gestión de Candidatos</div>
+                        <div class="beneficio-desc">Administra tu pipeline de selección</div>
+                    </div>
+                </li>
+                <li>
+                    <div class="beneficio-icono">📊</div>
+                    <div class="beneficio-contenido">
+                        <div class="beneficio-nombre">Analytics Detallado</div>
+                        <div class="beneficio-desc">Reportes y métricas de tus publicaciones</div>
+                    </div>
+                </li>
+                <li>
+                    <div class="beneficio-icono">🎯</div>
+                    <div class="beneficio-contenido">
+                        <div class="beneficio-nombre">Soporte Dedicado 24/7</div>
+                        <div class="beneficio-desc">Equipo especializado para tu empresa</div>
+                    </div>
+                </li>
+                <li>
+                    <div class="beneficio-icono">✨</div>
+                    <div class="beneficio-contenido">
+                        <div class="beneficio-nombre">Publicaciones Destacadas</div>
+                        <div class="beneficio-desc">Mayor visibilidad de tus ofertas de trabajo</div>
+                    </div>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+    
+    <!-- Info Importante -->
+    <div class="info-importante">
+        <div class="info-titulo">
+            <span>💡</span>
+            Información Importante
+        </div>
+        <div class="info-contenido">
+            {% if suscripcion.plan.plan_type == 'free' %}
+                Tu suscripción gratis incluye acceso limitado a Llamkasy. Puedes mejorar a Premium o Empresa en cualquier momento para desbloquear todas las funcionalidades.
+            {% elif suscripcion.plan.plan_type == 'premium' %}
+                Tu suscripción se renovará automáticamente en {{ suscripcion.end_date|date:"d/m/Y" }}. Puedes cancelarla en cualquier momento desde tu panel de control.
+            {% elif suscripcion.plan.plan_type == 'empresa' %}
+                Gracias por confiar en Llamkasy. Nuestro equipo está disponible para ayudarte con la integración. Contacta a soporte@llamkasy.com
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Próximos Pasos -->
+    <div class="next-steps">
+        <div class="next-steps-titulo">Próximos Pasos</div>
+        <div class="pasos">
+            <div class="paso">
+                <div class="paso-numero">1</div>
+                <div class="paso-contenido">
+                    <div class="paso-titulo">Completa tu Perfil</div>
+                    <div class="paso-desc">Agrega tu experiencia, habilidades y foto para aumentar tus posibilidades</div>
+                </div>
+            </div>
+            <div class="paso">
+                <div class="paso-numero">2</div>
+                <div class="paso-contenido">
+                    <div class="paso-titulo">Explora Oportunidades</div>
+                    <div class="paso-desc">Busca trabajos que coincidan con tu perfil y experiencia</div>
+                </div>
+            </div>
+            <div class="paso">
+                <div class="paso-numero">3</div>
+                <div class="paso-contenido">
+                    <div class="paso-titulo">Envía Postulaciones</div>
+                    <div class="paso-desc">Aplica a los trabajos que te interesen y espera respuestas</div>
+                </div>
+            </div>
+            <div class="paso">
+                <div class="paso-numero">4</div>
+                <div class="paso-contenido">
+                    <div class="paso-titulo">Conecta con Empresas</div>
+                    <div class="paso-desc">Comunícate directamente con reclutadores interesados</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Acceso Rápido -->
+    <div class="acceso-rapido-container">
+        <h3 class="acceso-titulo">Acceso Rápido</h3>
+        <div class="acceso-rapido">
+            <a href="/" class="acceso-card">
+                <div class="acceso-icono">🏠</div>
+                <div class="acceso-nombre">Inicio</div>
+            </a>
+            <a href="/jobs/" class="acceso-card">
+                <div class="acceso-icono">💼</div>
+                <div class="acceso-nombre">Trabajos</div>
+            </a>
+            <a href="/users/profile/" class="acceso-card">
+                <div class="acceso-icono">👤</div>
+                <div class="acceso-nombre">Mi Perfil</div>
+            </a>
+            <a href="/soporte/mi-suscripcion/" class="acceso-card">
+                <div class="acceso-icono">📋</div>
+                <div class="acceso-nombre">Suscripción</div>
+            </a>
+        </div>
+    </div>
+    
+    <!-- Acciones -->
+    <div class="acciones-container">
+        <a href="/" class="btn-accion btn-primario">
+            <span>🚀</span> Ir al Inicio
+        </a>
+        <a href="/jobs/" class="btn-accion btn-secundario">
+            <span>💼</span> Ver Trabajos
+        </a>
+    </div>
+    
+    <!-- FAQ -->
+    <div class="faq-section">
+        <div class="faq-titulo">❓ Preguntas Frecuentes</div>
+        
+        <div class="faq-item">
+            <div class="faq-pregunta" onclick="toggleFaq(this)">
+                ¿Cómo cancelo mi suscripción?
+                <span class="faq-icono">▼</span>
+            </div>
+            <div class="faq-respuesta">
+                Puedes cancelar tu suscripción en cualquier momento desde tu panel de suscripción. Tu acceso continuará hasta el final del período de facturación.
+            </div>
+        </div>
+        
+        <div class="faq-item">
+            <div class="faq-pregunta" onclick="toggleFaq(this)">
+                ¿Puedo cambiar de plan?
+                <span class="faq-icono">▼</span>
+            </div>
+            <div class="faq-respuesta">
+                Sí, puedes cambiar a un plan superior en cualquier momento. Se ajustará el monto a pagar según el tiempo restante de tu suscripción actual.
+            </div>
+        </div>
+        
+        <div class="faq-item">
+            <div class="faq-pregunta" onclick="toggleFaq(this)">
+                ¿Hay garantía de reembolso?
+                <span class="faq-icono">▼</span>
+            </div>
+            <div class="faq-respuesta">
+                Contamos con una garantía de 7 días para reembolso completo. Si no estás satisfecho, contacta a nuestro soporte.
+            </div>
+        </div>
+        
+        <div class="faq-item">
+            <div class="faq-pregunta" onclick="toggleFaq(this)">
+                ¿Cómo obtengo soporte técnico?
+                <span class="faq-icono">▼</span>
+            </div>
+            <div class="faq-respuesta">
+                Puedes contactar a nuestro equipo de soporte a través de email: soporte@llamkasy.com o desde el chat en vivo de la plataforma.
+            </div>
+        </div>
+    </div>
+    
+    <!-- Descuento Banner -->
+    <div class="descuento-banner">
+        <div class="descuento-texto">🎉 ¡Bienvenida Oferta!</div>
+        <div class="descuento-oferta">Referencia a un amigo y obtén 15% de descuento en tu próxima renovación</div>
+    </div>
+    
+    {% else %}
+    <div class="error-container">
+        <p>No hay información de suscripción disponible. <a href="{% url 'soporte:planes_list' %}">Vuelve a intentarlo</a></p>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+    // Toggle FAQ
+    function toggleFaq(element) {
+        const respuesta = element.nextElementSibling;
+        const icono = element.querySelector('.faq-icono');
+        
+        // Cerrar otros FAQs abiertos
+        document.querySelectorAll('.faq-respuesta.active').forEach(resp => {
+            if (resp !== respuesta) {
+                resp.classList.remove('active');
+                resp.previousElementSibling.querySelector('.faq-icono').classList.remove('active');
+            }
+        });
+        
+        // Toggle actual
+        respuesta.classList.toggle('active');
+        icono.classList.toggle('active');
+    }
+    
+    // Animar contador
+    document.addEventListener('DOMContentLoaded', function() {
+        const contador = document.getElementById('contador');
+        if (contador) {
+            const diasText = contador.textContent;
+            const dias = parseInt(diasText);
+            
+            // Cambiar color según días restantes
+            if (dias <= 3) {
+                contador.style.color = '#dc2626';
+            } else if (dias <= 7) {
+                contador.style.color = '#f59e0b';
+            } else {
+                contador.style.color = '#10b981';
+            }
+        }
+    });
+</script>
+{% endblock %}
