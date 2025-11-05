@@ -1,4 +1,4 @@
-{% extends "jobs/base_jobs.html" %}
+{% extends "empleadores/base.html" %}
 
 {% block title %}Dashboard Empleador - Llamkay{% endblock %}
 
@@ -288,19 +288,19 @@
     
     <!-- Acciones Rápidas -->
     <div class="quick-actions">
-        <a href="{% url 'jobs:registro_individual' %}" class="action-card">
+        <a href="{% url 'empleadores:crear_oferta_individual' %}" class="action-card">
             <div class="action-icon">➕</div>
             <div class="action-title">Nueva Oferta Individual</div>
             <div class="action-desc">Publica un trabajo puntual</div>
         </a>
         
-        <a href="{% url 'jobs:registro_empresa' %}" class="action-card">
+        <a href="{% url 'empleadores:crear_oferta_empresa' %}" class="action-card">
             <div class="action-icon">🏢</div>
             <div class="action-title">Nueva Oferta Empresa</div>
             <div class="action-desc">Publica una vacante empresarial</div>
         </a>
         
-        <a href="{% url 'jobs:mis_trabajos' %}" class="action-card">
+        <a href="{% url 'empleadores:mis_trabajos' %}" class="action-card">
             <div class="action-icon">📋</div>
             <div class="action-title">Mis Ofertas</div>
             <div class="action-desc">Gestiona tus publicaciones</div>
@@ -319,94 +319,95 @@
             <h2 class="section-title">
                 <span>📬</span> Postulaciones Recientes
             </h2>
-            <a href="{% url 'jobs:mis_trabajos' %}" class="btn btn-secondary">Ver Todas las Ofertas</a>
+            <a href="{% url 'empleadores:mis_trabajos' %}" class="btn btn-secondary">Ver Todas las Ofertas</a>
         </div>
         
-        {% for post in postulaciones_recientes %}
-        <div class="postulacion-alerta">
-            <div class="postulacion-info">
-                <div class="postulacion-nombre">{{ post.trabajador }}</div>
-                <div class="postulacion-detalle">
-                    Postuló a: <strong>{{ post.titulo }}</strong> • 
-                    {{ post.fecha|timesince }} atrás • 
-                    <span style="color: {% if post.leida %}#28a745{% else %}#ffc107{% endif %};">
-                        {% if post.leida %}✓ Leída{% else %}● Nueva{% endif %}
-                    </span>
+        {% if postulaciones_recientes %}
+            {% for post in postulaciones_recientes %}
+            <div class="postulacion-alerta">
+                <div class="postulacion-info">
+                    <div class="postulacion-nombre">{{ post.trabajador }}</div>
+                    <div class="postulacion-detalle">
+                        Postuló a: <strong>{{ post.titulo }}</strong> • 
+                        {{ post.fecha|timesince }} atrás • 
+                        <span style="color: {% if post.leida %}#28a745{% else %}#ffc107{% endif %};">
+                            {% if post.leida %}✓ Leída{% else %}● Nueva{% endif %}
+                        </span>
+                    </div>
                 </div>
+                <a href="{% url 'empleadores:ver_postulantes' post.tipo post.oferta_id %}" class="btn btn-primary">
+                    Ver Postulación
+                </a>
             </div>
-            <a href="{% url 'jobs:ver_postulantes' post.tipo post.oferta_id %}" class="btn btn-primary">
-                Ver Postulación
-            </a>
-        </div>
-        {% empty %}
-        <div style="text-align: center; padding: 40px; color: #999;">
-            <p style="font-size: 18px;">No tienes postulaciones recientes</p>
-            <p style="font-size: 14px; margin-top: 10px;">Las nuevas postulaciones aparecerán aquí</p>
-        </div>
-        {% endfor %}
+            {% endfor %}
+        {% else %}
+            <div style="text-align: center; padding: 40px; color: #999;">
+                <p style="font-size: 18px;">No tienes postulaciones recientes</p>
+                <p style="font-size: 14px; margin-top: 10px;">Las nuevas postulaciones aparecerán aquí</p>
+            </div>
+        {% endif %}
     </div>
     
-    <!-- Ofertas Activas -->
+    <!-- Ofertas Recientes -->
     <div class="dashboard-section">
         <div class="section-header">
             <h2 class="section-title">
-                <span>📌</span> Ofertas Activas
+                <span>📌</span> Ofertas Recientes
             </h2>
-            <a href="{% url 'jobs:mis_trabajos' %}" class="btn btn-secondary">Gestionar Todas</a>
+            <a href="{% url 'empleadores:mis_trabajos' %}" class="btn btn-secondary">Gestionar Todas</a>
         </div>
         
-        {% for oferta in ofertas_activas %}
-        <div class="oferta-mini {{ oferta.estado }}">
-            <h3 class="oferta-title">{{ oferta.titulo }}</h3>
-            <div class="oferta-meta">
-                <span>📅 {{ oferta.fecha|date:"d/m/Y" }}</span>
-                <span>🏷️ {{ oferta.tipo|title }}</span>
-            </div>
-            
-            <div class="oferta-stats">
-                <div class="stat-mini">
-                    <div class="stat-mini-value">{{ oferta.vistas }}</div>
-                    <div class="stat-mini-label">Vistas</div>
+        {% if ofertas_recientes %}
+            {% for oferta in ofertas_recientes %}
+            <div class="oferta-mini {{ oferta.estado }}">
+                <h3 class="oferta-title">{{ oferta.titulo }}</h3>
+                <div class="oferta-meta">
+                    <span>📅 {{ oferta.fecha|date:"d/m/Y" }}</span>
+                    <span>🏷️ {{ oferta.tipo|title }}</span>
                 </div>
-                <div class="stat-mini">
-                    <div class="stat-mini-value">{{ oferta.postulaciones }}</div>
-                    <div class="stat-mini-label">Postulaciones</div>
-                </div>
-                <div class="stat-mini">
-                    <div class="stat-mini-value">
-                        {% if oferta.estado == 'activa' %}✓
-                        {% elif oferta.estado == 'pausada' %}⏸
-                        {% else %}✗{% endif %}
+                
+                <div class="oferta-stats">
+                    <div class="stat-mini">
+                        <div class="stat-mini-value">{{ oferta.vistas }}</div>
+                        <div class="stat-mini-label">Vistas</div>
                     </div>
-                    <div class="stat-mini-label">{{ oferta.estado|title }}</div>
+                    <div class="stat-mini">
+                        <div class="stat-mini-value">{{ oferta.postulaciones }}</div>
+                        <div class="stat-mini-label">Postulaciones</div>
+                    </div>
+                    <div class="stat-mini">
+                        <div class="stat-mini-value">
+                            {% if oferta.estado == 'activa' %}✓
+                            {% elif oferta.estado == 'pausada' %}⏸
+                            {% else %}✗{% endif %}
+                        </div>
+                        <div class="stat-mini-label">{{ oferta.estado|title }}</div>
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <a href="{% url 'empleadores:ver_postulantes' oferta.tipo oferta.id %}" class="btn btn-secondary btn-sm">
+                        👥 Postulantes ({{ oferta.postulaciones }})
+                    </a>
+                    <a href="{% url 'empleadores:editar_trabajo' oferta.id %}" class="btn btn-secondary btn-sm">
+                        ✏️ Editar
+                    </a>
                 </div>
             </div>
-            
-            <div style="display: flex; gap: 10px;">
-                <a href="{% url 'jobs:detalle_trabajo' oferta.tipo oferta.id %}" class="btn btn-primary btn-sm">
-                    Ver Oferta
-                </a>
-                <a href="{% url 'jobs:ver_postulantes' oferta.tipo oferta.id %}" class="btn btn-secondary btn-sm">
-                    👥 Postulantes ({{ oferta.postulaciones }})
-                </a>
-                <a href="{% url 'jobs:editar_oferta' oferta.id %}" class="btn btn-secondary btn-sm">
-                    ✏️ Editar
-                </a>
+            {% endfor %}
+        {% else %}
+            <div style="text-align: center; padding: 40px; color: #999;">
+                <p style="font-size: 18px;">No tienes ofertas publicadas</p>
+                <div style="display: flex; gap: 15px; justify-content: center; margin-top: 20px; flex-wrap: wrap;">
+                    <a href="{% url 'empleadores:crear_oferta_individual' %}" class="btn btn-success">
+                        ➕ Nueva Oferta Individual
+                    </a>
+                    <a href="{% url 'empleadores:crear_oferta_empresa' %}" class="btn btn-primary">
+                        ➕ Nueva Oferta Empresa
+                    </a>
+                </div>
             </div>
-        </div>
-        {% empty %}
-        <div style="text-align: center; padding: 40px; color: #999;">
-            <p style="font-size: 18px;">No tienes ofertas activas</p>
-            <div style="display: flex; gap: 15px; justify-content: center; margin-top: 20px;">
-                <a href="{% url 'jobs:registro_individual' %}" class="btn btn-success">
-                    ➕ Nueva Oferta Individual
-                </a>
-                <a href="{% url 'jobs:registro_empresa' %}" class="btn btn-primary">
-                    ➕ Nueva Oferta Empresa
-                </a>
-            </div>
-        </div>
-        {% endfor %}
+        {% endif %}
     </div>
     
     <!-- Consejos -->

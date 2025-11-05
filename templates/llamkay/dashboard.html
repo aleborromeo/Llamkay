@@ -120,7 +120,7 @@
                                 {% endif %}
                                 
                                 {% if usuario.tipo_usuario == 'empleador' or usuario.tipo_usuario == 'ambos' or usuario.tipo_usuario == 'empresa' %}
-                                <a href="{% url 'jobs:mis_trabajos' %}" class="dropdown-item">
+                                <a href="{% url 'empleadores:mis_trabajos' %}" class="dropdown-item">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
                                         <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
@@ -199,14 +199,14 @@
                 {% endif %}
                 
                 {% if usuario.tipo_usuario == 'empleador' or usuario.tipo_usuario == 'ambos' or usuario.tipo_usuario == 'empresa' %}
-                    <a href="{% url 'jobs:registro_individual' %}" class="quick-action-btn btn-primary">
+                    <a href="{% url 'empleadores:crear_oferta_individual' %}" class="quick-action-btn btn-primary">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <line x1="12" y1="5" x2="12" y2="19"></line>
                             <line x1="5" y1="12" x2="19" y2="12"></line>
                         </svg>
                         Publicar trabajo
                     </a>
-                    <a href="{% url 'jobs:mis_trabajos' %}" class="quick-action-btn btn-ghost">
+                    <a href="{% url 'empleadores:mis_trabajos' %}" class="quick-action-btn btn-ghost">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
                             <line x1="9" y1="9" x2="15" y2="9"></line>
@@ -360,7 +360,23 @@
                                 <a href="{% url 'jobs:buscar_trabajos' %}" class="view-all">Ver más</a>
                             {% else %}
                                 <h2>Postulantes recientes</h2>
-                                <a href="{% url 'jobs:mis_trabajos' %}" class="view-all">Ver todas</a>
+                                {% if usuario.tipo_usuario == 'empleador' or usuario.tipo_usuario == 'ambos' or usuario.tipo_usuario == 'empresa' %}
+                                    <a href="{% url 'empleadores:crear_oferta_individual' %}" class="quick-action-btn btn-primary">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                                        </svg>
+                                        Publicar trabajo
+                                    </a>
+                                    <a href="{% url 'empleadores:mis_trabajos' %}" class="quick-action-btn btn-ghost">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                            <line x1="9" y1="9" x2="15" y2="9"></line>
+                                            <line x1="9" y1="15" x2="15" y2="15"></line>
+                                        </svg>
+                                        Mis ofertas
+                                    </a>
+                                {% endif %}
                             {% endif %}
                         </div>
                         
