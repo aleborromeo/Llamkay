@@ -1,8 +1,11 @@
 /* =============================================
-   REGISTRO Y SELECCIÓN - LLAMKAY.PE (UNIFICADO)
+   REGISTRO Y SELECCIÓN - LLAMKAY.PE
+   Unificado y Mejorado con UX Avanzada
+   Nielsen + Gestalt + Responsividad + Microinteracciones
    ============================================= */
 
 :root {
+    /* Colores principales */
     --color-primary: #07734B;
     --color-primary-dark: #034D31;
     --color-primary-light: #15AC75;
@@ -17,14 +20,20 @@
     --color-success: #10b981;
     --color-warning: #f59e0b;
     --color-info: #3b82f6;
+    
+    /* Sombras - Jerarquía Visual */
     --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
     --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
     --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.16);
     --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.2);
+    
+    /* Radios - Ley de Cierre */
     --radius-sm: 8px;
     --radius-md: 12px;
     --radius-lg: 16px;
     --radius-xl: 24px;
+    
+    /* Transiciones */
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -62,7 +71,7 @@ body {
     overflow: hidden;
 }
 
-/* ==================== FONDO ANIMADO ==================== */
+/* ==================== FONDO ANIMADO - Ley de Continuidad ==================== */
 .selector-background {
     position: absolute;
     top: 0;
@@ -132,6 +141,7 @@ body {
     box-shadow: var(--shadow-xl);
     padding: 3rem;
     animation: fadeInUp 0.6s ease;
+    border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 @keyframes fadeInUp {
@@ -240,7 +250,7 @@ body {
     gap: 1.5rem;
 }
 
-/* ==================== TARJETAS DE OPCIÓN ==================== */
+/* ==================== TARJETAS DE OPCIÓN - Affordances Claras ==================== */
 .option-card {
     position: relative;
     display: flex;
@@ -289,6 +299,11 @@ body {
     transform: translateY(-3px);
 }
 
+.option-card:focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
 /* Tarjeta destacada */
 .option-card.featured {
     border-color: var(--color-primary);
@@ -299,7 +314,7 @@ body {
     background: linear-gradient(135deg, rgba(7, 115, 75, 0.08), rgba(21, 172, 117, 0.08));
 }
 
-/* ==================== ICONOS DE OPCIÓN ==================== */
+/* ==================== ICONOS DE OPCIÓN - Reconocimiento Visual ==================== */
 .option-icon {
     width: 80px;
     height: 80px;
@@ -383,6 +398,16 @@ body {
     font-size: 0.75rem;
     font-weight: 600;
     box-shadow: var(--shadow-sm);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
 }
 
 .option-card.featured .option-badge {
@@ -438,11 +463,13 @@ body {
     font-weight: 500;
     transition: var(--transition);
     justify-content: center;
+    padding: 0.5rem;
+    border-radius: var(--radius-sm);
 }
 
 .back-link:hover {
     color: var(--color-primary);
-    text-decoration: none;
+    background: rgba(7, 115, 75, 0.05);
 }
 
 .back-link svg {
@@ -463,6 +490,7 @@ body {
     border: 1px solid rgba(59, 130, 246, 0.2);
     border-radius: var(--radius-lg);
     margin-top: 2rem;
+    border-left: 4px solid #3b82f6;
 }
 
 .info-icon {
@@ -548,7 +576,7 @@ body {
     align-items: start;
 }
 
-/* ==================== SIDEBAR INFORMATIVO ==================== */
+/* ==================== SIDEBAR INFORMATIVO - Ley de Proximidad ==================== */
 .register-sidebar {
     position: sticky;
     top: 2rem;
@@ -556,6 +584,7 @@ body {
     border-radius: var(--radius-lg);
     padding: 2.5rem;
     box-shadow: var(--shadow-md);
+    border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .register-logo {
@@ -583,6 +612,7 @@ body {
     line-height: 1.6;
 }
 
+/* Benefits list - Ley de Semejanza */
 .benefits-list {
     list-style: none;
     margin-bottom: 2rem;
@@ -597,11 +627,13 @@ body {
     background: var(--color-background-alt);
     border-radius: var(--radius-md);
     transition: var(--transition);
+    border-left: 3px solid transparent;
 }
 
 .benefits-list li:hover {
     background: #e8f5f0;
     transform: translateX(5px);
+    border-left-color: var(--color-primary);
 }
 
 .benefit-icon {
@@ -640,10 +672,13 @@ body {
     font-weight: 600;
     margin-top: 1.5rem;
     transition: var(--transition);
+    padding: 0.5rem;
+    border-radius: var(--radius-sm);
 }
 
 .help-link:hover {
     color: var(--color-primary-dark);
+    background: rgba(7, 115, 75, 0.05);
     gap: 0.75rem;
 }
 
@@ -653,6 +688,7 @@ body {
     border-radius: var(--radius-lg);
     padding: 3rem;
     box-shadow: var(--shadow-md);
+    border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .register-header {
@@ -670,7 +706,7 @@ body {
     font-size: 1rem;
 }
 
-/* ==================== BARRA DE PROGRESO ==================== */
+/* ==================== BARRA DE PROGRESO - Nielsen: Visibilidad del Estado ==================== */
 .progress-container {
     margin-bottom: 3rem;
 }
@@ -723,6 +759,7 @@ body {
     border-color: var(--color-primary);
     color: white;
     transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(7, 115, 75, 0.3);
 }
 
 .progress-step.completed .step-circle {
@@ -742,7 +779,7 @@ body {
     font-weight: 600;
 }
 
-/* ==================== FORMULARIOS ==================== */
+/* ==================== FORMULARIOS - Nielsen: Prevención de Errores ==================== */
 .register-form fieldset {
     border: none;
     padding: 0;
@@ -754,6 +791,9 @@ body {
     font-weight: 600;
     color: var(--color-text);
     margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--color-primary);
+    width: 100%;
 }
 
 .form-grid {
@@ -765,6 +805,7 @@ body {
     grid-template-columns: repeat(2, 1fr);
 }
 
+/* Form Group - Ley de Proximidad */
 .form-group {
     display: flex;
     flex-direction: column;
@@ -775,8 +816,16 @@ body {
     color: var(--color-text);
     margin-bottom: 0.5rem;
     font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
+.form-group label svg {
+    color: var(--color-primary);
+}
+
+/* Inputs - Nielsen: Feedback Visual */
 .form-group input,
 .form-group select,
 .form-group textarea {
@@ -787,6 +836,13 @@ body {
     transition: var(--transition);
     background: white;
     font-family: inherit;
+    color: var(--color-text);
+}
+
+.form-group input:hover,
+.form-group select:hover,
+.form-group textarea:hover {
+    border-color: #cbd5e1;
 }
 
 .form-group input:focus,
@@ -808,6 +864,15 @@ body {
     color: var(--color-text-light);
 }
 
+/* Validation states */
+.form-group input:invalid:not(:placeholder-shown) {
+    border-color: var(--color-danger);
+}
+
+.form-group input:valid:not(:placeholder-shown):not([readonly]) {
+    border-color: var(--color-success);
+}
+
 .form-help {
     font-size: 0.85rem;
     color: var(--color-text-light);
@@ -821,6 +886,10 @@ body {
     display: flex;
     align-items: center;
     gap: 0.25rem;
+}
+
+.form-error::before {
+    content: '⚠';
 }
 
 /* ==================== INPUT CON BOTÓN ==================== */
@@ -871,18 +940,27 @@ body {
     padding: 0.5rem;
     color: var(--color-text-light);
     transition: var(--transition);
+    border-radius: var(--radius-sm);
 }
 
 .password-toggle:hover {
     color: var(--color-primary);
+    background: rgba(7, 115, 75, 0.1);
 }
 
-/* ==================== CHECKBOX PERSONALIZADO ==================== */
+/* ==================== CHECKBOX PERSONALIZADO - Ley de Cierre ==================== */
 .custom-checkbox {
     display: flex;
     align-items: flex-start;
     gap: 0.75rem;
     cursor: pointer;
+    padding: 0.5rem;
+    border-radius: var(--radius-sm);
+    transition: var(--transition);
+}
+
+.custom-checkbox:hover {
+    background: rgba(7, 115, 75, 0.05);
 }
 
 .custom-checkbox input[type="checkbox"] {
@@ -895,17 +973,29 @@ body {
     transition: var(--transition);
     flex-shrink: 0;
     margin-top: 2px;
+    position: relative;
 }
 
 .custom-checkbox input[type="checkbox"]:checked {
     background: var(--color-primary);
     border-color: var(--color-primary);
-    background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");
+}
+
+.custom-checkbox input[type="checkbox"]:checked::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
 }
 
 .custom-checkbox label {
     font-weight: normal;
     cursor: pointer;
+    font-size: 0.95rem;
 }
 
 .custom-checkbox a {
@@ -963,6 +1053,7 @@ body {
     background: var(--color-background-alt);
     border-radius: var(--radius-md);
     margin-top: 1rem;
+    border: 1px solid #e5e7eb;
 }
 
 .file-info-display {
@@ -1014,6 +1105,26 @@ body {
     justify-content: center;
     gap: 0.5rem;
     text-decoration: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.btn:active::before {
+    width: 300px;
+    height: 300px;
 }
 
 .btn-primary {
@@ -1042,9 +1153,10 @@ body {
 
 .btn-secondary:hover {
     background: var(--color-background-alt);
+    transform: translateY(-2px);
 }
 
-/* ==================== ALERTAS ==================== */
+/* ==================== ALERTAS - Nielsen: Visibilidad del Estado ==================== */
 .alert {
     padding: 1rem 1.25rem;
     border-radius: var(--radius-md);
@@ -1052,23 +1164,36 @@ body {
     display: flex;
     align-items: start;
     gap: 0.75rem;
+    animation: slideDown 0.3s ease;
+    border-left: 4px solid;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .alert-error {
     background: #fef2f2;
-    border: 1px solid #fee2e2;
+    border-color: var(--color-danger);
     color: #991b1b;
 }
 
 .alert-success {
     background: #f0fdf4;
-    border: 1px solid #dcfce7;
+    border-color: var(--color-success);
     color: #166534;
 }
 
 .alert-info {
     background: #eff6ff;
-    border: 1px solid #dbeafe;
+    border-color: var(--color-info);
     color: #1e40af;
 }
 
@@ -1099,6 +1224,7 @@ body {
 .btn.loading {
     position: relative;
     color: transparent;
+    pointer-events: none;
 }
 
 .btn.loading::after {
@@ -1117,10 +1243,10 @@ body {
 }
 
 /* =============================================
-   SECCIÓN 3: RESPONSIVE DESIGN
+   RESPONSIVE DESIGN
    ============================================= */
 
-/* ==================== TABLET Y DESKTOP ==================== */
+/* Tablet y Desktop */
 @media (max-width: 1024px) {
     .register-wrapper {
         grid-template-columns: 1fr;
@@ -1132,68 +1258,24 @@ body {
     }
 }
 
-/* ==================== TABLET ==================== */
+/* Tablet */
 @media (max-width: 768px) {
     body {
         padding: 1rem 0.5rem;
     }
     
-    /* Selector */
     .selector-wrapper {
         padding: 1rem;
     }
 
     .selector-container {
         padding: 2rem 1.5rem;
-        border-radius: var(--radius-lg);
-    }
-
-    .selector-header h1 {
-        font-size: 2rem;
-    }
-
-    .selector-header p {
-        font-size: 1rem;
     }
 
     .options-grid {
         grid-template-columns: 1fr;
-        gap: 1rem;
-    }
-
-    .option-card {
-        padding: 1.5rem;
-    }
-
-    .option-icon {
-        width: 64px;
-        height: 64px;
-    }
-
-    .option-icon svg {
-        width: 28px;
-        height: 28px;
-    }
-
-    .option-content h3 {
-        font-size: 1.1rem;
-    }
-
-    .option-content p {
-        font-size: 0.9rem;
-    }
-
-    .info-banner {
-        flex-direction: column;
-        text-align: center;
-    }
-
-    .info-icon {
-        width: 40px;
-        height: 40px;
     }
     
-    /* Registro */
     .register-content {
         padding: 2rem 1.5rem;
     }
@@ -1211,16 +1293,6 @@ body {
         gap: 1rem;
     }
     
-    .step-circle {
-        width: 35px;
-        height: 35px;
-        font-size: 0.9rem;
-    }
-    
-    .step-label {
-        font-size: 0.75rem;
-    }
-    
     .form-actions {
         flex-direction: column-reverse;
     }
@@ -1230,240 +1302,38 @@ body {
     }
 }
 
-/* ==================== MÓVIL ==================== */
+/* Móvil */
 @media (max-width: 480px) {
-    /* Selector */
     .selector-container {
         padding: 1.5rem 1rem;
     }
-
-    .logo-text {
-        font-size: 1.75rem;
-    }
-
-    .logo-icon {
-        font-size: 2rem;
-    }
-
-    .selector-header h1 {
-        font-size: 1.75rem;
-    }
-
-    .selector-header p {
-        font-size: 0.95rem;
-    }
-
-    .header-badge {
-        font-size: 0.8rem;
-        padding: 0.4rem 0.875rem;
-    }
-
-    .option-card {
-        padding: 1.25rem;
-    }
-
-    .option-icon {
-        width: 56px;
-        height: 56px;
-    }
-
-    .option-icon svg {
-        width: 24px;
-        height: 24px;
-    }
-
-    .option-content h3 {
-        font-size: 1rem;
-    }
-
-    .option-content p {
-        font-size: 0.85rem;
-    }
-
-    .featured-badge,
-    .option-badge {
-        font-size: 0.7rem;
-        padding: 0.3rem 0.6rem;
-    }
-    
-    /* Registro */
-    .register-header h2 {
-        font-size: 1.5rem;
-    }
     
     .register-content {
         padding: 1.5rem 1rem;
     }
     
-    .benefits-list li {
-        padding: 0.75rem;
-    }
-    
-    .benefit-icon {
+    .step-circle {
         width: 35px;
         height: 35px;
+        font-size: 0.9rem;
+    }
+    
+    .step-label {
+        font-size: 0.75rem;
     }
 }
-
-/* =============================================
-   SECCIÓN 4: UTILIDADES Y EFECTOS
-   ============================================= */
 
 /* ==================== ACCESIBILIDAD ==================== */
-.option-card.selected {
-    border-color: var(--color-primary) !important;
-    box-shadow: 0 0 0 4px rgba(7, 115, 75, 0.1) !important;
-}
-
-.option-card:focus-visible {
-    outline: 3px solid var(--color-primary);
-    outline-offset: 2px;
-}
-
-/* ==================== ANIMACIONES RIPPLE ==================== */
-@keyframes ripple-animation {
-    to {
-        transform: scale(2);
-        opacity: 0;
-    }
-}
-
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-/* ==================== REDUCCIÓN DE MOVIMIENTO ==================== */
-@media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-    }
-    
-    .shape {
-        animation: none !important;
-    }
-    
-    .option-card,
-    .option-icon {
-        animation: none !important;
-    }
-}
-
-/* ==================== UTILIDADES GENERALES ==================== */
-.text-center {
-    text-align: center;
-}
-
-.mt-1 { margin-top: 0.5rem; }
-.mt-2 { margin-top: 1rem; }
-.mt-3 { margin-top: 1.5rem; }
-.mt-4 { margin-top: 2rem; }
-
-.mb-1 { margin-bottom: 0.5rem; }
-.mb-2 { margin-bottom: 1rem; }
-.mb-3 { margin-bottom: 1.5rem; }
-.mb-4 { margin-bottom: 2rem; }
-
-.hidden {
-    display: none !important;
-}
-
-.visible {
-    display: block !important;
-}
-
-/* ==================== ESTADOS DE CARGA ==================== */
-.loading-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.95);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 9999;
-    backdrop-filter: blur(5px);
-}
-
-.loading-spinner {
-    text-align: center;
-}
-
-.loading-spinner p {
-    margin-top: 1rem;
-    color: var(--color-primary);
-    font-weight: 600;
-}
-
-@keyframes rotate {
-    to { 
-        transform: rotate(360deg); 
-    }
-}
-
-/* ==================== ESTILOS DE IMPRESIÓN ==================== */
-@media print {
-    .selector-background,
-    .shape,
-    .selector-footer,
-    .register-sidebar,
-    .form-actions {
-        display: none !important;
-    }
-    
-    .selector-container,
-    .register-content {
-        box-shadow: none !important;
-        border: 1px solid #e5e7eb;
-    }
-    
-    body {
-        background: white !important;
-    }
-}
-
-/* ==================== SCROLLBAR PERSONALIZADO ==================== */
-::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
-}
-
-::-webkit-scrollbar-track {
-    background: var(--color-background-alt);
-}
-
-::-webkit-scrollbar-thumb {
-    background: var(--color-primary-light);
-    border-radius: 5px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: var(--color-primary);
-}
-
-/* Firefox */
-* {
-    scrollbar-width: thin;
-    scrollbar-color: var(--color-primary-light) var(--color-background-alt);
-}
-
-/* ==================== FOCUS VISIBLE ==================== */
 *:focus-visible {
     outline: 2px solid var(--color-primary);
     outline-offset: 2px;
 }
 
-button:focus-visible,
-a:focus-visible {
-    outline: 2px solid var(--color-primary);
-    outline-offset: 2px;
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
 }
-
-/* ==================== FIN DEL CSS UNIFICADO ==================== */

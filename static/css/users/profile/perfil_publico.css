@@ -1,4 +1,7 @@
-/* ===== PERFIL PÚBLICO MODERNO - ESTILO INDEX ===== */
+/* =============================================
+   PERFIL PÚBLICO - MEJORADO
+   Nielsen + Gestalt + Microinteracciones
+   ============================================= */
 
 :root {
     --color-primary: #07734B;
@@ -12,7 +15,107 @@
     --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.2);
 }
 
-/* Hero Section del Perfil */
+/* ==================== HEADER ==================== */
+.header {
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(20px);
+    box-shadow: var(--shadow-sm);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.navbar {
+    padding: 1rem 0;
+}
+
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.logo:hover {
+    transform: scale(1.05);
+}
+
+.nav-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 8px;
+}
+
+.nav-toggle:hover {
+    background: rgba(7, 115, 75, 0.1);
+}
+
+.nav-toggle span {
+    width: 28px;
+    height: 3px;
+    background: var(--color-primary);
+    border-radius: 3px;
+    transition: all 0.3s ease;
+}
+
+.nav-menu {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    list-style: none;
+}
+
+.nav-link {
+    padding: 0.75rem 1.25rem;
+    color: #333;
+    font-weight: 500;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+    background: #f8f9fa;
+    color: var(--color-primary);
+}
+
+.btn-nav {
+    padding: 0.75rem 1.5rem;
+    border-radius: 30px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: 2px solid var(--color-primary);
+}
+
+.btn-nav.btn-primary {
+    background: var(--color-primary);
+    color: white;
+}
+
+.btn-nav.btn-primary:hover {
+    background: var(--color-primary-dark);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+/* ==================== HERO DEL PERFIL - Impacto Visual ==================== */
 .profile-hero-section {
     position: relative;
     background: linear-gradient(135deg, #07734B 0%, #15AC75 100%);
@@ -46,6 +149,18 @@
     position: relative;
     z-index: 1;
     border: 1px solid rgba(255, 255, 255, 0.3);
+    animation: slideInUp 0.6s ease;
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .profile-hero-content {
@@ -54,6 +169,7 @@
     align-items: center;
 }
 
+/* Avatar - Punto focal con efectos */
 .profile-avatar-large {
     position: relative;
     width: 180px;
@@ -66,6 +182,39 @@
     box-shadow: 0 20px 60px rgba(7, 115, 75, 0.4);
     flex-shrink: 0;
     border: 6px solid white;
+    overflow: hidden;
+    animation: scaleIn 0.5s ease 0.2s backwards;
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8) rotate(-10deg);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+    }
+}
+
+.profile-avatar-large::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    animation: shine 3s infinite;
+}
+
+@keyframes shine {
+    0% {
+        transform: translateX(-100%) translateY(-100%) rotate(45deg);
+    }
+    100% {
+        transform: translateX(100%) translateY(100%) rotate(45deg);
+    }
 }
 
 .profile-avatar-large img {
@@ -73,6 +222,8 @@
     height: 100%;
     border-radius: 50%;
     object-fit: cover;
+    position: relative;
+    z-index: 1;
 }
 
 .initials-large {
@@ -80,8 +231,11 @@
     color: white;
     font-weight: 800;
     text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.3);
+    position: relative;
+    z-index: 1;
 }
 
+/* Badge de verificación */
 .status-badge {
     position: absolute;
     bottom: 10px;
@@ -94,12 +248,35 @@
     font-weight: 700;
     border: 3px solid white;
     box-shadow: 0 4px 15px rgba(34, 197, 94, 0.5);
+    animation: verifiedPulse 2s infinite;
+}
+
+@keyframes verifiedPulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
 }
 
 .profile-hero-info {
     flex: 1;
+    animation: slideInRight 0.6s ease 0.3s backwards;
 }
 
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Nombre con gradiente */
 .profile-name {
     font-size: 3rem;
     font-weight: 800;
@@ -111,6 +288,7 @@
     line-height: 1.1;
 }
 
+/* Rating - Reconocimiento visual */
 .profile-rating {
     display: flex;
     align-items: center;
@@ -128,6 +306,7 @@
     font-weight: 600;
 }
 
+/* Meta items - Ley de proximidad */
 .profile-meta {
     display: flex;
     flex-wrap: wrap;
@@ -141,6 +320,15 @@
     gap: 0.5rem;
     color: #555;
     font-weight: 500;
+    padding: 0.5rem 1rem;
+    background: rgba(7, 115, 75, 0.05);
+    border-radius: 50px;
+    transition: all 0.3s ease;
+}
+
+.meta-item:hover {
+    background: rgba(7, 115, 75, 0.1);
+    transform: translateY(-2px);
 }
 
 .meta-item svg {
@@ -153,7 +341,7 @@
     flex-wrap: wrap;
 }
 
-/* Info Cards Grid */
+/* ==================== INFO CARDS GRID - Ley de Semejanza ==================== */
 .info-cards-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -174,6 +362,22 @@
     gap: 1.5rem;
     transition: all 0.3s ease;
     border: 2px solid transparent;
+    animation: fadeInUp 0.6s ease backwards;
+}
+
+.info-card:nth-child(1) { animation-delay: 0.1s; }
+.info-card:nth-child(2) { animation-delay: 0.2s; }
+.info-card:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .info-card:hover {
@@ -192,6 +396,11 @@
     justify-content: center;
     font-size: 2.5rem;
     flex-shrink: 0;
+    transition: all 0.3s ease;
+}
+
+.info-card:hover .info-card-icon {
+    transform: scale(1.1) rotate(5deg);
 }
 
 .info-card-content h3 {
@@ -209,7 +418,7 @@
     color: var(--color-primary-dark);
 }
 
-/* Profile Content */
+/* ==================== PROFILE CONTENT ==================== */
 .profile-content {
     margin-top: -1rem;
 }
@@ -242,10 +451,12 @@
     padding: 2.5rem;
     box-shadow: var(--shadow-md);
     transition: all 0.3s ease;
+    border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .card:hover {
     box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
 }
 
 /* Bio Text */
@@ -256,7 +467,7 @@
     text-align: justify;
 }
 
-/* Skills Showcase */
+/* ==================== SKILLS SHOWCASE - Ley de Semejanza ==================== */
 .skills-showcase {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -287,7 +498,7 @@
     flex-shrink: 0;
 }
 
-/* Certifications List */
+/* ==================== CERTIFICATIONS LIST ==================== */
 .certifications-list {
     display: flex;
     flex-direction: column;
@@ -331,7 +542,7 @@
     color: #999;
 }
 
-/* Reviews Section */
+/* ==================== REVIEWS SECTION ==================== */
 .ratings-overview {
     background: linear-gradient(135deg, #fef9e7, #fef3c7);
     border-radius: 20px;
@@ -437,9 +648,13 @@
     line-height: 1.7;
     color: #555;
     font-style: italic;
+    padding: 1rem;
+    background: rgba(7, 115, 75, 0.03);
+    border-radius: 10px;
+    border-left: 3px solid #fbbf24;
 }
 
-/* Final Actions */
+/* ==================== FINAL ACTIONS ==================== */
 .final-actions {
     display: flex;
     justify-content: center;
@@ -448,7 +663,7 @@
     flex-wrap: wrap;
 }
 
-/* Button Styles (siguiendo estilo de index) */
+/* ==================== BUTTONS ==================== */
 .btn {
     display: inline-flex;
     align-items: center;
@@ -461,6 +676,26 @@
     border: none;
     cursor: pointer;
     font-size: 1rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.btn:active::before {
+    width: 300px;
+    height: 300px;
 }
 
 .btn-large {
@@ -503,7 +738,7 @@
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
 }
 
-/* Empty State */
+/* ==================== EMPTY STATE ==================== */
 .empty-state {
     text-align: center;
     padding: 4rem 2rem;
@@ -527,7 +762,7 @@
     color: #999;
 }
 
-/* Footer */
+/* ==================== FOOTER ==================== */
 .footer {
     background: var(--color-primary-dark);
     color: white;
@@ -569,7 +804,18 @@
     transform: translateY(-2px);
 }
 
-/* Responsive */
+/* ==================== WAVE DIVIDER ==================== */
+.wave-divider {
+    margin-top: 4rem;
+}
+
+.wave-divider svg {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* ==================== RESPONSIVE ==================== */
 @media (max-width: 1024px) {
     .profile-hero-content {
         flex-direction: column;
@@ -590,6 +836,26 @@
 }
 
 @media (max-width: 768px) {
+    .nav-toggle {
+        display: flex;
+    }
+    
+    .nav-menu {
+        position: fixed;
+        top: 70px;
+        left: -100%;
+        width: 100%;
+        flex-direction: column;
+        background: white;
+        box-shadow: var(--shadow-lg);
+        padding: 2rem;
+        transition: left 0.3s ease;
+    }
+    
+    .nav-menu.active {
+        left: 0;
+    }
+    
     .profile-hero-section {
         padding: 3rem 0 4rem;
     }
@@ -669,4 +935,19 @@
     .section-header h2 {
         font-size: 1.5rem;
     }
+}
+
+/* ==================== ACCESIBILIDAD ==================== */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+*:focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 2px;
 }

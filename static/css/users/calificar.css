@@ -1,14 +1,19 @@
-/* ===== CALIFICACIÓN - ESTILO MODERNO ===== */
+/* =============================================
+   CALIFICACIÓN - MEJORADO CON PRINCIPIOS UX
+   Nielsen + Gestalt + Microinteracciones
+   ============================================= */
 
 :root {
     --color-primary: #07734B;
     --color-primary-dark: #034D31;
     --color-primary-light: #15AC75;
     --color-gold: #f59e0b;
+    --color-gold-dark: #d97706;
     --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
     --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
     --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.16);
     --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.2);
+    --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 body {
@@ -17,7 +22,85 @@ body {
     min-height: 100vh;
 }
 
-/* Rating Hero */
+/* ==================== HEADER ==================== */
+.header {
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(20px);
+    box-shadow: var(--shadow-sm);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.navbar {
+    padding: 1rem 0;
+}
+
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.logo:hover {
+    transform: scale(1.05);
+}
+
+.nav-menu {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    list-style: none;
+}
+
+.nav-link {
+    padding: 0.75rem 1.25rem;
+    color: #333;
+    font-weight: 500;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+    background: #f8f9fa;
+    color: var(--color-primary);
+}
+
+.btn-nav {
+    padding: 0.75rem 1.5rem;
+    border-radius: 30px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: 2px solid var(--color-primary);
+    color: white;
+    background: transparent;
+}
+
+.btn-nav.btn-ghost {
+    background: transparent;
+    color: var(--color-primary);
+}
+
+.btn-nav.btn-ghost:hover {
+    background: var(--color-primary);
+    color: white;
+}
+
+/* ==================== HERO SECTION ==================== */
 .rating-hero {
     position: relative;
     background: linear-gradient(135deg, #07734B 0%, #15AC75 100%);
@@ -53,6 +136,7 @@ body {
     font-size: 3rem;
     font-weight: 800;
     margin-bottom: 1rem;
+    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
 }
 
 .rating-hero-content p {
@@ -60,7 +144,7 @@ body {
     opacity: 0.95;
 }
 
-/* Rating Form Section */
+/* ==================== RATING FORM SECTION ==================== */
 .rating-form-section {
     padding: 3rem 0 5rem;
     margin-top: -2rem;
@@ -75,9 +159,10 @@ body {
     border-radius: 30px;
     padding: 3rem;
     box-shadow: var(--shadow-xl);
+    border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-/* User Info Header */
+/* ==================== USER INFO HEADER - Ley de Proximidad ==================== */
 .user-info-header {
     display: flex;
     align-items: center;
@@ -85,6 +170,18 @@ body {
     padding-bottom: 2rem;
     margin-bottom: 3rem;
     border-bottom: 3px solid #f3f4f6;
+    animation: slideInLeft 0.5s ease;
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 
 .user-avatar-large {
@@ -98,6 +195,29 @@ body {
     flex-shrink: 0;
     box-shadow: 0 10px 30px rgba(7, 115, 75, 0.3);
     border: 5px solid white;
+    overflow: hidden;
+    position: relative;
+}
+
+.user-avatar-large::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transform: rotate(45deg);
+    animation: shine 3s infinite;
+}
+
+@keyframes shine {
+    0% {
+        transform: translateX(-100%) translateY(-100%) rotate(45deg);
+    }
+    100% {
+        transform: translateX(100%) translateY(100%) rotate(45deg);
+    }
 }
 
 .user-avatar-large img {
@@ -111,6 +231,8 @@ body {
     font-size: 3rem;
     color: white;
     font-weight: 800;
+    position: relative;
+    z-index: 1;
 }
 
 .user-info-text h2 {
@@ -141,13 +263,35 @@ body {
     font-weight: 600;
 }
 
-/* Form Sections */
+/* ==================== FORM SECTIONS - Ley de Proximidad ==================== */
 .form-section {
     margin-bottom: 3rem;
     padding: 2rem;
     background: linear-gradient(135deg, #f8f9fa, #ffffff);
     border-radius: 20px;
     border: 2px solid #f3f4f6;
+    transition: all 0.3s ease;
+    animation: fadeInUp 0.6s ease backwards;
+}
+
+.form-section:nth-child(1) { animation-delay: 0.1s; }
+.form-section:nth-child(2) { animation-delay: 0.2s; }
+.form-section:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.form-section:hover {
+    border-color: var(--color-primary-light);
+    box-shadow: 0 4px 20px rgba(7, 115, 75, 0.1);
 }
 
 .form-section h3 {
@@ -155,6 +299,9 @@ body {
     color: var(--color-primary-dark);
     margin-bottom: 0.5rem;
     font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .section-subtitle {
@@ -163,7 +310,7 @@ body {
     font-size: 1rem;
 }
 
-/* Star Rating Input */
+/* ==================== STAR RATING INPUT - Microinteracciones ==================== */
 .star-rating-input {
     display: flex;
     flex-direction: row-reverse;
@@ -180,20 +327,51 @@ body {
     font-size: 4rem;
     color: #d1d5db;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s var(--transition-smooth);
+    position: relative;
+}
+
+/* Efecto de brillo en hover */
+.star-rating-input label::after {
+    content: '⭐';
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    transform: scale(0);
+    transition: all 0.3s var(--transition-smooth);
 }
 
 .star-rating-input label:hover,
-.star-rating-input label:hover ~ label,
+.star-rating-input label:hover ~ label {
+    color: var(--color-gold);
+    transform: scale(1.2) rotate(-5deg);
+}
+
+.star-rating-input label:hover::after {
+    opacity: 1;
+    transform: scale(1.5) rotate(15deg);
+}
+
 .star-rating-input input:checked ~ label {
     color: var(--color-gold);
-    transform: scale(1.1);
+    animation: starPop 0.5s ease;
+}
+
+@keyframes starPop {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.3) rotate(10deg);
+    }
 }
 
 .star-rating-input label:hover {
     filter: drop-shadow(0 0 15px rgba(245, 158, 11, 0.6));
 }
 
+/* Descripción de rating - Nielsen: Feedback Visual */
 .rating-description {
     text-align: center;
     font-size: 1.2rem;
@@ -201,9 +379,15 @@ body {
     color: var(--color-primary);
     min-height: 30px;
     transition: all 0.3s ease;
+    opacity: 0;
 }
 
-/* Aspects Grid */
+.rating-description.active {
+    opacity: 1;
+    transform: scale(1.05);
+}
+
+/* ==================== ASPECTS GRID - Ley de Semejanza ==================== */
 .aspects-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -216,11 +400,31 @@ body {
     border-radius: 15px;
     border: 2px solid #e5e7eb;
     transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.aspect-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-primary-light));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+}
+
+.aspect-item:hover::before {
+    transform: scaleX(1);
 }
 
 .aspect-item:hover {
     border-color: var(--color-primary);
     box-shadow: 0 4px 15px rgba(7, 115, 75, 0.1);
+    transform: translateY(-2px);
 }
 
 .aspect-item label {
@@ -251,12 +455,16 @@ body {
 }
 
 .aspect-rating label:hover,
-.aspect-rating label:hover ~ label,
+.aspect-rating label:hover ~ label {
+    color: var(--color-gold);
+    transform: scale(1.2);
+}
+
 .aspect-rating input:checked ~ label {
     color: var(--color-gold);
 }
 
-/* Comment Textarea */
+/* ==================== COMMENT TEXTAREA - Nielsen: Libertad del Usuario ==================== */
 .comment-textarea {
     width: 100%;
     padding: 1.5rem;
@@ -266,6 +474,12 @@ body {
     font-family: inherit;
     resize: vertical;
     transition: all 0.3s ease;
+    line-height: 1.6;
+    min-height: 150px;
+}
+
+.comment-textarea:hover {
+    border-color: #d1d5db;
 }
 
 .comment-textarea:focus {
@@ -279,6 +493,7 @@ body {
     font-size: 0.9rem;
     color: #999;
     margin-top: 0.5rem;
+    transition: color 0.3s ease;
 }
 
 .char-counter span {
@@ -286,7 +501,15 @@ body {
     color: var(--color-primary);
 }
 
-/* Form Actions */
+.char-counter.warning {
+    color: var(--color-gold);
+}
+
+.char-counter.danger {
+    color: #dc2626;
+}
+
+/* ==================== FORM ACTIONS ==================== */
 .form-actions {
     display: flex;
     gap: 1rem;
@@ -295,7 +518,7 @@ body {
     flex-wrap: wrap;
 }
 
-/* Buttons */
+/* ==================== BUTTONS - Affordances Claras ==================== */
 .btn {
     display: inline-flex;
     align-items: center;
@@ -304,10 +527,30 @@ body {
     border-radius: 30px;
     font-weight: 600;
     text-decoration: none;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s var(--transition-smooth);
     border: none;
     cursor: pointer;
     font-size: 1rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.btn:active::before {
+    width: 300px;
+    height: 300px;
 }
 
 .btn-xlarge {
@@ -341,9 +584,10 @@ body {
     background: var(--color-primary);
     color: white;
     transform: translateY(-3px);
+    box-shadow: 0 4px 15px rgba(7, 115, 75, 0.2);
 }
 
-/* Rating Info */
+/* ==================== INFO BOX - Nielsen: Ayuda y Documentación ==================== */
 .rating-info {
     margin-top: 3rem;
     padding-top: 2rem;
@@ -357,6 +601,18 @@ body {
     background: linear-gradient(135deg, #dbeafe, #e0f2fe);
     border-radius: 15px;
     border-left: 5px solid #3b82f6;
+    animation: slideInRight 0.5s ease;
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 
 .info-box svg {
@@ -375,7 +631,7 @@ body {
     line-height: 1.6;
 }
 
-/* Wave Divider */
+/* ==================== WAVE DIVIDER ==================== */
 .wave-divider {
     margin-top: 4rem;
 }
@@ -386,7 +642,7 @@ body {
     display: block;
 }
 
-/* Responsive */
+/* ==================== RESPONSIVE DESIGN ==================== */
 @media (max-width: 768px) {
     .rating-hero-content h1 {
         font-size: 2rem;
@@ -452,5 +708,43 @@ body {
     .btn-xlarge {
         padding: 1.2rem 2rem;
         font-size: 1.05rem;
+    }
+}
+
+/* ==================== ACCESIBILIDAD ==================== */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+*:focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+/* ==================== ESTADOS DE CARGA ==================== */
+.btn.loading {
+    pointer-events: none;
+    position: relative;
+}
+
+.btn.loading::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
     }
 }

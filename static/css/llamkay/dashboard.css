@@ -1,33 +1,64 @@
 /* =============================================
-   DASHBOARD - LLAMKAY.PE
+   DASHBOARD - LLAMKAY.PE - DISEÑO MEJORADO
+   Aplicando Leyes de Gestalt y Principios de Nielsen
    ============================================= */
 
 :root {
+    /* Colores principales */
     --color-primary: #07734B;
     --color-primary-dark: #034D31;
     --color-primary-light: #15AC75;
     --color-secondary: #9EBC8A;
     --color-secondary-light: #B5C99A;
     --color-accent: #EEEDEB;
+    
+    /* Colores de texto */
     --color-text: #1a1a1a;
     --color-text-light: #666666;
+    --color-text-muted: #999999;
+    
+    /* Colores de fondo */
     --color-background: #ffffff;
     --color-background-alt: #f8f9fa;
+    --color-background-dark: #f1f3f5;
+    
+    /* Colores de estado - Principio 1: Visibilidad del Estado */
     --color-danger: #dc2626;
     --color-success: #10b981;
     --color-warning: #f59e0b;
     --color-info: #3b82f6;
+    
+    /* Sombras - Ley de Figura y Fondo */
+    --shadow-xs: 0 1px 3px rgba(0, 0, 0, 0.05);
     --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
     --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
     --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.16);
     --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.2);
+    
+    /* Radio de bordes - Principio 4: Consistencia */
+    --radius-xs: 4px;
     --radius-sm: 8px;
     --radius-md: 12px;
     --radius-lg: 16px;
     --radius-xl: 24px;
+    --radius-full: 9999px;
+    
+    /* Transiciones - Feedback visual */
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* Espaciado - Ley de Proximidad */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    --spacing-2xl: 3rem;
+    --spacing-3xl: 4rem;
 }
 
+/* ==================== RESET Y BASE ==================== */
 * {
     margin: 0;
     padding: 0;
@@ -40,43 +71,51 @@ body {
     background: var(--color-background-alt);
     line-height: 1.6;
     overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 .container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 2rem;
+    padding: 0 var(--spacing-xl);
 }
 
-/* ==================== HEADER ==================== */
+/* ==================== HEADER - Principio 1: Visibilidad del Estado ==================== */
 .header {
     position: sticky;
     top: 0;
     z-index: 1000;
     background: rgba(255, 255, 255, 0.98);
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(20px);
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
     box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+}
+
+.header.scrolled {
+    box-shadow: var(--shadow-md);
 }
 
 .navbar {
-    padding: 1rem 0;
+    padding: var(--spacing-md) 0;
 }
 
 .nav-container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 2rem;
+    padding: 0 var(--spacing-xl);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 2rem;
+    gap: var(--spacing-xl);
 }
 
+/* Logo - Ley de Experiencia Previa */
 .logo {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: var(--spacing-sm);
     font-size: 1.5rem;
     font-weight: 700;
     color: var(--color-primary);
@@ -84,24 +123,45 @@ body {
     transition: var(--transition);
 }
 
-.logo:hover {
+.logo:hover,
+.logo:focus {
     transform: scale(1.05);
 }
 
+/* Menú de navegación - Ley de Proximidad */
 .nav-menu {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: var(--spacing-sm);
     list-style: none;
 }
 
+/* Principio 4: Consistencia y Estándares */
 .nav-link {
-    padding: 0.75rem 1.25rem;
+    padding: var(--spacing-sm) var(--spacing-lg);
     color: var(--color-text);
     font-weight: 500;
     text-decoration: none;
     border-radius: var(--radius-sm);
     transition: var(--transition);
+    position: relative;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%) scaleX(0);
+    width: 80%;
+    height: 2px;
+    background: var(--color-primary);
+    transition: var(--transition);
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+    transform: translateX(-50%) scaleX(1);
 }
 
 .nav-link:hover,
@@ -110,12 +170,14 @@ body {
     color: var(--color-primary);
 }
 
+/* Acciones del navegador */
 .nav-actions {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: var(--spacing-md);
 }
 
+/* Botón de notificaciones - Principio 1: Visibilidad del Estado */
 .icon-button {
     position: relative;
     width: 40px;
@@ -131,12 +193,14 @@ body {
     color: var(--color-text);
 }
 
-.icon-button:hover {
+.icon-button:hover,
+.icon-button:focus {
     background: var(--color-primary);
     color: white;
-    transform: scale(1.05);
+    transform: scale(1.1);
 }
 
+/* Badge de notificación - Ley de Figura y Fondo */
 .notification-badge {
     position: absolute;
     top: -2px;
@@ -152,9 +216,15 @@ body {
     align-items: center;
     justify-content: center;
     border: 2px solid white;
+    animation: pulse 2s ease-in-out infinite;
 }
 
-/* ==================== USER MENU & DROPDOWN ==================== */
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+}
+
+/* ==================== USER MENU - Principio 3: Control y Libertad ==================== */
 .user-menu-wrapper {
     position: relative;
 }
@@ -162,18 +232,20 @@ body {
 .user-menu {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
     background: var(--color-background-alt);
-    border-radius: 50px;
+    border-radius: var(--radius-full);
     cursor: pointer;
     transition: var(--transition);
     border: 2px solid transparent;
 }
 
-.user-menu:hover {
+.user-menu:hover,
+.user-menu:focus {
     background: white;
     border-color: var(--color-primary);
+    box-shadow: var(--shadow-sm);
 }
 
 .user-menu.active {
@@ -217,10 +289,10 @@ body {
     transform: rotate(180deg);
 }
 
-/* ==================== DROPDOWN MENU ==================== */
+/* ==================== DROPDOWN MENU - Principio 6: Reconocimiento vs Recuerdo ==================== */
 .user-dropdown {
     position: absolute;
-    top: calc(100% + 0.75rem);
+    top: calc(100% + var(--spacing-sm));
     right: 0;
     min-width: 280px;
     background: white;
@@ -230,7 +302,7 @@ body {
     opacity: 0;
     visibility: hidden;
     transform: translateY(-10px);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: var(--transition);
     z-index: 1000;
     overflow: hidden;
 }
@@ -239,10 +311,22 @@ body {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
+    animation: dropdownFadeIn 0.2s ease;
+}
+
+@keyframes dropdownFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
 .dropdown-header {
-    padding: 1.25rem;
+    padding: var(--spacing-lg);
     background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
     color: white;
 }
@@ -250,7 +334,7 @@ body {
 .dropdown-user-info {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: var(--spacing-sm);
 }
 
 .dropdown-avatar {
@@ -279,7 +363,7 @@ body {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
+    gap: var(--spacing-xs);
     min-width: 0;
 }
 
@@ -306,14 +390,15 @@ body {
 }
 
 .dropdown-menu {
-    padding: 0.5rem;
+    padding: var(--spacing-sm);
 }
 
+/* Principio 6: Reconocimiento - Íconos claros */
 .dropdown-item {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem 1rem;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
     color: var(--color-text);
     text-decoration: none;
     border-radius: var(--radius-sm);
@@ -322,9 +407,11 @@ body {
     font-weight: 500;
 }
 
-.dropdown-item:hover {
+.dropdown-item:hover,
+.dropdown-item:focus {
     background: var(--color-background-alt);
     color: var(--color-primary);
+    transform: translateX(5px);
 }
 
 .dropdown-item svg {
@@ -337,44 +424,45 @@ body {
 }
 
 .dropdown-footer {
-    padding: 0.5rem;
+    padding: var(--spacing-sm);
 }
 
 .logout-item {
     color: var(--color-danger);
 }
 
-.logout-item:hover {
+.logout-item:hover,
+.logout-item:focus {
     background: rgba(220, 38, 38, 0.1);
     color: var(--color-danger);
 }
 
-@keyframes dropdownFadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-10px) scale(0.95);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
-
-.user-dropdown.active {
-    animation: dropdownFadeIn 0.2s ease;
-}
-
-/* ==================== WELCOME SECTION ==================== */
+/* ==================== WELCOME SECTION - Principio 8: Diseño Minimalista ==================== */
 .welcome-section {
     background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
-    padding: 3rem 0;
+    padding: var(--spacing-2xl) 0;
     color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.welcome-section::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    border-radius: 50%;
 }
 
 .welcome-content h1 {
-    font-size: 2.5rem;
+    font-size: clamp(2rem, 4vw, 2.5rem);
     font-weight: 700;
-    margin-bottom: 0.5rem;
+    margin-bottom: var(--spacing-sm);
+    position: relative;
+    z-index: 1;
 }
 
 .text-highlight {
@@ -382,41 +470,49 @@ body {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    display: inline-block;
 }
 
 .welcome-content p {
     font-size: 1.1rem;
     opacity: 0.9;
-    margin-bottom: 2rem;
+    margin-bottom: var(--spacing-xl);
+    position: relative;
+    z-index: 1;
 }
 
+/* Quick Actions - Ley de Proximidad */
 .quick-actions {
     display: flex;
-    gap: 1rem;
+    gap: var(--spacing-md);
     flex-wrap: wrap;
+    position: relative;
+    z-index: 1;
 }
 
 .quick-action-btn {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 1rem 2rem;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md) var(--spacing-xl);
     border-radius: var(--radius-lg);
     font-weight: 600;
     font-size: 1rem;
     text-decoration: none;
     transition: var(--transition);
-    border: none;
+    border: 2px solid;
     cursor: pointer;
 }
 
 .btn-primary {
     background: white;
     color: var(--color-primary);
+    border-color: white;
     box-shadow: var(--shadow-lg);
 }
 
-.btn-primary:hover {
+.btn-primary:hover,
+.btn-primary:focus {
     transform: translateY(-3px);
     box-shadow: var(--shadow-xl);
 }
@@ -424,41 +520,45 @@ body {
 .btn-ghost {
     background: rgba(255, 255, 255, 0.1);
     color: white;
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.3);
     backdrop-filter: blur(10px);
 }
 
-.btn-ghost:hover {
+.btn-ghost:hover,
+.btn-ghost:focus {
     background: rgba(255, 255, 255, 0.2);
     border-color: rgba(255, 255, 255, 0.5);
 }
 
-/* ==================== STATS SECTION ==================== */
+/* ==================== STATS SECTION - Ley de Semejanza ==================== */
 .stats-section {
-    padding: 3rem 0;
+    padding: var(--spacing-2xl) 0;
 }
 
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
+    gap: var(--spacing-lg);
     margin-top: -4rem;
 }
 
+/* Stat Cards - Ley de Figura y Fondo */
 .stat-card {
     background: white;
-    padding: 2rem;
+    padding: var(--spacing-xl);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-md);
     display: flex;
     align-items: center;
-    gap: 1.5rem;
+    gap: var(--spacing-lg);
     transition: var(--transition);
+    border-left: 4px solid transparent;
 }
 
 .stat-card:hover {
     transform: translateY(-5px);
     box-shadow: var(--shadow-lg);
+    border-left-color: var(--color-primary);
 }
 
 .stat-icon {
@@ -470,13 +570,18 @@ body {
     justify-content: center;
     color: white;
     flex-shrink: 0;
+    transition: var(--transition);
+}
+
+.stat-card:hover .stat-icon {
+    transform: rotate(5deg) scale(1.1);
 }
 
 .stat-content h3 {
     font-size: 2rem;
     font-weight: 700;
     color: var(--color-text);
-    margin-bottom: 0.25rem;
+    margin-bottom: var(--spacing-xs);
 }
 
 .stat-content p {
@@ -484,31 +589,37 @@ body {
     color: var(--color-text-light);
 }
 
-/* ==================== MAIN CONTENT ==================== */
+/* ==================== MAIN CONTENT - Ley de Continuidad ==================== */
 .main-content {
-    padding: 2rem 0 4rem;
+    padding: var(--spacing-xl) 0 var(--spacing-3xl);
 }
 
 .content-grid {
     display: grid;
     grid-template-columns: 1fr 350px;
-    gap: 2rem;
+    gap: var(--spacing-xl);
 }
 
 .content-card,
 .sidebar-card {
     background: white;
     border-radius: var(--radius-lg);
-    padding: 2rem;
+    padding: var(--spacing-xl);
     box-shadow: var(--shadow-sm);
-    margin-bottom: 2rem;
+    margin-bottom: var(--spacing-xl);
+    transition: var(--transition);
+}
+
+.content-card:hover,
+.sidebar-card:hover {
+    box-shadow: var(--shadow-md);
 }
 
 .card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1.5rem;
+    margin-bottom: var(--spacing-lg);
 }
 
 .card-header h2 {
@@ -524,31 +635,34 @@ body {
     transition: var(--transition);
 }
 
-.view-all:hover {
+.view-all:hover,
+.view-all:focus {
     color: var(--color-primary-dark);
     text-decoration: underline;
 }
 
-/* ==================== ACTIVITY LIST ==================== */
+/* ==================== ACTIVITY LIST - Principio 1: Visibilidad del Estado ==================== */
 .activity-list {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: var(--spacing-md);
 }
 
 .activity-item {
     display: flex;
     align-items: flex-start;
-    gap: 1rem;
-    padding: 1rem;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
     background: var(--color-background-alt);
     border-radius: var(--radius-md);
     transition: var(--transition);
+    border-left: 3px solid transparent;
 }
 
 .activity-item:hover {
     background: #e8f5f0;
     transform: translateX(5px);
+    border-left-color: var(--color-primary);
 }
 
 .activity-icon {
@@ -583,7 +697,7 @@ body {
 .activity-content p {
     font-size: 0.95rem;
     color: var(--color-text);
-    margin-bottom: 0.25rem;
+    margin-bottom: var(--spacing-xs);
 }
 
 .activity-time {
@@ -591,15 +705,15 @@ body {
     color: var(--color-text-light);
 }
 
-/* ==================== JOBS LIST ==================== */
+/* ==================== JOBS LIST - Ley de Proximidad ==================== */
 .jobs-list {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: var(--spacing-lg);
 }
 
 .job-card {
-    padding: 1.5rem;
+    padding: var(--spacing-lg);
     border: 2px solid var(--color-background-alt);
     border-radius: var(--radius-lg);
     transition: var(--transition);
@@ -614,8 +728,8 @@ body {
 .job-header {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    margin-bottom: 1rem;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
 }
 
 .job-icon {
@@ -627,6 +741,11 @@ body {
     justify-content: center;
     background: var(--color-background-alt);
     border-radius: var(--radius-md);
+    transition: var(--transition);
+}
+
+.job-card:hover .job-icon {
+    transform: rotate(-5deg) scale(1.1);
 }
 
 .job-info {
@@ -636,7 +755,7 @@ body {
 .job-info h3 {
     font-size: 1.1rem;
     color: var(--color-text);
-    margin-bottom: 0.25rem;
+    margin-bottom: var(--spacing-xs);
 }
 
 .job-info h3 a {
@@ -645,7 +764,8 @@ body {
     transition: var(--transition);
 }
 
-.job-info h3 a:hover {
+.job-info h3 a:hover,
+.job-info h3 a:focus {
     color: var(--color-primary);
 }
 
@@ -656,7 +776,7 @@ body {
 
 .job-badge {
     padding: 0.4rem 0.8rem;
-    border-radius: 50px;
+    border-radius: var(--radius-full);
     font-size: 0.8rem;
     font-weight: 600;
 }
@@ -669,19 +789,20 @@ body {
 .job-badge.urgent {
     background: rgba(220, 38, 38, 0.1);
     color: var(--color-danger);
+    animation: pulse 2s ease-in-out infinite;
 }
 
 .job-description {
     font-size: 0.95rem;
     color: var(--color-text-light);
     line-height: 1.5;
-    margin-bottom: 1rem;
+    margin-bottom: var(--spacing-md);
 }
 
 .job-footer {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: var(--spacing-md);
     flex-wrap: wrap;
 }
 
@@ -698,13 +819,13 @@ body {
 }
 
 .btn-small {
-    padding: 0.5rem 1.25rem;
+    padding: var(--spacing-sm) var(--spacing-lg);
     border-radius: var(--radius-sm);
     font-weight: 600;
     font-size: 0.9rem;
     text-decoration: none;
     transition: var(--transition);
-    border: none;
+    border: 2px solid;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
@@ -714,20 +835,25 @@ body {
 .btn-small.btn-primary {
     background: var(--color-primary);
     color: white;
+    border-color: var(--color-primary);
 }
 
-.btn-small.btn-primary:hover {
+.btn-small.btn-primary:hover,
+.btn-small.btn-primary:focus {
     background: var(--color-primary-dark);
+    border-color: var(--color-primary-dark);
     transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
 }
 
 .btn-small.btn-ghost {
     background: transparent;
     color: var(--color-primary);
-    border: 2px solid var(--color-primary);
+    border-color: var(--color-primary);
 }
 
-.btn-small.btn-ghost:hover {
+.btn-small.btn-ghost:hover,
+.btn-small.btn-ghost:focus {
     background: var(--color-primary);
     color: white;
 }
@@ -736,48 +862,57 @@ body {
     width: 100%;
 }
 
-/* ==================== SIDEBAR ==================== */
+/* ==================== SIDEBAR - Ley de Proximidad ==================== */
 .sidebar-card h3 {
     font-size: 1.2rem;
     color: var(--color-text);
-    margin-bottom: 1rem;
+    margin-bottom: var(--spacing-md);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
 }
 
+.sidebar-card h3 svg {
+    color: var(--color-primary);
+}
+
+/* Progress Bar - Principio 1: Visibilidad del Estado */
 .progress-bar {
     width: 100%;
     height: 8px;
     background: var(--color-background-alt);
-    border-radius: 50px;
+    border-radius: var(--radius-full);
     overflow: hidden;
-    margin-bottom: 0.5rem;
+    margin-bottom: var(--spacing-sm);
 }
 
 .progress-fill {
     height: 100%;
     background: linear-gradient(90deg, var(--color-primary), var(--color-primary-light));
-    border-radius: 50px;
-    transition: width 0.3s ease;
+    border-radius: var(--radius-full);
+    transition: width 0.6s ease;
 }
 
 .progress-text {
     font-size: 0.9rem;
     color: var(--color-text-light);
-    margin-bottom: 1.5rem;
+    margin-bottom: var(--spacing-lg);
 }
 
 .profile-tasks {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
-    margin-bottom: 1.5rem;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-lg);
 }
 
 .task-item {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: var(--spacing-sm);
     font-size: 0.95rem;
     color: var(--color-text);
+    transition: var(--transition);
 }
 
 .task-item svg {
@@ -790,13 +925,14 @@ body {
 
 .task-item:not(.completed) {
     color: var(--color-text-light);
+    opacity: 0.7;
 }
 
 .quick-stat {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.75rem 0;
+    padding: var(--spacing-sm) 0;
     border-bottom: 1px solid var(--color-background-alt);
 }
 
@@ -815,6 +951,7 @@ body {
     color: var(--color-primary);
 }
 
+/* Tips Card */
 .tips-card {
     background: linear-gradient(135deg, #FFF7ED, #FFEDD5);
     border: 2px solid #FED7AA;
@@ -822,12 +959,12 @@ body {
 
 .tips-icon {
     font-size: 2rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: var(--spacing-sm);
 }
 
 .tips-card h3 {
     color: #92400E;
-    margin-bottom: 0.75rem;
+    margin-bottom: var(--spacing-sm);
 }
 
 .tips-card p {
@@ -836,17 +973,101 @@ body {
     line-height: 1.6;
 }
 
+/* ==================== NOTIFICACIONES - Principio 1: Visibilidad ==================== */
+.notificaciones-preview {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.notificacion-preview-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    background: var(--color-background-alt);
+    text-decoration: none;
+    transition: var(--transition);
+    border-left: 3px solid transparent;
+}
+
+.notificacion-preview-item:hover {
+    background: #f3f4f6;
+    transform: translateX(4px);
+    box-shadow: var(--shadow-xs);
+}
+
+.notificacion-preview-item.no-leida {
+    background: #f0f9ff;
+    border-left-color: var(--color-primary);
+}
+
+.notif-icon {
+    font-size: 1.5rem;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border-radius: var(--radius-sm);
+    flex-shrink: 0;
+    box-shadow: var(--shadow-xs);
+}
+
+.notif-icon.postulacion {
+    background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+}
+
+.notif-icon.mensaje {
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+}
+
+.notif-icon.contrato {
+    background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+}
+
+.notif-icon.pago {
+    background: linear-gradient(135deg, #fce7f3, #fbcfe8);
+}
+
+.notif-icon.calificacion {
+    background: linear-gradient(135deg, #fee2e2, #fecaca);
+}
+
+.notif-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.notif-content strong {
+    display: block;
+    color: var(--color-text);
+    font-size: 0.875rem;
+    margin-bottom: var(--spacing-xs);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.notif-time {
+    color: var(--color-text-light);
+    font-size: 0.75rem;
+}
+
+/* Mensajes Preview */
 .mensajes-preview {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: var(--spacing-sm);
 }
 
 .mensaje-item {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm);
     background: var(--color-background-alt);
     border-radius: var(--radius-md);
     text-decoration: none;
@@ -888,7 +1109,7 @@ body {
     display: block;
     font-size: 0.9rem;
     color: var(--color-text);
-    margin-bottom: 0.25rem;
+    margin-bottom: var(--spacing-xs);
 }
 
 .mensaje-info p {
@@ -904,24 +1125,24 @@ body {
 .footer {
     background: var(--color-primary-dark);
     color: white;
-    padding: 3rem 0 1.5rem;
-    margin-top: 4rem;
+    padding: var(--spacing-2xl) 0 var(--spacing-lg);
+    margin-top: var(--spacing-3xl);
 }
 
 .footer-container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 2rem;
+    padding: 0 var(--spacing-xl);
     display: grid;
     grid-template-columns: 1.5fr 2fr;
-    gap: 3rem;
-    margin-bottom: 2rem;
+    gap: var(--spacing-2xl);
+    margin-bottom: var(--spacing-xl);
 }
 
 .footer-logo {
     font-size: 1.5rem;
     font-weight: 700;
-    margin-bottom: 1rem;
+    margin-bottom: var(--spacing-md);
 }
 
 .footer-brand p {
@@ -932,12 +1153,12 @@ body {
 .footer-links {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 2rem;
+    gap: var(--spacing-xl);
 }
 
 .footer-column h4 {
     font-size: 1rem;
-    margin-bottom: 1rem;
+    margin-bottom: var(--spacing-md);
 }
 
 .footer-column ul {
@@ -945,7 +1166,7 @@ body {
 }
 
 .footer-column li {
-    margin-bottom: 0.5rem;
+    margin-bottom: var(--spacing-sm);
 }
 
 .footer-column a {
@@ -955,7 +1176,8 @@ body {
     font-size: 0.95rem;
 }
 
-.footer-column a:hover {
+.footer-column a:hover,
+.footer-column a:focus {
     color: white;
     padding-left: 5px;
 }
@@ -963,7 +1185,7 @@ body {
 .footer-bottom {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 1.5rem 2rem 0;
+    padding: var(--spacing-lg) var(--spacing-xl) 0;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     text-align: center;
 }
@@ -973,7 +1195,7 @@ body {
     font-size: 0.9rem;
 }
 
-/* ==================== RESPONSIVE ==================== */
+/* ==================== RESPONSIVE - Responsividad ==================== */
 @media (max-width: 1024px) {
     .content-grid {
         grid-template-columns: 1fr;
@@ -1012,12 +1234,12 @@ body {
     }
     
     .user-menu {
-        padding: 0.5rem;
+        padding: var(--spacing-sm);
     }
     
     .footer-container {
         grid-template-columns: 1fr;
-        gap: 2rem;
+        gap: var(--spacing-xl);
     }
     
     .footer-links {
@@ -1043,12 +1265,12 @@ body {
 
 @media (max-width: 480px) {
     .container {
-        padding: 0 1rem;
+        padding: 0 var(--spacing-md);
     }
     
     .content-card,
     .sidebar-card {
-        padding: 1.5rem;
+        padding: var(--spacing-lg);
     }
     
     .welcome-content h1 {
@@ -1063,231 +1285,9 @@ body {
     .btn-small {
         width: 100%;
     }
-}
-
-/* Estilos adicionales para notificaciones preview */
-.notificaciones-preview {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.notificacion-preview-item {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem;
-    border-radius: 8px;
-    background: #f9fafb;
-    text-decoration: none;
-    transition: all 0.2s ease;
-}
-
-.notificacion-preview-item:hover {
-    background: #f3f4f6;
-    transform: translateX(4px);
-}
-
-.notificacion-preview-item.no-leida {
-    background: #f0f9ff;
-    border-left: 3px solid #07734B;
-}
-
-.notif-icon {
-    font-size: 1.5rem;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: white;
-    border-radius: 8px;
-    flex-shrink: 0;
-}
-
-.notif-content {
-    flex: 1;
-    min-width: 0;
-}
-
-.notif-content strong {
-    display: block;
-    color: #1f2937;
-    font-size: 0.875rem;
-    margin-bottom: 0.25rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.notif-time {
-    color: #6b7280;
-    font-size: 0.75rem;
-}
-
-/* ========================================
-   ESTILOS PARA NOTIFICACIONES EN DASHBOARD
-   ======================================== */
-
-/* Botón de notificaciones en header */
-.icon-button {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 8px;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    color: #ffffff;
-}
-
-.icon-button:hover {
-    background: #f3f4f6;
-    color: #07734B;
-}
-
-.notification-badge {
-    position: absolute;
-    top: -4px;
-    right: -4px;
-    background: #ef4444;
-    color: white;
-    font-size: 11px;
-    font-weight: 600;
-    padding: 2px 6px;
-    border-radius: 10px;
-    min-width: 18px;
-    text-align: center;
-    animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-    0%, 100% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.1);
-    }
-}
-
-/* Preview de notificaciones en sidebar */
-.notificaciones-preview {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.notificacion-preview-item {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem;
-    border-radius: 8px;
-    background: #f9fafb;
-    text-decoration: none;
-    transition: all 0.2s ease;
-    border-left: 3px solid transparent;
-}
-
-.notificacion-preview-item:hover {
-    background: #f3f4f6;
-    transform: translateX(4px);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.notificacion-preview-item.no-leida {
-    background: #f0f9ff;
-    border-left-color: #07734B;
-}
-
-.notificacion-preview-item.no-leida .notif-content strong {
-    color: #07734B;
-}
-
-.notif-icon {
-    font-size: 1.5rem;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: white;
-    border-radius: 8px;
-    flex-shrink: 0;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.notif-icon.postulacion {
-    background: linear-gradient(135deg, #dbeafe, #bfdbfe);
-}
-
-.notif-icon.mensaje {
-    background: linear-gradient(135deg, #fef3c7, #fde68a);
-}
-
-.notif-icon.contrato {
-    background: linear-gradient(135deg, #d1fae5, #a7f3d0);
-}
-
-.notif-icon.pago {
-    background: linear-gradient(135deg, #fce7f3, #fbcfe8);
-}
-
-.notif-icon.calificacion {
-    background: linear-gradient(135deg, #fee2e2, #fecaca);
-}
-
-.notif-content {
-    flex: 1;
-    min-width: 0;
-}
-
-.notif-content strong {
-    display: block;
-    color: #1f2937;
-    font-size: 0.875rem;
-    margin-bottom: 0.25rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.notif-time {
-    color: #6b7280;
-    font-size: 0.75rem;
-}
-
-/* Badge en dropdown */
-.dropdown-item .badge {
-    margin-left: auto;
-    background: #07734B;
-    color: white;
-    padding: 2px 8px;
-    border-radius: 12px;
-    font-size: 11px;
-    font-weight: 600;
-}
-
-/* Sidebar card con notificaciones */
-.sidebar-card h3 {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-}
-
-.sidebar-card h3 svg {
-    color: #07734B;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
+    
     .notificacion-preview-item {
-        padding: 0.5rem;
+        padding: var(--spacing-sm);
     }
     
     .notif-icon {
@@ -1299,4 +1299,64 @@ body {
     .notif-content strong {
         font-size: 0.8125rem;
     }
+}
+
+/* ==================== ACCESIBILIDAD ==================== */
+/* Focus visible para navegación con teclado */
+*:focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: var(--radius-xs);
+}
+
+/* Reducir movimiento para usuarios con preferencias */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Alto contraste */
+@media (prefers-contrast: high) {
+    :root {
+        --color-text: #000000;
+        --color-text-light: #333333;
+        --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+        --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+    }
+}
+
+/* ==================== UTILIDADES ==================== */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+/* Loading states */
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+    cursor: wait;
+}
+
+.skeleton {
+    background: linear-gradient(90deg, var(--color-background-alt) 25%, var(--color-background-dark) 50%, var(--color-background-alt) 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s ease-in-out infinite;
+}
+
+@keyframes loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
 }
