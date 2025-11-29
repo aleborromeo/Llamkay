@@ -248,16 +248,16 @@
             <div class="stat-number">{{ postulaciones|length }}</div>
             <div class="stat-label">Total Postulaciones</div>
         </div>
-        <div class="stat-box">
-            <div class="stat-number">{{ postulaciones|selectattr:"estado", "equalto", "pendiente"|list|length }}</div>
+       <div class="stat-box">
+            <div class="stat-number">{{ pendientes }}</div>
             <div class="stat-label">Pendientes</div>
         </div>
         <div class="stat-box">
-            <div class="stat-number">{{ postulaciones|selectattr:"estado", "equalto", "aceptada"|list|length }}</div>
+            <div class="stat-number">{{ aceptadas }}</div>
             <div class="stat-label">Aceptadas</div>
         </div>
         <div class="stat-box">
-            <div class="stat-number">{{ postulaciones|selectattr:"estado", "equalto", "rechazada"|list|length }}</div>
+            <div class="stat-number">{{ rechazadas }}</div>
             <div class="stat-label">Rechazadas</div>
         </div>
     </div>

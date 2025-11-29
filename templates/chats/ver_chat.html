@@ -11,7 +11,7 @@
 {% endblock %}
 
 {% block content %}
-<body class="chat-body">
+<div class="chat-body">
     <header class="chat-header">
         <a href="{% url 'chats:lista_chats' %}" class="back-btn">←</a>
         <div class="chat-user">
@@ -22,7 +22,7 @@
             {% endif %}
             <strong>{{ nombre_otro_usuario }}</strong>
         </div>
-        
+
         <button class="chat-settings-btn" title="Ajustes del chat">
             ⚙️
         </button>
@@ -32,7 +32,7 @@
         <div class="messages">
             {% if mensajes %}
                 {% for mensaje in mensajes %}
-                    <div class="message {% if mensaje.remitente == usuario_actual %}sent{% else %}received{% endif %}" data-mensaje-id="{{ mensaje.id_mensaje }}">
+                    <div class="message {% if mensaje.id_remitente == usuario_actual %}sent{% else %}received{% endif %}" data-mensaje-id="{{ mensaje.id_mensaje }}">
                         <div class="message-content">
                             <p>
                                 {% if mensaje.editado %}
@@ -41,9 +41,9 @@
                                     {{ mensaje.contenido }}
                                 {% endif %}
                             </p>
-                            <small>{{ mensaje.fecha_envio|date:"d/m H:i" }}</small>
-                            
-                            {% if mensaje.remitente == usuario_actual %}
+                            <small>{{ mensaje.created_at|date:"d/m H:i" }}</small>
+
+                            {% if mensaje.id_remitente == usuario_actual %}
                                 <div class="message-actions">
                                     <button class="action-btn edit-btn" data-mensaje-id="{{ mensaje.id_mensaje }}" data-contenido="{{ mensaje.contenido|escapejs }}"></button>
                                     <button class="action-btn delete-btn" data-mensaje-id="{{ mensaje.id_mensaje }}"></button>
@@ -57,7 +57,7 @@
                     <p>¡Comienza una nueva conversación! 💬</p>
                 </div>
             {% endif %}
-            
+
             <div class="message-spacer"></div>
         </div>
 
@@ -111,7 +111,7 @@
 
         <!-- Tipo de fuente -->
         <div class="setting-section">
-            <div class="setting-label">🔤 Tipo de letra</div>
+            <div class="setting-label">🛠 Tipo de letra</div>
             <div class="font-selector">
                 <div class="font-option font-roboto" data-font="roboto">Roboto (por defecto)</div>
                 <div class="font-option font-open-sans" data-font="open-sans">Open Sans</div>
@@ -131,9 +131,9 @@
             </div>
         </div>
 
-        <button type="button" class="reset-btn">🔄 Restaurar valores predeterminados</button>
+        <button type="button" class="reset-btn">🧼 Restaurar valores predeterminados</button>
     </div>
-</body>
+</div>
 {% endblock %}
 
 {% block extra_js %}

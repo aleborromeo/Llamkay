@@ -29,6 +29,12 @@ def ver_postulantes(request, oferta_id, tipo):
             estado=estado_filtro
         )
         
+        postulaciones = resultado['postulaciones']
+
+        pendientes = postulaciones.filter(estado="pendiente").count()
+        aceptadas = postulaciones.filter(estado="aceptada").count()
+        rechazadas = postulaciones.filter(estado="rechazada").count()
+        
         context = {
             'postulaciones': resultado['postulaciones'],
             'estadisticas': resultado['estadisticas'],
