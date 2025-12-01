@@ -2,174 +2,180 @@
    ESTILOS ESPECÍFICOS PARA LISTA DE CHATS
    =================================== */
 
-.search-form {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    width: 100%;
-}
-
-.search-input {
-    flex: 1;
-    padding: 8px 12px;
-    border: 1px solid #ddd;
-    border-radius: 20px;
-    outline: none;
-    font-size: 14px;
-    transition: all 0.3s ease;
-}
-
-.search-input:focus {
-    border-color: #667eea;
-    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
-}
-
-.search-btn {
-    background: none;
-    border: none;
-    font-size: 16px;
-    cursor: pointer;
-    padding: 5px;
-    border-radius: 50%;
-    transition: all 0.3s ease;
-}
-
-.search-btn:hover {
-    background: rgba(0, 0, 0, 0.05);
-}
-
-.clear-search {
-    color: #666;
-    text-decoration: none;
-    font-size: 14px;
-    padding: 5px;
-    border-radius: 50%;
-    transition: all 0.3s ease;
-}
-
-.clear-search:hover {
-    background: rgba(244, 67, 54, 0.1);
-    color: #f44336;
-}
-
-.search-info {
-    background: #f0f0f0;
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 5px;
-    font-size: 14px;
-}
-
-.username {
-    color: #f0f0f0;
-    font-size: 0.9em;
-    font-weight: normal;
-    margin-left: 10px;
-}
-
-.chat-details strong {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.dashboard-btn {
-    color: #034D31;
-    font-weight: bold;
-    text-decoration: none;
-    margin: 0;
-    padding: 10px 18px;
-    border-radius: 25px;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    position: relative;
-    font-size: 15px;
-    background: rgba(238, 237, 235, 0.9);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    backdrop-filter: blur(10px);
-}
-
-.dashboard-btn::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 0;
-    height: 100%;
-    background: linear-gradient(45deg, #034D31, #097a4f);
-    border-radius: 25px;
-    transition: width 0.4s ease;
-    z-index: -1;
-}
-
-.dashboard-btn:hover {
-    color: white;
-    text-decoration: none;
-}
-
-.dashboard-btn:hover::before {
-    width: 100%;
-}
-
+/* Barra superior (Dashboard + logo + buscador) */
 .top-bar {
+    max-width: 1100px;
+    margin: 32px auto 8px;
+    padding: 12px 18px;
+    background: #ffffff;
+    border-radius: 18px;
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.06);
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 16px;
 }
 
 .left-section {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 14px;
 }
 
+/* Botón "Dashboard" estilo pastilla */
+.dashboard-btn {
+    color: #0f766e;
+    font-weight: 600;
+    text-decoration: none;
+    margin: 0;
+    padding: 8px 16px;
+    border-radius: 999px;
+    transition: all 0.2s ease;
+    position: relative;
+    font-size: 14px;
+    background: #ecfdf5;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.dashboard-btn:hover {
+    background: #d1fae5;
+    border-color: rgba(16, 185, 129, 0.6);
+    transform: translateY(-1px);
+}
+
+/* Logo pequeño */
+.top-bar .logo {
+    font-family: "Lilita One", system-ui, sans-serif;
+    font-size: 20px;
+    color: #111827;
+}
+
+/* Buscador */
 .search-wrapper {
     flex: 1;
     display: flex;
     justify-content: center;
-    max-width: 500px;
+    max-width: 420px;
     margin: 0 auto;
 }
 
-.unread-badge {
-    background: #f44336;
-    color: white;
-    border-radius: 12px;
-    padding: 2px 8px;
-    font-size: 12px;
-    font-weight: bold;
+.search-form {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    background: #f3f4f6;
+    padding: 4px 8px;
+    border-radius: 999px;
+    border: 1px solid #e5e7eb;
+}
+
+.search-input {
+    flex: 1;
+    padding: 8px 10px;
+    border: none;
+    border-radius: 999px;
+    outline: none;
+    font-size: 14px;
+    background: transparent;
+    color: #111827;
+}
+
+.search-input::placeholder {
+    color: #9ca3af;
+}
+
+.search-input:focus {
+    outline: none;
+}
+
+.search-btn {
+    background: #0f766e;
+    color: #ecfdf5;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 6px 9px;
+    border-radius: 999px;
+    transition: all 0.2s ease;
+    line-height: 1;
+}
+
+.search-btn:hover {
+    background: #115e59;
+}
+
+.clear-search {
+    color: #6b7280;
+    text-decoration: none;
+    font-size: 13px;
+    padding: 4px;
+    border-radius: 999px;
+    transition: all 0.2s ease;
+}
+
+.clear-search:hover {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+/* Info de búsqueda */
+.search-info {
+    background: #e5f3ef;
+    padding: 10px 12px;
+    margin-bottom: 12px;
+    border-radius: 10px;
+    font-size: 13px;
+    color: #065f46;
+}
+
+/* Username debajo del nombre en lista */
+.username {
+    color: #9ca3af;
+    font-size: 0.85rem;
+    font-weight: normal;
     margin-left: 10px;
 }
 
-/* Responsive para lista de chats */
+/* Badge de no leídos */
+.unread-badge {
+    background: #f97316;
+    color: white;
+    border-radius: 999px;
+    padding: 2px 8px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+/* Responsive */
 @media (max-width: 768px) {
+    .top-bar {
+        flex-wrap: wrap;
+        margin: 20px 12px 8px;
+        padding: 10px 12px;
+    }
+
     .search-wrapper {
-        max-width: 300px;
+        max-width: 100%;
+        order: 3;
     }
 
     .dashboard-btn {
-        padding: 8px 15px;
-        font-size: 14px;
+        padding: 7px 14px;
+        font-size: 13px;
     }
 }
 
 @media (max-width: 480px) {
     .top-bar {
-        flex-wrap: wrap;
         gap: 10px;
     }
 
     .left-section {
         gap: 10px;
-    }
-
-    .search-wrapper {
-        width: 100%;
-        max-width: 100%;
-        order: 3;
     }
 
     .dashboard-btn {
