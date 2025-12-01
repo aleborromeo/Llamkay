@@ -15,10 +15,12 @@ urlpatterns = [
     path('', include('apps.llamkay.urls')),  # Home/landing
     path('users/', include('apps.users.urls')),
     path('jobs/', include('apps.jobs.urls')),
+    path('empleadores/', include('apps.empleadores.urls')),
     path('chats/', include('apps.chats.urls')),
+    path('soporte/', include('apps.soporte.urls')),
 ]
 
-#Servir archivos estáticos en desarrollo
+# Servir archivos estáticos en desarrollo
 if settings.DEBUG:
     # Servir archivos estáticos desde STATICFILES_DIRS
     from django.contrib.staticfiles.urls import staticfiles_urlpatterns

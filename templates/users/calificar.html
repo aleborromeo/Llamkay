@@ -1,0 +1,284 @@
+{% extends "users/base.html" %}
+{% load static %}
+
+{% block title %}Calificar a {{ usuario_calificado.nombres }} - Llamkay.pe{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/users/calificar.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- ========== HEADER ========== -->
+<header class="header">
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="{% url 'llamkay:index' %}" class="logo">
+                <span>Llamkay</span>
+            </a>
+            
+            <ul class="nav-menu">
+                <li><a href="{% url 'llamkay:dashboard' %}" class="nav-link">Dashboard</a></li>
+                <li><a href="{% url 'users:perfil' %}" class="btn-nav btn-ghost">Mi Perfil</a></li>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<!-- ========== HERO SECTION ========== -->
+<section class="rating-hero">
+    <div class="hero-background"></div>
+    <div class="container">
+        <div class="rating-hero-content">
+            <h1>⭐ Calificar Experiencia</h1>
+            <p>Tu opinión ayuda a otros usuarios a tomar mejores decisiones</p>
+        </div>
+    </div>
+</section>
+
+<!-- ========== FORMULARIO DE CALIFICACIÓN ========== -->
+<section class="rating-form-section">
+    <div class="container">
+        <div class="rating-card">
+            <!-- Usuario a calificar -->
+            <div class="user-info-header">
+                <div class="user-avatar-large">
+                    {% if usuario_calificado.perfil.foto_url %}
+                        <img src="{{ usuario_calificado.perfil.foto_url.url }}" alt="{{ usuario_calificado.nombres }}">
+                    {% else %}
+                        <span class="avatar-initials">{{ usuario_calificado.nombres|first }}{{ usuario_calificado.apellidos|first }}</span>
+                    {% endif %}
+                </div>
+                <div class="user-info-text">
+                    <h2>{{ usuario_calificado.nombres }} {{ usuario_calificado.apellidos }}</h2>
+                    <p class="user-meta">
+                        {% if rol_autor == 'empleador' %}
+                            Trabajaste con este profesional
+                        {% else %}
+                            Este empleador te contrató
+                        {% endif %}
+                    </p>
+                    <div class="current-rating">
+                        <span class="rating-stars">
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= usuario_calificado.rating_promedio %}⭐{% else %}☆{% endif %}
+                            {% endfor %}
+                        </span>
+                        <span class="rating-text">{{ usuario_calificado.rating_promedio|floatformat:1 }} ({{ usuario_calificado.total_calificaciones }} calificaciones)</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formulario -->
+            <form method="POST" class="rating-form">
+                {% csrf_token %}
+
+                <!-- Puntuación General -->
+                <div class="form-section">
+                    <h3>📊 Puntuación General</h3>
+                    <p class="section-subtitle">¿Cómo fue tu experiencia en general?</p>
+                    
+                    <div class="star-rating-input">
+                        <input type="radio" name="puntuacion" value="5" id="star5" {% if calificacion_existente.puntuacion == 5 %}checked{% endif %} required>
+                        <label for="star5" title="Excelente">⭐</label>
+                        
+                        <input type="radio" name="puntuacion" value="4" id="star4" {% if calificacion_existente.puntuacion == 4 %}checked{% endif %}>
+                        <label for="star4" title="Muy bueno">⭐</label>
+                        
+                        <input type="radio" name="puntuacion" value="3" id="star3" {% if calificacion_existente.puntuacion == 3 %}checked{% endif %}>
+                        <label for="star3" title="Bueno">⭐</label>
+                        
+                        <input type="radio" name="puntuacion" value="2" id="star2" {% if calificacion_existente.puntuacion == 2 %}checked{% endif %}>
+                        <label for="star2" title="Regular">⭐</label>
+                        
+                        <input type="radio" name="puntuacion" value="1" id="star1" {% if calificacion_existente.puntuacion == 1 %}checked{% endif %}>
+                        <label for="star1" title="Malo">⭐</label>
+                    </div>
+                    <p class="rating-description" id="ratingDescription">Selecciona una calificación</p>
+                </div>
+
+                <!-- Aspectos Detallados -->
+                <div class="form-section">
+                    <h3>🎯 Aspectos Específicos</h3>
+                    <p class="section-subtitle">Califica aspectos específicos (opcional)</p>
+                    
+                    <div class="aspects-grid">
+                        <!-- Puntualidad -->
+                        <div class="aspect-item">
+                            <label>⏰ Puntualidad</label>
+                            <div class="aspect-rating">
+                                {% for i in "12345" %}
+                                <input type="radio" name="puntualidad" value="{{ i }}" id="punt{{ i }}" {% if calificacion_existente.puntualidad == i %}checked{% endif %}>
+                                <label for="punt{{ i }}">⭐</label>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <!-- Calidad del Trabajo -->
+                        <div class="aspect-item">
+                            <label>💼 Calidad del Trabajo</label>
+                            <div class="aspect-rating">
+                                {% for i in "12345" %}
+                                <input type="radio" name="calidad_trabajo" value="{{ i }}" id="cal{{ i }}" {% if calificacion_existente.calidad_trabajo == i %}checked{% endif %}>
+                                <label for="cal{{ i }}">⭐</label>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <!-- Comunicación -->
+                        <div class="aspect-item">
+                            <label>💬 Comunicación</label>
+                            <div class="aspect-rating">
+                                {% for i in "12345" %}
+                                <input type="radio" name="comunicacion" value="{{ i }}" id="com{{ i }}" {% if calificacion_existente.comunicacion == i %}checked{% endif %}>
+                                <label for="com{{ i }}">⭐</label>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Comentario -->
+                <div class="form-section">
+                    <h3>💭 Cuéntanos más</h3>
+                    <p class="section-subtitle">Comparte tu experiencia con otros usuarios</p>
+                    
+                    <textarea 
+                        name="comentario" 
+                        id="comentario"
+                        rows="6" 
+                        placeholder="Describe tu experiencia: ¿Qué te gustó? ¿Qué se podría mejorar? ¿Recomendarías a esta persona?"
+                        maxlength="500"
+                        class="comment-textarea"
+                    >{% if calificacion_existente %}{{ calificacion_existente.comentario }}{% endif %}</textarea>
+                    <p class="char-counter"><span id="charCount">0</span>/500 caracteres</p>
+                </div>
+
+                <!-- Botones -->
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-xlarge btn-primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                        {% if calificacion_existente %}Actualizar Calificación{% else %}Enviar Calificación{% endif %}
+                    </button>
+                    <a href="{% url 'users:ver_calificaciones' usuario_calificado.id_usuario %}" class="btn btn-xlarge btn-ghost">
+                        Cancelar
+                    </a>
+                </div>
+            </form>
+
+            <!-- Información adicional -->
+            <div class="rating-info">
+                <div class="info-box">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="16" x2="12" y2="12"></line>
+                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                    </svg>
+                    <div>
+                        <h4>¿Por qué calificar?</h4>
+                        <p>Las calificaciones honestas ayudan a mantener la confianza en nuestra comunidad y permiten que otros usuarios tomen mejores decisiones.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========== WAVE DIVIDER ========== -->
+<div class="wave-divider">
+    <svg viewBox="0 0 1440 120" xmlns="http://www.w3.org/2000/svg">
+        <path fill="#f8f9fa" d="M0,64L80,69.3C160,75,320,85,480,80C640,75,800,53,960,48C1120,43,1280,53,1360,58.7L1440,64L1440,0L1360,0C1280,0,1120,0,960,0C800,0,640,0,480,0C320,0,160,0,80,0L0,0Z"></path>
+    </svg>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Star Rating Descriptions
+const ratingDescriptions = {
+    5: '⭐⭐⭐⭐⭐ Excelente - Superó todas las expectativas',
+    4: '⭐⭐⭐⭐☆ Muy bueno - Cumplió con lo esperado',
+    3: '⭐⭐⭐☆☆ Bueno - Aceptable pero puede mejorar',
+    2: '⭐⭐☆☆☆ Regular - No cumplió expectativas',
+    1: '⭐☆☆☆☆ Malo - Muy por debajo de lo esperado'
+};
+
+// Update rating description
+document.querySelectorAll('input[name="puntuacion"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+        const description = document.getElementById('ratingDescription');
+        description.textContent = ratingDescriptions[this.value];
+        description.style.opacity = '1';
+        description.style.transform = 'scale(1.05)';
+        setTimeout(() => {
+            description.style.transform = 'scale(1)';
+        }, 200);
+    });
+});
+
+// Character counter
+const textarea = document.getElementById('comentario');
+const charCount = document.getElementById('charCount');
+
+function updateCharCount() {
+    const count = textarea.value.length;
+    charCount.textContent = count;
+    
+    if (count > 450) {
+        charCount.style.color = '#dc2626';
+    } else if (count > 400) {
+        charCount.style.color = '#f59e0b';
+    } else {
+        charCount.style.color = '#07734B';
+    }
+}
+
+textarea.addEventListener('input', updateCharCount);
+updateCharCount(); // Initial count
+
+// Star rating hover effects
+document.querySelectorAll('.star-rating-input label, .aspect-rating label').forEach(label => {
+    label.addEventListener('mouseenter', function() {
+        this.style.transform = 'scale(1.3) rotate(15deg)';
+    });
+    
+    label.addEventListener('mouseleave', function() {
+        this.style.transform = 'scale(1) rotate(0deg)';
+    });
+});
+
+// Form validation
+document.querySelector('.rating-form').addEventListener('submit', function(e) {
+    const puntuacion = document.querySelector('input[name="puntuacion"]:checked');
+    
+    if (!puntuacion) {
+        e.preventDefault();
+        alert('Por favor selecciona una puntuación general');
+        return false;
+    }
+    
+    // Show loading state
+    const submitBtn = this.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<svg class="spinner" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10" opacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10" opacity="0.75"/></svg> Enviando...';
+});
+
+// Initialize rating description if exists
+const checkedRating = document.querySelector('input[name="puntuacion"]:checked');
+if (checkedRating) {
+    document.getElementById('ratingDescription').textContent = ratingDescriptions[checkedRating.value];
+}
+</script>
+
+<style>
+.spinner {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+</style>
+{% endblock %}

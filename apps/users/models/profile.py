@@ -1,0 +1,96 @@
+"""
+Modelo Profile y Estadísticas - Simplificado
+"""
+from django.db import models
+
+
+class Profile(models.Model):
+    id_profile = models.AutoField(primary_key=True)
+    id_usuario = models.OneToOneField(
+        'Usuario',
+        on_delete=models.CASCADE,
+        related_name='profile_detalle'
+    )
+    
+    # Información Profesional
+    bio = models.TextField(null=True, blank=True)
+    ocupacion = models.CharField(max_length=100, null=True, blank=True)
+    experiencia_anios = models.IntegerField(null=True, blank=True)
+    tarifa_hora = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    
+    # Medios
+    foto_url = models.ImageField(
+        upload_to='uploads/fotos_perfil/',
+        blank=True,
+        null=True
+    )
+    portafolio_url = models.URLField(max_length=500, null=True, blank=True)
+    
+    # Ubicación para búsquedas
+    id_departamento = models.ForeignKey(
+        'Departamento',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
+    )
+    id_provincia = models.ForeignKey(
+        'Provincia',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
+    )
+    id_distrito = models.ForeignKey(
+        'Distrito',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
+    )
+    
+    # Privacidad
+    perfil_publico = models.BooleanField(default=True)
+    mostrar_email = models.BooleanField(default=False)
+    mostrar_telefono = models.BooleanField(default=False)
+    
+    # Auditoría
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'profile'
+        verbose_name = 'Perfil'
+        verbose_name_plural = 'Perfiles'
+
+    def __str__(self):
+        return f"Perfil de {self.id_usuario.nombre_completo}"
+
+
+class UsuarioEstadisticas(models.Model):
+    id_estadistica = models.AutoField(primary_key=True)
+    id_usuario = models.OneToOneField(
+        'Usuario',
+        on_delete=models.CASCADE,
+        related_name='estadisticas'
+    )
+    
+    # Calificaciones
+    rating_promedio = models.DecimalField(max_digits=3, decimal_places=2, default=0.00)
+    total_calificaciones = models.IntegerField(default=0)
+    
+    # Trabajos
+    trabajos_completados = models.IntegerField(default=0)
+    trabajos_activos = models.IntegerField(default=0)
+    trabajos_cancelados = models.IntegerField(default=0)
+    
+    # Financiero
+    ingresos_totales = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    
+    # Auditoría
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'usuario_estadisticas'
+        verbose_name = 'Estadística de Usuario'
+        verbose_name_plural = 'Estadísticas de Usuarios'
+
+    def __str__(self):
+        return f"Estadísticas de {self.id_usuario.nombre_completo}"

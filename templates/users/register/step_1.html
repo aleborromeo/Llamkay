@@ -1,222 +1,396 @@
 {% extends "users/base.html" %}
 {% load static %}
 
-{% block title %}Registro - Paso 1 - Llamkay.pe{% endblock %}
+{% block title %}Crear Cuenta - Paso 1/4 - Llamkay.pe{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/users/register/step_1.css' %}">
+<link rel="stylesheet" href="{% static 'css/users/register.css' %}">
 {% endblock %}
 
 {% block content %}
-<div class="registro-container">
-    <div class="form-box">
-        <div class="logo">
-            <h2>Llamkay</h2>
+<div class="register-wrapper">
+    <!-- SIDEBAR INFORMATIVO -->
+    <aside class="register-sidebar">
+        <div class="register-logo">
+            <h1>🌱 Llamkay</h1>
         </div>
         
-        <h3>Crear cuenta</h3>
-        <p class="subtitle">Paso 1 de 4: Información Personal</p>
+        <h2>¡Únete a nuestra comunidad!</h2>
+        <p>Miles de peruanos ya confían en Llamkay para encontrar trabajo o contratar profesionales.</p>
+        
+        <ul class="benefits-list">
+            <li>
+                <div class="benefit-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                </div>
+                <div class="benefit-text">
+                    <strong>100% Verificado</strong>
+                    <span>Todos los usuarios pasan por verificación</span>
+                </div>
+            </li>
+            <li>
+                <div class="benefit-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                        <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                </div>
+                <div class="benefit-text">
+                    <strong>Encuentra cerca</strong>
+                    <span>Trabajos en tu distrito o comunidad</span>
+                </div>
+            </li>
+            <li>
+                <div class="benefit-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    </svg>
+                </div>
+                <div class="benefit-text">
+                    <strong>Pagos seguros</strong>
+                    <span>Sistema de protección garantizada</span>
+                </div>
+            </li>
+            <li>
+                <div class="benefit-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                </div>
+                <div class="benefit-text">
+                    <strong>Chat directo</strong>
+                    <span>Sin intermediarios, 100% gratis</span>
+                </div>
+            </li>
+        </ul>
+        
+        <a href="#" class="help-link">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+            ¿Necesitas ayuda?
+        </a>
+    </aside>
 
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="register-content">
+        <div class="register-header">
+            <h2>Crear tu cuenta</h2>
+            <p class="register-subtitle">Completa tu información personal para comenzar</p>
+        </div>
+
+        <!-- BARRA DE PROGRESO -->
+        <div class="progress-container">
+            <div class="progress-steps">
+                <div class="progress-step active">
+                    <div class="step-circle">1</div>
+                    <span class="step-label">Información</span>
+                </div>
+                <div class="progress-step">
+                    <div class="step-circle">2</div>
+                    <span class="step-label">Ubicación</span>
+                </div>
+                <div class="progress-step">
+                    <div class="step-circle">3</div>
+                    <span class="step-label">Perfil</span>
+                </div>
+                <div class="progress-step">
+                    <div class="step-circle">4</div>
+                    <span class="step-label">Verificación</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ALERTAS -->
         {% if form.non_field_errors %}
-        <div class="alert-error">
-            {% for error in form.non_field_errors %}
-            <p>{{ error }}</p>
-            {% endfor %}
+        <div class="alert alert-error">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            <div>
+                {% for error in form.non_field_errors %}
+                <p>{{ error }}</p>
+                {% endfor %}
+            </div>
         </div>
         {% endif %}
 
-        <div class="progress-bar">
-            <div class="progress active"></div>
-            <div class="progress"></div>
-            <div class="progress"></div>
-            <div class="progress"></div>
-        </div>
-
-        <form method="post" id="registerForm" novalidate>
+        <!-- FORMULARIO -->
+        <form method="post" class="register-form" id="registerForm" novalidate>
             {% csrf_token %}
+            
+            {% if tipo_usuario != 'empresa' %}
+            <!-- PERSONA NATURAL -->
             <fieldset>
-                <legend>Información Personal</legend>
-
-                {% if tipo_usuario != 'empresa' %}
-                <!-- PERSONA NATURAL -->
-                <div class="form-row">
+                <legend>Datos de Identificación</legend>
+                
+                <div class="form-grid">
                     <div class="form-group">
-                        <label for="{{ form.dni.id_for_label }}">DNI *</label>
-                        <input type="text" 
-                               name="dni" 
-                               id="{{ form.dni.id_for_label }}"
-                               value="{{ form.dni.value|default_if_none:'' }}"
-                               placeholder="Ingresa tu DNI"
-                               maxlength="8"
-                               required>
+                        <label for="id_dni">DNI *</label>
+                        <div class="input-with-button">
+                            <input 
+                                type="text" 
+                                name="dni" 
+                                id="id_dni"
+                                value="{{ form.dni.value|default_if_none:'' }}"
+                                placeholder="00000000"
+                                maxlength="8"
+                                required>
+                            <button type="button" class="btn-search" data-action="buscar-dni">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <path d="m21 21-4.35-4.35"></path>
+                                </svg>
+                                Buscar
+                            </button>
+                        </div>
                         {% if form.dni.errors %}
-                        <div class="error-message">{{ form.dni.errors.0 }}</div>
+                        <span class="form-error">{{ form.dni.errors.0 }}</span>
                         {% endif %}
+                        <span class="form-help">Ingresa tu DNI para autocompletar tus datos</span>
                     </div>
-                    <div class="form-group">
-                        <button type="button" class="btn-search" data-action="buscar-dni">
-                            Buscar
-                        </button>
+
+                    <div class="form-grid form-grid-2">
+                        <div class="form-group">
+                            <label for="id_nombre">Nombres *</label>
+                            <input 
+                                type="text" 
+                                name="nombre" 
+                                id="id_nombre"
+                                value="{{ form.nombre.value|default_if_none:'' }}"
+                                readonly
+                                placeholder="Se completará automáticamente"
+                                required>
+                            {% if form.nombre.errors %}
+                            <span class="form-error">{{ form.nombre.errors.0 }}</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="id_apellido">Apellidos *</label>
+                            <input 
+                                type="text" 
+                                name="apellido" 
+                                id="id_apellido"
+                                value="{{ form.apellido.value|default_if_none:'' }}"
+                                readonly
+                                placeholder="Se completará automáticamente"
+                                required>
+                            {% if form.apellido.errors %}
+                            <span class="form-error">{{ form.apellido.errors.0 }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- ✅ NUEVOS CAMPOS: FECHA Y GÉNERO -->
+                    <div class="form-grid form-grid-2">
+                        <div class="form-group">
+                            <label for="id_fecha_nacimiento">Fecha de Nacimiento *</label>
+                            <input 
+                                type="date" 
+                                name="fecha_nacimiento" 
+                                id="id_fecha_nacimiento"
+                                value="{{ form.fecha_nacimiento.value|default_if_none:'' }}"
+                                max="2007-01-01"
+                                required>
+                            {% if form.fecha_nacimiento.errors %}
+                            <span class="form-error">{{ form.fecha_nacimiento.errors.0 }}</span>
+                            {% endif %}
+                            <span class="form-help">Debes ser mayor de 18 años</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="id_genero">Género *</label>
+                            <select name="genero" id="id_genero" required>
+                                <option value="">Selecciona tu género</option>
+                                <option value="masculino" {% if form.genero.value == 'masculino' %}selected{% endif %}>Masculino</option>
+                                <option value="femenino" {% if form.genero.value == 'femenino' %}selected{% endif %}>Femenino</option>
+                                <option value="otro" {% if form.genero.value == 'otro' %}selected{% endif %}>Otro</option>
+                                <option value="prefiero_no_decir" {% if form.genero.value == 'prefiero_no_decir' %}selected{% endif %}>Prefiero no decir</option>
+                            </select>
+                            {% if form.genero.errors %}
+                            <span class="form-error">{{ form.genero.errors.0 }}</span>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="{{ form.nombre.id_for_label }}">Nombres *</label>
-                        <input type="text" 
-                               name="nombre" 
-                               id="{{ form.nombre.id_for_label }}"
-                               value="{{ form.nombre.value|default_if_none:'' }}"
-                               readonly 
-                               tabindex="-1"
-                               class="readonly-field"
-                               placeholder="Se llenará automáticamente"
-                               required>
-                        <div class="field-info">Este campo se completa automáticamente</div>
-                        {% if form.nombre.errors %}
-                        <div class="error-message">{{ form.nombre.errors.0 }}</div>
-                        {% endif %}
-                    </div>
-                    <div class="form-group">
-                        <label for="{{ form.apellido.id_for_label }}">Apellidos *</label>
-                        <input type="text" 
-                               name="apellido" 
-                               id="{{ form.apellido.id_for_label }}"
-                               value="{{ form.apellido.value|default_if_none:'' }}"
-                               readonly 
-                               tabindex="-1"
-                               class="readonly-field"
-                               placeholder="Se llenará automáticamente"
-                               required>
-                        <div class="field-info">Este campo se completa automáticamente</div>
-                        {% if form.apellido.errors %}
-                        <div class="error-message">{{ form.apellido.errors.0 }}</div>
-                        {% endif %}
-                    </div>
-                </div>
-
-                {% else %}
-                <!-- EMPRESA -->
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="{{ form.ruc.id_for_label }}">RUC *</label>
-                        <input type="text" 
-                               name="ruc" 
-                               id="{{ form.ruc.id_for_label }}"
-                               value="{{ form.ruc.value|default_if_none:'' }}"
-                               placeholder="Ingresa el RUC"
-                               maxlength="11"
-                               required>
-                        {% if form.ruc.errors %}
-                        <div class="error-message">{{ form.ruc.errors.0 }}</div>
-                        {% endif %}
-                    </div>
-                    <div class="form-group">
-                        <button type="button" class="btn-search" data-action="buscar-ruc">
-                            Buscar
-                        </button>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="{{ form.razon_social.id_for_label }}">Razón Social *</label>
-                    <input type="text" 
-                           name="razon_social" 
-                           id="{{ form.razon_social.id_for_label }}"
-                           value="{{ form.razon_social.value|default_if_none:'' }}"
-                           readonly 
-                           tabindex="-1"
-                           class="readonly-field"
-                           placeholder="Se llenará automáticamente"
-                           required>
-                    <div class="field-info">Este campo se completa automáticamente</div>
-                    {% if form.razon_social.errors %}
-                    <div class="error-message">{{ form.razon_social.errors.0 }}</div>
-                    {% endif %}
-                </div>
-                {% endif %}
-
-                <!-- CAMPOS COMUNES -->
-                <div class="form-group">
-                    <label for="{{ form.telefono.id_for_label }}">Teléfono *</label>
-                    <input type="tel" 
-                           name="telefono" 
-                           id="{{ form.telefono.id_for_label }}"
-                           value="{{ form.telefono.value|default_if_none:'' }}"
-                           placeholder="Ingresa tu teléfono"
-                           required>
-                    {% if form.telefono.errors %}
-                    <div class="error-message">{{ form.telefono.errors.0 }}</div>
-                    {% endif %}
-                </div>
-
-                <div class="form-group">
-                    <label for="{{ form.email.id_for_label }}">Correo electrónico *</label>
-                    <input type="email" 
-                           name="email" 
-                           id="{{ form.email.id_for_label }}"
-                           value="{{ form.email.value|default_if_none:'' }}"
-                           placeholder="Ingresa tu correo electrónico"
-                           required>
-                    {% if form.email.errors %}
-                    <div class="error-message">{{ form.email.errors.0 }}</div>
-                    {% endif %}
-                </div>
-
-                <div class="form-group password">
-                    <label for="{{ form.password1.id_for_label }}">Contraseña *</label>
-                    <div class="password-wrapper toggle-password">
-                        <input type="password" 
-                               name="password1" 
-                               id="{{ form.password1.id_for_label }}"
-                               class="password-input"
-                               placeholder="Ingresa tu contraseña"
-                               required>
-                        <img src="{% static 'images/ojo-abierto.png' %}" class="eye-open" alt="Mostrar contraseña">
-                        <img src="{% static 'images/ojo-cerrado.png' %}" class="eye-closed" alt="Ocultar contraseña">
-                    </div>
-                    {% if form.password1.errors %}
-                    <div class="error-message">{{ form.password1.errors.0 }}</div>
-                    {% endif %}
-                </div>
-
-                <div class="form-group password">
-                    <label for="{{ form.password2.id_for_label }}">Confirmar contraseña *</label>
-                    <div class="password-wrapper toggle-password">
-                        <input type="password" 
-                               name="password2" 
-                               id="{{ form.password2.id_for_label }}"
-                               class="password-input"
-                               placeholder="Confirma tu contraseña"
-                               required>
-                        <img src="{% static 'images/ojo-abierto.png' %}" class="eye-open" alt="Mostrar contraseña">
-                        <img src="{% static 'images/ojo-cerrado.png' %}" class="eye-closed" alt="Ocultar contraseña">
-                    </div>
-                    {% if form.password2.errors %}
-                    <div class="error-message">{{ form.password2.errors.0 }}</div>
-                    {% endif %}
-                </div>
-
-                <div class="form-group checkbox">
-                    <label>
-                        <input type="checkbox" name="acepto_terminos" required>
-                        Acepto los <a href="#">términos y condiciones</a> y la <a href="#">política de privacidad</a>
-                    </label>
-                </div>
-
-                <button type="submit" class="btn-primary">Siguiente</button>
             </fieldset>
+
+            {% else %}
+            <!-- EMPRESA -->
+            <fieldset>
+                <legend>Datos de la Empresa</legend>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="id_ruc">RUC *</label>
+                        <div class="input-with-button">
+                            <input 
+                                type="text" 
+                                name="ruc" 
+                                id="id_ruc"
+                                value="{{ form.ruc.value|default_if_none:'' }}"
+                                placeholder="00000000000"
+                                maxlength="11"
+                                required>
+                            <button type="button" class="btn-search" data-action="buscar-ruc">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <path d="m21 21-4.35-4.35"></path>
+                                </svg>
+                                Buscar
+                            </button>
+                        </div>
+                        {% if form.ruc.errors %}
+                        <span class="form-error">{{ form.ruc.errors.0 }}</span>
+                        {% endif %}
+                        <span class="form-help">Ingresa el RUC de tu empresa</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_razon_social">Razón Social *</label>
+                        <input 
+                            type="text" 
+                            name="razon_social" 
+                            id="id_razon_social"
+                            value="{{ form.razon_social.value|default_if_none:'' }}"
+                            readonly
+                            placeholder="Se completará automáticamente"
+                            required>
+                        {% if form.razon_social.errors %}
+                        <span class="form-error">{{ form.razon_social.errors.0 }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </fieldset>
+            {% endif %}
+
+            <!-- DATOS DE CONTACTO -->
+            <fieldset>
+                <legend>Datos de Contacto</legend>
+                
+                <div class="form-grid form-grid-2">
+                    <div class="form-group">
+                        <label for="id_telefono">Teléfono *</label>
+                        <input 
+                            type="tel" 
+                            name="telefono" 
+                            id="id_telefono"
+                            value="{{ form.telefono.value|default_if_none:'' }}"
+                            placeholder="999 999 999"
+                            required>
+                        {% if form.telefono.errors %}
+                        <span class="form-error">{{ form.telefono.errors.0 }}</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_email">Correo Electrónico *</label>
+                        <input 
+                            type="email" 
+                            name="email" 
+                            id="id_email"
+                            value="{{ form.email.value|default_if_none:'' }}"
+                            placeholder="tu@email.com"
+                            required>
+                        {% if form.email.errors %}
+                        <span class="form-error">{{ form.email.errors.0 }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </fieldset>
+
+            <!-- CONTRASEÑA -->
+            <fieldset>
+                <legend>Seguridad</legend>
+                
+                <div class="form-grid form-grid-2">
+                    <div class="form-group">
+                        <label for="id_password1">Contraseña *</label>
+                        <div class="password-wrapper">
+                            <input 
+                                type="password" 
+                                name="password1" 
+                                id="id_password1"
+                                placeholder="Mínimo 8 caracteres"
+                                required>
+                            <button type="button" class="password-toggle" data-target="id_password1">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                            </button>
+                        </div>
+                        {% if form.password1.errors %}
+                        <span class="form-error">{{ form.password1.errors.0 }}</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_password2">Confirmar Contraseña *</label>
+                        <div class="password-wrapper">
+                            <input 
+                                type="password" 
+                                name="password2" 
+                                id="id_password2"
+                                placeholder="Repite tu contraseña"
+                                required>
+                            <button type="button" class="password-toggle" data-target="id_password2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                            </button>
+                        </div>
+                        {% if form.password2.errors %}
+                        <span class="form-error">{{ form.password2.errors.0 }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </fieldset>
+
+            <!-- TÉRMINOS -->
+            <div class="custom-checkbox">
+                <input type="checkbox" name="acepto_terminos" id="acepto_terminos" required>
+                <label for="acepto_terminos">
+                    Acepto los <a href="#" target="_blank">términos y condiciones</a> y la <a href="#" target="_blank">política de privacidad</a> de Llamkay
+                </label>
+            </div>
+
+            <!-- BOTONES -->
+            <div class="form-actions">
+                <a href="{% url 'users:seleccionar_tipo' %}" class="btn btn-secondary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="19" y1="12" x2="5" y2="12"></line>
+                        <polyline points="12 19 5 12 12 5"></polyline>
+                    </svg>
+                    Atrás
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    Siguiente
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                </button>
+            </div>
         </form>
 
-        <p class="login-link">
-            ¿Ya tienes una cuenta? 
-            <a href="{% url 'users:login' %}">Inicia sesión aquí</a>
-        </p>
-    </div>
+        <!-- FOOTER -->
+        <div class="register-footer">
+            <p>¿Ya tienes una cuenta? <a href="{% url 'users:login' %}">Inicia sesión aquí</a></p>
+        </div>
+    </main>
 </div>
 {% endblock %}
 
 {% block extra_js %}
-<meta name="csrf-token" content="{{ csrf_token }}">
 <script src="{% static 'js/users/register/step_1.js' %}"></script>
 {% endblock %}

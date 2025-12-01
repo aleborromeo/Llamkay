@@ -1,0 +1,430 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Mis Trabajos Publicados - Llamkay{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/jobs/jobs-base.css' %}">
+<link rel="stylesheet" href="{% static 'css/empleadores/mis-trabajos.css' %}">
+<style>
+/* Estilos para dropdowns */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: white;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1000;
+    border-radius: 4px;
+    margin-top: 5px;
+}
+
+.dropdown-menu.show {
+    display: block;
+}
+
+.dropdown-item {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.dropdown-item:hover {
+    background-color: #f1f1f1;
+}
+
+/* Estilos para toast notifications */
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+}
+
+.toast {
+    background: white;
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    opacity: 0;
+    transform: translateX(100px);
+    transition: all 0.3s ease;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.toast-success {
+    border-left: 4px solid #28a745;
+}
+
+.toast-error {
+    border-left: 4px solid #dc3545;
+}
+
+.toast-icon {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.toast-success .toast-icon {
+    color: #28a745;
+}
+
+.toast-error .toast-icon {
+    color: #dc3545;
+}
+
+.oferta-card {
+    transition: opacity 0.3s ease;
+}
+
+/* Badges de estado */
+.badge {
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.badge-activa {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.badge-pausada {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.badge-cerrada {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<header class="header">
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="{% url 'llamkay:dashboard' %}" class="logo">
+                <span>Llamkay</span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="{% url 'jobs:buscar_trabajos' %}" class="nav-link">Buscar Trabajos</a></li>
+                <li><a href="{% url 'empleadores:mis_trabajos' %}" class="nav-link active">Mis Ofertas</a></li>
+                <li><a href="{% url 'users:logout' %}" class="nav-link">Salir</a></li>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<section class="page-header">
+    <div class="container">
+        <div class="page-header-content">
+            <div>
+                <h1 class="page-title">Mis Trabajos Publicados</h1>
+                <p class="page-subtitle">Gestiona tus ofertas de trabajo</p>
+            </div>
+            <div class="page-actions">
+                <a href="{% url 'empleadores:crear_oferta_individual' %}" class="btn btn-success">
+                    + Nueva Oferta Individual
+                </a>
+                <a href="{% url 'empleadores:crear_oferta_empresa' %}" class="btn btn-primary">
+                    + Nueva Oferta Empresa
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<main class="container">
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-number">{{ estadisticas.total_ofertas_usuario|add:estadisticas.total_ofertas_empresa }}</div>
+            <div class="stat-label">Total Ofertas</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ estadisticas.ofertas_activas }}</div>
+            <div class="stat-label">Activas</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ estadisticas.ofertas_pausadas }}</div>
+            <div class="stat-label">Pausadas</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ estadisticas.ofertas_cerradas }}</div>
+            <div class="stat-label">Cerradas</div>
+        </div>
+    </div>
+
+    <div class="tabs-container">
+        <div class="tabs-nav">
+            <button class="tab-button active" data-tab="individuales">
+                Ofertas Individuales ({{ ofertas_usuario.count }})
+            </button>
+            <button class="tab-button" data-tab="empresas">
+                Ofertas Empresas ({{ ofertas_empresa.count }})
+            </button>
+        </div>
+
+        {% comment %} TAB INDIVIDUALES {% endcomment %}
+        <div id="individuales" class="tab-content active">
+            <div class="ofertas-list">
+                {% for oferta in ofertas_usuario %}
+                <div class="oferta-card" data-estado="{{ oferta.estado }}" data-oferta-id="{{ oferta.id }}">
+                    <div class="oferta-header">
+                        <div class="oferta-info">
+                            <h3 class="oferta-titulo">{{ oferta.titulo }}</h3>
+                            <div class="oferta-meta">
+                                <span class="badge badge-{{ oferta.estado }}">{{ oferta.get_estado_display }}</span>
+                                <span class="oferta-categoria">{{ oferta.id_categoria.nombre }}</span>
+                                <span class="oferta-fecha">{{ oferta.created_at|date:"d/m/Y" }}</span>
+                            </div>
+                        </div>
+                        <div class="oferta-actions">
+                            <a href="{% url 'empleadores:ver_postulantes' tipo='usuario' oferta_id=oferta.id %}" 
+                               class="btn btn-sm btn-outline-primary">
+                                Ver Postulantes ({{ oferta.total_postulaciones_count }})
+                            </a>
+                            <a href="{% url 'empleadores:editar_trabajo' oferta.id %}" 
+                               class="btn btn-sm btn-outline-secondary">
+                                Editar
+                            </a>
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button">
+                                    Estado ▼
+                                </button>
+                                <div class="dropdown-menu">
+                                    {% if oferta.estado != 'activa' %}
+                                    <button class="dropdown-item cambiar-estado" 
+                                            data-id="{{ oferta.id }}" 
+                                            data-estado="activa">
+                                        ✓ Activar
+                                    </button>
+                                    {% endif %}
+                                    {% if oferta.estado != 'pausada' %}
+                                    <button class="dropdown-item cambiar-estado" 
+                                            data-id="{{ oferta.id }}" 
+                                            data-estado="pausada">
+                                        ⏸ Pausar
+                                    </button>
+                                    {% endif %}
+                                    {% if oferta.estado != 'cerrada' %}
+                                    <button class="dropdown-item cambiar-estado" 
+                                            data-id="{{ oferta.id }}" 
+                                            data-estado="cerrada">
+                                        ✕ Cerrar
+                                    </button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="oferta-body">
+                        <p class="oferta-descripcion">{{ oferta.descripcion|truncatewords:30 }}</p>
+                        <div class="oferta-details">
+                            <div class="detail-item">
+                                <i class="icon-money"></i>
+                                <span>S/ {{ oferta.pago }} - {{ oferta.get_modalidad_pago_display }}</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="icon-location"></i>
+                                <span>{{ oferta.id_distrito.nombre }}, {{ oferta.id_provincia.nombre }}</span>
+                            </div>
+                            {% if oferta.fecha_limite %}
+                            <div class="detail-item">
+                                <i class="icon-calendar"></i>
+                                <span>Límite: {{ oferta.fecha_limite|date:"d/m/Y" }}</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="oferta-footer">
+                        <div class="oferta-stats">
+                            <span class="stat-item">
+                                👁 {{ oferta.vistas }} vistas
+                            </span>
+                            <span class="stat-item">
+                                👥 {{ oferta.total_postulaciones_count }} postulaciones
+                            </span>
+                            {% if oferta.postulaciones_pendientes_count > 0 %}
+                            <span class="stat-item stat-highlight">
+                                ⚠️ {{ oferta.postulaciones_pendientes_count }} pendientes
+                            </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="empty-state">
+                    <div class="empty-icon">📋</div>
+                    <h2 class="empty-title">No tienes ofertas individuales</h2>
+                    <p class="empty-text">Publica tu primera oferta individual para encontrar trabajadores</p>
+                    <a href="{% url 'empleadores:crear_oferta_individual' %}" class="btn btn-success btn-large">
+                        Publicar Primera Oferta
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        {% comment %} TAB EMPRESAS {% endcomment %}
+        <div id="empresas" class="tab-content">
+            <div class="ofertas-list">
+                {% for oferta in ofertas_empresa %}
+                <div class="oferta-card" data-estado="{{ oferta.estado }}" data-oferta-id="{{ oferta.id }}">
+                    <div class="oferta-header">
+                        <div class="oferta-info">
+                            <h3 class="oferta-titulo">{{ oferta.titulo_puesto }}</h3>
+                            <div class="oferta-meta">
+                                <span class="badge badge-{{ oferta.estado }}">{{ oferta.get_estado_display }}</span>
+                                <span class="oferta-categoria">{{ oferta.id_categoria.nombre }}</span>
+                                <span class="oferta-fecha">{{ oferta.created_at|date:"d/m/Y" }}</span>
+                            </div>
+                        </div>
+                        <div class="oferta-actions">
+                            <a href="{% url 'empleadores:ver_postulantes' tipo='empresa' oferta_id=oferta.id %}" 
+                               class="btn btn-sm btn-outline-primary">
+                                Ver Postulantes ({{ oferta.total_postulaciones_count }})
+                            </a>
+                            <a href="{% url 'empleadores:editar_trabajo' oferta.id %}" 
+                               class="btn btn-sm btn-outline-secondary">
+                                Editar
+                            </a>
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button">
+                                    Estado ▼
+                                </button>
+                                <div class="dropdown-menu">
+                                    {% if oferta.estado != 'activa' %}
+                                    <button class="dropdown-item cambiar-estado" 
+                                            data-id="{{ oferta.id }}" 
+                                            data-estado="activa">
+                                        ✓ Activar
+                                    </button>
+                                    {% endif %}
+                                    {% if oferta.estado != 'pausada' %}
+                                    <button class="dropdown-item cambiar-estado" 
+                                            data-id="{{ oferta.id }}" 
+                                            data-estado="pausada">
+                                        ⏸ Pausar
+                                    </button>
+                                    {% endif %}
+                                    {% if oferta.estado != 'cerrada' %}
+                                    <button class="dropdown-item cambiar-estado" 
+                                            data-id="{{ oferta.id }}" 
+                                            data-estado="cerrada">
+                                        ✕ Cerrar
+                                    </button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="oferta-body">
+                        <p class="oferta-descripcion">{{ oferta.descripcion|truncatewords:30 }}</p>
+                        <div class="oferta-details">
+                            <div class="detail-item">
+                                <i class="icon-money"></i>
+                                <span>S/ {{ oferta.pago }} - {{ oferta.get_modalidad_pago_display }}</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="icon-location"></i>
+                                <span>{{ oferta.id_distrito.nombre }}, {{ oferta.id_provincia.nombre }}</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="icon-briefcase"></i>
+                                <span>{{ oferta.vacantes }} vacante{% if oferta.vacantes > 1 %}s{% endif %}</span>
+                            </div>
+                            {% if oferta.experiencia_requerida %}
+                            <div class="detail-item">
+                                <i class="icon-star"></i>
+                                <span>Exp: {{ oferta.experiencia_requerida }}</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="oferta-footer">
+                        <div class="oferta-stats">
+                            <span class="stat-item">
+                                👁 {{ oferta.vistas }} vistas
+                            </span>
+                            <span class="stat-item">
+                                👥 {{ oferta.total_postulaciones_count }} postulaciones
+                            </span>
+                            {% if oferta.postulaciones_pendientes_count > 0 %}
+                            <span class="stat-item stat-highlight">
+                                ⚠️ {{ oferta.postulaciones_pendientes_count }} pendientes
+                            </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="empty-state">
+                    <div class="empty-icon">🏢</div>
+                    <h2 class="empty-title">No tienes ofertas de empresa</h2>
+                    <p class="empty-text">Publica tu primera oferta empresarial para encontrar empleados</p>
+                    <a href="{% url 'empleadores:crear_oferta_empresa' %}" class="btn btn-primary btn-large">
+                        Publicar Primera Oferta
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-brand">
+            <div class="footer-logo">Llamkay</div>
+            <p>Conectando talentos con oportunidades laborales en todo el Perú</p>
+        </div>
+        <div class="footer-links">
+            <div class="footer-column">
+                <h4>Plataforma</h4>
+                <ul>
+                    <li><a href="{% url 'jobs:buscar_trabajos' %}">Buscar trabajos</a></li>
+                    <li><a href="{% url 'users:perfil' %}">Mi Perfil</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Soporte</h4>
+                <ul>
+                    <li><a href="#">Centro de ayuda</a></li>
+                    <li><a href="#">Términos de servicio</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2025 Llamkay.pe - Todos los derechos reservados</p>
+    </div>
+</footer>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/empleadores/mis-trabajos.js' %}"></script>
+{% endblock %}

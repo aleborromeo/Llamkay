@@ -1,0 +1,240 @@
+{% extends "users/base.html" %}
+{% load static %}
+
+{% block title %}Buscar Profesionales - Llamkay.pe{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/users/buscar_usuarios.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- ========== HEADER ========== -->
+<header class="header">
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="{% url 'llamkay:index' %}" class="logo">
+                <span>Llamkay</span>
+            </a>
+            
+            <button class="nav-toggle" aria-label="Abrir menú">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            
+            <ul class="nav-menu">
+                <li><a href="{% url 'llamkay:dashboard' %}" class="nav-link">Dashboard</a></li>
+                <li><a href="{% url 'jobs:all_trabajos' %}" class="nav-link">Trabajos</a></li>
+                {% if request.user.is_authenticated %}
+                <li><a href="{% url 'users:perfil' %}" class="nav-link">Mi Perfil</a></li>
+                <li><a href="{% url 'users:logout' %}" class="btn-nav btn-ghost">Cerrar Sesión</a></li>
+                {% else %}
+                <li><a href="{% url 'users:login' %}" class="btn-nav btn-ghost">Ingresar</a></li>
+                <li><a href="{% url 'users:seleccionar_tipo' %}" class="btn-nav btn-primary">Registrarse</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<!-- ========== HERO DE BÚSQUEDA ========== -->
+<section class="search-hero">
+    <div class="hero-background"></div>
+    <div class="container">
+        <div class="search-hero-content">
+            <h1 class="search-title">Encuentra el profesional perfecto</h1>
+            <p class="search-subtitle">Miles de trabajadores verificados listos para ayudarte</p>
+            
+            <form method="GET" action="{% url 'users:buscar_usuarios' %}" class="search-form">
+                <div class="search-input-group">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                    <input 
+                        type="text" 
+                        name="q" 
+                        placeholder="Buscar por nombre, servicio o habilidad..." 
+                        value="{{ query }}"
+                        class="search-input"
+                    >
+                </div>
+                
+                <select name="tipo" class="filter-select">
+                    <option value="">Todos los tipos</option>
+                    <option value="trabajador" {% if tipo == 'trabajador' %}selected{% endif %}>Trabajadores</option>
+                    <option value="empleador" {% if tipo == 'empleador' %}selected{% endif %}>Empleadores</option>
+                    <option value="ambos" {% if tipo == 'ambos' %}selected{% endif %}>Ambos</option>
+                    <option value="empresa" {% if tipo == 'empresa' %}selected{% endif %}>Empresas</option>
+                </select>
+                
+                <button type="submit" class="btn btn-primary btn-large">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                    Buscar
+                </button>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- ========== RESULTADOS ========== -->
+<section class="results-section">
+    <div class="container">
+        {% if query or tipo %}
+        <div class="results-header">
+            <h2>
+                {% if usuarios %}
+                    {{ usuarios|length }} profesionales encontrados
+                {% else %}
+                    No se encontraron resultados
+                {% endif %}
+            </h2>
+            {% if query %}
+            <p class="search-query">Buscando: <strong>"{{ query }}"</strong></p>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {% if usuarios %}
+        <div class="users-grid">
+            {% for usuario in usuarios %}
+            <div class="user-card">
+                <div class="user-card-header">
+                    <div class="user-avatar">
+                        {% if usuario.perfil.foto_url %}
+                            <img src="{{ usuario.perfil.foto_url.url }}" alt="{{ usuario.nombres }}">
+                        {% else %}
+                            <span class="avatar-initials">{{ usuario.nombres|first }}{{ usuario.apellidos|first }}</span>
+                        {% endif %}
+                        {% if usuario.estado_verificacion == 'verificado' %}
+                        <div class="verified-badge">✓</div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="user-card-body">
+                    <h3 class="user-name">{{ usuario.nombres }} {{ usuario.apellidos }}</h3>
+                    
+                    <div class="user-rating">
+                        <div class="stars-small">
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= usuario.rating_promedio %}⭐{% else %}☆{% endif %}
+                            {% endfor %}
+                        </div>
+                        <span class="rating-value">{{ usuario.rating_promedio|floatformat:1 }}</span>
+                        <span class="rating-count">({{ usuario.total_calificaciones }})</span>
+                    </div>
+                    
+                    <p class="user-bio">
+                        {% if usuario.perfil.bio %}
+                            {{ usuario.perfil.bio|truncatechars:100 }}
+                        {% else %}
+                            Sin descripción disponible
+                        {% endif %}
+                    </p>
+                    
+                    <div class="user-meta">
+                        <span class="meta-badge">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                <circle cx="12" cy="10" r="3"></circle>
+                            </svg>
+                            {% if usuario.perfil.id_distrito %}
+                                {{ usuario.perfil.id_distrito.nombre }}
+                            {% else %}
+                                Ubicación no especificada
+                            {% endif %}
+                        </span>
+                        <span class="meta-badge">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                            </svg>
+                            {{ usuario.trabajos_completados }} trabajos
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="user-card-footer">
+                    <a href="{% url 'users:perfil_publico' usuario.id_usuario %}" class="btn btn-primary btn-block">
+                        Ver Perfil
+                    </a>
+                    <a href="{% url 'chats:iniciar_chat' usuario.id_usuario %}" class="btn btn-ghost btn-block">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                        Mensaje
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-results">
+            <svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.35-4.35"></path>
+            </svg>
+            <h3>No se encontraron profesionales</h3>
+            <p>Intenta con otra búsqueda o ajusta los filtros</p>
+            <a href="{% url 'users:buscar_usuarios' %}" class="btn btn-primary">Ver Todos</a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- ========== CTA SECTION ========== -->
+{% if not request.user.is_authenticated %}
+<section class="cta-section">
+    <div class="container">
+        <div class="cta-card">
+            <h2>¿Eres un profesional?</h2>
+            <p>Únete a Llamkay y empieza a recibir ofertas de trabajo hoy mismo</p>
+            <a href="{% url 'users:seleccionar_tipo' %}" class="btn btn-xlarge btn-white">
+                Crear cuenta gratis
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+            </a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- ========== WAVE DIVIDER ========== -->
+<div class="wave-divider">
+    <svg viewBox="0 0 1440 120" xmlns="http://www.w3.org/2000/svg">
+        <path fill="#ffffff" d="M0,64L80,69.3C160,75,320,85,480,80C640,75,800,53,960,48C1120,43,1280,53,1360,58.7L1440,64L1440,0L1360,0C1280,0,1120,0,960,0C800,0,640,0,480,0C320,0,160,0,80,0L0,0Z"></path>
+    </svg>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Mobile Menu Toggle
+document.querySelector('.nav-toggle')?.addEventListener('click', function() {
+    document.querySelector('.nav-menu').classList.toggle('active');
+    this.classList.toggle('active');
+});
+
+// Auto-submit form on select change
+document.querySelector('.filter-select')?.addEventListener('change', function() {
+    this.closest('form').submit();
+});
+
+// Card hover effects
+document.querySelectorAll('.user-card').forEach(card => {
+    card.addEventListener('mouseenter', function() {
+        this.style.transform = 'translateY(-10px) scale(1.02)';
+    });
+    
+    card.addEventListener('mouseleave', function() {
+        this.style.transform = 'translateY(0) scale(1)';
+    });
+});
+</script>
+{% endblock %}

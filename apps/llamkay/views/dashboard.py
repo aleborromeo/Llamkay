@@ -1,450 +1,361 @@
+"""
+Vista de Dashboard con Integración de Soporte
+"""
+import logging
+import random
+from decimal import Decimal
+
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.db.models import Q, Count, Avg, Sum
-from django.utils import timezone
-from datetime import timedelta
-import logging
-from apps.core.templatetags.usuarios_extras import usuario
+from django.db.models import Count, Q, Sum
+from django.core.exceptions import ObjectDoesNotExist
 
 logger = logging.getLogger(__name__)
 
 
 @login_required
 def dashboard(request):
-    """Vista principal del dashboard adaptada al tipo de usuario"""
-    
+    """Vista principal del dashboard con manejo robusto de errores"""
     try:
-        # Obtener el Usuario personalizado desde el User de Django
-        from apps.users.models import Usuario, Profile, UsuarioHabilidad
+        from apps.users.models import Usuario, Profile
+        from apps.soporte.services import NotificacionService
         
-        usuario = Usuario.objects.select_related('profile').get(user=request.user)
-        profile, _ = Profile.objects.get_or_create(
-            user=request.user,
-            defaults={'id_usuario': usuario}
-        )
-        
-        # ==================== ESTADÍSTICAS GENERALES ====================
-        estadisticas = {}
-        actividades_recientes = []
-        trabajos_recomendados = []
-        conversaciones_recientes = []
-        notificaciones_count = 0
-        
-        # ==================== MENSAJES NO LEÍDOS ====================
+        # ==================== OBTENER USUARIO ====================
         try:
-            from apps.chats.models import Conversacion, Mensaje
-            
-            # Obtener conversaciones del usuario
-            conversaciones = Conversacion.objects.filter(
-                Q(id_usuario_1=usuario) | Q(id_usuario_2=usuario),
-                activa=True
-            ).select_related('id_usuario_1', 'id_usuario_2').order_by('-ultimo_mensaje_at')
-            
-            mensajes_no_leidos = 0
-            for conv in conversaciones[:5]:
-                otro_usuario = conv.obtener_otro_usuario(usuario)
-                
-                # Contar mensajes no leídos en esta conversación
-                no_leidos = Mensaje.objects.filter(
-                    id_conversacion=conv,
-                    leido=False
-                ).exclude(id_remitente=usuario).count()
-                
-                mensajes_no_leidos += no_leidos
-                
-                # Guardar para el sidebar
-                if len(conversaciones_recientes) < 5:
-                    ultimo_msg = Mensaje.objects.filter(
-                        id_conversacion=conv,
-                        eliminado=False
-                    ).order_by('-fecha_envio').first()
-                    
-                    conversaciones_recientes.append({
-                        'id_conversacion': conv.id_conversacion,
-                        'otro_usuario': otro_usuario,
-                        'ultimo_mensaje': ultimo_msg.contenido[:50] if ultimo_msg else '',
-                        'fecha': ultimo_msg.fecha_envio if ultimo_msg else conv.created_at,
-                        'no_leidos': no_leidos
-                    })
-            
-            estadisticas['mensajes_no_leidos'] = mensajes_no_leidos
-            notificaciones_count = mensajes_no_leidos
-            
-        except Exception as e:
-            logger.error(f"Error cargando mensajes: {str(e)}")
-            estadisticas['mensajes_no_leidos'] = 0
+            usuario_obj = Usuario.objects.select_related('profile_detalle').get(
+                user=request.user
+            )
+        except Usuario.DoesNotExist:
+            logger.error(f"❌ Usuario no encontrado para user: {request.user.id}")
+            messages.error(request, "No se encontró tu perfil de usuario.")
+            return redirect('users:completar_registro')
         
-        # ==================== ESTADÍSTICAS POR TIPO DE USUARIO ====================
-        
-        if usuario.tipo_usuario in ['trabajador', 'ambos']:
-            # ESTADÍSTICAS PARA TRABAJADORES
+        # ==================== OBTENER O CREAR PROFILE ====================
+        profile = getattr(usuario_obj, 'profile_detalle', None)
+        if not profile:
             try:
-                from apps.jobs.models import Postulacion, GuardarTrabajo, Contrato
-                
-                # Total de postulaciones
-                postulaciones_totales = Postulacion.objects.filter(
-                    id_trabajador=usuario
-                ).count()
-                
-                estadisticas['postulaciones_totales'] = postulaciones_totales
-                
-                # Postulaciones pendientes
-                estadisticas['postulaciones_pendientes'] = Postulacion.objects.filter(
-                    id_trabajador=usuario,
-                    estado='pendiente'
-                ).count()
-                
-                # Postulaciones aceptadas
-                estadisticas['postulaciones_aceptadas'] = Postulacion.objects.filter(
-                    id_trabajador=usuario,
-                    estado='aceptada'
-                ).count()
-                
-                # Trabajos guardados
-                estadisticas['trabajos_guardados'] = GuardarTrabajo.objects.filter(
-                    id_usuario=usuario
-                ).count()
-                
-                # Contratos activos
-                estadisticas['contratos_activos'] = Contrato.objects.filter(
-                    id_trabajador=usuario,
-                    estado='activo'
-                ).count()
-                
-                # Calcular tasa de aceptación
-                if postulaciones_totales > 0:
-                    tasa = (estadisticas['postulaciones_aceptadas'] / postulaciones_totales) * 100
-                    estadisticas['tasa_aceptacion'] = round(tasa, 1)
-                else:
-                    estadisticas['tasa_aceptacion'] = 0
-                
-                # Tiempo de respuesta promedio (simulado - implementar según tu lógica)
-                estadisticas['tiempo_respuesta'] = "2.5 hrs"
-                
-                # ==================== ACTIVIDADES RECIENTES (TRABAJADOR) ====================
-                
-                # Postulaciones aceptadas recientes
-                postulaciones_aceptadas = Postulacion.objects.filter(
-                    id_trabajador=usuario,
-                    estado='aceptada'
-                ).select_related(
-                    'id_oferta_usuario__id_empleador',
-                    'id_oferta_empresa__id_empleador'
-                ).order_by('-updated_at')[:2]
-                
-                for post in postulaciones_aceptadas:
-                    if post.id_oferta_usuario:
-                        empleador = post.id_oferta_usuario.id_empleador
-                        titulo = post.id_oferta_usuario.titulo
-                    else:
-                        empleador = post.id_oferta_empresa.id_empleador
-                        titulo = post.id_oferta_empresa.titulo_puesto
-                    
-                    actividades_recientes.append({
-                        'tipo': 'success',
-                        'mensaje': f'<strong>{empleador.nombres} {empleador.apellidos}</strong> aceptó tu propuesta para <strong>{titulo}</strong>',
-                        'fecha': post.updated_at
-                    })
-                
-                # Nuevos mensajes
-                mensajes_nuevos = Mensaje.objects.filter(
-                    id_conversacion__in=conversaciones,
-                    leido=False
-                ).exclude(id_remitente=usuario).select_related('id_remitente').order_by('-fecha_envio')[:2]
-                
-                for msg in mensajes_nuevos:
-                    actividades_recientes.append({
-                        'tipo': 'info',
-                        'mensaje': f'Nuevo mensaje de <strong>{msg.id_remitente.nombres} {msg.id_remitente.apellidos}</strong>',
-                        'fecha': msg.fecha_envio
-                    })
-                
-                # Calificaciones recientes
-                from apps.jobs.models import Calificacion
-                calificaciones_nuevas = Calificacion.objects.filter(
-                    id_receptor=usuario,
-                    activa=True
-                ).select_related('id_autor').order_by('-fecha')[:1]
-                
-                for cal in calificaciones_nuevas:
-                    actividades_recientes.append({
-                        'tipo': 'success',
-                        'mensaje': f'Recibiste una calificación de <strong>{cal.puntuacion} estrellas</strong> de {cal.id_autor.nombres} {cal.id_autor.apellidos}',
-                        'fecha': cal.fecha
-                    })
-                
-                # Ordenar por fecha
-                actividades_recientes.sort(key=lambda x: x['fecha'], reverse=True)
-                
-                # ==================== TRABAJOS RECOMENDADOS ====================
-                from apps.jobs.models import OfertaUsuario, OfertaEmpresa
-                
-                # Obtener categorías de interés del usuario
-                categorias_usuario = usuario.usuariocategoria_set.values_list('id_categoria', flat=True)
-                
-                # Ofertas de usuarios
-                ofertas_usuario = OfertaUsuario.objects.filter(
-                    estado='activa',
-                    deleted_at__isnull=True
-                ).exclude(
-                    id_empleador=usuario
-                ).select_related(
-                    'id_empleador',
-                    'id_categoria',
-                    'id_departamento',
-                    'id_provincia',
-                    'id_distrito'
-                ).order_by('-urgente', '-fecha_publicacion')[:6]
-                
-                for oferta in ofertas_usuario:
-                    trabajos_recomendados.append({
-                        'tipo': 'usuario',
-                        'id': oferta.id,
-                        'titulo': oferta.titulo,
-                        'descripcion': oferta.descripcion,
-                        'pago': oferta.pago,
-                        'modalidad_pago': oferta.get_modalidad_pago_display(),
-                        'urgente': oferta.urgente,
-                        'fecha_publicacion': oferta.fecha_publicacion,
-                        'empleador': oferta.id_empleador,
-                        'categoria': oferta.id_categoria,
-                        'ubicacion': {
-                            'departamento': oferta.id_departamento.nombre if oferta.id_departamento else '',
-                            'provincia': oferta.id_provincia.nombre if oferta.id_provincia else '',
-                            'distrito': oferta.id_distrito.nombre if oferta.id_distrito else '',
-                        }
-                    })
-                
-                # Ofertas de empresas
-                ofertas_empresa = OfertaEmpresa.objects.filter(
-                    estado='activa',
-                    deleted_at__isnull=True
-                ).exclude(
-                    id_empleador=usuario
-                ).select_related(
-                    'id_empleador',
-                    'id_categoria',
-                    'id_departamento',
-                    'id_provincia',
-                    'id_distrito'
-                ).order_by('-fecha_publicacion')[:6]
-                
-                for oferta in ofertas_empresa:
-                    trabajos_recomendados.append({
-                        'tipo': 'empresa',
-                        'id': oferta.id,
-                        'titulo': oferta.titulo_puesto,
-                        'descripcion': oferta.descripcion,
-                        'rango_salarial': oferta.rango_salarial,
-                        'modalidad_trabajo': oferta.get_modalidad_trabajo_display(),
-                        'fecha_publicacion': oferta.fecha_publicacion,
-                        'empleador': oferta.id_empleador,
-                        'categoria': oferta.id_categoria,
-                        'ubicacion': {
-                            'departamento': oferta.id_departamento.nombre if oferta.id_departamento else '',
-                            'provincia': oferta.id_provincia.nombre if oferta.id_provincia else '',
-                            'distrito': oferta.id_distrito.nombre if oferta.id_distrito else '',
-                        },
-                        'urgente': False
-                    })
-                
-                # Mezclar y limitar a 12
-                trabajos_recomendados = trabajos_recomendados[:12]
-                
+                profile, created = Profile.objects.get_or_create(
+                    id_usuario=usuario_obj,
+                    defaults={
+                        'bio': '',
+                        'ocupacion': '',
+                        'perfil_publico': True,
+                        'mostrar_email': False,
+                        'mostrar_telefono': False,
+                    }
+                )
+                if created:
+                    logger.info(f"✅ Profile creado automáticamente para {usuario_obj.email}")
             except Exception as e:
-                logger.error(f"Error cargando estadísticas de trabajador: {str(e)}")
+                logger.error(f"❌ Error creando profile: {e}")
+                profile = None
         
-        elif usuario.tipo_usuario in ['empleador', 'empresa']:
-            # ESTADÍSTICAS PARA EMPLEADORES/EMPRESAS
-            try:
+        # ==================== NOTIFICACIONES ====================
+        notificaciones_count = 0
+        notificaciones_recientes = []
+        try:
+            notif_service = NotificacionService()
+            notificaciones_count = notif_service.contar_no_leidas(usuario_obj)
+            notificaciones_recientes = list(
+                notif_service.obtener_no_leidas(usuario_obj)[:5]
+            )
+        except Exception as e:
+            logger.warning(f"⚠️ Error cargando notificaciones: {str(e)}")
+        
+        # ==================== ESTADÍSTICAS ====================
+        estadisticas = {
+            'ofertas_activas': 0,
+            'ofertas_totales': 0,
+            'postulantes_totales': 0,
+            'contratos_activos': 0,
+            'vistas_totales': 0,
+            'postulaciones_totales': 0,
+            'tasa_aceptacion': 0,
+            'mensajes_no_leidos': 0,
+        }
+        
+        # Estadísticas según tipo de usuario
+        try:
+            if usuario_obj.tipo_usuario in ['empleador', 'trabajador_empleador', 'empresa']:
                 from apps.jobs.models import OfertaUsuario, OfertaEmpresa, Postulacion, Contrato
                 
                 # Ofertas activas
-                if usuario.tipo_usuario == 'empresa':
-                    ofertas_activas = OfertaEmpresa.objects.filter(
-                        id_empleador=usuario,
-                        estado='activa',
-                        deleted_at__isnull=True
-                    ).count()
-                    
-                    ofertas_totales = OfertaEmpresa.objects.filter(
-                        id_empleador=usuario,
-                        deleted_at__isnull=True
-                    ).count()
-                    
-                    # Postulantes totales
-                    postulantes_totales = Postulacion.objects.filter(
-                        id_oferta_empresa__id_empleador=usuario
-                    ).count()
-                    
-                    # Vistas totales
-                    vistas_totales = OfertaEmpresa.objects.filter(
-                        id_empleador=usuario
-                    ).aggregate(total=Sum('vistas'))['total'] or 0
-                    
-                else:
-                    ofertas_activas = OfertaUsuario.objects.filter(
-                        id_empleador=usuario,
-                        estado='activa',
-                        deleted_at__isnull=True
-                    ).count()
-                    
-                    ofertas_totales = OfertaUsuario.objects.filter(
-                        id_empleador=usuario,
-                        deleted_at__isnull=True
-                    ).count()
-                    
-                    postulantes_totales = Postulacion.objects.filter(
-                        id_oferta_usuario__id_empleador=usuario
-                    ).count()
-                    
-                    vistas_totales = OfertaUsuario.objects.filter(
-                        id_empleador=usuario
-                    ).aggregate(total=Sum('vistas'))['total'] or 0
+                ofertas_usuario_activas = OfertaUsuario.objects.filter(
+                    id_empleador=usuario_obj,
+                    estado='activa'
+                ).count()
                 
-                estadisticas['ofertas_activas'] = ofertas_activas
-                estadisticas['ofertas_totales'] = ofertas_totales
-                estadisticas['postulantes_totales'] = postulantes_totales
-                estadisticas['vistas_totales'] = vistas_totales
+                ofertas_empresa_activas = OfertaEmpresa.objects.filter(
+                    id_empleador=usuario_obj,
+                    estado='activa'
+                ).count()
+                
+                estadisticas['ofertas_activas'] = ofertas_usuario_activas + ofertas_empresa_activas
+                
+                # Total de ofertas
+                ofertas_usuario_totales = OfertaUsuario.objects.filter(
+                    id_empleador=usuario_obj
+                ).count()
+                
+                ofertas_empresa_totales = OfertaEmpresa.objects.filter(
+                    id_empleador=usuario_obj
+                ).count()
+                
+                estadisticas['ofertas_totales'] = ofertas_usuario_totales + ofertas_empresa_totales
+                
+                # Postulantes totales
+                postulantes_usuario = Postulacion.objects.filter(
+                    id_oferta_usuario__id_empleador=usuario_obj
+                ).count()
+                
+                postulantes_empresa = Postulacion.objects.filter(
+                    id_oferta_empresa__id_empleador=usuario_obj
+                ).count()
+                
+                estadisticas['postulantes_totales'] = postulantes_usuario + postulantes_empresa
                 
                 # Contratos activos
                 estadisticas['contratos_activos'] = Contrato.objects.filter(
-                    id_empleador=usuario,
+                    id_empleador=usuario_obj,
                     estado='activo'
                 ).count()
                 
-                # ==================== ACTIVIDADES RECIENTES (EMPLEADOR) ====================
+                # Vistas totales
+                vistas_usuario = OfertaUsuario.objects.filter(
+                    id_empleador=usuario_obj
+                ).aggregate(total=Sum('vistas'))['total'] or 0
                 
-                # Nuevas postulaciones
-                if usuario.tipo_usuario == 'empresa':
-                    postulaciones_nuevas = Postulacion.objects.filter(
-                        id_oferta_empresa__id_empleador=usuario,
-                        estado='pendiente'
-                    ).select_related(
-                        'id_trabajador',
-                        'id_oferta_empresa'
-                    ).order_by('-fecha_postulacion')[:3]
-                else:
-                    postulaciones_nuevas = Postulacion.objects.filter(
-                        id_oferta_usuario__id_empleador=usuario,
-                        estado='pendiente'
-                    ).select_related(
-                        'id_trabajador',
-                        'id_oferta_usuario'
-                    ).order_by('-fecha_postulacion')[:3]
+                vistas_empresa = OfertaEmpresa.objects.filter(
+                    id_empleador=usuario_obj
+                ).aggregate(total=Sum('vistas'))['total'] or 0
                 
-                for post in postulaciones_nuevas:
-                    trabajador = post.id_trabajador
+                estadisticas['vistas_totales'] = vistas_usuario + vistas_empresa
+            
+            # Estadísticas de trabajador
+            if usuario_obj.tipo_usuario in ['trabajador', 'trabajador_empleador']:
+                from apps.jobs.models import Postulacion
+                
+                estadisticas['postulaciones_totales'] = Postulacion.objects.filter(
+                    id_trabajador=usuario_obj
+                ).count()
+                
+                # Tasa de aceptación
+                postulaciones_aceptadas = Postulacion.objects.filter(
+                    id_trabajador=usuario_obj,
+                    estado='aceptada'
+                ).count()
+                
+                if estadisticas['postulaciones_totales'] > 0:
+                    estadisticas['tasa_aceptacion'] = int(
+                        (postulaciones_aceptadas / estadisticas['postulaciones_totales']) * 100
+                    )
+        except Exception as e:
+            logger.error(f"❌ Error calculando estadísticas: {e}")
+        
+        # Mensajes no leídos
+        try:
+            from apps.chats.models import Conversacion, Mensaje
+            mensajes_no_leidos = Mensaje.objects.filter(
+                id_conversacion__in=Conversacion.objects.filter(
+                    Q(id_usuario_1=usuario_obj) | Q(id_usuario_2=usuario_obj)
+                ),
+                leido=False
+            ).exclude(id_remitente=usuario_obj).count()
+            
+            estadisticas['mensajes_no_leidos'] = mensajes_no_leidos
+        except Exception as e:
+            logger.warning(f"⚠️ Error contando mensajes: {str(e)}")
+        
+        # ==================== ACTIVIDADES RECIENTES ====================
+        actividades_recientes = []
+        
+        try:
+            # Últimas postulaciones (trabajador)
+            if usuario_obj.tipo_usuario in ['trabajador', 'trabajador_empleador']:
+                from apps.jobs.models import Postulacion
+                postulaciones = Postulacion.objects.filter(
+                    id_trabajador=usuario_obj
+                ).select_related('id_oferta_usuario', 'id_oferta_empresa').order_by('-created_at')[:5]
+                
+                for post in postulaciones:
+                    titulo = 'Trabajo sin título'
                     if post.id_oferta_usuario:
                         titulo = post.id_oferta_usuario.titulo
-                    else:
+                    elif post.id_oferta_empresa:
                         titulo = post.id_oferta_empresa.titulo_puesto
                     
                     actividades_recientes.append({
                         'tipo': 'info',
-                        'mensaje': f'<strong>{trabajador.nombres} {trabajador.apellidos}</strong> postuló a <strong>{titulo}</strong>',
-                        'fecha': post.fecha_postulacion
+                        'mensaje': f'Postulaste a <strong>{titulo}</strong>',
+                        'fecha': post.created_at
+                    })
+            
+            # Últimas ofertas publicadas (empleador)
+            if usuario_obj.tipo_usuario in ['empleador', 'trabajador_empleador', 'empresa']:
+                from apps.jobs.models import OfertaUsuario, OfertaEmpresa
+                
+                ofertas_usuario = OfertaUsuario.objects.filter(
+                    id_empleador=usuario_obj
+                ).order_by('-created_at')[:3]
+                
+                for oferta in ofertas_usuario:
+                    actividades_recientes.append({
+                        'tipo': 'success',
+                        'mensaje': f'Publicaste <strong>{oferta.titulo}</strong>',
+                        'fecha': oferta.created_at
                     })
                 
-                # ==================== POSTULANTES RECIENTES ====================
-                trabajos_recomendados = []
+                ofertas_empresa = OfertaEmpresa.objects.filter(
+                    id_empleador=usuario_obj
+                ).order_by('-created_at')[:3]
                 
-                for post in postulaciones_nuevas[:6]:
-                    trabajador = post.id_trabajador
-                    if post.id_oferta_usuario:
-                        oferta_titulo = post.id_oferta_usuario.titulo
-                    else:
-                        oferta_titulo = post.id_oferta_empresa.titulo_puesto
-                    
-                    trabajos_recomendados.append({
-                        'tipo': 'postulante',
-                        'id': post.id_postulacion,
-                        'titulo': f"{trabajador.nombres} {trabajador.apellidos}",
-                        'descripcion': f"Postuló a: {oferta_titulo}",
-                        'pago': post.pretension_salarial,
-                        'fecha_publicacion': post.fecha_postulacion,
-                        'empleador': trabajador,
-                        'categoria': None,
-                        'ubicacion': {
-                            'departamento': '',
-                            'provincia': '',
-                            'distrito': '',
-                        },
-                        'urgente': not post.leida
+                for oferta in ofertas_empresa:
+                    actividades_recientes.append({
+                        'tipo': 'success',
+                        'mensaje': f'Publicaste <strong>{oferta.titulo_puesto}</strong>',
+                        'fecha': oferta.created_at
                     })
+        except Exception as e:
+            logger.warning(f"⚠️ Error obteniendo actividades: {str(e)}")
+        
+        # Ordenar y limitar
+        actividades_recientes.sort(key=lambda x: x['fecha'], reverse=True)
+        actividades_recientes = actividades_recientes[:5]
+        
+        # ==================== TRABAJOS RECOMENDADOS ====================
+        trabajos_recomendados = []
+        
+        try:
+            if usuario_obj.tipo_usuario in ['trabajador', 'trabajador_empleador']:
+                from apps.jobs.models import OfertaUsuario, OfertaEmpresa
                 
-            except Exception as e:
-                logger.error(f"Error cargando estadísticas de empleador: {str(e)}")
+                ofertas_usuario = list(OfertaUsuario.objects.filter(
+                    estado='activa'
+                ).exclude(
+                    id_empleador=usuario_obj  # No mostrar propias ofertas
+                ).select_related('id_empleador').order_by('-created_at')[:3])
+                
+                ofertas_empresa = list(OfertaEmpresa.objects.filter(
+                    estado='activa'
+                ).exclude(
+                    id_empleador=usuario_obj
+                ).select_related('id_empleador').order_by('-created_at')[:3])
+                
+                trabajos_recomendados = ofertas_usuario + ofertas_empresa
+                trabajos_recomendados.sort(key=lambda x: x.created_at, reverse=True)
+                trabajos_recomendados = trabajos_recomendados[:6]
+        except Exception as e:
+            logger.warning(f"⚠️ Error obteniendo trabajos: {str(e)}")
+        
+        # ==================== CONVERSACIONES RECIENTES ====================
+        conversaciones_recientes = []
+        
+        try:
+            from apps.chats.models import Conversacion
+            conversaciones = Conversacion.objects.filter(
+                Q(id_usuario_1=usuario_obj) | Q(id_usuario_2=usuario_obj)
+            ).select_related('id_usuario_1', 'id_usuario_2').order_by('-updated_at')[:5]
+            
+            for conv in conversaciones:
+                # Agregar el otro usuario a la conversación
+                if conv.id_usuario_1 == usuario_obj:
+                    conv.otro_usuario = conv.id_usuario_2
+                else:
+                    conv.otro_usuario = conv.id_usuario_1
+                conversaciones_recientes.append(conv)
+        except Exception as e:
+            logger.warning(f"⚠️ Error obteniendo conversaciones: {str(e)}")
         
         # ==================== PERFIL COMPLETADO ====================
         perfil_completado = 0
-        tareas_completadas = 0
-        tareas_totales = 4
+        pasos_completados = 0
+        total_pasos = 5
         
-        # Información básica
-        if usuario.nombres and usuario.apellidos:
-            tareas_completadas += 1
+        # 1. Información básica
+        if usuario_obj.nombres and usuario_obj.apellidos and usuario_obj.email:
+            pasos_completados += 1
         
-        # Foto de perfil
-        if profile.foto_url:
-            tareas_completadas += 1
+        # 2. Foto de perfil
+        if hasattr(usuario_obj, 'foto') and usuario_obj.foto:
+            pasos_completados += 1
+        elif profile and hasattr(profile, 'foto_url') and profile.foto_url:
+            pasos_completados += 1
+                
+        # 3. Teléfono
+        if usuario_obj.telefono:
+            pasos_completados += 1
         
-        # Verificación
-        if usuario.estado_verificacion == 'verificado':
-            tareas_completadas += 1
+        # 4. Bio/Descripción
+        if profile and profile.bio:
+            pasos_completados += 1
         
-        # Habilidades (solo para trabajadores)
-        if usuario.tipo_usuario in ['trabajador', 'ambos']:
-            if UsuarioHabilidad.objects.filter(id_usuario=usuario).exists():
-                tareas_completadas += 1
-        else:
-            tareas_completadas += 1  # No aplica para empleadores
+        # 5. Habilidades
+        try:
+            from apps.users.models import UsuarioHabilidad
+            if UsuarioHabilidad.objects.filter(id_usuario=usuario_obj).exists():
+                pasos_completados += 1
+        except Exception:
+            pass
         
-        perfil_completado = int((tareas_completadas / tareas_totales) * 100)
+        perfil_completado = int((pasos_completados / total_pasos) * 100)
         
         # ==================== CONSEJO DEL DÍA ====================
         consejos = [
             "Responde rápido a los mensajes para aumentar tus posibilidades de conseguir trabajos.",
-            "Mantén tu perfil actualizado con tus habilidades y experiencia más reciente.",
-            "Las fotos de perfil profesionales aumentan tu credibilidad en un 60%.",
-            "Completa tu verificación de identidad para destacar entre otros candidatos.",
-            "Los trabajadores verificados reciben 3 veces más ofertas de trabajo."
+            "Completa tu perfil al 100% para generar más confianza.",
+            "Agrega certificaciones para destacar tu experiencia.",
+            "Mantén actualizada tu disponibilidad.",
+            "Las buenas calificaciones te ayudan a conseguir más oportunidades.",
+            "Actualiza tu foto de perfil para dar una mejor impresión.",
+            "Revisa tus notificaciones regularmente.",
         ]
         
-        import random
         consejo_del_dia = random.choice(consejos)
         
-        # ==================== CONTEXTO FINAL ====================
+        # ==================== CONTEXTO ====================
         context = {
-            'usuario': usuario,
+            'usuario': usuario_obj,
             'profile': profile,
             'estadisticas': estadisticas,
-            'actividades_recientes': actividades_recientes[:5],
+            'actividades_recientes': actividades_recientes,
             'trabajos_recomendados': trabajos_recomendados,
             'conversaciones_recientes': conversaciones_recientes,
             'notificaciones_count': notificaciones_count,
+            'notificaciones_recientes': notificaciones_recientes,
             'perfil_completado': perfil_completado,
             'consejo_del_dia': consejo_del_dia,
         }
-
-    except Usuario.DoesNotExist:
-        messages.error(request, "No se encontró tu perfil de usuario.")
-        return redirect('users:login')
+        
+        logger.info(
+            f"✅ Dashboard cargado: {usuario_obj.nombres} {usuario_obj.apellidos} - "
+            f"Tipo: {usuario_obj.tipo_usuario}, "
+            f"Perfil: {perfil_completado}%, "
+            f"Notif: {notificaciones_count}"
+        )
+        
+        return render(request, 'llamkay/dashboard.html', context)
+        
     except Exception as e:
-        logger.error(f"Error en dashboard: {str(e)}")
-        messages.error(request, f"Ocurrió un error al cargar el dashboard: {str(e)}")
-        # Contexto mínimo en caso de error
+        logger.error(f"❌ Error crítico en dashboard: {str(e)}", exc_info=True)
+        messages.error(request, "Ocurrió un error al cargar el dashboard. Por favor, intenta nuevamente.")
+        
+        # Contexto mínimo de emergencia
         context = {
             'usuario': None,
             'profile': None,
-            'estadisticas': {},
+            'estadisticas': {
+                'ofertas_activas': 0,
+                'postulantes_totales': 0,
+                'mensajes_no_leidos': 0,
+            },
             'actividades_recientes': [],
             'trabajos_recomendados': [],
             'conversaciones_recientes': [],
             'notificaciones_count': 0,
+            'notificaciones_recientes': [],
             'perfil_completado': 0,
             'consejo_del_dia': 'Bienvenido a Llamkay',
         }
-
-    return render(request, 'llamkay/dashboard.html', context)
+        
+        return render(request, 'llamkay/dashboard.html', context)
