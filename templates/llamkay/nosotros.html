@@ -136,52 +136,6 @@
     </div>
 </section>
 
-<footer class="footer">
-    <div class="footer-container">
-        <div class="footer-section">
-            <div class="footer-logo">
-                <h3>LLamkay.pe</h3>
-                <p>Conectando talentos con oportunidades laborales en todo el Perú</p>
-            </div>
-        </div>
-
-        <div class="footer-section">
-            <h4>Accesos Rápidos</h4>
-            <ul class="footer-links">
-                <li><a href="{% url 'llamkay:index' %}">Inicio</a></li>
-                <li><a href="{% url 'llamkay:nosotros' %}">Sobre Nosotros</a></li>
-                <li><a href="{% url 'jobs:all_trabajos' %}">Buscar Trabajos</a></li>
-                <li><a href="{% url 'users:seleccionar_tipo' %}">Registrarse</a></li>
-            </ul>
-        </div>
-
-        <div class="footer-section">
-            <h4>Contacto</h4>
-            <div class="contact-info">
-                <div class="contact-item">
-                    <img src="{% static 'images/email.png' %}" alt="Email" class="contact-icon">
-                    <span>contacto@llamkay.pe</span>
-                </div>
-                <div class="contact-item">
-                    <img src="{% static 'images/phone.png' %}" alt="Teléfono" class="contact-icon">
-                    <span>+51 987 654 321</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="footer-bottom">
-        <div class="footer-container">
-            <div class="copyright">
-                <p>&copy; 2025 LLamkay.pe. Todos los derechos reservados.</p>
-            </div>
-            <div class="footer-bottom-links">
-                <a href="#">Términos de Servicio</a>
-                <a href="#">Política de Privacidad</a>
-            </div>
-        </div>
-    </div>
-</footer>
 {% endblock %}
 
 {% block extra_js %}

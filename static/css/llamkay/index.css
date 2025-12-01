@@ -1,74 +1,36 @@
 /* =============================================
-   LLAMKAY LANDING PAGE - DISEÑO MEJORADO
-   Aplicando Leyes de Gestalt y Principios de Nielsen
+   LLAMKAY LANDING PAGE - NUEVO DISEÑO
+   (Principios Gestalt y Nielsen Aplicados)
    ============================================= */
 
 :root {
-    /* Colores principales */
     --color-primary: #07734B;
     --color-primary-dark: #034D31;
     --color-primary-light: #15AC75;
     --color-secondary: #9EBC8A;
     --color-secondary-light: #B5C99A;
     --color-accent: #EEEDEB;
-    
-    /* Colores de texto */
     --color-text: #1a1a1a;
     --color-text-light: #666666;
-    --color-text-muted: #999999;
-    
-    /* Colores de fondo */
     --color-background: #ffffff;
     --color-background-alt: #f8f9fa;
-    --color-background-dark: #f1f3f5;
-    
-    /* Colores de estado */
-    --color-success: #10b981;
-    --color-warning: #f59e0b;
-    --color-error: #ef4444;
-    --color-info: #3b82f6;
-    
-    /* Sombras - Ley de Figura y Fondo */
-    --shadow-xs: 0 1px 3px rgba(0, 0, 0, 0.05);
     --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
     --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
     --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.16);
     --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.2);
-    --shadow-2xl: 0 24px 64px rgba(0, 0, 0, 0.25);
     
-    /* Radio de bordes - Consistencia visual */
-    --radius-xs: 4px;
     --radius-sm: 8px;
     --radius-md: 12px;
     --radius-lg: 16px;
     --radius-xl: 24px;
-    --radius-full: 9999px;
     
-    /* Transiciones - Feedback visual */
-    --transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-base: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-slow: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    
-    /* Espaciado consistente */
-    --spacing-xs: 0.25rem;
-    --spacing-sm: 0.5rem;
-    --spacing-md: 1rem;
-    --spacing-lg: 1.5rem;
-    --spacing-xl: 2rem;
-    --spacing-2xl: 3rem;
-    --spacing-3xl: 4rem;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* ==================== RESET Y BASE ==================== */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-}
-
-html {
-    scroll-behavior: smooth;
-    font-size: 16px;
 }
 
 body {
@@ -77,76 +39,60 @@ body {
     background: var(--color-background);
     line-height: 1.6;
     overflow-x: hidden;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
 }
 
-/* Ley de Continuidad - Flujo visual */
 .container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 var(--spacing-xl);
+    padding: 0 2rem;
 }
 
-/* ==================== HEADER - Principio 1: Visibilidad del Estado ==================== */
+/* ==================== HEADER ==================== */
 .header {
     position: sticky;
     top: 0;
     z-index: 1000;
     background: rgba(255, 255, 255, 0.98);
-    backdrop-filter: blur(20px);
+    backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
     box-shadow: var(--shadow-sm);
-    transition: var(--transition-base);
-}
-
-.header.scrolled {
-    box-shadow: var(--shadow-md);
 }
 
 .navbar {
-    padding: var(--spacing-md) 0;
+    padding: 1rem 0;
 }
 
 .nav-container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 var(--spacing-xl);
+    padding: 0 2rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: var(--spacing-xl);
+    gap: 2rem;
 }
 
-/* Ley de Experiencia Previa - Logo reconocible */
 .logo {
     display: flex;
     align-items: center;
-    gap: var(--spacing-sm);
+    gap: 0.75rem;
     font-size: 1.5rem;
     font-weight: 700;
     color: var(--color-primary);
     text-decoration: none;
-    transition: var(--transition-base);
+    transition: var(--transition);
 }
 
 .logo-img {
     width: 40px;
     height: 40px;
-    border-radius: var(--radius-sm);
-    transition: var(--transition-base);
+    border-radius: 8px;
 }
 
-/* Principio 3: Control y Libertad - Hover feedback */
 .logo:hover {
     transform: scale(1.05);
 }
 
-.logo:hover .logo-img {
-    transform: rotate(-5deg);
-}
-
-/* Menú hamburguesa para móviles */
 .nav-toggle {
     display: none;
     flex-direction: column;
@@ -154,119 +100,74 @@ body {
     background: none;
     border: none;
     cursor: pointer;
-    padding: var(--spacing-sm);
-    transition: var(--transition-base);
-}
-
-.nav-toggle:hover {
-    opacity: 0.7;
+    padding: 0.5rem;
 }
 
 .nav-toggle span {
     width: 28px;
     height: 3px;
     background: var(--color-primary);
-    border-radius: var(--radius-xs);
-    transition: var(--transition-base);
+    border-radius: 3px;
+    transition: var(--transition);
 }
 
-.nav-toggle.active span:nth-child(1) {
-    transform: rotate(45deg) translate(8px, 8px);
-}
-
-.nav-toggle.active span:nth-child(2) {
-    opacity: 0;
-}
-
-.nav-toggle.active span:nth-child(3) {
-    transform: rotate(-45deg) translate(7px, -7px);
-}
-
-/* Ley de Proximidad - Elementos relacionados agrupados */
 .nav-menu {
     display: flex;
     align-items: center;
-    gap: var(--spacing-sm);
+    gap: 0.5rem;
     list-style: none;
 }
 
-/* Principio 4: Consistencia y Estándares */
 .nav-link {
-    padding: var(--spacing-sm) var(--spacing-lg);
+    padding: 0.75rem 1.25rem;
     color: var(--color-text);
     font-weight: 500;
     text-decoration: none;
     border-radius: var(--radius-sm);
-    transition: var(--transition-base);
-    position: relative;
+    transition: var(--transition);
 }
 
-.nav-link::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%) scaleX(0);
-    width: 80%;
-    height: 2px;
-    background: var(--color-primary);
-    transition: var(--transition-base);
-}
-
-.nav-link:hover,
-.nav-link:focus {
+.nav-link:hover {
     background: var(--color-background-alt);
     color: var(--color-primary);
 }
 
-.nav-link:hover::after {
-    transform: translateX(-50%) scaleX(1);
-}
-
-/* Principio 6: Reconocimiento vs Recuerdo - Botones claros */
 .btn-nav {
-    padding: var(--spacing-sm) var(--spacing-lg);
+    padding: 0.75rem 1.5rem;
     border-radius: var(--radius-lg);
     font-weight: 600;
     font-size: 0.95rem;
     text-decoration: none;
-    transition: var(--transition-base);
-    border: 2px solid;
+    transition: var(--transition);
+    border: none;
     cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: var(--spacing-sm);
 }
 
 .btn-ghost {
     background: transparent;
     color: var(--color-primary);
-    border-color: var(--color-primary);
+    border: 2px solid var(--color-primary);
 }
 
-.btn-ghost:hover,
-.btn-ghost:focus {
+.btn-ghost:hover {
     background: var(--color-primary);
     color: white;
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
 }
 
 .btn-primary {
     background: var(--color-primary);
     color: white;
-    border-color: var(--color-primary);
+    border: 2px solid var(--color-primary);
 }
 
-.btn-primary:hover,
-.btn-primary:focus {
+.btn-primary:hover {
     background: var(--color-primary-dark);
     border-color: var(--color-primary-dark);
     transform: translateY(-2px);
     box-shadow: var(--shadow-md);
 }
 
-/* ==================== HERO SECTION - Principio 8: Diseño Minimalista ==================== */
+/* ==================== HERO SECTION (Figura y Fondo) ==================== */
 .hero {
     position: relative;
     background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
@@ -274,49 +175,26 @@ body {
     padding: 6rem 0 8rem;
 }
 
-/* Elementos decorativos sutiles */
-.hero::before,
-.hero::after {
+.hero::before {
     content: '';
     position: absolute;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.1);
-    animation: float 20s ease-in-out infinite;
-}
-
-.hero::before {
-    top: 10%;
-    left: 5%;
-    width: 300px;
-    height: 300px;
-}
-
-.hero::after {
-    bottom: 10%;
-    right: 5%;
-    width: 400px;
-    height: 400px;
-    animation-delay: -10s;
-}
-
-@keyframes float {
-    0%, 100% { 
-        transform: translate(0, 0) scale(1);
-        opacity: 0.3;
-    }
-    50% { 
-        transform: translate(30px, -30px) scale(1.1);
-        opacity: 0.5;
-    }
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+    pointer-events: none;
 }
 
 .hero-container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 var(--spacing-xl);
+    padding: 0 2rem;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: var(--spacing-3xl);
+    gap: 4rem;
     align-items: center;
     position: relative;
     z-index: 1;
@@ -324,45 +202,24 @@ body {
 
 .hero-content {
     color: white;
-    animation: slideInLeft 0.8s ease-out;
 }
 
-@keyframes slideInLeft {
-    from {
-        opacity: 0;
-        transform: translateX(-50px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
-
-/* Badge informativo */
 .hero-badge {
     display: inline-block;
-    padding: var(--spacing-sm) var(--spacing-md);
+    padding: 0.5rem 1rem;
     background: rgba(255, 255, 255, 0.2);
     backdrop-filter: blur(10px);
-    border-radius: var(--radius-full);
+    border-radius: 50px;
     font-size: 0.9rem;
     font-weight: 600;
-    margin-bottom: var(--spacing-lg);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    animation: pulse 2s ease-in-out infinite;
-}
-
-@keyframes pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.05); }
+    margin-bottom: 1.5rem;
 }
 
 .hero-title {
-    font-size: clamp(2.5rem, 5vw, 3.5rem);
+    font-size: 3.5rem;
     font-weight: 800;
     line-height: 1.1;
-    margin-bottom: var(--spacing-lg);
-    letter-spacing: -0.02em;
+    margin-bottom: 1.5rem;
 }
 
 .text-highlight {
@@ -370,56 +227,34 @@ body {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    display: inline-block;
 }
 
 .hero-description {
-    font-size: clamp(1.1rem, 2vw, 1.25rem);
+    font-size: 1.25rem;
     line-height: 1.6;
     opacity: 0.95;
-    margin-bottom: var(--spacing-2xl);
+    margin-bottom: 2.5rem;
 }
 
-/* Ley de Proximidad - Acciones agrupadas */
 .hero-actions {
     display: flex;
-    gap: var(--spacing-md);
+    gap: 1rem;
     flex-wrap: wrap;
-    margin-bottom: var(--spacing-2xl);
+    margin-bottom: 3rem;
 }
 
 .btn {
     display: inline-flex;
     align-items: center;
-    gap: var(--spacing-sm);
-    padding: var(--spacing-md) var(--spacing-xl);
+    gap: 0.5rem;
+    padding: 1rem 2rem;
     border-radius: var(--radius-lg);
     font-weight: 600;
     font-size: 1rem;
     text-decoration: none;
-    transition: var(--transition-base);
-    border: 2px solid transparent;
+    transition: var(--transition);
+    border: none;
     cursor: pointer;
-    position: relative;
-    overflow: hidden;
-}
-
-.btn::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 0;
-    height: 0;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.2);
-    transform: translate(-50%, -50%);
-    transition: width 0.6s, height 0.6s;
-}
-
-.btn:hover::before {
-    width: 300px;
-    height: 300px;
 }
 
 .btn-large {
@@ -438,8 +273,7 @@ body {
     box-shadow: var(--shadow-lg);
 }
 
-.btn-primary:hover,
-.btn-primary:focus {
+.btn-primary:hover {
     transform: translateY(-3px);
     box-shadow: var(--shadow-xl);
 }
@@ -451,28 +285,27 @@ body {
     backdrop-filter: blur(10px);
 }
 
-.btn-ghost:hover,
-.btn-ghost:focus {
+.btn-ghost:hover {
     background: rgba(255, 255, 255, 0.2);
     border-color: rgba(255, 255, 255, 0.5);
 }
 
-/* Estadísticas - Ley de Semejanza */
 .hero-stats {
+    /* Proximidad: Agrupamiento claro de datos relacionados */
     display: flex;
-    gap: var(--spacing-2xl);
+    gap: 3rem;
     flex-wrap: wrap;
 }
 
 .stat-item {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-xs);
 }
 
 .stat-item strong {
     font-size: 2rem;
     font-weight: 700;
+    margin-bottom: 0.25rem;
 }
 
 .stat-item span {
@@ -480,79 +313,66 @@ body {
     opacity: 0.9;
 }
 
-/* Hero Visual Cards - Ley de Figura y Fondo */
+/* Hero Visual Cards */
 .hero-visual {
     position: relative;
     height: 500px;
-    animation: slideInRight 0.8s ease-out;
-}
-
-@keyframes slideInRight {
-    from {
-        opacity: 0;
-        transform: translateX(50px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
 }
 
 .hero-card {
+    /* Semejanza: Estilo uniforme */
     position: absolute;
     background: white;
     border-radius: var(--radius-lg);
-    padding: var(--spacing-lg);
+    padding: 1.5rem;
     box-shadow: var(--shadow-xl);
-    transition: var(--transition-base);
+    transition: var(--transition);
     width: 240px;
-    cursor: pointer;
 }
 
 .hero-card:hover {
     transform: translateY(-8px) scale(1.05);
-    box-shadow: var(--shadow-2xl);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
 }
 
 .card-1 {
     top: 50px;
     left: 0;
-    animation: floatCard 6s ease-in-out infinite;
+    animation: float 6s ease-in-out infinite;
 }
 
 .card-2 {
     top: 150px;
     right: 50px;
-    animation: floatCard 6s ease-in-out infinite 2s;
+    animation: float 6s ease-in-out infinite 2s;
 }
 
 .card-3 {
     bottom: 80px;
     left: 80px;
-    animation: floatCard 6s ease-in-out infinite 4s;
+    animation: float 6s ease-in-out infinite 4s;
 }
 
-@keyframes floatCard {
+@keyframes float {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-20px); }
 }
 
 .card-icon {
     font-size: 2.5rem;
-    margin-bottom: var(--spacing-sm);
-    display: block;
+    margin-bottom: 0.75rem;
 }
 
 .hero-card h3 {
     font-size: 1.25rem;
     color: var(--color-text);
-    margin-bottom: var(--spacing-sm);
+    margin-bottom: 0.5rem;
 }
 
 .hero-card p {
     color: var(--color-text-light);
     font-size: 0.95rem;
-    margin-bottom: var(--spacing-md);
+    margin-bottom: 1rem;
 }
 
 .card-badge {
@@ -560,12 +380,12 @@ body {
     padding: 0.4rem 0.8rem;
     background: var(--color-primary);
     color: white;
-    border-radius: var(--radius-full);
+    border-radius: 50px;
     font-size: 0.85rem;
     font-weight: 600;
 }
 
-/* Wave Divider - Ley de Continuidad */
+/* Wave Divider */
 .hero-wave {
     position: absolute;
     bottom: -1px;
@@ -582,7 +402,7 @@ body {
     height: 60px;
 }
 
-/* ==================== BENEFITS SECTION - Ley de Proximidad ==================== */
+/* ==================== BENEFITS SECTION (Semejanza, Proximidad) ==================== */
 .benefits {
     padding: 6rem 0;
     background: var(--color-background);
@@ -590,36 +410,24 @@ body {
 
 .section-header {
     text-align: center;
-    margin-bottom: var(--spacing-3xl);
-    animation: fadeInUp 0.8s ease-out;
-}
-
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    margin-bottom: 4rem;
 }
 
 .section-badge {
     display: inline-block;
-    padding: var(--spacing-sm) var(--spacing-md);
+    padding: 0.5rem 1rem;
     background: var(--color-secondary-light);
     color: var(--color-primary-dark);
-    border-radius: var(--radius-full);
+    border-radius: 50px;
     font-size: 0.9rem;
     font-weight: 600;
-    margin-bottom: var(--spacing-md);
+    margin-bottom: 1rem;
 }
 
 .section-header h2 {
-    font-size: clamp(2rem, 4vw, 2.5rem);
+    font-size: 2.5rem;
     color: var(--color-text);
-    margin-bottom: var(--spacing-md);
+    margin-bottom: 1rem;
 }
 
 .section-header p {
@@ -627,20 +435,19 @@ body {
     color: var(--color-text-light);
 }
 
-/* Grid responsivo - Ley de Semejanza */
 .benefits-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: var(--spacing-xl);
+    gap: 2rem;
 }
 
 .benefit-card {
-    padding: var(--spacing-xl);
+    padding: 2rem;
     background: var(--color-background);
     border: 2px solid var(--color-background-alt);
     border-radius: var(--radius-lg);
-    transition: var(--transition-base);
-    cursor: pointer;
+    transition: var(--transition);
+    cursor: default;
 }
 
 .benefit-card:hover {
@@ -658,18 +465,13 @@ body {
     align-items: center;
     justify-content: center;
     color: white;
-    margin-bottom: var(--spacing-lg);
-    transition: var(--transition-base);
-}
-
-.benefit-card:hover .benefit-icon {
-    transform: rotate(5deg) scale(1.1);
+    margin-bottom: 1.5rem;
 }
 
 .benefit-card h3 {
     font-size: 1.25rem;
     color: var(--color-text);
-    margin-bottom: var(--spacing-sm);
+    margin-bottom: 0.75rem;
 }
 
 .benefit-card p {
@@ -677,7 +479,7 @@ body {
     line-height: 1.6;
 }
 
-/* ==================== HOW IT WORKS - Ley de Continuidad ==================== */
+/* ==================== HOW IT WORKS (Continuidad, Proximidad) ==================== */
 .how-it-works {
     padding: 6rem 0;
     background: var(--color-background-alt);
@@ -685,28 +487,29 @@ body {
 
 .steps {
     display: grid;
-    gap: var(--spacing-xl);
+    gap: 2rem;
     max-width: 900px;
-    margin: 0 auto var(--spacing-2xl);
+    margin: 0 auto 3rem;
+    /* Continuidad: Borde lateral para indicar el flujo secuencial */
+    border-left: 5px dashed var(--color-secondary-light); 
+    padding-left: 2rem;
 }
 
 .step {
     display: grid;
     grid-template-columns: auto 1fr auto;
-    gap: var(--spacing-xl);
+    gap: 2rem;
     align-items: center;
-    padding: var(--spacing-xl);
+    padding: 1.5rem 2rem;
     background: white;
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-sm);
-    transition: var(--transition-base);
-    border-left: 4px solid transparent;
+    transition: var(--transition);
 }
 
 .step:hover {
-    transform: translateX(10px);
+    transform: translateX(10px); /* Refuerza la Continuidad */
     box-shadow: var(--shadow-md);
-    border-left-color: var(--color-primary);
 }
 
 .step-number {
@@ -721,13 +524,12 @@ body {
     font-size: 1.75rem;
     font-weight: 700;
     flex-shrink: 0;
-    box-shadow: var(--shadow-md);
 }
 
 .step-content h3 {
     font-size: 1.5rem;
     color: var(--color-text);
-    margin-bottom: var(--spacing-sm);
+    margin-bottom: 0.5rem;
 }
 
 .step-content p {
@@ -739,19 +541,13 @@ body {
     color: var(--color-primary);
     opacity: 0.3;
     flex-shrink: 0;
-    transition: var(--transition-base);
-}
-
-.step:hover .step-icon {
-    opacity: 0.6;
-    transform: scale(1.1);
 }
 
 .cta-center {
     text-align: center;
 }
 
-/* ==================== CATEGORIES - Ley de Semejanza ==================== */
+/* ==================== CATEGORIES ==================== */
 .categories {
     padding: 6rem 0;
     background: white;
@@ -760,17 +556,17 @@ body {
 .categories-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: var(--spacing-lg);
+    gap: 1.5rem;
 }
 
 .category-card {
-    padding: var(--spacing-xl);
+    padding: 2rem;
     background: var(--color-background-alt);
     border-radius: var(--radius-lg);
     text-align: center;
     text-decoration: none;
     color: var(--color-text);
-    transition: var(--transition-base);
+    transition: var(--transition);
     border: 2px solid transparent;
 }
 
@@ -783,18 +579,12 @@ body {
 
 .category-icon {
     font-size: 3rem;
-    margin-bottom: var(--spacing-md);
-    display: block;
-    transition: var(--transition-base);
-}
-
-.category-card:hover .category-icon {
-    transform: scale(1.2) rotate(-5deg);
+    margin-bottom: 1rem;
 }
 
 .category-card h3 {
     font-size: 1.1rem;
-    margin-bottom: var(--spacing-sm);
+    margin-bottom: 0.5rem;
     color: var(--color-text);
 }
 
@@ -819,44 +609,22 @@ body {
 
 /* ==================== CTA FINAL ==================== */
 .cta-final {
+    /* Figura y Fondo: Contraste alto */
     padding: 6rem 0;
     background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
     color: white;
     text-align: center;
-    position: relative;
-    overflow: hidden;
-}
-
-.cta-final::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-    animation: rotate 20s linear infinite;
-}
-
-@keyframes rotate {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-
-.cta-content {
-    position: relative;
-    z-index: 1;
 }
 
 .cta-content h2 {
-    font-size: clamp(2rem, 5vw, 3rem);
-    margin-bottom: var(--spacing-md);
+    font-size: 3rem;
+    margin-bottom: 1rem;
 }
 
 .cta-content p {
     font-size: 1.25rem;
     opacity: 0.95;
-    margin-bottom: var(--spacing-2xl);
+    margin-bottom: 2.5rem;
 }
 
 .btn-white {
@@ -864,10 +632,9 @@ body {
     color: var(--color-primary);
 }
 
-.btn-white:hover,
-.btn-white:focus {
+.btn-white:hover {
     transform: translateY(-5px) scale(1.05);
-    box-shadow: var(--shadow-2xl);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
 }
 
 /* ==================== FOOTER ==================== */
@@ -880,11 +647,11 @@ body {
 .footer-container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 var(--spacing-xl);
+    padding: 0 2rem;
     display: grid;
     grid-template-columns: 2fr 3fr;
-    gap: var(--spacing-3xl);
-    margin-bottom: var(--spacing-2xl);
+    gap: 4rem;
+    margin-bottom: 3rem;
 }
 
 .footer-brand {
@@ -894,27 +661,27 @@ body {
 .footer-logo {
     display: flex;
     align-items: center;
-    gap: var(--spacing-sm);
+    gap: 0.75rem;
     font-size: 1.5rem;
     font-weight: 700;
-    margin-bottom: var(--spacing-md);
+    margin-bottom: 1rem;
 }
 
 .footer-logo img {
     width: 40px;
     height: 40px;
-    border-radius: var(--radius-sm);
+    border-radius: 8px;
 }
 
 .footer-brand p {
     opacity: 0.8;
     line-height: 1.6;
-    margin-bottom: var(--spacing-xl);
+    margin-bottom: 2rem;
 }
 
 .social-links {
     display: flex;
-    gap: var(--spacing-md);
+    gap: 1rem;
 }
 
 .social-links a {
@@ -926,7 +693,7 @@ body {
     align-items: center;
     justify-content: center;
     color: white;
-    transition: var(--transition-base);
+    transition: var(--transition);
 }
 
 .social-links a:hover {
@@ -938,12 +705,12 @@ body {
 .footer-links {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: var(--spacing-xl);
+    gap: 2rem;
 }
 
 .footer-column h4 {
     font-size: 1.1rem;
-    margin-bottom: var(--spacing-lg);
+    margin-bottom: 1.5rem;
 }
 
 .footer-column ul {
@@ -951,14 +718,13 @@ body {
 }
 
 .footer-column li {
-    margin-bottom: var(--spacing-sm);
+    margin-bottom: 0.75rem;
 }
 
 .footer-column a {
     color: rgba(255, 255, 255, 0.8);
     text-decoration: none;
-    transition: var(--transition-base);
-    display: inline-block;
+    transition: var(--transition);
 }
 
 .footer-column a:hover {
@@ -969,7 +735,7 @@ body {
 .footer-bottom {
     max-width: 1200px;
     margin: 0 auto;
-    padding: var(--spacing-xl) var(--spacing-xl) 0;
+    padding: 2rem 2rem 0;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     text-align: center;
 }
@@ -979,11 +745,11 @@ body {
     font-size: 0.9rem;
 }
 
-/* ==================== RESPONSIVE - Principio 8: Flexibilidad ==================== */
+/* ==================== RESPONSIVE (Responsividad) ==================== */
 @media (max-width: 1024px) {
     .hero-container {
         grid-template-columns: 1fr;
-        gap: var(--spacing-2xl);
+        gap: 3rem;
     }
     
     .hero-visual {
@@ -992,10 +758,6 @@ body {
     
     .hero-title {
         font-size: 2.5rem;
-    }
-    
-    .footer-container {
-        grid-template-columns: 1fr;
     }
 }
 
@@ -1012,10 +774,8 @@ body {
         flex-direction: column;
         background: white;
         box-shadow: var(--shadow-lg);
-        padding: var(--spacing-xl);
+        padding: 2rem;
         transition: left 0.3s ease;
-        max-height: calc(100vh - 70px);
-        overflow-y: auto;
     }
     
     .nav-menu.active {
@@ -1038,13 +798,8 @@ body {
         flex-direction: column;
     }
     
-    .hero-actions .btn {
-        width: 100%;
-        justify-content: center;
-    }
-    
     .hero-stats {
-        gap: var(--spacing-lg);
+        gap: 2rem;
     }
     
     .section-header h2 {
@@ -1056,9 +811,19 @@ body {
         grid-template-columns: 1fr;
     }
     
+    .steps {
+        /* Desactiva la continuidad de la línea vertical en móvil */
+        border-left: none; 
+        padding-left: 0;
+    }
+    
     .step {
         grid-template-columns: 1fr;
         text-align: center;
+    }
+
+    .step-number {
+        margin: 0 auto 1rem;
     }
     
     .step-icon {
@@ -1067,7 +832,7 @@ body {
     
     .footer-container {
         grid-template-columns: 1fr;
-        gap: var(--spacing-2xl);
+        gap: 3rem;
     }
     
     .footer-links {
@@ -1081,7 +846,7 @@ body {
 
 @media (max-width: 480px) {
     .container {
-        padding: 0 var(--spacing-md);
+        padding: 0 1rem;
     }
     
     .hero-title {
@@ -1089,77 +854,12 @@ body {
     }
     
     .btn-large {
-        padding: var(--spacing-md) var(--spacing-lg);
+        padding: 1rem 1.5rem;
         font-size: 1rem;
     }
     
     .benefit-card,
     .step {
-        padding: var(--spacing-lg);
+        padding: 1.5rem;
     }
-    
-    .stat-item strong {
-        font-size: 1.5rem;
-    }
-}
-
-/* ==================== ACCESIBILIDAD ==================== */
-/* Focus visible para navegación con teclado */
-*:focus-visible {
-    outline: 3px solid var(--color-primary);
-    outline-offset: 2px;
-    border-radius: var(--radius-xs);
-}
-
-/* Reducir movimiento para usuarios con preferencias */
-@media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-    }
-}
-
-/* Alto contraste para mejor legibilidad */
-@media (prefers-contrast: high) {
-    :root {
-        --color-text: #000000;
-        --color-text-light: #333333;
-        --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
-        --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
-    }
-}
-
-/* ==================== UTILIDADES ==================== */
-.sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border-width: 0;
-}
-
-/* Loading states */
-.loading {
-    opacity: 0.6;
-    pointer-events: none;
-    cursor: wait;
-}
-
-/* Skeleton loading */
-.skeleton {
-    background: linear-gradient(90deg, var(--color-background-alt) 25%, var(--color-background-dark) 50%, var(--color-background-alt) 75%);
-    background-size: 200% 100%;
-    animation: loading 1.5s ease-in-out infinite;
-}
-
-@keyframes loading {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
 }

@@ -453,3 +453,8 @@ def validar_correo(request):
     
     existe = User.objects.filter(email=email).exists()
     return JsonResponse({'exists': existe})
+
+def bloqueado_penal(request):
+    """Vista mostrada a usuarios con la cuenta bloqueada por antecedentes pendientes/rechazados."""
+    # Podrías añadir lógica aquí para asegurar que solo los usuarios bloqueados vean esta página
+    return render(request, 'users/bloqueado_penal.html')

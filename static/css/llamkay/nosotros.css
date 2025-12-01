@@ -1,363 +1,201 @@
-/* =============================================
-   PÁGINA SOBRE NOSOTROS - LLAMKAY.PE
-   Aplicando Leyes de Gestalt y Principios de Nielsen
-   ============================================= */
+/* ===== PÁGINA SOBRE NOSOTROS (Simetría, Semejanza, Estética Minimalista) ===== */
 
-:root {
-    --color-primary: #07734B;
-    --color-primary-dark: #034D31;
-    --color-primary-light: #15AC75;
-    --color-secondary: #9EBC8A;
-    --color-secondary-light: #B5C99A;
-    --color-accent: #EEEDEB;
-    --color-text: #1a1a1a;
-    --color-text-light: #666666;
-    --color-background: #ffffff;
-    --color-background-alt: #f8f9fa;
-    
-    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
-    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
-    --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.16);
-    --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.2);
-    
-    --radius-sm: 8px;
-    --radius-md: 12px;
-    --radius-lg: 16px;
-    --radius-xl: 24px;
-    --radius-full: 9999px;
-    
-    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    
-    --spacing-xs: 0.25rem;
-    --spacing-sm: 0.5rem;
-    --spacing-md: 1rem;
-    --spacing-lg: 1.5rem;
-    --spacing-xl: 2rem;
-    --spacing-2xl: 3rem;
-    --spacing-3xl: 4rem;
-    --spacing-4xl: 6rem;
-}
-
-/* ==================== HERO NOSOTROS - Principio 8: Diseño Minimalista ==================== */
+/* Hero Nosotros (Figura y Fondo) */
 .hero-nosotros {
-    padding: var(--spacing-4xl) var(--spacing-xl) var(--spacing-3xl);
+    padding: 6rem 2rem 4rem;
     background: linear-gradient(135deg, #034D31, #07734B, #15AC75);
     color: white;
     text-align: center;
-    position: relative;
-    overflow: hidden;
-}
-
-.hero-nosotros::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -25%;
-    width: 150%;
-    height: 150%;
-    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-    animation: rotate 30s linear infinite;
-}
-
-@keyframes rotate {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
 }
 
 .hero-nosotros h1 {
-    font-size: clamp(2.5rem, 5vw, 3.5rem);
-    font-weight: 800;
-    margin-bottom: var(--spacing-md);
-    position: relative;
-    z-index: 1;
-    letter-spacing: -0.02em;
+    font-family: 'Lilita One', sans-serif;
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
 }
 
 .hero-subtitle {
-    font-size: clamp(1.1rem, 2vw, 1.3rem);
-    opacity: 0.95;
-    position: relative;
-    z-index: 1;
+    font-size: 1.3rem;
+    opacity: 0.9;
 }
 
-/* ==================== MISIÓN Y VISIÓN - Ley de Proximidad ==================== */
+/* Misión y Visión (Proximidad, Semejanza) */
 .mision-vision {
-    padding: var(--spacing-4xl) var(--spacing-xl);
+    padding: 6rem 2rem;
     background: white;
 }
 
 .content-grid {
+    /* Proximidad: Agrupación de Misión y Visión */
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-    gap: var(--spacing-2xl);
-    max-width: 1200px;
-    margin: 0 auto;
+    gap: 3rem;
 }
 
-/* Card con efectos visuales - Ley de Figura y Fondo */
 .card {
+    /* Semejanza: Estilo visual uniforme */
     background: linear-gradient(135deg, #f8f9fa, #ffffff);
-    padding: var(--spacing-2xl) var(--spacing-xl);
-    border-radius: var(--radius-xl);
-    box-shadow: var(--shadow-md);
-    transition: var(--transition);
-    border: 2px solid transparent;
-    position: relative;
-    overflow: hidden;
-}
-
-.card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, var(--color-primary), var(--color-primary-light));
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: var(--transition);
-}
-
-.card:hover::before {
-    transform: scaleX(1);
+    padding: 3rem 2.5rem;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
 }
 
 .card:hover {
     transform: translateY(-10px);
-    box-shadow: var(--shadow-xl);
-    border-color: var(--color-primary);
+    box-shadow: 0 20px 50px rgba(7, 115, 75, 0.2);
 }
 
 .card-icon {
     font-size: 4rem;
-    margin-bottom: var(--spacing-lg);
-    display: block;
-    animation: bounce 2s ease-in-out infinite;
-}
-
-@keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
+    margin-bottom: 1.5rem;
 }
 
 .card h2 {
     font-size: 2rem;
-    color: var(--color-primary-dark);
-    margin-bottom: var(--spacing-lg);
+    color: #034D31;
+    margin-bottom: 1.5rem;
 }
 
 .card p {
-    color: var(--color-text-light);
+    color: #555;
     line-height: 1.8;
     font-size: 1.05rem;
 }
 
-/* ==================== HISTORIA - Ley de Continuidad ==================== */
+/* Historia (Orden) */
 .historia {
-    padding: var(--spacing-4xl) var(--spacing-xl);
+    padding: 6rem 2rem;
     background: linear-gradient(135deg, #EEEDEB, #f8f8f8);
 }
 
 .historia h2 {
     text-align: center;
-    font-size: clamp(2rem, 4vw, 2.5rem);
-    color: var(--color-primary-dark);
-    margin-bottom: var(--spacing-3xl);
-    position: relative;
-}
-
-.historia h2::after {
-    content: '';
-    position: absolute;
-    bottom: -var(--spacing-md);
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80px;
-    height: 4px;
-    background: linear-gradient(90deg, var(--color-primary), var(--color-primary-light));
-    border-radius: var(--radius-full);
+    font-size: 2.5rem;
+    color: #034D31;
+    margin-bottom: 4rem;
 }
 
 .historia-content {
+    /* Simetría y Orden: Disposición clara de texto e imagen */
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: var(--spacing-3xl);
+    gap: 4rem;
     align-items: center;
-    max-width: 1200px;
-    margin: 0 auto;
 }
 
 .historia-text p {
-    color: var(--color-text-light);
+    color: #555;
     line-height: 1.8;
     font-size: 1.05rem;
-    margin-bottom: var(--spacing-lg);
-}
-
-.historia-text p:last-child {
-    margin-bottom: 0;
-}
-
-.historia-image {
-    position: relative;
-}
-
-.historia-image::before {
-    content: '';
-    position: absolute;
-    top: -20px;
-    left: -20px;
-    right: 20px;
-    bottom: 20px;
-    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
-    border-radius: var(--radius-xl);
-    z-index: -1;
+    margin-bottom: 1.5rem;
 }
 
 .historia-image img {
-    border-radius: var(--radius-xl);
-    box-shadow: var(--shadow-lg);
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
     width: 100%;
     height: auto;
-    transition: var(--transition);
 }
 
-.historia-image:hover img {
-    transform: translate(10px, 10px);
-}
-
-/* ==================== VALORES - Ley de Semejanza ==================== */
+/* Valores (Simetría y Orden, Semejanza) */
 .valores {
-    padding: var(--spacing-4xl) var(--spacing-xl);
+    padding: 6rem 2rem;
     background: white;
 }
 
 .valores h2 {
     text-align: center;
-    font-size: clamp(2rem, 4vw, 2.5rem);
-    color: var(--color-primary-dark);
-    margin-bottom: var(--spacing-3xl);
-    position: relative;
-}
-
-.valores h2::after {
-    content: '';
-    position: absolute;
-    bottom: -var(--spacing-md);
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80px;
-    height: 4px;
-    background: linear-gradient(90deg, var(--color-primary), var(--color-primary-light));
-    border-radius: var(--radius-full);
+    font-size: 2.5rem;
+    color: #034D31;
+    margin-bottom: 4rem;
 }
 
 .valores-grid {
+    /* Simetría: Distribución equitativa y ordenada */
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: var(--spacing-2xl);
-    max-width: 1200px;
-    margin: 0 auto;
+    gap: 3rem;
 }
 
 .valor-card {
+    /* Semejanza: Estilo visual uniforme */
     text-align: center;
-    padding: var(--spacing-xl) var(--spacing-lg);
+    padding: 2.5rem 2rem;
     background: linear-gradient(135deg, #f8f9fa, #ffffff);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-sm);
-    transition: var(--transition);
-    border: 2px solid transparent;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
 }
 
 .valor-card:hover {
     transform: translateY(-8px);
-    box-shadow: var(--shadow-lg);
-    border-color: var(--color-primary);
+    box-shadow: 0 15px 40px rgba(7, 115, 75, 0.15);
 }
 
 .valor-icon {
     font-size: 3.5rem;
-    margin-bottom: var(--spacing-lg);
-    display: block;
-    transition: var(--transition);
-}
-
-.valor-card:hover .valor-icon {
-    transform: scale(1.2) rotate(-5deg);
+    margin-bottom: 1.5rem;
 }
 
 .valor-card h3 {
     font-size: 1.5rem;
-    color: var(--color-primary-dark);
-    margin-bottom: var(--spacing-md);
+    color: #034D31;
+    margin-bottom: 1rem;
 }
 
 .valor-card p {
-    color: var(--color-text-light);
+    color: #666;
     line-height: 1.6;
 }
 
-/* ==================== EQUIPO - Ley de Proximidad ==================== */
+/* Equipo */
 .equipo {
-    padding: var(--spacing-4xl) var(--spacing-xl);
+    padding: 6rem 2rem;
     background: linear-gradient(135deg, #EEEDEB, #f8f8f8);
 }
 
 .equipo h2 {
     text-align: center;
-    font-size: clamp(2rem, 4vw, 2.5rem);
-    color: var(--color-primary-dark);
-    margin-bottom: var(--spacing-md);
-    position: relative;
+    font-size: 2.5rem;
+    color: #034D31;
+    margin-bottom: 1rem;
 }
 
 .equipo-subtitle {
     text-align: center;
     font-size: 1.1rem;
-    color: var(--color-text-light);
-    margin-bottom: var(--spacing-3xl);
+    color: #666;
+    margin-bottom: 4rem;
 }
 
 .equipo-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: var(--spacing-2xl);
-    max-width: 1200px;
-    margin: 0 auto;
+    gap: 3rem;
 }
 
 .equipo-card {
     text-align: center;
     background: white;
-    padding: var(--spacing-xl) var(--spacing-lg);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-sm);
-    transition: var(--transition);
-    border: 2px solid transparent;
+    padding: 2.5rem 2rem;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
 }
 
 .equipo-card:hover {
     transform: translateY(-10px);
-    box-shadow: var(--shadow-lg);
-    border-color: var(--color-primary);
+    box-shadow: 0 15px 40px rgba(7, 115, 75, 0.15);
 }
 
 .equipo-avatar {
     width: 150px;
     height: 150px;
     border-radius: 50%;
-    margin: 0 auto var(--spacing-lg);
+    margin: 0 auto 1.5rem;
     overflow: hidden;
-    box-shadow: var(--shadow-md);
-    border: 4px solid var(--color-background-alt);
-    transition: var(--transition);
-}
-
-.equipo-card:hover .equipo-avatar {
-    transform: scale(1.1);
-    border-color: var(--color-primary);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
 .equipo-avatar img {
@@ -368,104 +206,72 @@
 
 .equipo-card h3 {
     font-size: 1.4rem;
-    color: var(--color-primary-dark);
-    margin-bottom: var(--spacing-sm);
+    color: #034D31;
+    margin-bottom: 0.5rem;
 }
 
 .equipo-role {
-    color: var(--color-primary);
+    color: #07734B;
     font-weight: 600;
     font-size: 1rem;
 }
 
-/* ==================== CONTACTO CTA ==================== */
+/* Contacto CTA (Figura y Fondo) */
 .contacto-cta {
-    padding: var(--spacing-4xl) var(--spacing-xl);
+    padding: 6rem 2rem;
     background: white;
     text-align: center;
 }
 
 .contacto-cta h2 {
-    font-size: clamp(2rem, 4vw, 2.5rem);
-    color: var(--color-primary-dark);
-    margin-bottom: var(--spacing-md);
+    font-size: 2.5rem;
+    color: #034D31;
+    margin-bottom: 1rem;
 }
 
 .contacto-cta p {
     font-size: 1.2rem;
-    color: var(--color-text-light);
-    margin-bottom: var(--spacing-2xl);
+    color: #666;
+    margin-bottom: 2.5rem;
 }
 
 .contacto-buttons {
     display: flex;
     justify-content: center;
-    gap: var(--spacing-lg);
+    gap: 1.5rem;
     flex-wrap: wrap;
 }
 
-.btn-large {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-    padding: var(--spacing-lg) var(--spacing-2xl);
-    border-radius: var(--radius-lg);
-    font-weight: 600;
-    font-size: 1rem;
-    text-decoration: none;
-    transition: var(--transition);
-    border: 2px solid;
-    cursor: pointer;
-}
-
-.btn-primary {
-    background: var(--color-primary);
-    color: white;
-    border-color: var(--color-primary);
-}
-
-.btn-primary:hover,
-.btn-primary:focus {
-    background: var(--color-primary-dark);
-    border-color: var(--color-primary-dark);
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-lg);
-}
-
-.btn-secondary {
-    background: transparent;
-    color: var(--color-primary);
-    border-color: var(--color-primary);
-}
-
-.btn-secondary:hover,
-.btn-secondary:focus {
-    background: var(--color-primary);
-    color: white;
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-lg);
-}
-
-/* ==================== RESPONSIVE ==================== */
+/* Responsive (Responsividad) */
 @media (max-width: 768px) {
     .hero-nosotros h1 {
         font-size: 2.5rem;
     }
 
-    .content-grid, 
-    .historia-content {
+    .content-grid, .historia-content {
         grid-template-columns: 1fr;
-        gap: var(--spacing-xl);
+        gap: 2rem;
+    }
+    
+    .historia-content {
+        /* Invertir orden en móvil para que el texto sea lo primero (Principio de orden) */
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .historia-image {
+        order: 1;
+    }
+    
+    .historia-text {
+        order: 2;
     }
 
-    .valores h2, 
-    .equipo h2, 
-    .contacto-cta h2 {
+    .valores h2, .equipo h2, .contacto-cta h2 {
         font-size: 2rem;
     }
 
-    .valores-grid, 
-    .equipo-grid {
+    .valores-grid, .equipo-grid {
         grid-template-columns: 1fr;
     }
 
@@ -475,48 +281,5 @@
 
     .btn-large {
         width: 100%;
-        justify-content: center;
-    }
-    
-    .historia-image::before {
-        top: -10px;
-        left: -10px;
-        right: 10px;
-        bottom: 10px;
-    }
-}
-
-@media (max-width: 480px) {
-    .hero-nosotros {
-        padding: var(--spacing-2xl) var(--spacing-md);
-    }
-    
-    .card {
-        padding: var(--spacing-lg);
-    }
-    
-    .card-icon {
-        font-size: 3rem;
-    }
-    
-    .valor-icon {
-        font-size: 2.5rem;
-    }
-}
-
-/* ==================== ACCESIBILIDAD ==================== */
-*:focus-visible {
-    outline: 3px solid var(--color-primary);
-    outline-offset: 2px;
-    border-radius: var(--radius-sm);
-}
-
-@media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
     }
 }

@@ -8,7 +8,6 @@
 {% endblock %}
 
 {% block content %}
-<!-- ========== HEADER ========== -->
 <header class="header">
     <nav class="navbar">
         <div class="nav-container">
@@ -27,7 +26,6 @@
     </nav>
 </header>
 
-<!-- ========== MODAL DE EDICIÓN ========== -->
 <div class="edit-profile-modal" id="editProfileModal" style="display: none;">
     <div class="modal-content">
         <form method="POST" enctype="multipart/form-data" id="form-editar-perfil" action="{% url 'users:actualizar_perfil' %}">
@@ -64,12 +62,11 @@
     </div>
 </div>
 
-<!-- ========== CONTENIDO PRINCIPAL ========== -->
 <div class="container">
-    <!-- Profile Header -->
     <div class="profile-header">
         <div class="profile-hero">
             <div class="profile-avatar">
+                {# Lógica para mostrar la foto o las iniciales #}
                 {% if profile and profile.foto_url %}
                     <img src="{{ profile.foto_url.url }}" alt="Foto de perfil" class="profile-photo">
                 {% else %}
@@ -89,7 +86,6 @@
                         </svg>
                         {{ usuario.email }}
                     </span>
-
                     <span class="detail-item">
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -102,7 +98,6 @@
                         {% else %}No especificado
                         {% endif %}
                     </span>
-
                     <span class="detail-item">
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
@@ -125,6 +120,21 @@
                         <div class="profile-badge">Confiable</div>
                     {% endif %}
                 </div>
+            </div>
+        </div>
+        
+        <div class="stats-header">
+            <div class="stat-item">
+                <span class="stat-number">{{ usuario.trabajos_completados|default:0 }}</span>
+                <span class="stat-label">Trabajos Completados</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">{{ usuario.total_calificaciones|default:0 }}</span>
+                <span class="stat-label">Total Calificaciones</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">{{ usuario.rating_promedio|floatformat:1|default:"0.0" }}⭐</span>
+                <span class="stat-label">Rating Promedio</span>
             </div>
         </div>
 
@@ -155,7 +165,6 @@
         </div>
     </div>
 
-    <!-- Tabs -->
     <div class="tabs">
         <button class="tab active" data-tab="general">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -186,51 +195,38 @@
         </button>
     </div>
 
-    <!-- Tab: General -->
     <div id="general" class="tab-content active">
-        <div class="content-grid">
-            <div class="card">
-                <h3>Contacto & Disponibilidad</h3>
-                <div class="info-list">
-                    <div class="info-item">
-                        <span class="info-label">Teléfono:</span>
-                        <span class="info-value">{{ usuario.telefono|default:"No especificado" }}</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">Disponibilidad:</span>
-                        <span class="info-value">{{ disponibilidad|default:"No especificada" }}</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card">
-                <h3>Estadísticas</h3>
-                <div class="stats-compact">
-                    <div class="stat-item">
-                        <span class="stat-number">{{ usuario.trabajos_completados|default:0 }}</span>
-                        <span class="stat-label">Completados</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number">{{ usuario.total_calificaciones|default:0 }}</span>
-                        <span class="stat-label">Calificaciones</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number">{{ usuario.rating_promedio|floatformat:1|default:"0.0" }}⭐</span>
-                        <span class="stat-label">Rating</span>
-                    </div>
-                </div>
-            </div>
-
+        <div class="content-grid-single-column">
+            
             <div class="card full-width">
-                <h3>Sobre Mí</h3>
-                <p class="bio">
-                    {{ profile.bio|default:"Sin descripción aún. Agrega información sobre ti para que los empleadores conozcan mejor tu perfil profesional." }}
-                </p>
+                <h3><span class="icon-spacer"></span>Sobre Mí y Contacto</h3>
+                
+                <div class="bio-and-info-split">
+                    <div class="bio-section">
+                        <p class="bio">
+                            {{ profile.bio|default:"Sin descripción aún. Agrega información sobre ti para que los empleadores conozcan mejor tu perfil profesional." }}
+                        </p>
+                    </div>
+
+                    <div class="info-contact-section">
+                        <h4>Datos Clave</h4>
+                        <div class="info-list">
+                            <div class="info-item">
+                                <span class="info-label">Teléfono:</span>
+                                <span class="info-value">{{ usuario.telefono|default:"No especificado" }}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Disponibilidad:</span>
+                                <span class="info-value">{{ disponibilidad|default:"No especificada" }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
+
+            </div>
     </div>
 
-    <!-- Tab: Experience -->
     <div id="experience" class="tab-content">
         <div class="card">
             <h3>Trabajos Realizados</h3>
@@ -261,7 +257,6 @@
         </div>
     </div>
 
-    <!-- Tab: Certifications -->
     <div id="certifications" class="tab-content">
         <div class="card">
             <h3>Certificaciones y Documentos</h3>
@@ -295,7 +290,6 @@
         </div>
     </div>
 
-    <!-- Tab: Ratings -->
     <div id="ratings" class="tab-content">
         <div class="card">
             <h3>Calificaciones Recibidas</h3>
@@ -346,7 +340,6 @@
     </div>
 </div>
 
-<!-- ========== FOOTER ========== -->
 <footer class="footer">
     <div class="footer-container">
         <div class="footer-brand">
