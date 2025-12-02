@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'apps.llamkay',
     'apps.core',
     'apps.soporte',
+    'apps.monetizacion'
 ]
 
 MIDDLEWARE = [
@@ -161,3 +162,14 @@ print(f"🔑 APIPERU_TOKEN definido: {bool(APIPERU_TOKEN)}")
 if APIPERU_TOKEN:
     print(f"🔑 APIPERU_TOKEN valor: {APIPERU_TOKEN[:30]}...")
 print("="*60 + "\n")
+
+# Configuración Yape y Plin
+YAPE_MERCHANT_ID = 'tu_merchant_id_yape'
+YAPE_NUMBER = '+51999999999'  # Tu número Yape
+
+PLIN_MERCHANT_ID = 'tu_merchant_id_plin'
+PLIN_NUMBER = '+51999999999'  # Tu número Plin
+
+# Para generar QR
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

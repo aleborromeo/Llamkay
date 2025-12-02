@@ -1,0 +1,568 @@
+/* ============================================
+   STATIC/CSS/MONETIZACION/CONFIRMAR_PAGO.CSS
+   ============================================ */
+
+:root {
+    --primary-green: #10b981;
+    --dark-green: #059669;
+    --light-green: #d1fae5;
+    --very-light-green: #f0fdf4;
+    --text-dark: #1f2937;
+    --text-light: #6b7280;
+    --border-color: #e5e7eb;
+    --bg-light: #f9fafb;
+}
+
+/* ========== MAIN CONTAINER ========== */
+.pago-container {
+    background: linear-gradient(135deg, var(--very-light-green) 0%, #f8fafb 100%);
+    min-height: 100vh;
+    padding: 2rem 1rem;
+}
+
+.pago-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ========== HEADER ========== */
+.pago-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.pago-header-content {
+    animation: slideDown 0.6s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.pago-titulo {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.pago-icono {
+    font-size: 2.5rem;
+}
+
+.pago-subtitulo {
+    font-size: 1.1rem;
+    color: var(--text-light);
+}
+
+/* ========== CONTENT GRID ========== */
+.pago-content-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+/* ========== QR SECTION ========== */
+.qr-section {
+    animation: slideInLeft 0.6s ease-out;
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.qr-card {
+    background: white;
+    border-radius: 1.5rem;
+    padding: 2rem;
+    box-shadow: 0 8px 32px rgba(16, 185, 129, 0.12);
+    border: 1px solid var(--border-color);
+}
+
+.qr-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.qr-badge {
+    display: inline-block;
+    background: var(--light-green);
+    color: var(--dark-green);
+    padding: 0.6rem 1.2rem;
+    border-radius: 2rem;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.qr-instrucciones {
+    font-size: 1.1rem;
+    color: var(--text-light);
+    margin-top: 1rem;
+}
+
+/* ========== QR BOX ========== */
+.qr-container {
+    margin: 2rem 0;
+}
+
+.qr-box {
+    background: var(--bg-light);
+    border: 3px dashed var(--border-color);
+    border-radius: 1.2rem;
+    padding: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+}
+
+.qr-box:hover {
+    border-color: var(--primary-green);
+    background: var(--very-light-green);
+}
+
+.qr-image {
+    width: 250px;
+    height: 250px;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 12px rgba(16, 185, 129, 0.15));
+}
+
+.qr-hint {
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--text-light);
+    font-style: italic;
+}
+
+/* ========== REFERENCIA PAGO ========== */
+.referencia-pago {
+    background: linear-gradient(135deg, var(--very-light-green), #f0fdf4);
+    border-left: 4px solid var(--primary-green);
+    padding: 1.5rem;
+    border-radius: 0.8rem;
+    margin-bottom: 1.5rem;
+}
+
+.ref-label {
+    font-size: 0.85rem;
+    color: var(--dark-green);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.ref-codigo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: white;
+    padding: 1rem;
+    border-radius: 0.6rem;
+    font-family: 'Courier New', monospace;
+    font-weight: 700;
+    color: var(--primary-green);
+    font-size: 1.1rem;
+}
+
+#referencia-text {
+    flex-grow: 1;
+    word-break: break-all;
+}
+
+.btn-copiar {
+    background: var(--primary-green);
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    white-space: nowrap;
+    font-size: 0.85rem;
+}
+
+.btn-copiar:hover {
+    background: var(--dark-green);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+/* ========== TIEMPO PAGO ========== */
+.tiempo-pago {
+    background: linear-gradient(135deg, #fef3c7, #fef08a);
+    border: 2px solid #fcd34d;
+    border-radius: 0.8rem;
+    padding: 1.2rem;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    font-weight: 600;
+}
+
+.tiempo-icono {
+    font-size: 1.5rem;
+}
+
+.tiempo-texto {
+    color: #b45309;
+}
+
+#countdown {
+    font-family: 'Courier New', monospace;
+    font-size: 1.2rem;
+    color: #d97706;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+.tiempo-vencido {
+    background: linear-gradient(135deg, #fee2e2, #fecaca) !important;
+    border-color: #fca5a5 !important;
+}
+
+.tiempo-vencido .tiempo-texto {
+    color: #991b1b;
+}
+
+/* ========== DETALLES SECTION ========== */
+.detalles-section {
+    animation: slideInRight 0.6s ease-out;
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* ========== RESUMEN CARD ========== */
+.resumen-card,
+.beneficios-card,
+.info-card {
+    background: white;
+    border-radius: 1.2rem;
+    padding: 1.5rem;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    border: 1px solid var(--border-color);
+    margin-bottom: 1.5rem;
+}
+
+.resumen-titulo,
+.beneficios-titulo {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 1.5rem;
+}
+
+.resumen-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.resumen-item:last-of-type:not(.resumen-monto) {
+    border-bottom: none;
+}
+
+.item-label {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    font-weight: 500;
+}
+
+.item-valor {
+    font-weight: 700;
+    color: var(--text-dark);
+}
+
+.metodo-badge {
+    background: var(--light-green);
+    color: var(--dark-green);
+    padding: 0.4rem 1rem;
+    border-radius: 2rem;
+    font-size: 0.85rem;
+}
+
+.resumen-divider {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--border-color), transparent);
+    margin: 1rem 0;
+}
+
+.resumen-monto {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+.monto-label {
+    font-weight: 700;
+    color: var(--text-dark);
+    font-size: 1.1rem;
+}
+
+.monto-valor {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--primary-green);
+    font-family: 'Courier New', monospace;
+}
+
+/* ========== BENEFICIOS ========== */
+.beneficio-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.75rem 0;
+}
+
+.beneficio-icono {
+    color: var(--primary-green);
+    font-weight: 800;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+    margin-top: -2px;
+}
+
+.beneficio-texto {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+/* ========== INFO CARD ========== */
+.info-card {
+    background: linear-gradient(135deg, #dbeafe, #cffafe);
+    border-left: 4px solid #0369a1;
+    padding: 1.5rem;
+    display: flex;
+    gap: 1rem;
+}
+
+.info-icono {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.info-contenido {
+    flex-grow: 1;
+}
+
+.info-contenido strong {
+    color: #0c4a6e;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.info-contenido p {
+    color: #0c4a6e;
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+/* ========== ACCIONES ========== */
+.pago-acciones {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.btn-confirmar,
+.btn-volver {
+    flex: 1;
+    min-width: 200px;
+    padding: 1.2rem 2rem;
+    border: none;
+    border-radius: 0.8rem;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    text-decoration: none;
+}
+
+.btn-confirmar {
+    background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+    color: white;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+
+.btn-confirmar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(16, 185, 129, 0.4);
+}
+
+.btn-confirmar:active {
+    transform: translateY(0);
+}
+
+.btn-volver {
+    background: var(--bg-light);
+    color: var(--text-dark);
+    border: 2px solid var(--border-color);
+}
+
+.btn-volver:hover {
+    background: white;
+    border-color: var(--primary-green);
+    color: var(--primary-green);
+}
+
+/* ========== INSTRUCCIONES ========== */
+.instrucciones-card {
+    background: white;
+    border-radius: 1.2rem;
+    padding: 2rem;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    border: 1px solid var(--border-color);
+}
+
+.instrucciones-titulo {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 1.5rem;
+}
+
+.instrucciones-lista {
+    list-style: none;
+    counter-reset: item;
+}
+
+.instrucciones-lista li {
+    display: flex;
+    gap: 1.2rem;
+    margin-bottom: 1.2rem;
+    align-items: flex-start;
+}
+
+.instrucciones-lista li:last-child {
+    margin-bottom: 0;
+}
+
+.paso-numero {
+    background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    flex-shrink: 0;
+    font-size: 1.1rem;
+}
+
+.paso-texto {
+    color: var(--text-light);
+    padding-top: 0.5rem;
+    line-height: 1.6;
+}
+
+.paso-texto strong {
+    color: var(--text-dark);
+    font-weight: 700;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
+    .pago-titulo {
+        font-size: 1.6rem;
+    }
+
+    .pago-content-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .qr-image {
+        width: 200px;
+        height: 200px;
+    }
+
+    .pago-acciones {
+        flex-direction: column;
+    }
+
+    .btn-confirmar,
+    .btn-volver {
+        min-width: unset;
+    }
+
+    .ref-codigo {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    #referencia-text {
+        text-align: center;
+        margin-bottom: 0.5rem;
+    }
+
+    .btn-copiar {
+        width: 100%;
+    }
+
+    .instrucciones-lista li {
+        gap: 1rem;
+    }
+
+    .paso-numero {
+        width: 35px;
+        height: 35px;
+        font-size: 1rem;
+    }
+}

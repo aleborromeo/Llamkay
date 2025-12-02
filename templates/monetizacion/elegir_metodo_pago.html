@@ -1,0 +1,194 @@
+{% extends "monetizacion/base.html" %}
+{% load static %}
+
+{% block title %}Elegir Método de Pago - Llamkay{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/monetizacion/elegir_metodo_pago.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="metodo-pago-container">
+    <!-- Header -->
+    <div class="metodo-header">
+        <div class="metodo-header-content">
+            <h1 class="metodo-titulo">
+                <span class="metodo-titulo-icono">💳</span>
+                Selecciona Método de Pago
+            </h1>
+            <p class="metodo-subtitulo">Elige cómo deseas realizar tu pago de forma segura y rápida</p>
+        </div>
+    </div>
+
+    <!-- Resumen Plan -->
+    <div class="resumen-plan-section">
+        <div class="resumen-plan-card">
+            <div class="resumen-titulo">📦 Resumen de tu Compra</div>
+            
+            <div class="resumen-items">
+                <div class="resumen-item">
+                    <div class="item-info">
+                        <span class="item-label">Plan Seleccionado</span>
+                        <span class="item-valor">{{ plan.name }}</span>
+                    </div>
+                    <div class="item-icono">📋</div>
+                </div>
+
+                <div class="resumen-item">
+                    <div class="item-info">
+                        <span class="item-label">Duración</span>
+                        <span class="item-valor">{{ plan.duration_days }} días</span>
+                    </div>
+                    <div class="item-icono">📅</div>
+                </div>
+
+                <div class="resumen-divider"></div>
+
+                <div class="resumen-item total">
+                    <div class="item-info">
+                        <span class="item-label">Total a Pagar</span>
+                        <span class="item-valor monto">S/ {{ plan.price }}</span>
+                    </div>
+                    <div class="item-icono">💰</div>
+                </div>
+            </div>
+
+            <!-- Plan Features -->
+            <div class="plan-features">
+                <div class="features-titulo">Incluye:</div>
+                <ul class="features-lista">
+                    {% if plan.plan_type == 'free' %}
+                        <li>✓ 4 postulaciones por día</li>
+                        <li>✓ Perfil editable</li>
+                        <li>✓ Tu ciudad</li>
+                    {% elif plan.plan_type == 'premium' %}
+                        <li>✓ Postulaciones ilimitadas</li>
+                        <li>✓ Todas las ciudades</li>
+                        <li>✓ Perfil destacado</li>
+                    {% elif plan.plan_type == 'empresa' %}
+                        <li>✓ Crear trabajos ilimitados</li>
+                        <li>✓ Analytics completo</li>
+                        <li>✓ Soporte dedicado</li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Métodos de Pago -->
+    <div class="metodos-section">
+        <h2 class="metodos-section-titulo">Elige tu Método de Pago</h2>
+        
+        <form method="post" action="{% url 'monetizacion:procesar_pago_yape_plin' plan.id %}" id="form-pago">
+            {% csrf_token %}
+            
+            <div class="metodos-grid">
+                <!-- YAPE -->
+                <label class="metodo-card" id="metodo-yape">
+                    <input type="radio" name="metodo_pago" value="yape" required>
+                    
+                    <div class="metodo-card-content">
+                        <div class="metodo-header-card">
+                            <span class="metodo-icono-grande">📱</span>
+                            <span class="metodo-badge">Popular</span>
+                        </div>
+                        
+                        <div class="metodo-nombre">Yape</div>
+                        <div class="metodo-descripcion">
+                            <p class="metodo-desc-principal">Transfiere desde tu app Yape</p>
+                            <ul class="metodo-ventajas">
+                                <li>✓ Transacción instantánea</li>
+                                <li>✓ Sin comisiones</li>
+                                <li>✓ 100% Seguro</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="metodo-footer">
+                            <span class="metodo-disponibilidad">Disponible</span>
+                        </div>
+                    </div>
+                </label>
+
+                <!-- PLIN -->
+                <label class="metodo-card" id="metodo-plin">
+                    <input type="radio" name="metodo_pago" value="plin" required>
+                    
+                    <div class="metodo-card-content">
+                        <div class="metodo-header-card">
+                            <span class="metodo-icono-grande">📲</span>
+                            <span class="metodo-badge">Nuevo</span>
+                        </div>
+                        
+                        <div class="metodo-nombre">Plin</div>
+                        <div class="metodo-descripcion">
+                            <p class="metodo-desc-principal">Transfiere desde tu app Plin</p>
+                            <ul class="metodo-ventajas">
+                                <li>✓ Transacción instantánea</li>
+                                <li>✓ Sin comisiones</li>
+                                <li>✓ 100% Seguro</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="metodo-footer">
+                            <span class="metodo-disponibilidad">Disponible</span>
+                        </div>
+                    </div>
+                </label>
+            </div>
+
+            <!-- Botones de Acción -->
+            <div class="acciones-container">
+                <a href="{% url 'monetizacion:planes_list' %}" class="btn btn-volver">
+                    <span class="btn-icono">←</span>
+                    Volver
+                </a>
+                <button type="submit" class="btn btn-continuar" disabled id="btn-submit">
+                    <span class="btn-icono">→</span>
+                    Continuar
+                </button>
+            </div>
+
+            <!-- Nota Importante -->
+            <div class="nota-importante">
+                <span class="nota-icono">ℹ️</span>
+                <p>Después de seleccionar tu método de pago, podrás completar la transacción escaneando un código QR desde tu aplicación. El proceso toma menos de 1 minuto.</p>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Manejo de selección de método de pago
+    document.querySelectorAll('input[name="metodo_pago"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            // Habilitar botón de continuar
+            document.getElementById('btn-submit').disabled = false;
+            
+            // Remover clase selected de todas las tarjetas
+            document.querySelectorAll('.metodo-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Agregar clase selected a la tarjeta seleccionada
+            document.getElementById(`metodo-${this.value}`).classList.add('selected');
+            
+            // Animación del botón
+            const btn = document.getElementById('btn-submit');
+            btn.style.animation = 'none';
+            setTimeout(() => {
+                btn.style.animation = 'pulse 0.6s ease-out';
+            }, 10);
+        });
+    });
+
+    // Validación antes de enviar
+    document.getElementById('form-pago').addEventListener('submit', function(e) {
+        const metodoSeleccionado = document.querySelector('input[name="metodo_pago"]:checked');
+        if (!metodoSeleccionado) {
+            e.preventDefault();
+            alert('Por favor selecciona un método de pago');
+            return false;
+        }
+    });
+</script>
+{% endblock %}
