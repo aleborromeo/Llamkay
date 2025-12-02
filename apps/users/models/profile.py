@@ -19,7 +19,11 @@ class Profile(models.Model):
     tarifa_hora = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     
     # Medios
-    foto_url = models.CharField(max_length=500, null=True, blank=True)
+    foto_url = models.ImageField(
+        upload_to='uploads/fotos_perfil/',
+        blank=True,
+        null=True
+    )
     portafolio_url = models.URLField(max_length=500, null=True, blank=True)
     
     # Ubicación para búsquedas

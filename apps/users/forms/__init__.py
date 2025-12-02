@@ -27,15 +27,6 @@ __all__ = [
     'RegisterFormStep3',
     'RegisterFormStep4',
     'RegisterEmpresaForm',
-    
-    # Perfil
-    'PerfilUpdateForm',
-    'TarifaForm',
-    
-    # Verificación
-    'CertificacionForm',
     'VerificacionForm',
-    
-    # Calificación
-    'CalificacionForm',
+    'CertificacionForm',
 ]

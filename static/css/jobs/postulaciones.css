@@ -1,0 +1,140 @@
+/* =============================================
+   POSTULACIONES - LLAMKAY.PE
+   ============================================= */
+
+.postulaciones-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.postulacion-card {
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+    border-left: 4px solid var(--color-background-alt);
+}
+
+.postulacion-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateX(5px);
+}
+
+.postulacion-card.estado-pendiente {
+    border-left-color: var(--color-warning);
+}
+
+.postulacion-card.estado-en_revision {
+    border-left-color: var(--color-info);
+}
+
+.postulacion-card.estado-aceptada {
+    border-left-color: var(--color-success);
+}
+
+.postulacion-card.estado-rechazada {
+    border-left-color: var(--color-danger);
+    opacity: 0.7;
+}
+
+.postulacion-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+    gap: 1rem;
+}
+
+.postulacion-info {
+    flex: 1;
+}
+
+.postulacion-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 0.75rem;
+}
+
+.postulacion-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+}
+
+.postulacion-meta .meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--color-text-light);
+}
+
+.postulacion-meta .meta-item svg {
+    stroke: var(--color-primary);
+}
+
+.postulacion-message {
+    background: var(--color-background-alt);
+    padding: 1rem;
+    border-radius: var(--radius-sm);
+    margin-bottom: 1rem;
+    border-left: 3px solid var(--color-primary);
+}
+
+.postulacion-message strong {
+    display: block;
+    color: var(--color-primary);
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.postulacion-message p {
+    margin: 0;
+    color: var(--color-text);
+    line-height: 1.6;
+}
+
+.postulacion-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.badge-pendiente {
+    background: rgba(245, 158, 11, 0.1);
+    color: #d97706;
+}
+
+.badge-en_revision {
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--color-info);
+}
+
+.badge-aceptada {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--color-success);
+}
+
+.badge-rechazada {
+    background: rgba(220, 38, 38, 0.1);
+    color: var(--color-danger);
+}
+
+@media (max-width: 768px) {
+    .postulacion-header {
+        flex-direction: column;
+    }
+    
+    .postulacion-actions {
+        flex-direction: column;
+    }
+    
+    .postulacion-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}

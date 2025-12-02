@@ -9,6 +9,9 @@ from django.utils import timezone
 import logging
 
 from ..repositories import DenunciaRepository
+from apps.users.models import Usuario
+from django.contrib.auth.models import User 
+from django.db.models import QuerySet
 
 logger = logging.getLogger(__name__)
 
@@ -24,8 +27,8 @@ class DenunciaService:
     
     def crear_denuncia(
         self,
-        id_reportante,
-        id_denunciado,
+        id_reportante: Usuario,
+        id_denunciado: Usuario,
         motivo: str,
         descripcion: str,
         id_contrato=None,
@@ -36,8 +39,8 @@ class DenunciaService:
         Crear una nueva denuncia
         
         Args:
-            id_reportante: Usuario que realiza la denuncia
-            id_denunciado: Usuario denunciado
+            id_reportante: Usuario que realiza la denuncia (instancia de Usuario)
+            id_denunciado: Usuario denunciado (instancia de Usuario)
             motivo: Motivo de la denuncia
             descripcion: Descripción detallada
             id_contrato: Contrato relacionado (opcional)
@@ -46,18 +49,12 @@ class DenunciaService:
         """
         try:
             # Validaciones
-            if id_reportante.id_usuario == id_denunciado.id_usuario:
-                return {
-                    'success': False,
-                    'error': 'No puedes denunciarte a ti mismo'
-                }
+            if id_reportante == id_denunciado:
+                return {'success': False, 'error': 'No puedes denunciarte a ti mismo'}
             
             # Verificar si ya existe una denuncia similar activa
             if self.repo.existe_denuncia_activa(id_reportante, id_denunciado, motivo):
-                return {
-                    'success': False,
-                    'error': 'Ya existe una denuncia similar en proceso'
-                }
+                return {'success': False, 'error': 'Ya existe una denuncia similar en proceso'}
             
             data = {
                 'id_reportante': id_reportante,
@@ -71,10 +68,9 @@ class DenunciaService:
             }
             
             denuncia = self.repo.create(data)
-            
             logger.info(
                 f"✅ Denuncia creada: #{denuncia.id_denuncia} - "
-                f"{id_reportante.id_usuario} vs {id_denunciado.id_usuario}"
+                f"{id_reportante.nombre_completo} vs {id_denunciado.nombre_completo}"
             )
             
             return {
@@ -85,16 +81,13 @@ class DenunciaService:
             
         except Exception as e:
             logger.error(f"❌ Error creando denuncia: {str(e)}")
-            return {
-                'success': False,
-                'error': str(e)
-            }
+            return {'success': False, 'error': str(e)}
     
     def actualizar_estado(
         self,
         id_denuncia: int,
         estado: str,
-        id_moderador,
+        id_moderador: User,
         resolucion: Optional[str] = None
     ) -> Dict[str, Any]:
         """
@@ -103,17 +96,14 @@ class DenunciaService:
         Args:
             id_denuncia: ID de la denuncia
             estado: Nuevo estado
-            id_moderador: Moderador que actualiza
+            id_moderador: Moderador que actualiza (instancia de User)
             resolucion: Texto de resolución (opcional)
         """
         try:
             denuncia = self.repo.get_by_id(id_denuncia)
             
             if not denuncia:
-                return {
-                    'success': False,
-                    'error': 'Denuncia no encontrada'
-                }
+                return {'success': False, 'error': 'Denuncia no encontrada'}
             
             data = {
                 'estado': estado,
@@ -130,29 +120,26 @@ class DenunciaService:
                     data['resolucion'] = resolucion
             
             self.repo.update(id_denuncia, data)
+            logger.info(f"✅ Denuncia #{id_denuncia} actualizada a estado: {estado}")
             
-            logger.info(
-                f"✅ Denuncia #{id_denuncia} actualizada a estado: {estado}"
-            )
-            
-            return {
-                'success': True,
-                'message': f'Denuncia actualizada a {estado}'
-            }
+            return {'success': True, 'message': f'Denuncia actualizada a {estado}'}
             
         except Exception as e:
             logger.error(f"❌ Error actualizando denuncia: {str(e)}")
-            return {
-                'success': False,
-                'error': str(e)
-            }
+            return {'success': False, 'error': str(e)}
     
     def asignar_moderador(
         self,
         id_denuncia: int,
-        id_moderador
+        id_moderador: User
     ) -> Dict[str, Any]:
-        """Asignar un moderador a una denuncia"""
+        """
+        Asignar un moderador a una denuncia
+        
+        Args:
+            id_denuncia: ID de la denuncia
+            id_moderador: Moderador asignado (instancia de User)
+        """
         try:
             data = {
                 'id_moderador': id_moderador,
@@ -161,28 +148,19 @@ class DenunciaService:
             }
             
             self.repo.update(id_denuncia, data)
+            logger.info(f"✅ Moderador asignado a denuncia #{id_denuncia}")
             
-            logger.info(
-                f"✅ Moderador asignado a denuncia #{id_denuncia}"
-            )
-            
-            return {
-                'success': True,
-                'message': 'Moderador asignado exitosamente'
-            }
+            return {'success': True, 'message': 'Moderador asignado exitosamente'}
             
         except Exception as e:
-            logger.error(f"Error asignando moderador: {str(e)}")
-            return {
-                'success': False,
-                'error': str(e)
-            }
+            logger.error(f"❌ Error asignando moderador: {str(e)}")
+            return {'success': False, 'error': str(e)}
     
     def resolver_denuncia(
         self,
         id_denuncia: int,
         resolucion: str,
-        id_moderador
+        id_moderador: User
     ) -> Dict[str, Any]:
         """Resolver una denuncia"""
         return self.actualizar_estado(
@@ -196,7 +174,7 @@ class DenunciaService:
         self,
         id_denuncia: int,
         motivo_rechazo: str,
-        id_moderador
+        id_moderador: User
     ) -> Dict[str, Any]:
         """Rechazar una denuncia"""
         return self.actualizar_estado(
@@ -209,7 +187,7 @@ class DenunciaService:
     def cerrar_denuncia(
         self,
         id_denuncia: int,
-        id_moderador
+        id_moderador: User
     ) -> Dict[str, Any]:
         """Cerrar una denuncia"""
         return self.actualizar_estado(
@@ -220,48 +198,66 @@ class DenunciaService:
     
     # ==================== CONSULTAS ====================
     
-    def obtener_denuncia(self, id_denuncia: int):
-        """Obtener una denuncia por ID"""
-        return self.repo.get_by_id(id_denuncia)
+    def obtener_denuncias_usuario(self, usuario: Usuario) -> QuerySet:
+        """
+        Obtiene denuncias del usuario reportante
+        :param usuario: instancia de apps.users.models.Usuario
+        """
+        if not isinstance(usuario, Usuario):
+            raise ValueError("Debe ser una instancia de Usuario")
+        
+        return self.repo.get_by_reportante(usuario)
     
-    def obtener_denuncias_usuario(self, id_usuario):
-        """Obtener denuncias realizadas por un usuario"""
-        return self.repo.get_by_reportante(id_usuario)
+    def obtener_denuncias_recibidas(self, usuario: Usuario) -> QuerySet:
+        """
+        Obtener denuncias recibidas por un usuario
+        :param usuario: instancia de apps.users.models.Usuario
+        """
+        if not isinstance(usuario, Usuario):
+            raise ValueError("Debe ser una instancia de Usuario")
+        
+        return self.repo.get_by_denunciado(usuario)
     
-    def obtener_denuncias_recibidas(self, id_usuario):
-        """Obtener denuncias recibidas por un usuario"""
-        return self.repo.get_by_denunciado(id_usuario)
-    
-    def obtener_denuncias_por_estado(self, estado: str):
-        """Obtener denuncias por estado"""
+    def obtener_denuncias_por_estado(self, estado: str) -> QuerySet:
+        """
+        Obtener denuncias por estado
+        :param estado: Estado de la denuncia (pendiente, en_revision, etc.)
+        """
         return self.repo.get_by_estado(estado)
     
-    def obtener_denuncias_moderador(self, id_moderador):
-        """Obtener denuncias moderadas por un usuario"""
-        return self.repo.get_by_moderador(id_moderador)
+    def obtener_denuncias_moderador(self, moderador: User) -> QuerySet:
+        """
+        Obtener denuncias moderadas por un usuario
+        :param moderador: instancia de django.contrib.auth.models.User
+        """
+        return self.repo.get_by_moderador(moderador)
     
-    def obtener_todas_denuncias(self):
+    def obtener_todas_denuncias(self) -> QuerySet:
         """Obtener todas las denuncias"""
         return self.repo.get_all()
     
-    def contar_denuncias_usuario(self, id_usuario) -> int:
-        """Contar denuncias recibidas por un usuario"""
-        return self.repo.count_by_denunciado(id_usuario)
+    def contar_denuncias_usuario(self, usuario: Usuario) -> int:
+        """
+        Contar denuncias recibidas por un usuario
+        :param usuario: instancia de apps.users.models.Usuario
+        """
+        if not isinstance(usuario, Usuario):
+            raise ValueError("Debe ser una instancia de Usuario")
+        
+        return self.repo.count_by_denunciado(usuario)
     
-    def obtener_estadisticas_usuario(self, id_usuario) -> Dict[str, int]:
-        """Obtener estadísticas de denuncias de un usuario"""
+    def obtener_estadisticas_usuario(self, usuario: Usuario) -> Dict[str, int]:
+        """
+        Obtener estadísticas de denuncias de un usuario
+        :param usuario: instancia de apps.users.models.Usuario
+        """
+        if not isinstance(usuario, Usuario):
+            raise ValueError("Debe ser una instancia de Usuario")
+        
         return {
-            'total': self.repo.count_by_denunciado(id_usuario),
-            'pendientes': self.repo.count_by_estado_and_denunciado(
-                id_usuario, 'pendiente'
-            ),
-            'en_revision': self.repo.count_by_estado_and_denunciado(
-                id_usuario, 'en_revision'
-            ),
-            'resueltas': self.repo.count_by_estado_and_denunciado(
-                id_usuario, 'resuelta'
-            ),
-            'rechazadas': self.repo.count_by_estado_and_denunciado(
-                id_usuario, 'rechazada'
-            ),
+            'total': self.repo.count_by_denunciado(usuario),
+            'pendientes': self.repo.count_by_estado_and_denunciado(usuario, 'pendiente'),
+            'en_revision': self.repo.count_by_estado_and_denunciado(usuario, 'en_revision'),
+            'resueltas': self.repo.count_by_estado_and_denunciado(usuario, 'resuelta'),
+            'rechazadas': self.repo.count_by_estado_and_denunciado(usuario, 'rechazada'),
         }

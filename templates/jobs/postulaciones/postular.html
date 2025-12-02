@@ -1,0 +1,63 @@
+{% extends "jobs/base_jobs.html" %}
+
+{% block title %}Postular a {{ oferta.titulo|default:oferta.titulo_puesto }} - Llamkay{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 800px; margin-top: 20px;">
+    <a href="{% url 'jobs:detalle_trabajo' tipo oferta.id %}" class="btn btn-secondary" style="margin-bottom: 20px;">← Volver</a>
+    
+    <div class="card">
+        <h2>📝 Postular a este Trabajo</h2>
+        
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <h3 style="color: #07734B; margin-bottom: 10px;">
+                {% if tipo == 'usuario' %}
+                    {{ oferta.titulo }}
+                {% else %}
+                    {{ oferta.titulo_puesto }}
+                {% endif %}
+            </h3>
+            <p style="color: #666;">Publicado por: {{ oferta.id_empleador.nombre_completo }}</p>
+            {% if oferta.pago %}
+                <p style="color: #07734B; font-weight: 600; font-size: 18px; margin-top: 10px;">
+                    💰 S/ {{ oferta.pago }} - {{ oferta.get_modalidad_pago_display }}
+                </p>
+            {% endif %}
+        </div>
+        
+        <form method="POST">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label>Mensaje de Presentación *</label>
+                <textarea name="mensaje" class="form-control" rows="6" required placeholder="Cuéntale al empleador por qué eres el candidato ideal para este trabajo..."></textarea>
+                <small style="color: #666; display: block; margin-top: 5px;">Incluye tu experiencia, habilidades relevantes y disponibilidad</small>
+            </div>
+            
+            <div class="form-group">
+                <label>Pretensión Salarial (Opcional)</label>
+                <input type="number" name="pretension_salarial" class="form-control" step="0.01" min="0" placeholder="Ejemplo: 1500.00">
+                <small style="color: #666; display: block; margin-top: 5px;">Si difiere del monto publicado</small>
+            </div>
+            
+            <div class="form-group">
+                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                    <input type="checkbox" name="disponibilidad_inmediata" style="width: 20px; height: 20px;">
+                    <span>Tengo disponibilidad inmediata para comenzar</span>
+                </label>
+            </div>
+            
+            <div style="background: #fff3cd; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #ffc107;">
+                <p style="margin: 0; color: #856404;">
+                    <strong>⚠️ Importante:</strong> Asegúrate de incluir información relevante y real. El empleador revisará tu postulación y podrá contactarte si estás seleccionado.
+                </p>
+            </div>
+            
+            <div style="display: flex; gap: 15px; margin-top: 25px;">
+                <button type="submit" class="btn btn-success" style="flex: 1;">✓ Enviar Postulación</button>
+                <a href="{% url 'jobs:detalle_trabajo' tipo oferta.id %}" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

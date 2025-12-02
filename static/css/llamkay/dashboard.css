@@ -1064,3 +1064,239 @@ body {
         width: 100%;
     }
 }
+
+/* Estilos adicionales para notificaciones preview */
+.notificaciones-preview {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.notificacion-preview-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 8px;
+    background: #f9fafb;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.notificacion-preview-item:hover {
+    background: #f3f4f6;
+    transform: translateX(4px);
+}
+
+.notificacion-preview-item.no-leida {
+    background: #f0f9ff;
+    border-left: 3px solid #07734B;
+}
+
+.notif-icon {
+    font-size: 1.5rem;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border-radius: 8px;
+    flex-shrink: 0;
+}
+
+.notif-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.notif-content strong {
+    display: block;
+    color: #1f2937;
+    font-size: 0.875rem;
+    margin-bottom: 0.25rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.notif-time {
+    color: #6b7280;
+    font-size: 0.75rem;
+}
+
+/* ========================================
+   ESTILOS PARA NOTIFICACIONES EN DASHBOARD
+   ======================================== */
+
+/* Botón de notificaciones en header */
+.icon-button {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #ffffff;
+}
+
+.icon-button:hover {
+    background: #f3f4f6;
+    color: #07734B;
+}
+
+.notification-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background: #ef4444;
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 10px;
+    min-width: 18px;
+    text-align: center;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+/* Preview de notificaciones en sidebar */
+.notificaciones-preview {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.notificacion-preview-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 8px;
+    background: #f9fafb;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    border-left: 3px solid transparent;
+}
+
+.notificacion-preview-item:hover {
+    background: #f3f4f6;
+    transform: translateX(4px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.notificacion-preview-item.no-leida {
+    background: #f0f9ff;
+    border-left-color: #07734B;
+}
+
+.notificacion-preview-item.no-leida .notif-content strong {
+    color: #07734B;
+}
+
+.notif-icon {
+    font-size: 1.5rem;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border-radius: 8px;
+    flex-shrink: 0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.notif-icon.postulacion {
+    background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+}
+
+.notif-icon.mensaje {
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+}
+
+.notif-icon.contrato {
+    background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+}
+
+.notif-icon.pago {
+    background: linear-gradient(135deg, #fce7f3, #fbcfe8);
+}
+
+.notif-icon.calificacion {
+    background: linear-gradient(135deg, #fee2e2, #fecaca);
+}
+
+.notif-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.notif-content strong {
+    display: block;
+    color: #1f2937;
+    font-size: 0.875rem;
+    margin-bottom: 0.25rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.notif-time {
+    color: #6b7280;
+    font-size: 0.75rem;
+}
+
+/* Badge en dropdown */
+.dropdown-item .badge {
+    margin-left: auto;
+    background: #07734B;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+/* Sidebar card con notificaciones */
+.sidebar-card h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.sidebar-card h3 svg {
+    color: #07734B;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .notificacion-preview-item {
+        padding: 0.5rem;
+    }
+    
+    .notif-icon {
+        width: 35px;
+        height: 35px;
+        font-size: 1.25rem;
+    }
+    
+    .notif-content strong {
+        font-size: 0.8125rem;
+    }
+}

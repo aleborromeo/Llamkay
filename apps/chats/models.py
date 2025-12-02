@@ -16,7 +16,7 @@ class Conversacion(models.Model):
         on_delete=models.CASCADE,
         related_name='conversaciones_recibidas'
     )
-    
+
     # Contexto (opcional)
     id_oferta_usuario = models.ForeignKey(
         'jobs.OfertaUsuario',
@@ -28,13 +28,13 @@ class Conversacion(models.Model):
         'jobs.OfertaEmpresa',
         on_delete=models.SET_NULL,
         null=True,
-        blank=True
+        blank=True,
     )
-    
+
     # Estado
     activa = models.BooleanField(default=True)
     bloqueada = models.BooleanField(default=False)
-    
+
     # Auditoría
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -46,6 +46,14 @@ class Conversacion(models.Model):
 
     def __str__(self):
         return f"Conversación {self.id_conversacion}"
+
+    def obtener_otro_usuario(self, usuario_actual):
+        """
+        Devuelve el otro participante de la conversación.
+        """
+        if self.id_usuario_1 == usuario_actual:
+            return self.id_usuario_2
+        return self.id_usuario_1
 
 
 class Mensaje(models.Model):
@@ -66,17 +74,18 @@ class Mensaje(models.Model):
         on_delete=models.CASCADE,
         related_name='mensajes_enviados'
     )
-    
+
     # Contenido
     tipo = models.CharField(max_length=20, choices=TIPO_CHOICES, default='texto')
     contenido = models.TextField(null=True, blank=True)
     archivo = models.CharField(max_length=500, null=True, blank=True)
-    
+
     # Estado
     leido = models.BooleanField(default=False)
     fecha_leido = models.DateTimeField(null=True, blank=True)
     eliminado = models.BooleanField(default=False)
-    
+    editado = models.BooleanField(default=False)  # 👈 NUEVO
+
     # Auditoría
     created_at = models.DateTimeField(auto_now_add=True)
 

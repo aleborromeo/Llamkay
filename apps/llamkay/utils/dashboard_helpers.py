@@ -132,12 +132,10 @@ def _calcular_estadisticas_empleador(usuario) -> Dict[str, Any]:
             ofertas_activas = OfertaEmpresa.objects.filter(
                 id_empleador=usuario,
                 estado='activa',
-                deleted_at__isnull=True
             ).count()
             
             ofertas_totales = OfertaEmpresa.objects.filter(
                 id_empleador=usuario,
-                deleted_at__isnull=True
             ).count()
             
             postulantes_totales = Postulacion.objects.filter(
@@ -152,12 +150,10 @@ def _calcular_estadisticas_empleador(usuario) -> Dict[str, Any]:
             ofertas_activas = OfertaUsuario.objects.filter(
                 id_empleador=usuario,
                 estado='activa',
-                deleted_at__isnull=True
             ).count()
             
             ofertas_totales = OfertaUsuario.objects.filter(
                 id_empleador=usuario,
-                deleted_at__isnull=True
             ).count()
             
             postulantes_totales = Postulacion.objects.filter(
@@ -333,7 +329,6 @@ def _obtener_trabajos_para_trabajador(usuario) -> List[Dict[str, Any]]:
         # Ofertas de usuarios
         ofertas_usuario = OfertaUsuario.objects.filter(
             estado='activa',
-            deleted_at__isnull=True
         ).exclude(
             id_empleador=usuario
         ).select_related(
@@ -353,7 +348,7 @@ def _obtener_trabajos_para_trabajador(usuario) -> List[Dict[str, Any]]:
                 'pago': oferta.pago,
                 'modalidad_pago': oferta.get_modalidad_pago_display(),
                 'urgente': oferta.urgente,
-                'fecha_publicacion': oferta.fecha_publicacion,
+                'fecha_publicacion': oferta.created_at,
                 'empleador': oferta.id_empleador,
                 'categoria': oferta.id_categoria,
                 'ubicacion': {
@@ -366,7 +361,6 @@ def _obtener_trabajos_para_trabajador(usuario) -> List[Dict[str, Any]]:
         # Ofertas de empresas
         ofertas_empresa = OfertaEmpresa.objects.filter(
             estado='activa',
-            deleted_at__isnull=True
         ).exclude(
             id_empleador=usuario
         ).select_related(
@@ -383,9 +377,9 @@ def _obtener_trabajos_para_trabajador(usuario) -> List[Dict[str, Any]]:
                 'id': oferta.id,
                 'titulo': oferta.titulo_puesto,
                 'descripcion': oferta.descripcion,
-                'rango_salarial': oferta.rango_salarial,
-                'modalidad_trabajo': oferta.get_modalidad_trabajo_display(),
-                'fecha_publicacion': oferta.fecha_publicacion,
+                'rango_salarial': f"{oferta.pago} {oferta.moneda}" if oferta.pago else None,
+                'modalidad_pago': oferta.get_modalidad_pago_display(),
+                'fecha_publicacion': oferta.created_at,
                 'empleador': oferta.id_empleador,
                 'categoria': oferta.id_categoria,
                 'ubicacion': {
@@ -440,7 +434,7 @@ def _obtener_postulantes_para_empleador(usuario) -> List[Dict[str, Any]]:
                 'titulo': f"{trabajador.nombres} {trabajador.apellidos}",
                 'descripcion': f"Postuló a: {oferta_titulo}",
                 'pago': post.pretension_salarial,
-                'fecha_publicacion': post.fecha_postulacion,
+                'fecha_publicacion': post.created_at,
                 'empleador': trabajador,
                 'categoria': None,
                 'ubicacion': {
