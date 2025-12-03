@@ -1,91 +1,380 @@
-/* ===== CONFIGURACIÓN Y PÁGINAS DE SETTINGS ===== */
+/* =============================================
+   CONFIGURACIÓN Y PÁGINAS DE SETTINGS
+   Aplicando Leyes de Gestalt y Principios de Nielsen
+   ============================================= */
 
+:root {
+    --color-primary: #07734B;
+    --color-primary-dark: #034D31;
+    --color-primary-light: #15AC75;
+    --color-text: #1a1a1a;
+    --color-text-light: #666666;
+    --color-background: #ffffff;
+    --color-background-alt: #f8f9fa;
+    --color-success: #10b981;
+    
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
+    --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.16);
+    --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.2);
+    
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+    --radius-full: 9999px;
+    
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    --spacing-2xl: 3rem;
+    --spacing-3xl: 4rem;
+}
+
+/* ==================== CONTENEDORES - Principio 8: Diseño Minimalista ==================== */
 .settings-container,
 .comentarios-container,
 .accesibilidad-container,
 .ayuda-container {
     max-width: 800px;
-    margin: 4rem auto;
-    padding: 2rem;
+    margin: var(--spacing-3xl) auto;
+    padding: var(--spacing-xl);
+    animation: fadeInUp 0.6s ease-out;
 }
 
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ==================== BACK LINK - Principio 3: Control y Libertad ==================== */
 .back-link {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    background: linear-gradient(135deg, #034D31, #07734B);
+    gap: var(--spacing-sm);
+    background: linear-gradient(135deg, var(--color-primary-dark), var(--color-primary));
     color: white;
-    padding: 12px 24px;
+    padding: var(--spacing-md) var(--spacing-xl);
     text-decoration: none;
-    border-radius: 25px;
+    border-radius: var(--radius-full);
     font-weight: 600;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(7, 115, 75, 0.3);
-    margin-bottom: 2rem;
+    transition: var(--transition);
+    box-shadow: var(--shadow-md);
+    margin-bottom: var(--spacing-xl);
+    position: relative;
+    overflow: hidden;
 }
 
-.back-link:hover {
+.back-link::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.back-link:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.back-link:hover,
+.back-link:focus {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(7, 115, 75, 0.4);
+    box-shadow: var(--shadow-lg);
 }
 
+/* ==================== BOXES - Ley de Figura y Fondo ==================== */
 .settings-box,
 .comentarios-box,
 .accesibilidad-box,
 .ayuda-box {
     background: rgba(255, 255, 255, 0.98);
     backdrop-filter: blur(20px);
-    border-radius: 25px;
-    padding: 3rem;
-    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.12);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-2xl);
+    box-shadow: var(--shadow-xl);
+    text-align: center;
+    border: 2px solid rgba(7, 115, 75, 0.1);
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.settings-box::before,
+.comentarios-box::before,
+.accesibilidad-box::before,
+.ayuda-box::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-primary-light));
+}
+
+.settings-box:hover,
+.comentarios-box:hover,
+.accesibilidad-box:hover,
+.ayuda-box:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-2xl);
+    border-color: var(--color-primary);
+}
+
+/* ==================== ICON - Ley de Experiencia Previa ==================== */
+.icon {
+    font-size: 4rem;
+    margin-bottom: var(--spacing-lg);
+    display: inline-block;
+    animation: bounce 2s ease-in-out infinite;
+}
+
+@keyframes bounce {
+    0%, 100% { 
+        transform: translateY(0) scale(1); 
+    }
+    50% { 
+        transform: translateY(-15px) scale(1.1); 
+    }
+}
+
+/* ==================== HEADINGS - Jerarquía Visual ==================== */
+h1 {
+    font-size: clamp(2rem, 4vw, 2.5rem);
+    color: var(--color-primary-dark);
+    margin-bottom: var(--spacing-md);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+
+/* ==================== CONTENT - Legibilidad ==================== */
+.content {
+    color: var(--color-text-light);
+    font-size: 1.1rem;
+    margin-bottom: var(--spacing-xl);
+    line-height: 1.6;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ==================== SUCCESS MESSAGE - Principio 1: Visibilidad del Estado ==================== */
+.success {
+    background: linear-gradient(135deg, #d4edda, #e7f5ea);
+    border: 2px solid var(--color-success);
+    color: #155724;
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-lg);
+    margin: var(--spacing-xl) 0;
+    font-weight: 600;
+    line-height: 1.6;
+    box-shadow: var(--shadow-sm);
+    animation: slideIn 0.5s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.success::before {
+    content: '✓';
+    display: inline-block;
+    margin-right: var(--spacing-sm);
+    font-size: 1.5rem;
+    animation: checkmark 0.5s ease-out 0.3s both;
+}
+
+@keyframes checkmark {
+    from {
+        transform: scale(0) rotate(-45deg);
+    }
+    to {
+        transform: scale(1) rotate(0deg);
+    }
+}
+
+/* ==================== USER INFO ==================== */
+p {
+    color: var(--color-text);
+    line-height: 1.6;
+    margin-bottom: var(--spacing-md);
+}
+
+p strong {
+    color: var(--color-primary);
+    font-weight: 700;
+}
+
+p small {
+    color: var(--color-text-light);
+    font-size: 0.9rem;
+    display: block;
+    margin-top: var(--spacing-md);
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--color-background-alt);
+}
+
+/* ==================== FORM ELEMENTS (para futuras expansiones) ==================== */
+.form-group {
+    margin-bottom: var(--spacing-lg);
+    text-align: left;
+}
+
+.form-label {
+    display: block;
+    font-weight: 600;
+    color: var(--color-text);
+    margin-bottom: var(--spacing-sm);
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+    width: 100%;
+    padding: var(--spacing-md);
+    border: 2px solid var(--color-background-alt);
+    border-radius: var(--radius-sm);
+    font-size: 1rem;
+    transition: var(--transition);
+    background: white;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(7, 115, 75, 0.1);
+}
+
+.form-textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+/* Botones de acción */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md) var(--spacing-xl);
+    border-radius: var(--radius-lg);
+    font-weight: 600;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: var(--transition);
+    border: 2px solid;
+    cursor: pointer;
+    margin-top: var(--spacing-lg);
+}
+
+.btn-primary {
+    background: var(--color-primary);
+    color: white;
+    border-color: var(--color-primary);
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background: var(--color-primary-dark);
+    border-color: var(--color-primary-dark);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-secondary {
+    background: transparent;
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+.btn-secondary:hover,
+.btn-secondary:focus {
+    background: var(--color-primary);
+    color: white;
+}
+
+/* ==================== CARDS DE OPCIONES (para expansión) ==================== */
+.options-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-lg);
+    margin-top: var(--spacing-xl);
+}
+
+.option-card {
+    background: white;
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-lg);
+    border: 2px solid var(--color-background-alt);
+    transition: var(--transition);
+    cursor: pointer;
     text-align: center;
 }
 
-.icon {
-    font-size: 4rem;
-    margin-bottom: 1.5rem;
+.option-card:hover {
+    border-color: var(--color-primary);
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-md);
 }
 
-h1 {
-    font-family: 'Lilita One', sans-serif;
+.option-icon {
     font-size: 2.5rem;
-    color: #034D31;
-    margin-bottom: 1rem;
+    margin-bottom: var(--spacing-md);
+    display: block;
 }
 
-.content {
-    color: #666;
-    font-size: 1.1rem;
-    margin-bottom: 2rem;
-    line-height: 1.6;
+.option-card h3 {
+    font-size: 1.2rem;
+    color: var(--color-text);
+    margin-bottom: var(--spacing-sm);
 }
 
-.success {
-    background: linear-gradient(135deg, #d4edda, #e7f5ea);
-    border: 2px solid #22c55e;
-    color: #155724;
-    padding: 1.5rem;
-    border-radius: 15px;
-    margin: 2rem 0;
-    font-weight: 600;
-    line-height: 1.6;
+.option-card p {
+    font-size: 0.9rem;
+    color: var(--color-text-light);
+    margin: 0;
 }
 
-/* Responsive */
+/* ==================== RESPONSIVE ==================== */
 @media (max-width: 768px) {
     .settings-container,
     .comentarios-container,
     .accesibilidad-container,
     .ayuda-container {
-        padding: 1.5rem;
-        margin: 2rem auto;
+        padding: var(--spacing-lg);
+        margin: var(--spacing-xl) auto;
     }
 
     .settings-box,
     .comentarios-box,
     .accesibilidad-box,
     .ayuda-box {
-        padding: 2rem;
+        padding: var(--spacing-xl);
     }
 
     h1 {
@@ -95,4 +384,87 @@ h1 {
     .icon {
         font-size: 3rem;
     }
+    
+    .options-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .settings-container,
+    .comentarios-container,
+    .accesibilidad-container,
+    .ayuda-container {
+        padding: var(--spacing-md);
+        margin: var(--spacing-lg) auto;
+    }
+
+    .settings-box,
+    .comentarios-box,
+    .accesibilidad-box,
+    .ayuda-box {
+        padding: var(--spacing-lg);
+    }
+
+    .back-link {
+        font-size: 0.9rem;
+        padding: var(--spacing-sm) var(--spacing-lg);
+    }
+}
+
+/* ==================== ACCESIBILIDAD ==================== */
+*:focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Alto contraste */
+@media (prefers-contrast: high) {
+    :root {
+        --color-text: #000000;
+        --color-text-light: #333333;
+    }
+    
+    .settings-box,
+    .comentarios-box,
+    .accesibilidad-box,
+    .ayuda-box {
+        border-width: 3px;
+    }
+}
+
+/* ==================== UTILIDADES ==================== */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.mt-lg {
+    margin-top: var(--spacing-lg);
+}
+
+.mb-lg {
+    margin-bottom: var(--spacing-lg);
 }

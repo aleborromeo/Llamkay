@@ -1,31 +1,83 @@
 /* =============================================
-   LLAMKAY LANDING PAGE - NUEVO DISEÑO
+   LLAMKAY LANDING PAGE - DISEÑO CON PRINCIPIOS UX
+   
+   PRINCIPIOS APLICADOS:
+   
+   LEYES DE GESTALT:
+   - Proximidad: Elementos relacionados están agrupados visualmente
+   - Semejanza: Elementos similares tienen el mismo estilo
+   - Continuidad: Flujo visual guía la navegación
+   - Cierre: Formas incompletas se perciben como completas
+   - Figura y Fondo: Contraste entre elementos principales y fondo
+   - Simetría: Balance visual para facilitar la comprensión
+   - Experiencia Previa: Íconos y patrones reconocibles
+   
+   HEURÍSTICAS DE NIELSEN:
+   1. Visibilidad del estado del sistema
+   2. Concordancia con el mundo real
+   3. Control y libertad del usuario
+   4. Consistencia y estándares
+   5. Prevención de errores
+   6. Reconocimiento en lugar de recuerdo
+   7. Flexibilidad y eficiencia de uso
+   8. Estética y diseño minimalista
+   9. Ayuda a reconocer y recuperarse de errores
+   10. Ayuda y documentación
+   
+   RESPONSIVIDAD:
+   - Mobile First approach
+   - Breakpoints: 480px, 768px, 1024px, 1440px
+   - Diseño fluido y adaptable
+   - Touch-friendly en dispositivos móviles
    ============================================= */
 
+/* ==================== VARIABLES CSS ====================
+   Gestalt: Consistencia visual
+   Nielsen: Consistencia y estándares */
 :root {
+    /* Colores primarios */
     --color-primary: #07734B;
     --color-primary-dark: #034D31;
     --color-primary-light: #15AC75;
+    
+    /* Colores secundarios */
     --color-secondary: #9EBC8A;
     --color-secondary-light: #B5C99A;
     --color-accent: #EEEDEB;
+    
+    /* Colores de texto */
     --color-text: #1a1a1a;
     --color-text-light: #666666;
+    
+    /* Colores de fondo */
     --color-background: #ffffff;
     --color-background-alt: #f8f9fa;
+    
+    /* Sombras - Gestalt: Figura y fondo */
     --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
     --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
     --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.16);
     --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.2);
     
+    /* Bordes redondeados - Gestalt: Cierre */
     --radius-sm: 8px;
     --radius-md: 12px;
     --radius-lg: 16px;
     --radius-xl: 24px;
     
+    /* Transiciones - Nielsen: Visibilidad del estado */
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* Espaciado - Gestalt: Proximidad */
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 1rem;
+    --spacing-md: 2rem;
+    --spacing-lg: 4rem;
+    --spacing-xl: 6rem;
 }
 
+/* ==================== RESET Y BASE ====================
+   Nielsen: Consistencia y estándares */
 * {
     margin: 0;
     padding: 0;
@@ -38,15 +90,20 @@ body {
     background: var(--color-background);
     line-height: 1.6;
     overflow-x: hidden;
+    /* Nielsen: Estética y diseño minimalista */
+    font-size: 16px;
 }
 
 .container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 2rem;
+    padding: 0 var(--spacing-md);
 }
 
-/* ==================== HEADER ==================== */
+/* ==================== HEADER ====================
+   Gestalt: Proximidad - elementos de navegación agrupados
+   Nielsen: Visibilidad del estado del sistema
+   Responsividad: Sticky header, mobile menu */
 .header {
     position: sticky;
     top: 0;
@@ -55,43 +112,57 @@ body {
     backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
     box-shadow: var(--shadow-sm);
+    /* Nielsen: Visibilidad del estado - header siempre visible */
 }
 
 .navbar {
-    padding: 1rem 0;
+    padding: var(--spacing-sm) 0;
 }
 
 .nav-container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 2rem;
+    padding: 0 var(--spacing-md);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 2rem;
+    gap: var(--spacing-md);
+    flex-wrap: nowrap; 
 }
 
+/* Logo - Gestalt: Experiencia previa */
 .logo {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    font-size: 1.5rem;
+    font-size: clamp(1.2rem, 4vw, 1.5rem); 
     font-weight: 700;
     color: var(--color-primary);
     text-decoration: none;
     transition: var(--transition);
+    flex-shrink: 0; 
+    white-space: nowrap; 
+}
+
+.logo:hover {
+    transform: scale(1.05);
+    /* Nielsen: Visibilidad del estado - feedback visual */
+}
+
+.logo:focus {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 4px;
+    border-radius: var(--radius-sm);
+    /* Nielsen: Prevención de errores - accesibilidad de teclado */
 }
 
 .logo-img {
     width: 40px;
     height: 40px;
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
 }
 
-.logo:hover {
-    transform: scale(1.05);
-}
-
+/* Toggle móvil - Responsividad */
 .nav-toggle {
     display: none;
     flex-direction: column;
@@ -100,6 +171,7 @@ body {
     border: none;
     cursor: pointer;
     padding: 0.5rem;
+    /* Touch-friendly en móviles */
 }
 
 .nav-toggle span {
@@ -110,11 +182,26 @@ body {
     transition: var(--transition);
 }
 
+/* Menu de navegación - Gestalt: Continuidad */
 .nav-menu {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: clamp(0.5rem, 2vw, 1rem); 
     list-style: none;
+    flex-wrap: nowrap; 
+}
+
+/* Botones móviles - ocultos en desktop */
+.nav-mobile-actions {
+    display: none;
+}
+
+/* Botones desktop - visibles por defecto */
+.nav-desktop-actions {
+    display: flex;
+    gap: var(--spacing-xs);
+    align-items: center;
+    flex-shrink: 0; /* NUEVO: Evita compresión */
 }
 
 .nav-link {
@@ -124,13 +211,22 @@ body {
     text-decoration: none;
     border-radius: var(--radius-sm);
     transition: var(--transition);
+    /* Nielsen: Reconocimiento en lugar de recuerdo */
 }
 
-.nav-link:hover {
+.nav-link:hover,
+.nav-link:focus {
     background: var(--color-background-alt);
     color: var(--color-primary);
+    /* Nielsen: Visibilidad del estado */
 }
 
+.nav-link:focus {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+/* Botones de navegación - Gestalt: Semejanza */
 .btn-nav {
     padding: 0.75rem 1.5rem;
     border-radius: var(--radius-lg);
@@ -140,38 +236,62 @@ body {
     transition: var(--transition);
     border: none;
     cursor: pointer;
+    /* Nielsen: Reconocimiento en lugar de recuerdo */
 }
 
 .btn-ghost {
     background: transparent;
-    color: var(--color-primary);
-    border: 2px solid var(--color-primary);
+    color: var(--color-accent);
 }
 
-.btn-ghost:hover {
+.btn-ghost:hover,
+.btn-ghost:focus {
     background: var(--color-primary);
     color: white;
+    /* Nielsen: Visibilidad del estado */
 }
 
 .btn-primary {
     background: var(--color-primary);
     color: white;
     border: 2px solid var(--color-primary);
+    /* Gestalt: Figura y fondo - contraste */
 }
 
-.btn-primary:hover {
+.btn-primary:hover,
+.btn-primary:focus {
     background: var(--color-primary-dark);
     border-color: var(--color-primary-dark);
     transform: translateY(-2px);
     box-shadow: var(--shadow-md);
+    /* Nielsen: Visibilidad del estado - feedback inmediato */
 }
 
-/* ==================== HERO SECTION ==================== */
+/* Botones responsive para navbar */
+@media (max-width: 1024px) {
+    .nav-desktop-actions .btn-nav {
+        padding: 0.65rem 1.2rem;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 900px) {
+    .nav-desktop-actions .btn-nav {
+        padding: 0.6rem 1rem;
+        font-size: 0.85rem;
+    }
+}
+
+/* ==================== HERO SECTION ====================
+   Gestalt: Figura y fondo - contraste fuerte
+   Gestalt: Continuidad - flujo visual hacia abajo
+   Nielsen: Concordancia con el mundo real */
 .hero {
     position: relative;
     background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
     overflow: hidden;
-    padding: 6rem 0 8rem;
+    padding: var(--spacing-xl) 0 8rem;
+    /* Gestalt: Figura y fondo */
 }
 
 .hero::before {
@@ -185,24 +305,27 @@ body {
         radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
         radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
     pointer-events: none;
+    /* Gestalt: Cierre - patrones visuales */
 }
 
 .hero-container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 2rem;
+    padding: 0 var(--spacing-md);
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 4rem;
     align-items: center;
     position: relative;
     z-index: 1;
+    /* Gestalt: Simetría y balance */
 }
 
 .hero-content {
     color: white;
 }
 
+/* Hero badge - Gestalt: Cierre */
 .hero-badge {
     display: inline-block;
     padding: 0.5rem 1rem;
@@ -212,13 +335,16 @@ body {
     font-size: 0.9rem;
     font-weight: 600;
     margin-bottom: 1.5rem;
+    /* Nielsen: Visibilidad del estado */
 }
 
+/* Título principal - Nielsen: Estética y diseño minimalista */
 .hero-title {
     font-size: 3.5rem;
     font-weight: 800;
     line-height: 1.1;
     margin-bottom: 1.5rem;
+    /* Gestalt: Figura y fondo - jerarquía visual */
 }
 
 .text-highlight {
@@ -226,6 +352,7 @@ body {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    /* Gestalt: Figura y fondo - énfasis visual */
 }
 
 .hero-description {
@@ -235,11 +362,13 @@ body {
     margin-bottom: 2.5rem;
 }
 
+/* Call to actions - Gestalt: Proximidad */
 .hero-actions {
     display: flex;
-    gap: 1rem;
+    gap: var(--spacing-sm);
     flex-wrap: wrap;
     margin-bottom: 3rem;
+    /* Gestalt: Proximidad - acciones relacionadas juntas */
 }
 
 .btn {
@@ -254,6 +383,7 @@ body {
     transition: var(--transition);
     border: none;
     cursor: pointer;
+    /* Nielsen: Reconocimiento en lugar de recuerdo */
 }
 
 .btn-large {
@@ -266,33 +396,24 @@ body {
     font-size: 1.25rem;
 }
 
-.btn-primary {
+.btn-white {
     background: white;
     color: var(--color-primary);
-    box-shadow: var(--shadow-lg);
 }
 
-.btn-primary:hover {
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-xl);
+.btn-white:hover,
+.btn-white:focus {
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    /* Nielsen: Visibilidad del estado - feedback prominente */
 }
 
-.btn-ghost {
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    backdrop-filter: blur(10px);
-}
-
-.btn-ghost:hover {
-    background: rgba(255, 255, 255, 0.2);
-    border-color: rgba(255, 255, 255, 0.5);
-}
-
+/* Hero stats - Gestalt: Semejanza y simetría */
 .hero-stats {
     display: flex;
     gap: 3rem;
     flex-wrap: wrap;
+    /* Gestalt: Proximidad */
 }
 
 .stat-item {
@@ -304,6 +425,7 @@ body {
     font-size: 2rem;
     font-weight: 700;
     margin-bottom: 0.25rem;
+    /* Gestalt: Figura y fondo - énfasis */
 }
 
 .stat-item span {
@@ -311,7 +433,7 @@ body {
     opacity: 0.9;
 }
 
-/* Hero Visual Cards */
+/* Hero visual cards - Gestalt: Continuidad y cierre */
 .hero-visual {
     position: relative;
     height: 500px;
@@ -325,17 +447,20 @@ body {
     box-shadow: var(--shadow-xl);
     transition: var(--transition);
     width: 240px;
+    /* Gestalt: Cierre - formas completas */
 }
 
 .hero-card:hover {
     transform: translateY(-8px) scale(1.05);
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    /* Nielsen: Visibilidad del estado */
 }
 
 .card-1 {
     top: 50px;
     left: 0;
     animation: float 6s ease-in-out infinite;
+    /* Gestalt: Continuidad - movimiento fluido */
 }
 
 .card-2 {
@@ -358,6 +483,7 @@ body {
 .card-icon {
     font-size: 2.5rem;
     margin-bottom: 0.75rem;
+    /* Gestalt: Experiencia previa - íconos reconocibles */
 }
 
 .hero-card h3 {
@@ -382,7 +508,7 @@ body {
     font-weight: 600;
 }
 
-/* Wave Divider */
+/* Wave divider - Gestalt: Continuidad */
 .hero-wave {
     position: absolute;
     bottom: -1px;
@@ -399,15 +525,19 @@ body {
     height: 60px;
 }
 
-/* ==================== BENEFITS SECTION ==================== */
+/* ==================== BENEFITS SECTION ====================
+   Gestalt: Semejanza - cards con estructura idéntica
+   Gestalt: Simetría - grid balanceado
+   Nielsen: Reconocimiento en lugar de recuerdo */
 .benefits {
-    padding: 6rem 0;
+    padding: var(--spacing-xl) 0;
     background: var(--color-background);
 }
 
 .section-header {
     text-align: center;
     margin-bottom: 4rem;
+    /* Gestalt: Proximidad - información agrupada */
 }
 
 .section-badge {
@@ -432,24 +562,29 @@ body {
     color: var(--color-text-light);
 }
 
+/* Grid de beneficios - Gestalt: Simetría y orden */
 .benefits-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
+    gap: var(--spacing-md);
+    /* Responsividad: Auto-adaptable */
 }
 
 .benefit-card {
-    padding: 2rem;
+    padding: var(--spacing-md);
     background: var(--color-background);
     border: 2px solid var(--color-background-alt);
     border-radius: var(--radius-lg);
     transition: var(--transition);
+    /* Gestalt: Semejanza - estructura consistente */
 }
 
-.benefit-card:hover {
+.benefit-card:hover,
+.benefit-card:focus-within {
     transform: translateY(-8px);
     border-color: var(--color-primary);
     box-shadow: var(--shadow-lg);
+    /* Nielsen: Visibilidad del estado */
 }
 
 .benefit-icon {
@@ -462,6 +597,7 @@ body {
     justify-content: center;
     color: white;
     margin-bottom: 1.5rem;
+    /* Gestalt: Figura y fondo - íconos destacados */
 }
 
 .benefit-card h3 {
@@ -475,34 +611,41 @@ body {
     line-height: 1.6;
 }
 
-/* ==================== HOW IT WORKS ==================== */
+/* ==================== HOW IT WORKS ====================
+   Gestalt: Continuidad - flujo de pasos
+   Nielsen: Ayuda y documentación
+   Gestalt: Proximidad - información agrupada */
 .how-it-works {
-    padding: 6rem 0;
+    padding: var(--spacing-xl) 0;
     background: var(--color-background-alt);
 }
 
 .steps {
     display: grid;
-    gap: 2rem;
+    gap: var(--spacing-md);
     max-width: 900px;
     margin: 0 auto 3rem;
+    /* Gestalt: Continuidad - flujo vertical */
 }
 
 .step {
     display: grid;
     grid-template-columns: auto 1fr auto;
-    gap: 2rem;
+    gap: var(--spacing-md);
     align-items: center;
-    padding: 2rem;
+    padding: var(--spacing-md);
     background: white;
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-sm);
     transition: var(--transition);
+    /* Gestalt: Proximidad */
 }
 
-.step:hover {
+.step:hover,
+.step:focus-within {
     transform: translateX(10px);
     box-shadow: var(--shadow-md);
+    /* Nielsen: Visibilidad del estado */
 }
 
 .step-number {
@@ -517,6 +660,7 @@ body {
     font-size: 1.75rem;
     font-weight: 700;
     flex-shrink: 0;
+    /* Gestalt: Figura y fondo */
 }
 
 .step-content h3 {
@@ -534,15 +678,19 @@ body {
     color: var(--color-primary);
     opacity: 0.3;
     flex-shrink: 0;
+    /* Gestalt: Experiencia previa */
 }
 
 .cta-center {
     text-align: center;
 }
 
-/* ==================== CATEGORIES ==================== */
+/* ==================== CATEGORIES ====================
+   Gestalt: Experiencia previa - íconos universales
+   Gestalt: Semejanza - cards consistentes
+   Nielsen: Reconocimiento en lugar de recuerdo */
 .categories {
-    padding: 6rem 0;
+    padding: var(--spacing-xl) 0;
     background: white;
 }
 
@@ -550,10 +698,11 @@ body {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1.5rem;
+    /* Gestalt: Simetría y orden */
 }
 
 .category-card {
-    padding: 2rem;
+    padding: var(--spacing-md);
     background: var(--color-background-alt);
     border-radius: var(--radius-lg);
     text-align: center;
@@ -561,18 +710,22 @@ body {
     color: var(--color-text);
     transition: var(--transition);
     border: 2px solid transparent;
+    /* Gestalt: Semejanza */
 }
 
-.category-card:hover {
+.category-card:hover,
+.category-card:focus {
     background: white;
     border-color: var(--color-primary);
     transform: translateY(-8px);
     box-shadow: var(--shadow-lg);
+    /* Nielsen: Visibilidad del estado */
 }
 
 .category-icon {
     font-size: 3rem;
     margin-bottom: 1rem;
+    /* Gestalt: Experiencia previa - íconos reconocibles */
 }
 
 .category-card h3 {
@@ -589,9 +742,11 @@ body {
 .category-more {
     background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
     color: white;
+    /* Gestalt: Figura y fondo - destacado visual */
 }
 
-.category-more:hover {
+.category-more:hover,
+.category-more:focus {
     transform: scale(1.05);
 }
 
@@ -600,12 +755,15 @@ body {
     color: white;
 }
 
-/* ==================== CTA FINAL ==================== */
+/* ==================== CTA FINAL ====================
+   Gestalt: Figura y fondo - contraste fuerte
+   Nielsen: Estética y diseño minimalista */
 .cta-final {
-    padding: 6rem 0;
+    padding: var(--spacing-xl) 0;
     background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
     color: white;
     text-align: center;
+    /* Gestalt: Figura y fondo */
 }
 
 .cta-content h2 {
@@ -619,17 +777,9 @@ body {
     margin-bottom: 2.5rem;
 }
 
-.btn-white {
-    background: white;
-    color: var(--color-primary);
-}
-
-.btn-white:hover {
-    transform: translateY(-5px) scale(1.05);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-}
-
-/* ==================== FOOTER ==================== */
+/* ==================== FOOTER ====================
+   Gestalt: Proximidad - información agrupada
+   Nielsen: Consistencia y estándares */
 .footer {
     background: var(--color-primary-dark);
     color: white;
@@ -639,11 +789,12 @@ body {
 .footer-container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 2rem;
+    padding: 0 var(--spacing-md);
     display: grid;
     grid-template-columns: 2fr 3fr;
     gap: 4rem;
     margin-bottom: 3rem;
+    /* Gestalt: Proximidad */
 }
 
 .footer-brand {
@@ -662,18 +813,19 @@ body {
 .footer-logo img {
     width: 40px;
     height: 40px;
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
 }
 
 .footer-brand p {
     opacity: 0.8;
     line-height: 1.6;
-    margin-bottom: 2rem;
+    margin-bottom: var(--spacing-md);
 }
 
+/* Social links - Gestalt: Semejanza */
 .social-links {
     display: flex;
-    gap: 1rem;
+    gap: var(--spacing-sm);
 }
 
 .social-links a {
@@ -688,16 +840,19 @@ body {
     transition: var(--transition);
 }
 
-.social-links a:hover {
+.social-links a:hover,
+.social-links a:focus {
     background: white;
     color: var(--color-primary);
     transform: translateY(-3px);
+    /* Nielsen: Visibilidad del estado */
 }
 
 .footer-links {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
+    gap: var(--spacing-md);
+    /* Gestalt: Simetría */
 }
 
 .footer-column h4 {
@@ -713,135 +868,295 @@ body {
     margin-bottom: 0.75rem;
 }
 
+
 .footer-column a {
     color: rgba(255, 255, 255, 0.8);
     text-decoration: none;
     transition: var(--transition);
 }
 
-.footer-column a:hover {
+.footer-column a:hover,
+.footer-column a:focus {
     color: white;
     padding-left: 5px;
+    /* Nielsen: Visibilidad del estado */
 }
 
 .footer-bottom {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 2rem 2rem 0;
+    padding: 2rem var(--spacing-md) 0;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     text-align: center;
 }
-
 .footer-bottom p {
     opacity: 0.7;
     font-size: 0.9rem;
 }
 
-/* ==================== RESPONSIVE ==================== */
+/* ==================== RESPONSIVE DESIGN ====================
+Responsividad: Breakpoints estratégicos
+Nielsen: Flexibilidad y eficiencia de uso */
+/* Tablet landscape y desktop pequeño */
 @media (max-width: 1024px) {
     .hero-container {
         grid-template-columns: 1fr;
         gap: 3rem;
     }
-    
     .hero-visual {
         display: none;
+        /* Responsividad: Ocultar decoración en pantallas medianas */
     }
-    
+
     .hero-title {
         font-size: 2.5rem;
     }
+
+    .benefits-grid {
+        grid-template-columns: repeat(2, 1fr);
+        /* Responsividad: 2 columnas en tablet */
+    }
 }
 
+/* Tablet */
 @media (max-width: 768px) {
+    /* ===== NAVBAR RESPONSIVE MEJORADO ===== */
     .nav-toggle {
         display: flex;
+        z-index: 1001;
     }
-    
+
+    /* Ocultar botones de desktop */
+    .nav-desktop-actions {
+        display: none;
+    }
+
+    /* Menú hamburguesa expandido */
     .nav-menu {
         position: fixed;
         top: 70px;
         left: -100%;
         width: 100%;
+        height: calc(100vh - 70px);
         flex-direction: column;
         background: white;
         box-shadow: var(--shadow-lg);
-        padding: 2rem;
+        padding: 0;
         transition: left 0.3s ease;
+        overflow-y: auto;
+        z-index: 999;
     }
-    
+
     .nav-menu.active {
         left: 0;
     }
-    
+
+    /* Enlaces del menú mejorados */
+    .nav-menu > li {
+        width: 100%;
+        border-bottom: 1px solid rgba(7, 115, 75, 0.1);
+    }
+
+    .nav-link {
+        display: block;
+        width: 100%;
+        padding: 1rem 1.5rem;
+        font-size: 1rem;
+        font-weight: 500;
+        color: var(--color-text);
+        transition: all 0.2s ease;
+        border-radius: 0;
+        background: transparent;
+    }
+
+    .nav-link:hover,
+    .nav-link:focus {
+        background: var(--color-background-alt);
+        color: var(--color-primary);
+        padding-left: 2rem;
+    }
+
+    /* Mostrar botones móviles */
+    .nav-mobile-actions {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-sm);
+        width: 100%;
+        padding: var(--spacing-md) 1.5rem;
+        background: linear-gradient(135deg, var(--color-background-alt), white);
+        border-top: 2px solid var(--color-secondary-light);
+        margin-top: auto;
+    }
+
+    .nav-mobile-actions .btn-nav {
+        width: 100%;
+        text-align: center;
+        padding: 1rem;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: var(--radius-md);
+    }
+
+    .nav-mobile-actions .btn-ghost {
+        background: white;
+        color: var(--color-primary);
+        border: 2px solid var(--color-primary);
+    }
+
+    .nav-mobile-actions .btn-ghost:hover {
+        background: var(--color-primary);
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .nav-mobile-actions .btn-primary {
+        background: var(--color-primary);
+        color: white;
+    }
+
+    .nav-mobile-actions .btn-primary:hover {
+        background: var(--color-primary-dark);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+    }
+}
+
+/* Móvil pequeño */
+@media (max-width: 480px) {
+    .container {
+    padding: 0 var(--spacing-sm);
+    }
+    .hero-title {
+    font-size: 1.75rem;
+    }
+
+    .btn-large {
+        padding: 1rem 1.5rem;
+        font-size: 1rem;
+        width: 100%;
+        justify-content: center;
+        /* Touch-friendly: Botones de ancho completo */
+    }
+
+    .benefit-card,
+    .step {
+        padding: 1.5rem;
+    }
+
+    /* Touch targets mínimos 44x44px */
+    .nav-link,
+    .btn,
+    .category-card {
+        min-height: 44px;
+        /* Nielsen: Prevención de errores - targets táctiles adecuados */
+    }
+
+    /* Hero responsive */
     .hero {
         padding: 4rem 0 6rem;
+        margin-top: 70px; /* NUEVO: Espacio para navbar fixed */
     }
-    
+
     .hero-title {
         font-size: 2rem;
     }
-    
+
     .hero-description {
         font-size: 1.1rem;
     }
-    
+
     .hero-actions {
         flex-direction: column;
     }
-    
+
     .hero-stats {
-        gap: 2rem;
+        gap: var(--spacing-md);
     }
-    
+
+    /* Section headers */
     .section-header h2 {
         font-size: 2rem;
     }
-    
+
+    /* Grids responsivos */
     .benefits-grid,
     .categories-grid {
         grid-template-columns: 1fr;
     }
-    
+
+    /* Steps verticales */
     .step {
         grid-template-columns: 1fr;
         text-align: center;
     }
-    
+
     .step-icon {
         display: none;
     }
-    
+
+    /* Footer responsive */
     .footer-container {
         grid-template-columns: 1fr;
         gap: 3rem;
     }
-    
+
     .footer-links {
         grid-template-columns: 1fr;
     }
-    
+
     .cta-content h2 {
         font-size: 2rem;
     }
 }
 
-@media (max-width: 480px) {
-    .container {
-        padding: 0 1rem;
+/* ==================== ACCESIBILIDAD ====================
+Nielsen: Ayuda a reconocer y recuperarse de errores
+WCAG: Contraste, focus states, labels */
+/* Focus visible para navegación por teclado */
+:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+/* Nielsen: Visibilidad del estado */
+}
+
+/* Skip to content link */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--color-primary);
+    color: white;
+    padding: 8px;
+    text-decoration: none;
+    z-index: 100;
+}
+
+.skip-link:focus {
+    top: 0;
+}
+
+/* Reduced motion para usuarios con preferencias de accesibilidad */
+@media (prefers-reduced-motion: reduce) {
+*,
+*::before,
+*::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
     }
-    
-    .hero-title {
-        font-size: 1.75rem;
+}
+
+/* Alto contraste para mejor legibilidad */
+@media (prefers-contrast: high) {
+    :root {
+        --color-text: #000000;
+        --color-background: #ffffff;
     }
-    
-    .btn-large {
-        padding: 1rem 1.5rem;
-        font-size: 1rem;
-    }
-    
-    .benefit-card,
-    .step {
-        padding: 1.5rem;
+
+    .btn,
+    .nav-link,
+    .category-card {
+        border-width: 3px;
     }
 }

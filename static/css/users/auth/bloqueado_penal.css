@@ -1,5 +1,36 @@
-/* ===== CUENTA BLOQUEADA POR ANTECEDENTES PENALES ===== */
+/* =============================================
+   CUENTA BLOQUEADA - APLICANDO PRINCIPIOS DE DISEÑO
+   ============================================= */
 
+:root {
+    --color-danger: #dc2626;
+    --color-danger-dark: #991b1b;
+    --color-danger-light: #fca5a5;
+    --color-text: #1a1a1a;
+    --color-text-light: #666666;
+    --color-background: #ffffff;
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
+    --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.16);
+    --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.2);
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    color: var(--color-text);
+    line-height: 1.6;
+}
+
+/* ==================== CONTENEDOR - Principio 8: Diseño Minimalista ==================== */
 .bloqueado-container {
     display: flex;
     justify-content: center;
@@ -7,89 +38,190 @@
     min-height: 100vh;
     padding: 2rem;
     background: linear-gradient(135deg, #fee2e2 0%, #fecaca 50%, #fca5a5 100%);
+    position: relative;
+    overflow: hidden;
 }
 
+/* Efecto de fondo animado */
+.bloqueado-container::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    animation: rotate 30s linear infinite;
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* ==================== CARD - Ley de Figura y Fondo ==================== */
 .bloqueado-card {
+    position: relative;
+    z-index: 1;
     background: white;
-    border-radius: 20px;
+    border-radius: var(--radius-xl);
     padding: 3rem 2.5rem;
     max-width: 500px;
     width: 100%;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--shadow-xl);
     text-align: center;
-    border: 3px solid #dc2626;
+    border: 3px solid var(--color-danger);
+    animation: fadeInScale 0.5s ease;
 }
 
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* ==================== ÍCONO - Principio 1: Visibilidad del Estado ==================== */
 .bloqueado-icon {
     font-size: 5rem;
     margin-bottom: 1.5rem;
-    animation: shake 0.5s ease-in-out;
+    display: block;
+    animation: shake 0.5s ease-in-out, pulse 2s ease-in-out infinite 1s;
 }
 
 @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-10px); }
-    75% { transform: translateX(10px); }
+    0%, 100% { transform: translateX(0) rotate(0deg); }
+    25% { transform: translateX(-10px) rotate(-5deg); }
+    50% { transform: translateX(10px) rotate(5deg); }
+    75% { transform: translateX(-10px) rotate(-5deg); }
 }
 
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+/* ==================== TEXTO - Jerarquía Visual ==================== */
 .bloqueado-card h1 {
     font-size: 2rem;
-    color: #b91c1c;
+    color: var(--color-danger-dark);
     margin-bottom: 1.5rem;
     font-weight: 700;
+    line-height: 1.2;
 }
 
 .bloqueado-message {
     font-size: 1.1rem;
-    color: #666;
+    color: var(--color-text-light);
     line-height: 1.6;
     margin-bottom: 1.5rem;
 }
 
 .bloqueado-message strong {
-    color: #dc2626;
+    color: var(--color-danger);
     font-weight: 700;
 }
 
+/* ==================== SECCIÓN DE AYUDA - Ley de Proximidad ==================== */
 .bloqueado-help {
     font-size: 1rem;
-    color: #666;
+    color: var(--color-text-light);
     margin-bottom: 2rem;
     line-height: 1.6;
+    padding: 1rem;
+    background: rgba(220, 38, 38, 0.05);
+    border-radius: var(--radius-lg);
+    border: 1px solid rgba(220, 38, 38, 0.1);
 }
 
 .bloqueado-help a {
     color: #2563eb;
     text-decoration: none;
     font-weight: 600;
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.bloqueado-help a::after {
+    content: '→';
+    transition: var(--transition);
 }
 
 .bloqueado-help a:hover {
+    color: #1e40af;
     text-decoration: underline;
 }
 
+.bloqueado-help a:hover::after {
+    transform: translateX(3px);
+}
+
+/* ==================== BOTÓN - Principio 6: Reconocimiento vs Recuerdo ==================== */
 .btn {
-    display: inline-block;
-    padding: 14px 32px;
-    border-radius: 25px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.875rem 2rem;
+    border-radius: var(--radius-lg);
     text-decoration: none;
     font-weight: 600;
-    transition: all 0.3s ease;
+    font-size: 1rem;
+    transition: var(--transition);
+    border: 2px solid;
+    cursor: pointer;
+    margin-top: 1rem;
 }
 
 .btn-secondary {
     background: #6b7280;
     color: white;
-    border: none;
+    border-color: #6b7280;
+    box-shadow: var(--shadow-sm);
 }
 
-.btn-secondary:hover {
+.btn-secondary:hover,
+.btn-secondary:focus {
     background: #4b5563;
+    border-color: #4b5563;
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--shadow-md);
 }
 
-/* Responsive */
+.btn-secondary:active {
+    transform: translateY(0);
+}
+
+/* ==================== INFO ADICIONAL ==================== */
+.info-box {
+    margin-top: 2rem;
+    padding: 1rem;
+    background: rgba(59, 130, 246, 0.05);
+    border-radius: var(--radius-lg);
+    border-left: 4px solid #3b82f6;
+    text-align: left;
+}
+
+.info-box h3 {
+    font-size: 0.95rem;
+    color: #1e40af;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.info-box p {
+    font-size: 0.9rem;
+    color: var(--color-text-light);
+    line-height: 1.5;
+}
+
+/* ==================== RESPONSIVE ==================== */
 @media (max-width: 768px) {
     .bloqueado-container {
         padding: 1.5rem;
@@ -106,18 +238,66 @@
     .bloqueado-icon {
         font-size: 4rem;
     }
+
+    .bloqueado-message,
+    .bloqueado-help {
+        font-size: 0.95rem;
+    }
 }
 
 @media (max-width: 480px) {
+    .bloqueado-container {
+        padding: 1rem;
+    }
+
     .bloqueado-card {
         padding: 1.5rem 1rem;
+        border-radius: var(--radius-lg);
     }
 
     .bloqueado-card h1 {
         font-size: 1.5rem;
     }
 
-    .bloqueado-message, .bloqueado-help {
-        font-size: 0.95rem;
+    .bloqueado-icon {
+        font-size: 3.5rem;
+    }
+
+    .bloqueado-message,
+    .bloqueado-help {
+        font-size: 0.9rem;
+    }
+
+    .btn {
+        width: 100%;
+    }
+}
+
+/* ==================== ACCESIBILIDAD ==================== */
+*:focus-visible {
+    outline: 3px solid var(--color-danger);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Alto contraste */
+@media (prefers-contrast: high) {
+    .bloqueado-card {
+        border-width: 4px;
+    }
+    
+    .bloqueado-message,
+    .bloqueado-help {
+        color: #000000;
     }
 }

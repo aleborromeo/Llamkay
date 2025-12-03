@@ -1,54 +1,80 @@
-/* ===== PORTAFOLIO PDF - ESTILOS PARA IMPRESIÓN ===== */
+/* =============================================
+   PORTAFOLIO PDF - ESTILOS PARA IMPRESIÓN
+   Optimizado para legibilidad y profesionalismo
+   ============================================= */
 
 @page {
     size: A4;
     margin: 2cm;
 }
 
+:root {
+    --color-primary: #07734B;
+    --color-primary-dark: #034D31;
+    --color-text: #1a1a1a;
+    --color-text-light: #4a5568;
+    --color-border: #e2e8f0;
+    --color-bg-light: #f7fafc;
+}
+
 body {
     font-family: 'Helvetica', 'Arial', sans-serif;
     font-size: 11pt;
-    color: #333;
+    color: var(--color-text);
     line-height: 1.6;
     margin: 0;
     padding: 20px;
     background: white;
 }
 
-h1, h2 {
-    color: #07734B;
+/* ==================== TIPOGRAFÍA - Jerarquía Visual ==================== */
+h1, h2, h3 {
+    color: var(--color-primary);
     page-break-after: avoid;
+    font-weight: 700;
 }
 
 h1 {
     font-size: 24pt;
-    border-bottom: 3px solid #07734B;
+    border-bottom: 3px solid var(--color-primary);
     padding-bottom: 8px;
     margin-bottom: 15px;
     margin-top: 0;
+    letter-spacing: -0.5px;
 }
 
 h2 {
     font-size: 16pt;
     margin-top: 25px;
     margin-bottom: 12px;
-    border-left: 5px solid #07734B;
+    border-left: 5px solid var(--color-primary);
     padding-left: 12px;
+    page-break-after: avoid;
 }
 
+h3 {
+    font-size: 13pt;
+    margin: 12px 0 8px 0;
+    color: var(--color-primary-dark);
+}
+
+/* ==================== HEADER DEL PDF ==================== */
 .pdf-header {
     text-align: center;
     margin-bottom: 30px;
-    border-bottom: 2px solid #e0e0e0;
+    border-bottom: 2px solid var(--color-border);
     padding-bottom: 15px;
+    page-break-after: avoid;
 }
 
 .pdf-date {
     font-size: 9pt;
-    color: #666;
+    color: var(--color-text-light);
     font-style: italic;
+    margin-top: 5px;
 }
 
+/* ==================== SECCIONES - Ley de Proximidad ==================== */
 .pdf-section {
     margin-bottom: 25px;
     page-break-inside: avoid;
@@ -59,98 +85,355 @@ h2 {
     line-height: 1.5;
 }
 
+/* ==================== LABELS - Reconocimiento Visual ==================== */
 .label {
     font-weight: bold;
-    color: #034D31;
+    color: var(--color-primary-dark);
+    display: inline-block;
+    min-width: 120px;
 }
 
-.item, .trabajo-item, .calificacion-item {
+/* ==================== ITEMS - Ley de Semejanza ==================== */
+.item, 
+.trabajo-item, 
+.calificacion-item {
     margin-bottom: 15px;
-    padding: 10px;
-    background: #f9f9f9;
-    border-left: 4px solid #07734B;
+    padding: 10px 12px;
+    background: var(--color-bg-light);
+    border-left: 4px solid var(--color-primary);
     page-break-inside: avoid;
+    border-radius: 2px;
 }
 
+/* ==================== TRABAJOS REALIZADOS ==================== */
 .trabajo-item h3 {
     margin: 0 0 8px 0;
-    color: #034D31;
+    color: var(--color-primary-dark);
     font-size: 13pt;
 }
 
 .trabajo-item p {
     margin: 5px 0;
+    color: var(--color-text);
 }
 
 .trabajo-fecha {
     font-size: 9pt;
-    color: #666;
+    color: var(--color-text-light);
     font-style: italic;
+    margin-top: 5px;
 }
 
+/* ==================== CALIFICACIONES ==================== */
 .calificacion-item p {
     margin: 5px 0;
 }
 
 .calificacion-autor {
     font-size: 9pt;
-    color: #666;
+    color: var(--color-text-light);
     font-style: italic;
     margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--color-border);
 }
 
-.trabajos-list, .calificaciones-list {
+/* ==================== LISTAS ==================== */
+.trabajos-list, 
+.calificaciones-list {
     margin-top: 15px;
 }
 
 ul {
     list-style-type: none;
     padding-left: 0;
+    margin: 10px 0;
 }
 
 ul li {
     margin-bottom: 8px;
     padding-left: 20px;
     position: relative;
+    line-height: 1.5;
 }
 
 ul li::before {
     content: "•";
-    color: #07734B;
+    color: var(--color-primary);
     font-weight: bold;
     position: absolute;
     left: 0;
+    font-size: 14pt;
 }
 
+/* ==================== RATING - Representación Visual ==================== */
+.rating-stars {
+    color: var(--color-primary);
+    font-size: 12pt;
+    letter-spacing: 2px;
+}
+
+/* ==================== INFORMACIÓN DE CONTACTO ==================== */
+.contact-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin: 15px 0;
+}
+
+.contact-item {
+    flex: 1 1 45%;
+    min-width: 200px;
+}
+
+/* ==================== FOOTER DEL PDF ==================== */
 .pdf-footer {
     margin-top: 40px;
     padding-top: 15px;
-    border-top: 2px solid #e0e0e0;
+    border-top: 2px solid var(--color-border);
     text-align: center;
     font-size: 9pt;
-    color: #666;
+    color: var(--color-text-light);
+    page-break-before: avoid;
 }
 
 .pdf-footer p {
     margin: 5px 0;
 }
 
-/* Estilos para impresión */
+/* ==================== TABLA DE CONTENIDO (opcional) ==================== */
+.table-of-contents {
+    background: var(--color-bg-light);
+    padding: 15px;
+    margin: 20px 0;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    page-break-inside: avoid;
+}
+
+.table-of-contents h2 {
+    margin-top: 0;
+    font-size: 14pt;
+    border-left: none;
+    padding-left: 0;
+}
+
+.table-of-contents ul {
+    margin: 10px 0;
+}
+
+.table-of-contents li {
+    padding-left: 15px;
+}
+
+.table-of-contents li::before {
+    content: "→";
+}
+
+/* ==================== HABILIDADES EN GRID ==================== */
+.skills-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin: 10px 0;
+}
+
+.skill-item {
+    padding: 6px 10px;
+    background: white;
+    border: 1px solid var(--color-border);
+    border-left: 3px solid var(--color-primary);
+    font-size: 10pt;
+}
+
+/* ==================== CERTIFICACIONES ==================== */
+.certification-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    margin-bottom: 8px;
+    background: white;
+    border: 1px solid var(--color-border);
+    border-left: 3px solid var(--color-primary);
+}
+
+.certification-title {
+    font-weight: 600;
+    color: var(--color-primary-dark);
+}
+
+.certification-date {
+    font-size: 9pt;
+    color: var(--color-text-light);
+}
+
+/* ==================== ESTADÍSTICAS ==================== */
+.stats-summary {
+    display: flex;
+    justify-content: space-around;
+    padding: 15px;
+    background: var(--color-bg-light);
+    border: 1px solid var(--color-border);
+    margin: 15px 0;
+    page-break-inside: avoid;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-number {
+    font-size: 18pt;
+    font-weight: 700;
+    color: var(--color-primary);
+    display: block;
+}
+
+.stat-label {
+    font-size: 9pt;
+    color: var(--color-text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ==================== SEPARADORES ==================== */
+.section-divider {
+    height: 2px;
+    background: linear-gradient(to right, var(--color-primary), transparent);
+    margin: 20px 0;
+}
+
+/* ==================== ESTILOS PARA IMPRESIÓN ==================== */
 @media print {
     body {
         margin: 0;
         padding: 0;
+        background: white;
     }
 
+    /* Evitar saltos de página no deseados */
     .pdf-section {
         page-break-inside: avoid;
     }
 
-    h1, h2 {
+    h1, h2, h3 {
         page-break-after: avoid;
     }
 
-    .item, .trabajo-item, .calificacion-item {
+    .item, 
+    .trabajo-item, 
+    .calificacion-item,
+    .stats-summary {
         page-break-inside: avoid;
     }
+
+    /* Ocultar elementos interactivos */
+    button,
+    .no-print {
+        display: none !important;
+    }
+
+    /* Optimizar colores para impresión */
+    .pdf-section,
+    .item,
+    .trabajo-item,
+    .calificacion-item {
+        background: white;
+        border: 1px solid #ccc;
+    }
+
+    /* Enlaces visibles */
+    a[href]:after {
+        content: " (" attr(href) ")";
+        font-size: 8pt;
+        color: var(--color-text-light);
+    }
+
+    /* Evitar que las imágenes se partan */
+    img {
+        page-break-inside: avoid;
+        max-width: 100%;
+    }
+}
+
+/* ==================== MODO OSCURO (para vista previa) ==================== */
+@media screen and (prefers-color-scheme: dark) {
+    body {
+        background: #1a202c;
+        color: #e2e8f0;
+    }
+
+    .pdf-section {
+        background: #2d3748;
+    }
+
+    h1, h2, h3 {
+        color: #68d391;
+    }
+}
+
+/* ==================== UTILIDADES ==================== */
+.text-center {
+    text-align: center;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.mb-small {
+    margin-bottom: 10px;
+}
+
+.mb-medium {
+    margin-bottom: 20px;
+}
+
+.mb-large {
+    margin-bottom: 30px;
+}
+
+.font-bold {
+    font-weight: 700;
+}
+
+.font-italic {
+    font-style: italic;
+}
+
+.text-muted {
+    color: var(--color-text-light);
+}
+
+/* ==================== WATERMARK (opcional) ==================== */
+.watermark {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-45deg);
+    font-size: 72pt;
+    color: rgba(0, 0, 0, 0.05);
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* ==================== QR CODE SECTION (opcional) ==================== */
+.qr-section {
+    text-align: center;
+    margin: 20px 0;
+    padding: 15px;
+    border: 2px dashed var(--color-border);
+    page-break-inside: avoid;
+}
+
+.qr-code {
+    max-width: 150px;
+    margin: 10px auto;
+}
+
+.qr-text {
+    font-size: 9pt;
+    color: var(--color-text-light);
+    margin-top: 10px;
 }

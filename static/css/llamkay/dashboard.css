@@ -1,21 +1,22 @@
 /* =============================================
    DASHBOARD - LLAMKAY.PE
+   (Principios Gestalt y Nielsen Aplicados)
    ============================================= */
 
 :root {
+    /* Consistencia: Definición clara de colores de marca y estado */
     --color-primary: #07734B;
     --color-primary-dark: #034D31;
     --color-primary-light: #15AC75;
     --color-secondary: #9EBC8A;
     --color-secondary-light: #B5C99A;
-    --color-accent: #EEEDEB;
     --color-text: #1a1a1a;
     --color-text-light: #666666;
     --color-background: #ffffff;
     --color-background-alt: #f8f9fa;
-    --color-danger: #dc2626;
-    --color-success: #10b981;
-    --color-warning: #f59e0b;
+    --color-danger: #dc2626; /* Visibilidad del Estado (Rojo) */
+    --color-success: #10b981; /* Visibilidad del Estado (Verde) */
+    --color-warning: #f59e0b; /* Visibilidad del Estado (Amarillo/Naranja) */
     --color-info: #3b82f6;
     --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
     --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
@@ -24,7 +25,6 @@
     --radius-sm: 8px;
     --radius-md: 12px;
     --radius-lg: 16px;
-    --radius-xl: 24px;
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -37,7 +37,8 @@
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     color: var(--color-text);
-    background: var(--color-background-alt);
+    /* Estética Minimalista: Fondo limpio para figura/fondo claro */
+    background: var(--color-background-alt); 
     line-height: 1.6;
     overflow-x: hidden;
 }
@@ -48,7 +49,7 @@ body {
     padding: 0 2rem;
 }
 
-/* ==================== HEADER ==================== */
+/* ==================== HEADER (Consistencia, Reconocimiento) ==================== */
 .header {
     position: sticky;
     top: 0;
@@ -217,7 +218,6 @@ body {
     transform: rotate(180deg);
 }
 
-/* ==================== DROPDOWN MENU ==================== */
 .user-dropdown {
     position: absolute;
     top: calc(100% + 0.75rem);
@@ -349,23 +349,9 @@ body {
     color: var(--color-danger);
 }
 
-@keyframes dropdownFadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-10px) scale(0.95);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
-
-.user-dropdown.active {
-    animation: dropdownFadeIn 0.2s ease;
-}
-
-/* ==================== WELCOME SECTION ==================== */
+/* ==================== WELCOME SECTION (Figura y Fondo) ==================== */
 .welcome-section {
+    /* Figura y Fondo: Contraste alto para elemento principal */
     background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
     padding: 3rem 0;
     color: white;
@@ -433,16 +419,18 @@ body {
     border-color: rgba(255, 255, 255, 0.5);
 }
 
-/* ==================== STATS SECTION ==================== */
+
+/* ==================== STATS SECTION (Proximidad, Semejanza) ==================== */
 .stats-section {
     padding: 3rem 0;
 }
 
 .stats-grid {
+    /* Proximidad: Agrupamiento de elementos relacionados */
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1.5rem;
-    margin-top: -4rem;
+    margin-top: -4rem; /* Superposición para un efecto visual moderno */
 }
 
 .stat-card {
@@ -454,11 +442,14 @@ body {
     align-items: center;
     gap: 1.5rem;
     transition: var(--transition);
+    /* Semejanza: Estilo uniforme y borde inferior como guía (Continuidad) */
+    border-bottom: 4px solid var(--color-primary-light); 
+    cursor: pointer;
 }
 
 .stat-card:hover {
     transform: translateY(-5px);
-    box-shadow: var(--shadow-lg);
+    box-shadow: var(--shadow-xl);
 }
 
 .stat-icon {
@@ -484,7 +475,8 @@ body {
     color: var(--color-text-light);
 }
 
-/* ==================== MAIN CONTENT ==================== */
+
+/* ==================== MAIN CONTENT (Estética Minimalista) ==================== */
 .main-content {
     padding: 2rem 0 4rem;
 }
@@ -497,6 +489,7 @@ body {
 
 .content-card,
 .sidebar-card {
+    /* Estética Minimalista: Diseño limpio y agrupado (Proximidad) */
     background: white;
     border-radius: var(--radius-lg);
     padding: 2rem;
@@ -529,7 +522,7 @@ body {
     text-decoration: underline;
 }
 
-/* ==================== ACTIVITY LIST ==================== */
+/* ==================== ACTIVITY LIST (Continuidad, Visibilidad del Estado) ==================== */
 .activity-list {
     display: flex;
     flex-direction: column;
@@ -544,11 +537,15 @@ body {
     background: var(--color-background-alt);
     border-radius: var(--radius-md);
     transition: var(--transition);
+    /* Continuidad: Borde izquierdo para guiar la lectura */
+    border-left: 4px solid transparent; 
 }
 
 .activity-item:hover {
     background: #e8f5f0;
     transform: translateX(5px);
+    /* Continuidad: Borde activo que guía la vista */
+    border-left-color: var(--color-primary); 
 }
 
 .activity-icon {
@@ -561,6 +558,7 @@ body {
     flex-shrink: 0;
 }
 
+/* Visibilidad del Estado: Iconos de estado con color */
 .activity-icon.success {
     background: rgba(16, 185, 129, 0.1);
     color: var(--color-success);
@@ -591,7 +589,8 @@ body {
     color: var(--color-text-light);
 }
 
-/* ==================== JOBS LIST ==================== */
+
+/* ==================== JOBS LIST (Proximidad, Semejanza) ==================== */
 .jobs-list {
     display: flex;
     flex-direction: column;
@@ -600,15 +599,16 @@ body {
 
 .job-card {
     padding: 1.5rem;
-    border: 2px solid var(--color-background-alt);
+    /* Proximidad: Separación clara entre tarjetas */
+    border: 1px solid #e0e0e0; 
     border-radius: var(--radius-lg);
     transition: var(--transition);
 }
 
 .job-card:hover {
     border-color: var(--color-primary);
-    box-shadow: var(--shadow-md);
-    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(7, 115, 75, 0.1); 
+    transform: translateY(-2px);
 }
 
 .job-header {
@@ -736,13 +736,15 @@ body {
     width: 100%;
 }
 
-/* ==================== SIDEBAR ==================== */
+
+/* ==================== SIDEBAR (Proximidad, Visibilidad del Estado) ==================== */
 .sidebar-card h3 {
     font-size: 1.2rem;
     color: var(--color-text);
     margin-bottom: 1rem;
 }
 
+/* Visibilidad del Estado: Barra de progreso */
 .progress-bar {
     width: 100%;
     height: 8px;
@@ -754,7 +756,8 @@ body {
 
 .progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, var(--color-primary), var(--color-primary-light));
+    /* Visibilidad del Estado: Usar degradado de color de marca */
+    background: linear-gradient(90deg, var(--color-primary), var(--color-primary-light)); 
     border-radius: 50px;
     transition: width 0.3s ease;
 }
@@ -768,8 +771,11 @@ body {
 .profile-tasks {
     display: flex;
     flex-direction: column;
+    /* Proximidad: Agrupar visualmente las tareas */
     gap: 0.75rem;
     margin-bottom: 1.5rem;
+    padding-left: 0.5rem; 
+    border-left: 3px solid var(--color-background-alt); /* Continuidad */
 }
 
 .task-item {
@@ -785,7 +791,9 @@ body {
 }
 
 .task-item.completed {
+    /* Visibilidad del Estado: Color verde para tareas completadas */
     color: var(--color-success);
+    font-weight: 600; 
 }
 
 .task-item:not(.completed) {
@@ -900,7 +908,68 @@ body {
     margin: 0;
 }
 
-/* ==================== FOOTER ==================== */
+
+/* ==================== NOTIFICACIONES PREVIEW (Continuidad, Visibilidad del Estado) ==================== */
+.notificacion-preview-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 8px;
+    background: #f9fafb;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    /* Continuidad: Borde izquierdo */
+    border-left: 3px solid transparent; 
+}
+
+.notificacion-preview-item:hover {
+    background: #f3f4f6;
+    transform: translateX(4px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.notificacion-preview-item.no-leida {
+    /* Visibilidad del Estado: Fondo y borde para no leídos */
+    background: #f0f9ff;
+    border-left-color: var(--color-primary);
+}
+
+.notif-icon {
+    /* Reconocimiento: Iconografía con colores asociados */
+    font-size: 1.5rem;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border-radius: 8px;
+    flex-shrink: 0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.notif-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.notif-content strong {
+    display: block;
+    color: #1f2937;
+    font-size: 0.875rem;
+    margin-bottom: 0.25rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.notif-time {
+    color: #6b7280;
+    font-size: 0.75rem;
+}
+
+/* ==================== FOOTER (Consistencia) ==================== */
 .footer {
     background: var(--color-primary-dark);
     color: white;
@@ -973,8 +1042,10 @@ body {
     font-size: 0.9rem;
 }
 
-/* ==================== RESPONSIVE ==================== */
+
+/* ==================== RESPONSIVE (Responsividad) ==================== */
 @media (max-width: 1024px) {
+    /* Adaptación del diseño */
     .content-grid {
         grid-template-columns: 1fr;
     }
@@ -982,13 +1053,14 @@ body {
     .stats-grid {
         grid-template-columns: repeat(2, 1fr);
     }
+    
+    .footer-container {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
 }
 
 @media (max-width: 768px) {
-    .nav-menu {
-        display: none;
-    }
-    
     .welcome-content h1 {
         font-size: 2rem;
     }
@@ -1015,16 +1087,11 @@ body {
         padding: 0.5rem;
     }
     
-    .footer-container {
-        grid-template-columns: 1fr;
-        gap: 2rem;
-    }
-    
     .footer-links {
         grid-template-columns: 1fr;
     }
     
-    /* Dropdown responsive */
+    /* Dropdown responsive: menú en la parte inferior */
     .user-dropdown {
         position: fixed;
         top: auto;
@@ -1062,241 +1129,5 @@ body {
     
     .btn-small {
         width: 100%;
-    }
-}
-
-/* Estilos adicionales para notificaciones preview */
-.notificaciones-preview {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.notificacion-preview-item {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem;
-    border-radius: 8px;
-    background: #f9fafb;
-    text-decoration: none;
-    transition: all 0.2s ease;
-}
-
-.notificacion-preview-item:hover {
-    background: #f3f4f6;
-    transform: translateX(4px);
-}
-
-.notificacion-preview-item.no-leida {
-    background: #f0f9ff;
-    border-left: 3px solid #07734B;
-}
-
-.notif-icon {
-    font-size: 1.5rem;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: white;
-    border-radius: 8px;
-    flex-shrink: 0;
-}
-
-.notif-content {
-    flex: 1;
-    min-width: 0;
-}
-
-.notif-content strong {
-    display: block;
-    color: #1f2937;
-    font-size: 0.875rem;
-    margin-bottom: 0.25rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.notif-time {
-    color: #6b7280;
-    font-size: 0.75rem;
-}
-
-/* ========================================
-   ESTILOS PARA NOTIFICACIONES EN DASHBOARD
-   ======================================== */
-
-/* Botón de notificaciones en header */
-.icon-button {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 8px;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    color: #ffffff;
-}
-
-.icon-button:hover {
-    background: #f3f4f6;
-    color: #07734B;
-}
-
-.notification-badge {
-    position: absolute;
-    top: -4px;
-    right: -4px;
-    background: #ef4444;
-    color: white;
-    font-size: 11px;
-    font-weight: 600;
-    padding: 2px 6px;
-    border-radius: 10px;
-    min-width: 18px;
-    text-align: center;
-    animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-    0%, 100% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.1);
-    }
-}
-
-/* Preview de notificaciones en sidebar */
-.notificaciones-preview {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.notificacion-preview-item {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem;
-    border-radius: 8px;
-    background: #f9fafb;
-    text-decoration: none;
-    transition: all 0.2s ease;
-    border-left: 3px solid transparent;
-}
-
-.notificacion-preview-item:hover {
-    background: #f3f4f6;
-    transform: translateX(4px);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.notificacion-preview-item.no-leida {
-    background: #f0f9ff;
-    border-left-color: #07734B;
-}
-
-.notificacion-preview-item.no-leida .notif-content strong {
-    color: #07734B;
-}
-
-.notif-icon {
-    font-size: 1.5rem;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: white;
-    border-radius: 8px;
-    flex-shrink: 0;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.notif-icon.postulacion {
-    background: linear-gradient(135deg, #dbeafe, #bfdbfe);
-}
-
-.notif-icon.mensaje {
-    background: linear-gradient(135deg, #fef3c7, #fde68a);
-}
-
-.notif-icon.contrato {
-    background: linear-gradient(135deg, #d1fae5, #a7f3d0);
-}
-
-.notif-icon.pago {
-    background: linear-gradient(135deg, #fce7f3, #fbcfe8);
-}
-
-.notif-icon.calificacion {
-    background: linear-gradient(135deg, #fee2e2, #fecaca);
-}
-
-.notif-content {
-    flex: 1;
-    min-width: 0;
-}
-
-.notif-content strong {
-    display: block;
-    color: #1f2937;
-    font-size: 0.875rem;
-    margin-bottom: 0.25rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.notif-time {
-    color: #6b7280;
-    font-size: 0.75rem;
-}
-
-/* Badge en dropdown */
-.dropdown-item .badge {
-    margin-left: auto;
-    background: #07734B;
-    color: white;
-    padding: 2px 8px;
-    border-radius: 12px;
-    font-size: 11px;
-    font-weight: 600;
-}
-
-/* Sidebar card con notificaciones */
-.sidebar-card h3 {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-}
-
-.sidebar-card h3 svg {
-    color: #07734B;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    .notificacion-preview-item {
-        padding: 0.5rem;
-    }
-    
-    .notif-icon {
-        width: 35px;
-        height: 35px;
-        font-size: 1.25rem;
-    }
-    
-    .notif-content strong {
-        font-size: 0.8125rem;
     }
 }

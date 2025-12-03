@@ -17,6 +17,7 @@ class CalificacionRepository(ICalificacionRepository):
     
     def listar_por_receptor(self, usuario: Usuario) -> List[Calificacion]:
         """Lista calificaciones recibidas por un usuario"""
+        # Se asume que el orden es por created_at de forma descendente (implícito por Meta.ordering)
         return list(
             Calificacion.objects.filter(
                 id_receptor=usuario
@@ -29,7 +30,7 @@ class CalificacionRepository(ICalificacionRepository):
             Calificacion.objects.filter(
                 id_autor=usuario,
                 activa=True
-            ).select_related('id_receptor', 'id_contrato').order_by('-fecha')
+            ).select_related('id_receptor', 'id_contrato').order_by('-created_at') # CORREGIDO: de '-fecha' a '-created_at'
         )
     
     def obtener_por_contrato(self, contrato, autor: Usuario) -> Optional[Calificacion]:
@@ -133,5 +134,5 @@ class CalificacionRepository(ICalificacionRepository):
             Calificacion.objects.filter(
                 id_receptor=usuario,
                 activa=True
-            ).select_related('id_autor').order_by('-fecha')[:limite]
+            ).select_related('id_autor').order_by('-created_at')[:limite] # CORREGIDO: de '-fecha' a '-created_at'
         )

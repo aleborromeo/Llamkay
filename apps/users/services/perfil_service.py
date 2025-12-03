@@ -164,27 +164,33 @@ class PerfilService:
                 logger.error("Usuario no encontrado")
                 return False
             
+            # ==================== OBTENER/CREAR PROFILE ====================
+            profile, created = self.profile_repo.obtener_o_crear(usuario)
+
+            # ==================== MANEJAR FOTO DE PERFIL ====================
+            if 'foto' in datos and datos['foto']:
+                # 🟢 CORRECCIÓN DE FOTO: Lógica robusta para eliminación de la foto anterior
+                if profile.foto_url: 
+                    # Usamos .name para obtener la ruta del archivo en el storage
+                    path_to_delete = profile.foto_url.name 
+                    try:
+                        if default_storage.exists(path_to_delete) and path_to_delete != 'uploads/fotos_perfil/default.png':
+                            default_storage.delete(path_to_delete)
+                            logger.info(f"✅ Foto anterior eliminada: {path_to_delete}")
+                    except Exception as e:
+                        logger.warning(f"No se pudo eliminar foto anterior: {e}")
+                
+                # Asignar y guardar la nueva foto
+                profile.foto_url = datos['foto']
+                profile.save(update_fields=['foto_url'])
+                logger.info(f"✅ Foto actualizada para {usuario.email}")
+            
             # ==================== ACTUALIZAR USUARIO ====================
             datos_usuario = {}
             
             # Teléfono
             if 'telefono' in datos and datos['telefono']:
                 datos_usuario['telefono'] = datos['telefono'].strip()
-            
-            # Foto de perfil - Guardar directamente en Usuario
-            if 'foto' in datos and datos['foto']:
-                # Eliminar foto anterior si existe
-                if usuario.foto:
-                    try:
-                        if default_storage.exists(usuario.foto.name):
-                            default_storage.delete(usuario.foto.name)
-                    except Exception as e:
-                        logger.warning(f"No se pudo eliminar foto anterior: {e}")
-                
-                # Guardar nueva foto
-                usuario.foto = datos['foto']
-                usuario.save()
-                logger.info(f"✅ Foto actualizada para {usuario.email}")
             
             # Actualizar otros campos de usuario
             if datos_usuario:
@@ -193,11 +199,10 @@ class PerfilService:
                 usuario.save()
             
             # ==================== ACTUALIZAR PROFILE ====================
-            profile, created = self.profile_repo.obtener_o_crear(usuario)
             
             datos_profile = {}
             
-            # Mapeo de campos
+            # Mapeo de campos (se mantiene igual)
             campos_profile = {
                 'bio': 'bio',
                 'descripcion': 'bio',  # Alias
@@ -213,12 +218,11 @@ class PerfilService:
             for campo_dato, campo_model in campos_profile.items():
                 if campo_dato in datos and datos[campo_dato] is not None:
                     valor = datos[campo_dato]
-                    # Limpiar strings
                     if isinstance(valor, str):
                         valor = valor.strip()
                     datos_profile[campo_model] = valor
             
-            # Ubicación
+            # Ubicación (se mantiene igual)
             if 'id_departamento' in datos:
                 datos_profile['id_departamento_id'] = datos['id_departamento']
             if 'id_provincia' in datos:
@@ -247,8 +251,9 @@ class PerfilService:
         try:
             from apps.users.models import Disponibilidad
             
+            # CORRECCIÓN NECESARIA: Cambiar el campo de búsqueda de id_usuario a id_trabajador
             disponibilidades = Disponibilidad.objects.filter(
-                id_usuario=usuario,
+                id_trabajador=usuario, # <--- ¡CAMBIO AQUÍ!
                 activa=True
             )
             

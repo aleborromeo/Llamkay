@@ -163,6 +163,9 @@ class Calificacion(models.Model):
     )
     comentario = models.TextField(null=True, blank=True)
     
+    # Soft Delete Field (Activo/Inactivo) <--- AÑADIDO
+    activa = models.BooleanField(default=True) 
+    
     # Auditoría
     created_at = models.DateTimeField(auto_now_add=True)
 
