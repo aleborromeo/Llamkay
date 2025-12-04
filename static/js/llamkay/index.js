@@ -2,21 +2,60 @@
 // LLAMKAY LANDING PAGE JAVASCRIPT
 // 
 // PRINCIPIOS APLICADOS:
-// - Nielsen: Visibilidad del estado del sistema
-// - Nielsen: Control y libertad del usuario
+// - Nielsen: Visibilidad del estado del sistema, Control y libertad del usuario
 // - Nielsen: Prevención de errores
 // - Responsividad: Interacciones táctiles y desktop
+// - I18n: Manejo de envío de formulario para cambio de idioma (Backend/Django)
 // =============================================
 
 document.addEventListener('DOMContentLoaded', function() {
     'use strict';
     
+    // ==================== I18N LOGIC (NEW) ====================
+    // Lógica para el cambio de idioma a través del formulario POST de Django.
+    
+    const langForm = document.getElementById('language-form');
+    const langInput = document.getElementById('language-input');
+    
+    if (langForm && langInput) {
+        // La traducción se maneja en el backend (Python), este JS solo maneja la UX del botón.
+        
+        // Clonar y mover el selector de idioma dentro del menú móvil para la responsividad
+        const navMenu = document.querySelector('.nav-menu');
+        const langSelector = document.querySelector('.language-selector'); 
+        const navMobileActions = document.querySelector('.nav-mobile-actions'); 
+
+        // Clonar el selector en resoluciones más pequeñas (o siempre, dependiendo de la necesidad)
+        if (langSelector && navMobileActions && window.innerWidth < 1024) { 
+            const clonedLangSelector = langSelector.cloneNode(true);
+            clonedLangSelector.classList.add('mobile-clone'); 
+            navMenu.insertBefore(clonedLangSelector, navMobileActions);
+        }
+        
+        // Asignar listeners a todos los botones del selector (header y clon móvil)
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const newLang = this.getAttribute('data-lang');
+                
+                // 1. Actualizar el input con el nuevo idioma
+                langInput.value = newLang;
+                
+                // 2. Enviar el formulario (esto hará que el backend cambie el idioma)
+                langForm.submit();
+                
+                // Nielsen: Visibilidad del estado - Feedback inmediato
+                console.log('Solicitando cambio de idioma a:', newLang); 
+            });
+        });
+    }
+
     // ==================== MOBILE MENU ====================
     // Nielsen: Control y libertad del usuario
     // Responsividad: Menu hamburguesa en móvil
     
     const navToggle = document.querySelector('.nav-toggle');
-    const navMenu = document.querySelector('.nav-menu');
+    const navMenu = document.querySelector('.nav-menu'); // Ya definido arriba, pero se redefine aquí para consistencia si el JS no carga en orden
     
     if (navToggle && navMenu) {
         navToggle.addEventListener('click', function() {
@@ -45,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Cerrar menu al hacer click fuera
         document.addEventListener('click', function(e) {
-            if (!navToggle.contains(e.target) && !navMenu.contains(e.target)) {
+            if (navMenu && !navToggle.contains(e.target) && !navMenu.contains(e.target)) {
                 navMenu.classList.remove('active');
                 navToggle.setAttribute('aria-expanded', 'false');
                 
@@ -267,7 +306,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Nielsen: Prevención de errores
     // Nielsen: Ayuda a recuperarse de errores
     
-    const forms = document.querySelectorAll('form');
+    // Excluir el formulario de idioma de la validación estándar
+    const forms = document.querySelectorAll('form:not(#language-form)'); 
     
     forms.forEach(form => {
         form.addEventListener('submit', function(e) {

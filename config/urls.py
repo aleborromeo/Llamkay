@@ -1,7 +1,7 @@
 """
 URL configuration for Llamkay project.
 """
-
+from django.conf.urls.i18n import i18n_patterns
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
@@ -18,6 +18,20 @@ urlpatterns = [
     path('empleadores/', include('apps.empleadores.urls')),
     path('chats/', include('apps.chats.urls')),
     path('soporte/', include('apps.soporte.urls')),
+]
+
+# Envuelve las URLs que deseas traducir en la ruta
+urlpatterns += i18n_patterns(
+    path('', include('apps.llamkay.urls')),
+    path('users/', include('apps.users.urls')),
+    path('jobs/', include('apps.jobs.urls')),
+    path('empleadores/', include('apps.empleadores.urls')),
+    path('chats/', include('apps.chats.urls')),
+    path('soporte/', include('apps.soporte.urls')),
+)
+
+urlpatterns += [
+    path('i18n/', include('django.conf.urls.i18n')),
 ]
 
 # Servir archivos estáticos en desarrollo

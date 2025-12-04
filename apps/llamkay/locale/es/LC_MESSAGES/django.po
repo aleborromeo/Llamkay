@@ -1,0 +1,406 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-12-04 09:37-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? "
+"1 : 2;\n"
+#: .\templates\llamkay\index.html:5
+msgid "Encuentra Trabajo Informal Rápido y Seguro"
+msgstr ""
+
+#: .\templates\llamkay\index.html:19
+msgid "Navegación principal"
+msgstr ""
+
+#: .\templates\llamkay\index.html:21
+msgid "Página principal"
+msgstr ""
+
+#: .\templates\llamkay\index.html:25
+msgid "Selección de idioma"
+msgstr ""
+
+#: .\templates\llamkay\index.html:30
+msgid "Abrir menú de navegación"
+msgstr ""
+
+#: .\templates\llamkay\index.html:37
+msgid "Nosotros"
+msgstr ""
+
+#: .\templates\llamkay\index.html:38
+msgid "Trabajos"
+msgstr ""
+
+#: .\templates\llamkay\index.html:39 .\templates\llamkay\index.html:211
+msgid "¿Cómo funciona?"
+msgstr ""
+
+#: .\templates\llamkay\index.html:42 .\templates\llamkay\index.html:48
+msgid "Ingresar"
+msgstr ""
+
+#: .\templates\llamkay\index.html:43 .\templates\llamkay\index.html:49
+msgid "Comenzar"
+msgstr ""
+
+#: .\templates\llamkay\index.html:58
+msgid "Hecho en Perú 🇵🇪"
+msgstr ""
+
+#: .\templates\llamkay\index.html:61
+msgid "Encuentra trabajo <span class=\"text-highlight\">hoy mismo</span>"
+msgstr ""
+
+#: .\templates\llamkay\index.html:65
+msgid ""
+"La plataforma más rápida para conseguir trabajos informales o contratar "
+"profesionales verificados en tu zona."
+msgstr ""
+
+#: .\templates\llamkay\index.html:68
+msgid "Acciones principales"
+msgstr ""
+
+#: .\templates\llamkay\index.html:76
+msgid "Registrarse Gratis"
+msgstr ""
+
+#: .\templates\llamkay\index.html:83
+msgid "Buscar Trabajos"
+msgstr ""
+
+#: .\templates\llamkay\index.html:87
+msgid "Estadísticas de la plataforma"
+msgstr ""
+
+#: .\templates\llamkay\index.html:90
+msgid "Usuarios activos"
+msgstr ""
+
+#: .\templates\llamkay\index.html:94
+msgid "Trabajos publicados"
+msgstr ""
+
+#: .\templates\llamkay\index.html:98
+msgid "Calificación promedio"
+msgstr ""
+
+#: .\templates\llamkay\index.html:106
+msgid "Carpintero"
+msgstr ""
+
+#: .\templates\llamkay\index.html:107
+msgid "S/ 80 - 120 por día"
+msgstr ""
+
+#: .\templates\llamkay\index.html:108
+msgid "Disponible"
+msgstr ""
+
+#: .\templates\llamkay\index.html:112
+msgid "Plomero"
+msgstr ""
+
+#: .\templates\llamkay\index.html:113
+msgid "S/ 60 - 100 por hora"
+msgstr ""
+
+#: .\templates\llamkay\index.html:114
+msgid "Urgente"
+msgstr ""
+
+#: .\templates\llamkay\index.html:118 .\templates\llamkay\index.html:317
+msgid "Limpieza"
+msgstr ""
+
+#: .\templates\llamkay\index.html:119
+msgid "S/ 50 - 80 por día"
+msgstr ""
+
+#: .\templates\llamkay\index.html:120
+msgid "Nuevo"
+msgstr ""
+
+#: .\templates\llamkay\index.html:135
+msgid "Beneficios"
+msgstr ""
+
+#: .\templates\llamkay\index.html:136
+msgid "¿Por qué elegir Llamkay?"
+msgstr ""
+
+#: .\templates\llamkay\index.html:137
+msgid "La forma más segura y rápida de trabajar en Perú"
+msgstr ""
+
+#: .\templates\llamkay\index.html:148
+msgid "Encuentra cerca de ti"
+msgstr ""
+
+#: .\templates\llamkay\index.html:149
+msgid "Busca trabajos o profesionales en tu distrito o comunidad"
+msgstr ""
+
+#: .\templates\llamkay\index.html:159
+#, python-format
+msgid "100%% Verificado"
+msgstr ""
+
+#: .\templates\llamkay\index.html:160
+msgid "Todos los usuarios pasan por verificación de identidad y antecedentes"
+msgstr ""
+
+#: .\templates\llamkay\index.html:169
+msgid "Chat directo"
+msgstr ""
+
+#: .\templates\llamkay\index.html:170
+msgid "Habla directamente con empleadores o trabajadores sin intermediarios"
+msgstr ""
+
+#: .\templates\llamkay\index.html:179
+msgid "Sistema de reputación"
+msgstr ""
+
+#: .\templates\llamkay\index.html:180
+msgid "Calificaciones y comentarios reales de trabajos completados"
+msgstr ""
+
+#: .\templates\llamkay\index.html:190
+msgid "Pago flexible"
+msgstr ""
+
+#: .\templates\llamkay\index.html:191
+msgid "Acepta efectivo, Yape, Plin o transferencias bancarias"
+msgstr ""
+
+#: .\templates\llamkay\index.html:200
+msgid "Protección garantizada"
+msgstr ""
+
+#: .\templates\llamkay\index.html:201
+msgid "Sistema de denuncias y mediación para resolver conflictos"
+msgstr ""
+
+#: .\templates\llamkay\index.html:210
+msgid "Simple y Rápido"
+msgstr ""
+
+#: .\templates\llamkay\index.html:212
+msgid "En 4 pasos empiezas a trabajar o contratar"
+msgstr ""
+
+#: .\templates\llamkay\index.html:217
+msgid "Paso 1"
+msgstr ""
+
+#: .\templates\llamkay\index.html:219
+msgid "Crea tu cuenta"
+msgstr ""
+
+#: .\templates\llamkay\index.html:220
+msgid ""
+"Regístrate gratis en menos de 2 minutos como trabajador, empleador o empresa"
+msgstr ""
+
+#: .\templates\llamkay\index.html:231
+msgid "Paso 2"
+msgstr ""
+
+#: .\templates\llamkay\index.html:233
+msgid "Completa tu perfil"
+msgstr ""
+
+#: .\templates\llamkay\index.html:234
+msgid ""
+"Agrega tus habilidades, experiencia y verifica tu identidad para mayor "
+"confianza"
+msgstr ""
+
+#: .\templates\llamkay\index.html:247
+msgid "Paso 3"
+msgstr ""
+
+#: .\templates\llamkay\index.html:249
+msgid "Busca o publica"
+msgstr ""
+
+#: .\templates\llamkay\index.html:250
+msgid "Encuentra trabajos cerca de ti o publica lo que necesitas en tu zona"
+msgstr ""
+
+#: .\templates\llamkay\index.html:261
+msgid "Paso 4"
+msgstr ""
+
+#: .\templates\llamkay\index.html:263
+msgid "¡Conecta y trabaja!"
+msgstr ""
+
+#: .\templates\llamkay\index.html:264
+msgid ""
+"Chatea, acuerda términos y completa el trabajo. Luego califica la experiencia"
+msgstr ""
+
+#: .\templates\llamkay\index.html:277
+msgid "Empezar ahora"
+msgstr ""
+
+#: .\templates\llamkay\index.html:286
+msgid "Categorías Populares"
+msgstr ""
+
+#: .\templates\llamkay\index.html:287
+msgid "Trabajos más buscados"
+msgstr ""
+
+#: .\templates\llamkay\index.html:293
+msgid "Carpintería"
+msgstr ""
+
+#: .\templates\llamkay\index.html:294
+msgid "156 trabajos"
+msgstr ""
+
+#: .\templates\llamkay\index.html:299
+msgid "Plomería"
+msgstr ""
+
+#: .\templates\llamkay\index.html:300
+msgid "128 trabajos"
+msgstr ""
+
+#: .\templates\llamkay\index.html:305
+msgid "Electricidad"
+msgstr ""
+
+#: .\templates\llamkay\index.html:306
+msgid "143 trabajos"
+msgstr ""
+
+#: .\templates\llamkay\index.html:311
+msgid "Albañilería"
+msgstr ""
+
+#: .\templates\llamkay\index.html:312
+msgid "201 trabajos"
+msgstr ""
+
+#: .\templates\llamkay\index.html:318
+msgid "167 trabajos"
+msgstr ""
+
+#: .\templates\llamkay\index.html:323
+msgid "Jardinería"
+msgstr ""
+
+#: .\templates\llamkay\index.html:324
+msgid "89 trabajos"
+msgstr ""
+
+#: .\templates\llamkay\index.html:329
+msgid "Pintura"
+msgstr ""
+
+#: .\templates\llamkay\index.html:330
+msgid "112 trabajos"
+msgstr ""
+
+#: .\templates\llamkay\index.html:335
+msgid "Ver todas"
+msgstr ""
+
+#: .\templates\llamkay\index.html:336
+msgid "500+ trabajos"
+msgstr ""
+
+#: .\templates\llamkay\index.html:345
+msgid "¿Listo para empezar?"
+msgstr ""
+
+#: .\templates\llamkay\index.html:346
+msgid "Únete a miles de peruanos que ya trabajan con Llamkay"
+msgstr ""
+
+#: .\templates\llamkay\index.html:348
+msgid "Crear cuenta gratis"
+msgstr ""
+
+#: .\templates\llamkay\index.html:365
+msgid "Conectando talentos con oportunidades laborales en todo el Perú"
+msgstr ""
+
+#: .\templates\llamkay\index.html:367
+msgid "Redes sociales"
+msgstr ""
+
+#: .\templates\llamkay\index.html:381
+msgid "Plataforma"
+msgstr ""
+
+#: .\templates\llamkay\index.html:383
+msgid "Buscar trabajos"
+msgstr ""
+
+#: .\templates\llamkay\index.html:384
+msgid "Publicar trabajo"
+msgstr ""
+
+#: .\templates\llamkay\index.html:385
+msgid "Cómo funciona"
+msgstr ""
+
+#: .\templates\llamkay\index.html:386
+msgid "Sobre nosotros"
+msgstr ""
+
+#: .\templates\llamkay\index.html:391
+msgid "Soporte"
+msgstr ""
+
+#: .\templates\llamkay\index.html:393
+msgid "Centro de ayuda"
+msgstr ""
+
+#: .\templates\llamkay\index.html:394
+msgid "Términos de servicio"
+msgstr ""
+
+#: .\templates\llamkay\index.html:395
+msgid "Política de privacidad"
+msgstr ""
+
+#: .\templates\llamkay\index.html:396
+msgid "Reportar un problema"
+msgstr ""
+
+#: .\templates\llamkay\index.html:401
+msgid "Contacto"
+msgstr ""
+
+#: .\templates\llamkay\index.html:405
+msgid "+51 987 654 321"
+msgstr ""
+
+#: .\templates\llamkay\index.html:406
+msgid "Huánuco, Perú"
+msgstr ""
+
+#: .\templates\llamkay\index.html:413
+msgid "&copy; 2025 Llamkay.pe. Todos los derechos reservados."
+msgstr ""

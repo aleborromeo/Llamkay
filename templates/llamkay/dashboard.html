@@ -10,6 +10,13 @@
 {% endblock %}
 
 {% block content %}
+    <!-- ========================================
+         HEADER NAVIGATION
+         Principios aplicados:
+         - Nielsen: Visibilidad del estado del sistema
+         - Gestalt: Proximidad (elementos agrupados)
+         - Responsividad: Menu hamburguesa SOLO en móvil
+         ======================================== -->
     <header class="header">
         <nav class="navbar">
             <div class="nav-container">
@@ -17,13 +24,56 @@
                     <span>Llamkay</span>
                 </a>
                 
+                <!-- Toggle móvil - SOLO visible en móvil -->
+                <button class="nav-toggle" aria-label="Abrir menú de navegación" aria-expanded="false">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                
+                <!-- Menu principal -->
                 <ul class="nav-menu">
                     <li><a href="{% url 'llamkay:dashboard' %}" class="nav-link active">Inicio</a></li>
                     <li><a href="{% url 'jobs:buscar_trabajos' %}" class="nav-link">Trabajos</a></li>
                     <li><a href="{% url 'chats:lista_chats' %}" class="nav-link">Mensajes</a></li>
+                    
+                    <!-- Botones móviles dentro del menú hamburguesa -->
+                    <li class="nav-mobile-actions">
+                        <!-- Botón de notificaciones -->
+                        <a href="{% url 'soporte:notificaciones' %}" class="btn-nav btn-ghost">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                            </svg>
+                            Notificaciones
+                            {% if notificaciones_count > 0 %}
+                            <span class="notification-badge">{{ notificaciones_count }}</span>
+                            {% endif %}
+                        </a>
+                        
+                        <!-- Menú usuario mobile -->
+                        <a href="{% url 'users:perfil' %}" class="btn-nav btn-ghost">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                            Mi Perfil
+                        </a>
+                        
+                        <a href="{% url 'users:logout' %}" class="btn-nav btn-primary">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                <polyline points="16 17 21 12 16 7"></polyline>
+                                <line x1="21" y1="12" x2="9" y2="12"></line>
+                            </svg>
+                            Cerrar Sesión
+                        </a>
+                    </li>
                 </ul>
                 
+                <!-- Acciones desktop (ocultas en móvil) -->
                 <div class="nav-actions">
+                    <!-- BOTÓN DE NOTIFICACIONES -->
                     <a href="{% url 'soporte:notificaciones' %}" class="icon-button" aria-label="Notificaciones">
                         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
@@ -49,6 +99,7 @@
                             </svg>
                         </button>
                         
+                        <!-- Dropdown Menu -->
                         <div class="user-dropdown" id="userDropdown">
                             <div class="dropdown-header">
                                 <div class="dropdown-user-info">
@@ -94,7 +145,7 @@
                                     </svg>
                                     <span>Notificaciones</span>
                                     {% if notificaciones_count > 0 %}
-                                    <span class="badge" style="margin-left: auto; background: var(--color-danger); color: white; padding: 2px 8px; border-radius: 12px; font-size: 11px;">{{ notificaciones_count }}</span>
+                                    <span class="badge">{{ notificaciones_count }}</span>
                                     {% endif %}
                                 </a>
                                 
@@ -167,6 +218,7 @@
         </nav>
     </header>
 
+    <!-- ========== WELCOME SECTION ========== -->
     <section class="welcome-section">
         <div class="container">
             <div class="welcome-content">
@@ -213,6 +265,7 @@
         </div>
     </section>
 
+    <!-- ========== STATS CARDS ========== -->
     <section class="stats-section">
         <div class="container">
             <div class="stats-grid">
@@ -300,10 +353,13 @@
         </div>
     </section>
 
+    <!-- ========== MAIN CONTENT ========== -->
     <section class="main-content">
         <div class="container">
             <div class="content-grid">
+                <!-- COLUMNA PRINCIPAL -->
                 <div class="content-main">
+                    <!-- ACTIVIDAD RECIENTE -->
                     <div class="content-card">
                         <div class="card-header">
                             <h2>Actividad reciente</h2>
@@ -337,11 +393,12 @@
                                     </div>
                                 </div>
                             {% empty %}
-                                <p style="text-align: center; color: var(--color-text-light); padding: 2rem;">No hay actividad reciente</p>
+                                <p class="empty-state">No hay actividad reciente</p>
                             {% endfor %}
                         </div>
                     </div>
 
+                    <!-- TRABAJOS RECOMENDADOS / POSTULANTES -->
                     <div class="content-card">
                         <div class="card-header">
                             {% if usuario.tipo_usuario == 'trabajador' or usuario.tipo_usuario == 'ambos' %}
@@ -349,15 +406,7 @@
                                 <a href="{% url 'jobs:buscar_trabajos' %}" class="view-all">Ver más</a>
                             {% else %}
                                 <h2>Postulantes recientes</h2>
-                                {% if usuario.tipo_usuario == 'empleador' or usuario.tipo_usuario == 'ambos' or usuario.tipo_usuario == 'empresa' %}
-                                    <a href="{% url 'empleadores:crear_oferta_individual' %}" class="quick-action-btn btn-primary">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <line x1="12" y1="5" x2="12" y2="19"></line>
-                                            <line x1="5" y1="12" x2="19" y2="12"></line>
-                                        </svg>
-                                        Publicar trabajo
-                                    </a>
-                                {% endif %}
+                                <a href="{% url 'empleadores:crear_oferta_individual' %}" class="view-all">+ Publicar trabajo</a>
                             {% endif %}
                         </div>
                         
@@ -396,9 +445,7 @@
                                         {% else %}
                                             {% with fecha=trabajo|get_created_at %}
                                                 {% if fecha %}
-                                                    {% if fecha|timesince < "1 day" %}
-                                                        <span class="job-badge new">Nuevo</span>
-                                                    {% endif %}
+                                                    <span class="job-badge new">Nuevo</span>
                                                 {% endif %}
                                             {% endwith %}
                                         {% endif %}
@@ -412,13 +459,6 @@
                                                 {% endif %}
                                             {% endwith %}
                                         </span>
-                                        <span class="job-time">
-                                            {% with fecha=trabajo|get_created_at %}
-                                                {% if fecha %}
-                                                    Publicado {{ fecha|timesince }}
-                                                {% endif %}
-                                            {% endwith %}
-                                        </span>
                                         {% if usuario.tipo_usuario == 'trabajador' or usuario.tipo_usuario == 'ambos' %}
                                             <a href="{% url_postular_trabajo trabajo %}" class="btn-small btn-primary">Aplicar</a>
                                         {% else %}
@@ -427,13 +467,15 @@
                                     </div>
                                 </div>
                             {% empty %}
-                                <p style="text-align: center; color: var(--color-text-light); padding: 2rem;">No hay trabajos disponibles en este momento</p>
+                                <p class="empty-state">No hay trabajos disponibles en este momento</p>
                             {% endfor %}
                         </div>
                     </div>
                 </div>
 
+                <!-- SIDEBAR -->
                 <div class="content-sidebar">
+                    <!-- COMPLETAR PERFIL -->
                     <div class="sidebar-card">
                         <h3>Completa tu perfil</h3>
                         <div class="progress-bar">
@@ -444,25 +486,45 @@
                         <div class="profile-tasks">
                             <div class="task-item {% if usuario.nombres and usuario.apellidos %}completed{% endif %}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    {% if usuario.nombres and usuario.apellidos %}<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline>{% else %}<circle cx="12" cy="12" r="10"></circle>{% endif %}
+                                    {% if usuario.nombres and usuario.apellidos %}
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                    {% else %}
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    {% endif %}
                                 </svg>
                                 <span>Información básica</span>
                             </div>
-                            <div class="task-item {% if usuario.profile.foto_url %}completed{% endif %}">
+                            <div class="task-item {% if profile and profile.foto_url %}completed{% endif %}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    {% if usuario.profile.foto_url %}<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline>{% else %}<circle cx="12" cy="12" r="10"></circle>{% endif %}
+                                    {% if profile and profile.foto_url %}
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                    {% else %}
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    {% endif %}
                                 </svg>
                                 <span>Foto de perfil</span>
                             </div>
                             <div class="task-item {% if usuario.estado_verificacion == 'verificado' %}completed{% endif %}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    {% if usuario.estado_verificacion == 'verificado' %}<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline>{% else %}<circle cx="12" cy="12" r="10"></circle>{% endif %}
+                                    {% if usuario.estado_verificacion == 'verificado' %}
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                    {% else %}
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    {% endif %}
                                 </svg>
                                 <span>Verificar identidad</span>
                             </div>
                             <div class="task-item {% if usuario.habilidades.count > 0 %}completed{% endif %}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    {% if usuario.habilidades.count > 0 %}<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline>{% else %}<circle cx="12" cy="12" r="10"></circle>{% endif %}
+                                    {% if usuario.habilidades.count > 0 %}
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                    {% else %}
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    {% endif %}
                                 </svg>
                                 <span>Agregar habilidades</span>
                             </div>
@@ -471,6 +533,7 @@
                         <a href="{% url 'users:perfil' %}" class="btn-small btn-block btn-ghost">Completar perfil</a>
                     </div>
 
+                    <!-- RENDIMIENTO -->
                     <div class="sidebar-card">
                         <h3>Tu rendimiento</h3>
                         {% if usuario.tipo_usuario == 'trabajador' or usuario.tipo_usuario == 'ambos' %}
@@ -498,10 +561,11 @@
                         {% endif %}
                     </div>
 
+                    <!-- NOTIFICACIONES -->
                     {% if notificaciones_recientes %}
                     <div class="sidebar-card">
                         <div class="card-header">
-                            <h3 style="margin: 0;">
+                            <h3>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 8px;">
                                     <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
                                     <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
@@ -539,12 +603,13 @@
                             </a>
                             {% endfor %}
                         </div>
-                        <a href="{% url 'soporte:notificaciones' %}" class="btn-small btn-block btn-ghost" style="margin-top: 1rem;">
+                        <a href="{% url 'soporte:notificaciones' %}" class="btn-small btn-block btn-ghost">
                             Ver todas las notificaciones
                         </a>
                     </div>
                     {% endif %}
 
+                    <!-- CONSEJO DEL DÍA -->
                     <div class="sidebar-card tips-card">
                         <div class="tips-icon">💡</div>
                         <h3>Consejo del día</h3>
@@ -555,13 +620,13 @@
         </div>
     </section>
 
+    <!-- ========== FOOTER ========== -->
     <footer class="footer">
         <div class="footer-container">
             <div class="footer-brand">
                 <div class="footer-logo">
                     <span>Llamkay</span>
                 </div>
-                <p>Conectando talentos con oportunidades laborales en todo el Perú</p>
             </div>
             
             <div class="footer-links">
