@@ -8,398 +8,298 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-04 09:37-0500\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"POT-Creation-Date: 2025-12-04 09:41-0500\n"
+"PO-Revision-Date: 2025-12-04 09:43-0500\n"
+"Last-Translator: Full Name <example@example.com>\n"
+"Language-Team: English <en@li.org>\n"
+"Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-#: .\templates\llamkay\index.html:5
+
 msgid "Encuentra Trabajo Informal Rápido y Seguro"
-msgstr ""
+msgstr "Find Quick and Secure Informal Work"
 
-#: .\templates\llamkay\index.html:19
 msgid "Navegación principal"
-msgstr ""
+msgstr "Main navigation"
 
-#: .\templates\llamkay\index.html:21
 msgid "Página principal"
-msgstr ""
+msgstr "Home page"
 
-#: .\templates\llamkay\index.html:25
 msgid "Selección de idioma"
-msgstr ""
+msgstr "Language selection"
 
-#: .\templates\llamkay\index.html:30
 msgid "Abrir menú de navegación"
-msgstr ""
+msgstr "Open navigation menu"
 
-#: .\templates\llamkay\index.html:37
 msgid "Nosotros"
-msgstr ""
+msgstr "About us"
 
-#: .\templates\llamkay\index.html:38
 msgid "Trabajos"
-msgstr ""
+msgstr "Jobs"
 
-#: .\templates\llamkay\index.html:39 .\templates\llamkay\index.html:211
 msgid "¿Cómo funciona?"
-msgstr ""
+msgstr "How it works?"
 
-#: .\templates\llamkay\index.html:42 .\templates\llamkay\index.html:48
 msgid "Ingresar"
-msgstr ""
+msgstr "Login"
 
-#: .\templates\llamkay\index.html:43 .\templates\llamkay\index.html:49
 msgid "Comenzar"
-msgstr ""
+msgstr "Get Started"
 
-#: .\templates\llamkay\index.html:58
 msgid "Hecho en Perú 🇵🇪"
-msgstr ""
+msgstr "Made in Peru 🇵🇪"
 
-#: .\templates\llamkay\index.html:61
 msgid "Encuentra trabajo <span class=\"text-highlight\">hoy mismo</span>"
-msgstr ""
+msgstr "Find a job <span class=\"text-highlight\">today</span>"
 
-#: .\templates\llamkay\index.html:65
-msgid ""
-"La plataforma más rápida para conseguir trabajos informales o contratar "
-"profesionales verificados en tu zona."
-msgstr ""
+msgid "La plataforma más rápida para conseguir trabajos informales o contratar profesionales verificados en tu zona."
+msgstr "The fastest platform to find informal jobs or hire verified professionals in your area."
 
-#: .\templates\llamkay\index.html:68
 msgid "Acciones principales"
-msgstr ""
+msgstr "Main actions"
 
-#: .\templates\llamkay\index.html:76
 msgid "Registrarse Gratis"
-msgstr ""
+msgstr "Register for Free"
 
-#: .\templates\llamkay\index.html:83
 msgid "Buscar Trabajos"
-msgstr ""
+msgstr "Search Jobs"
 
-#: .\templates\llamkay\index.html:87
 msgid "Estadísticas de la plataforma"
-msgstr ""
+msgstr "Platform statistics"
 
-#: .\templates\llamkay\index.html:90
 msgid "Usuarios activos"
-msgstr ""
+msgstr "Active users"
 
-#: .\templates\llamkay\index.html:94
 msgid "Trabajos publicados"
-msgstr ""
+msgstr "Jobs posted"
 
-#: .\templates\llamkay\index.html:98
 msgid "Calificación promedio"
-msgstr ""
+msgstr "Average rating"
 
-#: .\templates\llamkay\index.html:106
 msgid "Carpintero"
-msgstr ""
+msgstr "Carpenter"
 
-#: .\templates\llamkay\index.html:107
 msgid "S/ 80 - 120 por día"
-msgstr ""
+msgstr "S/ 80 - 120 per day"
 
-#: .\templates\llamkay\index.html:108
 msgid "Disponible"
-msgstr ""
+msgstr "Available"
 
-#: .\templates\llamkay\index.html:112
 msgid "Plomero"
-msgstr ""
+msgstr "Plumber"
 
-#: .\templates\llamkay\index.html:113
 msgid "S/ 60 - 100 por hora"
-msgstr ""
+msgstr "S/ 60 - 100 per hour"
 
-#: .\templates\llamkay\index.html:114
 msgid "Urgente"
-msgstr ""
+msgstr "Urgent"
 
-#: .\templates\llamkay\index.html:118 .\templates\llamkay\index.html:317
 msgid "Limpieza"
-msgstr ""
+msgstr "Cleaning"
 
-#: .\templates\llamkay\index.html:119
 msgid "S/ 50 - 80 por día"
-msgstr ""
+msgstr "S/ 50 - 80 per day"
 
-#: .\templates\llamkay\index.html:120
 msgid "Nuevo"
-msgstr ""
+msgstr "New"
 
-#: .\templates\llamkay\index.html:135
 msgid "Beneficios"
-msgstr ""
+msgstr "Benefits"
 
-#: .\templates\llamkay\index.html:136
 msgid "¿Por qué elegir Llamkay?"
-msgstr ""
+msgstr "Why choose Llamkay?"
 
-#: .\templates\llamkay\index.html:137
 msgid "La forma más segura y rápida de trabajar en Perú"
-msgstr ""
+msgstr "The safest and fastest way to work in Peru"
 
-#: .\templates\llamkay\index.html:148
 msgid "Encuentra cerca de ti"
-msgstr ""
+msgstr "Find near you"
 
-#: .\templates\llamkay\index.html:149
 msgid "Busca trabajos o profesionales en tu distrito o comunidad"
-msgstr ""
+msgstr "Search for jobs or professionals in your district or community"
 
-#: .\templates\llamkay\index.html:159
 #, python-format
 msgid "100%% Verificado"
-msgstr ""
+msgstr "100%% Verified"
 
-#: .\templates\llamkay\index.html:160
 msgid "Todos los usuarios pasan por verificación de identidad y antecedentes"
-msgstr ""
+msgstr "All users undergo identity and background verification"
 
-#: .\templates\llamkay\index.html:169
 msgid "Chat directo"
-msgstr ""
+msgstr "Direct chat"
 
-#: .\templates\llamkay\index.html:170
 msgid "Habla directamente con empleadores o trabajadores sin intermediarios"
-msgstr ""
+msgstr "Talk directly with employers or workers without intermediaries"
 
-#: .\templates\llamkay\index.html:179
 msgid "Sistema de reputación"
-msgstr ""
+msgstr "Reputation system"
 
-#: .\templates\llamkay\index.html:180
 msgid "Calificaciones y comentarios reales de trabajos completados"
-msgstr ""
+msgstr "Real ratings and reviews of completed jobs"
 
-#: .\templates\llamkay\index.html:190
 msgid "Pago flexible"
-msgstr ""
+msgstr "Flexible payment"
 
-#: .\templates\llamkay\index.html:191
 msgid "Acepta efectivo, Yape, Plin o transferencias bancarias"
-msgstr ""
+msgstr "Accept cash, Yape, Plin, or bank transfers"
 
-#: .\templates\llamkay\index.html:200
 msgid "Protección garantizada"
-msgstr ""
+msgstr "Guaranteed protection"
 
-#: .\templates\llamkay\index.html:201
 msgid "Sistema de denuncias y mediación para resolver conflictos"
-msgstr ""
+msgstr "Complaint and mediation system to resolve conflicts"
 
-#: .\templates\llamkay\index.html:210
 msgid "Simple y Rápido"
-msgstr ""
+msgstr "Simple and Fast"
 
-#: .\templates\llamkay\index.html:212
 msgid "En 4 pasos empiezas a trabajar o contratar"
-msgstr ""
+msgstr "In 4 steps you start working or hiring"
 
-#: .\templates\llamkay\index.html:217
 msgid "Paso 1"
-msgstr ""
+msgstr "Step 1"
 
-#: .\templates\llamkay\index.html:219
 msgid "Crea tu cuenta"
-msgstr ""
+msgstr "Create your account"
 
-#: .\templates\llamkay\index.html:220
-msgid ""
-"Regístrate gratis en menos de 2 minutos como trabajador, empleador o empresa"
-msgstr ""
+msgid "Regístrate gratis en menos de 2 minutos como trabajador, empleador o empresa"
+msgstr "Register for free in less than 2 minutes as a worker, employer, or company"
 
-#: .\templates\llamkay\index.html:231
 msgid "Paso 2"
-msgstr ""
+msgstr "Step 2"
 
-#: .\templates\llamkay\index.html:233
 msgid "Completa tu perfil"
-msgstr ""
+msgstr "Complete your profile"
 
-#: .\templates\llamkay\index.html:234
-msgid ""
-"Agrega tus habilidades, experiencia y verifica tu identidad para mayor "
-"confianza"
-msgstr ""
+msgid "Agrega tus habilidades, experiencia y verifica tu identidad para mayor confianza"
+msgstr "Add your skills, experience, and verify your identity for more trust"
 
-#: .\templates\llamkay\index.html:247
 msgid "Paso 3"
-msgstr ""
+msgstr "Step 3"
 
-#: .\templates\llamkay\index.html:249
 msgid "Busca o publica"
-msgstr ""
+msgstr "Search or post"
 
-#: .\templates\llamkay\index.html:250
 msgid "Encuentra trabajos cerca de ti o publica lo que necesitas en tu zona"
-msgstr ""
+msgstr "Find jobs near you or post what you need in your area"
 
-#: .\templates\llamkay\index.html:261
 msgid "Paso 4"
-msgstr ""
+msgstr "Step 4"
 
-#: .\templates\llamkay\index.html:263
 msgid "¡Conecta y trabaja!"
-msgstr ""
+msgstr "Connect and work!"
 
-#: .\templates\llamkay\index.html:264
-msgid ""
-"Chatea, acuerda términos y completa el trabajo. Luego califica la experiencia"
-msgstr ""
+msgid "Chatea, acuerda términos y completa el trabajo. Luego califica la experiencia"
+msgstr "Chat, agree on terms, and complete the job. Then rate the experience"
 
-#: .\templates\llamkay\index.html:277
 msgid "Empezar ahora"
-msgstr ""
+msgstr "Start now"
 
-#: .\templates\llamkay\index.html:286
 msgid "Categorías Populares"
-msgstr ""
+msgstr "Popular Categories"
 
-#: .\templates\llamkay\index.html:287
 msgid "Trabajos más buscados"
-msgstr ""
+msgstr "Most sought-after jobs"
 
-#: .\templates\llamkay\index.html:293
 msgid "Carpintería"
-msgstr ""
+msgstr "Carpentry"
 
-#: .\templates\llamkay\index.html:294
 msgid "156 trabajos"
-msgstr ""
+msgstr "156 jobs"
 
-#: .\templates\llamkay\index.html:299
 msgid "Plomería"
-msgstr ""
+msgstr "Plumbing"
 
-#: .\templates\llamkay\index.html:300
 msgid "128 trabajos"
-msgstr ""
+msgstr "128 jobs"
 
-#: .\templates\llamkay\index.html:305
 msgid "Electricidad"
-msgstr ""
+msgstr "Electricity"
 
-#: .\templates\llamkay\index.html:306
 msgid "143 trabajos"
-msgstr ""
+msgstr "143 jobs"
 
-#: .\templates\llamkay\index.html:311
 msgid "Albañilería"
-msgstr ""
+msgstr "Masonry"
 
-#: .\templates\llamkay\index.html:312
 msgid "201 trabajos"
-msgstr ""
+msgstr "201 jobs"
 
-#: .\templates\llamkay\index.html:318
 msgid "167 trabajos"
-msgstr ""
+msgstr "167 jobs"
 
-#: .\templates\llamkay\index.html:323
 msgid "Jardinería"
-msgstr ""
+msgstr "Gardening"
 
-#: .\templates\llamkay\index.html:324
 msgid "89 trabajos"
-msgstr ""
+msgstr "89 jobs"
 
-#: .\templates\llamkay\index.html:329
 msgid "Pintura"
-msgstr ""
+msgstr "Painting"
 
-#: .\templates\llamkay\index.html:330
 msgid "112 trabajos"
-msgstr ""
+msgstr "112 jobs"
 
-#: .\templates\llamkay\index.html:335
 msgid "Ver todas"
-msgstr ""
+msgstr "View all"
 
-#: .\templates\llamkay\index.html:336
 msgid "500+ trabajos"
-msgstr ""
+msgstr "500+ jobs"
 
-#: .\templates\llamkay\index.html:345
 msgid "¿Listo para empezar?"
-msgstr ""
+msgstr "Ready to get started?"
 
-#: .\templates\llamkay\index.html:346
 msgid "Únete a miles de peruanos que ya trabajan con Llamkay"
-msgstr ""
+msgstr "Join thousands of Peruvians already working with Llamkay"
 
-#: .\templates\llamkay\index.html:348
 msgid "Crear cuenta gratis"
-msgstr ""
+msgstr "Create free account"
 
-#: .\templates\llamkay\index.html:365
 msgid "Conectando talentos con oportunidades laborales en todo el Perú"
-msgstr ""
+msgstr "Connecting talent with job opportunities throughout Peru"
 
-#: .\templates\llamkay\index.html:367
 msgid "Redes sociales"
-msgstr ""
+msgstr "Social media"
 
-#: .\templates\llamkay\index.html:381
 msgid "Plataforma"
-msgstr ""
+msgstr "Platform"
 
-#: .\templates\llamkay\index.html:383
 msgid "Buscar trabajos"
-msgstr ""
+msgstr "Search jobs"
 
-#: .\templates\llamkay\index.html:384
 msgid "Publicar trabajo"
-msgstr ""
+msgstr "Post job"
 
-#: .\templates\llamkay\index.html:385
 msgid "Cómo funciona"
-msgstr ""
+msgstr "How it works"
 
-#: .\templates\llamkay\index.html:386
 msgid "Sobre nosotros"
-msgstr ""
+msgstr "About us"
 
-#: .\templates\llamkay\index.html:391
 msgid "Soporte"
-msgstr ""
+msgstr "Support"
 
-#: .\templates\llamkay\index.html:393
 msgid "Centro de ayuda"
-msgstr ""
+msgstr "Help Center"
 
-#: .\templates\llamkay\index.html:394
 msgid "Términos de servicio"
-msgstr ""
+msgstr "Terms of service"
 
-#: .\templates\llamkay\index.html:395
 msgid "Política de privacidad"
-msgstr ""
+msgstr "Privacy policy"
 
-#: .\templates\llamkay\index.html:396
 msgid "Reportar un problema"
-msgstr ""
+msgstr "Report an issue"
 
-#: .\templates\llamkay\index.html:401
 msgid "Contacto"
-msgstr ""
+msgstr "Contact"
 
-#: .\templates\llamkay\index.html:405
 msgid "+51 987 654 321"
-msgstr ""
+msgstr "+51 987 654 321"
 
-#: .\templates\llamkay\index.html:406
 msgid "Huánuco, Perú"
-msgstr ""
+msgstr "Huanuco, Peru"
 
-#: .\templates\llamkay\index.html:413
 msgid "&copy; 2025 Llamkay.pe. Todos los derechos reservados."
-msgstr ""
+msgstr "&copy; 2025 Llamkay.pe. All rights reserved."
