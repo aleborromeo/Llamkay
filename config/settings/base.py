@@ -42,6 +42,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -131,6 +132,16 @@ LOGIN_URL = 'users:login'
 LOGIN_REDIRECT_URL = 'llamkay:home'
 LOGOUT_REDIRECT_URL = 'llamkay:home'
 
+# HABILITAR I18N
+USE_I18N = True
+USE_L10N = True # Depende de tu versión, USE_TZ es más común ahora
+
+
+# Definir los idiomas disponibles
+LANGUAGES = [
+    ('es', 'Español'),
+    ('en', 'English'),
+]
 
 # Custom User Model (si lo usas)
 # AUTH_USER_MODEL = 'users.Usuario'
@@ -146,6 +157,11 @@ MESSAGE_TAGS = {
     messages.WARNING: 'warning',
     messages.ERROR: 'danger',
 }
+
+LOCALE_PATHS = [
+    os.path.join(BASE_DIR, 'apps/llamkay/locale/'), 
+    # Asegúrate de que esta ruta apunte al directorio 'locale' dentro de tu app.
+]
 
 # ==================== API EXTERNA - APIS.NET.PE ====================
 # Token JWT para consultas de DNI (RENIEC) y RUC (SUNAT)

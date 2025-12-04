@@ -1,33 +1,53 @@
 /* =============================================
    DASHBOARD - LLAMKAY.PE
-   (Principios Gestalt y Nielsen Aplicados)
+   Aplicando Principios de Gestalt, Nielsen y Responsividad
    ============================================= */
 
 :root {
-    /* Consistencia: Definición clara de colores de marca y estado */
     --color-primary: #07734B;
     --color-primary-dark: #034D31;
     --color-primary-light: #15AC75;
     --color-secondary: #9EBC8A;
     --color-secondary-light: #B5C99A;
+    --color-accent: #EEEDEB;
     --color-text: #1a1a1a;
     --color-text-light: #666666;
     --color-background: #ffffff;
     --color-background-alt: #f8f9fa;
-    --color-danger: #dc2626; /* Visibilidad del Estado (Rojo) */
-    --color-success: #10b981; /* Visibilidad del Estado (Verde) */
-    --color-warning: #f59e0b; /* Visibilidad del Estado (Amarillo/Naranja) */
+    --color-danger: #dc2626;
+    --color-success: #10b981;
+    --color-warning: #f59e0b;
     --color-info: #3b82f6;
+    
+    /* GESTALT: Proximidad - Espaciado consistente */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    --spacing-2xl: 3rem;
+    
+    /* NIELSEN: Visibilidad del estado - Sombras jerárquicas */
     --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
     --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
     --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.16);
     --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.2);
+    --shadow-focus: 0 0 0 3px rgba(7, 115, 75, 0.2);
+    
+    /* GESTALT: Continuidad - Radio de borde consistente */
     --radius-sm: 8px;
     --radius-md: 12px;
     --radius-lg: 16px;
-    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --radius-xl: 24px;
+    --radius-round: 50%;
+    
+    /* NIELSEN: Feedback visual - Transiciones suaves */
+    --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* ==================== RESET Y BASE ==================== */
 * {
     margin: 0;
     padding: 0;
@@ -37,19 +57,30 @@
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     color: var(--color-text);
-    /* Estética Minimalista: Fondo limpio para figura/fondo claro */
-    background: var(--color-background-alt); 
+    background: var(--color-background-alt);
     line-height: 1.6;
     overflow-x: hidden;
+    /* NIELSEN: Prevención de errores - Sin scroll horizontal accidental */
 }
 
+/* NIELSEN: Reconocimiento en lugar de recuerdo - Links claros */
+a {
+    color: var(--color-primary);
+    transition: var(--transition-fast);
+}
+
+a:hover {
+    color: var(--color-primary-light);
+}
+
+/* GESTALT: Proximidad - Container con márgenes consistentes */
 .container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 2rem;
+    padding: 0 var(--spacing-xl);
 }
 
-/* ==================== HEADER (Consistencia, Reconocimiento) ==================== */
+/* ==================== HEADER - NIELSEN: VISIBILIDAD DEL ESTADO ==================== */
 .header {
     position: sticky;
     top: 0;
@@ -58,26 +89,29 @@ body {
     backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
     box-shadow: var(--shadow-sm);
+    /* NIELSEN: Visibilidad - Header siempre visible */
 }
 
 .navbar {
-    padding: 1rem 0;
+    padding: var(--spacing-md) 0;
 }
 
 .nav-container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 2rem;
+    padding: 0 var(--spacing-xl);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 2rem;
+    gap: var(--spacing-xl);
+    /* GESTALT: Proximidad - Elementos relacionados juntos */
 }
 
+/* GESTALT: Semejanza - Logo reconocible */
 .logo {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: var(--spacing-md);
     font-size: 1.5rem;
     font-weight: 700;
     color: var(--color-primary);
@@ -87,41 +121,75 @@ body {
 
 .logo:hover {
     transform: scale(1.05);
+    /* NIELSEN: Feedback visual inmediato */
 }
 
+/* ==================== MENÚ MÓVIL - NIELSEN: CONTROL Y LIBERTAD ==================== */
+.nav-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: var(--spacing-sm);
+    z-index: 1001;
+    /* NIELSEN: Control del usuario - Fácil de presionar */
+}
+
+.nav-toggle span {
+    width: 28px;
+    height: 3px;
+    background: var(--color-primary);
+    border-radius: 3px;
+    transition: var(--transition);
+    /* NIELSEN: Feedback - Animación suave */
+}
+
+/* GESTALT: Semejanza - Enlaces con estilo consistente */
 .nav-menu {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: var(--spacing-sm);
     list-style: none;
 }
 
 .nav-link {
-    padding: 0.75rem 1.25rem;
+    padding: var(--spacing-md) 1.25rem;
     color: var(--color-text);
     font-weight: 500;
     text-decoration: none;
     border-radius: var(--radius-sm);
     transition: var(--transition);
+    /* NIELSEN: Consistencia - Todos los enlaces se ven igual */
 }
 
 .nav-link:hover,
 .nav-link.active {
     background: var(--color-background-alt);
     color: var(--color-primary);
+    /* NIELSEN: Feedback visual claro */
 }
 
+/* NIELSEN: Reconocimiento - Íconos familiares */
+.nav-mobile-actions {
+    display: none;
+}
+
+/* GESTALT: Figura y fondo - Acciones destacadas */
 .nav-actions {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: var(--spacing-md);
 }
 
 .icon-button {
     position: relative;
     width: 40px;
     height: 40px;
-    border-radius: 50%;
+    min-width: 40px; /* RESPONSIVIDAD: Tamaño táctil mínimo */
+    min-height: 40px;
+    border-radius: var(--radius-round);
     background: var(--color-background-alt);
     border: none;
     cursor: pointer;
@@ -136,15 +204,17 @@ body {
     background: var(--color-primary);
     color: white;
     transform: scale(1.05);
+    /* NIELSEN: Feedback visual */
 }
 
+/* NIELSEN: Visibilidad del estado - Badge de notificaciones */
 .notification-badge {
     position: absolute;
     top: -2px;
     right: -2px;
     background: var(--color-danger);
     color: white;
-    border-radius: 50%;
+    border-radius: var(--radius-round);
     width: 18px;
     height: 18px;
     font-size: 11px;
@@ -153,9 +223,10 @@ body {
     align-items: center;
     justify-content: center;
     border: 2px solid white;
+    /* NIELSEN: Estado visible - Usuario sabe hay notificaciones */
 }
 
-/* ==================== USER MENU & DROPDOWN ==================== */
+/* ==================== USER MENU - GESTALT: PROXIMIDAD ==================== */
 .user-menu-wrapper {
     position: relative;
 }
@@ -163,29 +234,35 @@ body {
 .user-menu {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
     background: var(--color-background-alt);
     border-radius: 50px;
     cursor: pointer;
     transition: var(--transition);
     border: 2px solid transparent;
+    /* GESTALT: Proximidad - Elementos del usuario agrupados */
 }
 
 .user-menu:hover {
     background: white;
     border-color: var(--color-primary);
+    box-shadow: var(--shadow-md);
+    /* NIELSEN: Feedback de interacción */
 }
 
 .user-menu.active {
     background: white;
     border-color: var(--color-primary);
+    box-shadow: var(--shadow-md);
+    /* NIELSEN: Visibilidad del estado */
 }
 
+/* GESTALT: Figura y fondo - Avatar destaca */
 .profile-pic-placeholder {
     width: 32px;
     height: 32px;
-    border-radius: 50%;
+    border-radius: var(--radius-round);
     background: var(--color-primary);
     color: white;
     display: flex;
@@ -194,13 +271,13 @@ body {
     font-weight: 600;
     font-size: 14px;
     overflow: hidden;
+    flex-shrink: 0;
 }
 
 .profile-pic-placeholder img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 50%;
 }
 
 .username {
@@ -211,16 +288,18 @@ body {
 
 .dropdown-icon {
     color: var(--color-text-light);
-    transition: transform 0.3s ease;
+    transition: transform var(--transition);
+    /* NIELSEN: Feedback visual de estado */
 }
 
 .user-menu.active .dropdown-icon {
     transform: rotate(180deg);
 }
 
+/* ==================== DROPDOWN - NIELSEN: JERARQUÍA VISUAL ==================== */
 .user-dropdown {
     position: absolute;
-    top: calc(100% + 0.75rem);
+    top: calc(100% + var(--spacing-md));
     right: 0;
     min-width: 280px;
     background: white;
@@ -230,17 +309,20 @@ body {
     opacity: 0;
     visibility: hidden;
     transform: translateY(-10px);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all var(--transition);
     z-index: 1000;
     overflow: hidden;
+    /* NIELSEN: Estética minimalista */
 }
 
 .user-dropdown.active {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
+    /* NIELSEN: Feedback de apertura */
 }
 
+/* GESTALT: Continuidad - Flujo visual */
 .dropdown-header {
     padding: 1.25rem;
     background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
@@ -250,13 +332,14 @@ body {
 .dropdown-user-info {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: var(--spacing-md);
+    /* GESTALT: Proximidad */
 }
 
 .dropdown-avatar {
     width: 48px;
     height: 48px;
-    border-radius: 50%;
+    border-radius: var(--radius-round);
     background: rgba(255, 255, 255, 0.2);
     color: white;
     display: flex;
@@ -279,7 +362,7 @@ body {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
+    gap: var(--spacing-xs);
     min-width: 0;
 }
 
@@ -303,17 +386,19 @@ body {
     height: 1px;
     background: var(--color-background-alt);
     margin: 0;
+    /* GESTALT: Continuidad - Separación visual */
 }
 
 .dropdown-menu {
-    padding: 0.5rem;
+    padding: var(--spacing-sm);
 }
 
+/* GESTALT: Semejanza - Ítems consistentes */
 .dropdown-item {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem 1rem;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md) var(--spacing-md);
     color: var(--color-text);
     text-decoration: none;
     border-radius: var(--radius-sm);
@@ -325,6 +410,8 @@ body {
 .dropdown-item:hover {
     background: var(--color-background-alt);
     color: var(--color-primary);
+    transform: translateX(4px);
+    /* NIELSEN: Feedback de interacción */
 }
 
 .dropdown-item svg {
@@ -337,7 +424,7 @@ body {
 }
 
 .dropdown-footer {
-    padding: 0.5rem;
+    padding: var(--spacing-sm);
 }
 
 .logout-item {
@@ -349,18 +436,29 @@ body {
     color: var(--color-danger);
 }
 
-/* ==================== WELCOME SECTION (Figura y Fondo) ==================== */
-.welcome-section {
-    /* Figura y Fondo: Contraste alto para elemento principal */
-    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
-    padding: 3rem 0;
+.badge {
+    margin-left: auto;
+    background: var(--color-primary);
     color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    /* NIELSEN: Visibilidad del estado */
+}
+
+/* ==================== WELCOME SECTION - GESTALT: FIGURA Y FONDO ==================== */
+.welcome-section {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+    padding: var(--spacing-2xl) 0;
+    color: white;
+    /* GESTALT: Figura y fondo - Sección destacada */
 }
 
 .welcome-content h1 {
-    font-size: 2.5rem;
+    font-size: clamp(1.75rem, 4vw, 2.5rem); /* RESPONSIVIDAD: Texto fluido */
     font-weight: 700;
-    margin-bottom: 0.5rem;
+    margin-bottom: var(--spacing-sm);
 }
 
 .text-highlight {
@@ -371,22 +469,24 @@ body {
 }
 
 .welcome-content p {
-    font-size: 1.1rem;
+    font-size: clamp(1rem, 2vw, 1.1rem); /* RESPONSIVIDAD */
     opacity: 0.9;
-    margin-bottom: 2rem;
+    margin-bottom: var(--spacing-xl);
 }
 
+/* GESTALT: Proximidad - Acciones agrupadas */
 .quick-actions {
     display: flex;
-    gap: 1rem;
+    gap: var(--spacing-md);
     flex-wrap: wrap;
 }
 
 .quick-action-btn {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 1rem 2rem;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md) var(--spacing-xl);
+    min-height: 48px; /* RESPONSIVIDAD: Área táctil adecuada */
     border-radius: var(--radius-lg);
     font-weight: 600;
     font-size: 1rem;
@@ -405,6 +505,7 @@ body {
 .btn-primary:hover {
     transform: translateY(-3px);
     box-shadow: var(--shadow-xl);
+    /* NIELSEN: Feedback visual */
 }
 
 .btn-ghost {
@@ -417,39 +518,38 @@ body {
 .btn-ghost:hover {
     background: rgba(255, 255, 255, 0.2);
     border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-2px);
 }
 
-
-/* ==================== STATS SECTION (Proximidad, Semejanza) ==================== */
+/* ==================== STATS - GESTALT: PROXIMIDAD Y SEMEJANZA ==================== */
 .stats-section {
-    padding: 3rem 0;
+    padding: var(--spacing-2xl) 0;
 }
 
 .stats-grid {
-    /* Proximidad: Agrupamiento de elementos relacionados */
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
-    margin-top: -4rem; /* Superposición para un efecto visual moderno */
+    gap: var(--spacing-lg);
+    margin-top: -4rem;
+    /* GESTALT: Proximidad - Cards agrupadas */
 }
 
 .stat-card {
     background: white;
-    padding: 2rem;
+    padding: var(--spacing-xl);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-md);
     display: flex;
     align-items: center;
-    gap: 1.5rem;
+    gap: var(--spacing-lg);
     transition: var(--transition);
-    /* Semejanza: Estilo uniforme y borde inferior como guía (Continuidad) */
-    border-bottom: 4px solid var(--color-primary-light); 
-    cursor: pointer;
+    /* GESTALT: Semejanza - Todas las cards igual */
 }
 
 .stat-card:hover {
     transform: translateY(-5px);
-    box-shadow: var(--shadow-xl);
+    box-shadow: var(--shadow-lg);
+    /* NIELSEN: Feedback de interacción */
 }
 
 .stat-icon {
@@ -461,13 +561,14 @@ body {
     justify-content: center;
     color: white;
     flex-shrink: 0;
+    /* GESTALT: Figura y fondo */
 }
 
 .stat-content h3 {
     font-size: 2rem;
     font-weight: 700;
     color: var(--color-text);
-    margin-bottom: 0.25rem;
+    margin-bottom: var(--spacing-xs);
 }
 
 .stat-content p {
@@ -475,90 +576,88 @@ body {
     color: var(--color-text-light);
 }
 
-
-/* ==================== MAIN CONTENT (Estética Minimalista) ==================== */
+/* ==================== MAIN CONTENT ==================== */
 .main-content {
-    padding: 2rem 0 4rem;
+    padding: var(--spacing-2xl) 0;
 }
 
 .content-grid {
     display: grid;
     grid-template-columns: 1fr 350px;
-    gap: 2rem;
+    gap: var(--spacing-xl);
+    /* GESTALT: Proximidad - Layout organizado */
 }
 
 .content-card,
 .sidebar-card {
-    /* Estética Minimalista: Diseño limpio y agrupado (Proximidad) */
     background: white;
     border-radius: var(--radius-lg);
-    padding: 2rem;
     box-shadow: var(--shadow-sm);
-    margin-bottom: 2rem;
+    padding: var(--spacing-xl);
+    margin-bottom: var(--spacing-xl);
+    /* GESTALT: Semejanza */
 }
 
 .card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1.5rem;
+    margin-bottom: var(--spacing-lg);
+    /* GESTALT: Proximidad */
 }
 
-.card-header h2 {
-    font-size: 1.5rem;
+.card-header h2,
+.card-header h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
     color: var(--color-text);
 }
 
 .view-all {
     color: var(--color-primary);
-    text-decoration: none;
-    font-weight: 600;
     font-size: 0.9rem;
-    transition: var(--transition);
+    font-weight: 600;
+    text-decoration: none;
+    transition: var(--transition-fast);
 }
 
 .view-all:hover {
-    color: var(--color-primary-dark);
-    text-decoration: underline;
+    color: var(--color-primary-light);
+    transform: translateX(3px);
+    /* NIELSEN: Feedback */
 }
 
-/* ==================== ACTIVITY LIST (Continuidad, Visibilidad del Estado) ==================== */
+/* ==================== ACTIVITY LIST ==================== */
 .activity-list {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: var(--spacing-md);
 }
 
 .activity-item {
     display: flex;
-    align-items: flex-start;
-    gap: 1rem;
-    padding: 1rem;
-    background: var(--color-background-alt);
-    border-radius: var(--radius-md);
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-sm);
     transition: var(--transition);
-    /* Continuidad: Borde izquierdo para guiar la lectura */
-    border-left: 4px solid transparent; 
+    /* GESTALT: Proximidad */
 }
 
 .activity-item:hover {
-    background: #e8f5f0;
-    transform: translateX(5px);
-    /* Continuidad: Borde activo que guía la vista */
-    border-left-color: var(--color-primary); 
+    background: var(--color-background-alt);
+    /* NIELSEN: Feedback sutil */
 }
 
 .activity-icon {
     width: 32px;
     height: 32px;
-    border-radius: 50%;
+    border-radius: var(--radius-round);
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
 }
 
-/* Visibilidad del Estado: Iconos de estado con color */
 .activity-icon.success {
     background: rgba(16, 185, 129, 0.1);
     color: var(--color-success);
@@ -579,9 +678,9 @@ body {
 }
 
 .activity-content p {
-    font-size: 0.95rem;
     color: var(--color-text);
-    margin-bottom: 0.25rem;
+    font-size: 0.95rem;
+    margin-bottom: var(--spacing-xs);
 }
 
 .activity-time {
@@ -589,44 +688,51 @@ body {
     color: var(--color-text-light);
 }
 
+.empty-state {
+    text-align: center;
+    color: var(--color-text-light);
+    padding: var(--spacing-xl);
+}
 
-/* ==================== JOBS LIST (Proximidad, Semejanza) ==================== */
+/* ==================== JOB CARDS ==================== */
 .jobs-list {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: var(--spacing-md);
 }
 
 .job-card {
-    padding: 1.5rem;
-    /* Proximidad: Separación clara entre tarjetas */
-    border: 1px solid #e0e0e0; 
-    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    border: 1px solid var(--color-background-alt);
+    border-radius: var(--radius-md);
     transition: var(--transition);
+    /* GESTALT: Semejanza */
 }
 
 .job-card:hover {
     border-color: var(--color-primary);
-    box-shadow: 0 4px 12px rgba(7, 115, 75, 0.1); 
+    box-shadow: var(--shadow-md);
     transform: translateY(-2px);
+    /* NIELSEN: Feedback de interacción */
 }
 
 .job-header {
     display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1rem;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+    align-items: flex-start;
 }
 
 .job-icon {
-    font-size: 2rem;
     width: 48px;
     height: 48px;
+    border-radius: var(--radius-sm);
+    background: var(--color-background-alt);
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--color-background-alt);
-    border-radius: var(--radius-md);
+    font-size: 24px;
+    flex-shrink: 0;
 }
 
 .job-info {
@@ -635,14 +741,14 @@ body {
 
 .job-info h3 {
     font-size: 1.1rem;
-    color: var(--color-text);
-    margin-bottom: 0.25rem;
+    font-weight: 600;
+    margin-bottom: var(--spacing-xs);
 }
 
 .job-info h3 a {
     color: var(--color-text);
     text-decoration: none;
-    transition: var(--transition);
+    transition: var(--transition-fast);
 }
 
 .job-info h3 a:hover {
@@ -655,15 +761,11 @@ body {
 }
 
 .job-badge {
-    padding: 0.4rem 0.8rem;
-    border-radius: 50px;
-    font-size: 0.8rem;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.75rem;
     font-weight: 600;
-}
-
-.job-badge.new {
-    background: rgba(16, 185, 129, 0.1);
-    color: var(--color-success);
+    white-space: nowrap;
 }
 
 .job-badge.urgent {
@@ -671,18 +773,22 @@ body {
     color: var(--color-danger);
 }
 
+.job-badge.new {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--color-success);
+}
+
 .job-description {
-    font-size: 0.95rem;
     color: var(--color-text-light);
+    font-size: 0.9rem;
+    margin-bottom: var(--spacing-md);
     line-height: 1.5;
-    margin-bottom: 1rem;
 }
 
 .job-footer {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 1rem;
-    flex-wrap: wrap;
 }
 
 .job-price {
@@ -691,120 +797,87 @@ body {
     color: var(--color-primary);
 }
 
-.job-time {
-    font-size: 0.85rem;
-    color: var(--color-text-light);
-    flex: 1;
-}
-
 .btn-small {
-    padding: 0.5rem 1.25rem;
+    padding: var(--spacing-sm) var(--spacing-lg);
+    min-height: 36px; /* RESPONSIVIDAD: Táctil */
     border-radius: var(--radius-sm);
-    font-weight: 600;
     font-size: 0.9rem;
+    font-weight: 600;
     text-decoration: none;
-    transition: var(--transition);
     border: none;
     cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.btn-small.btn-primary {
-    background: var(--color-primary);
-    color: white;
+    transition: var(--transition);
 }
 
 .btn-small.btn-primary:hover {
-    background: var(--color-primary-dark);
-    transform: translateY(-2px);
-}
-
-.btn-small.btn-ghost {
-    background: transparent;
-    color: var(--color-primary);
-    border: 2px solid var(--color-primary);
-}
-
-.btn-small.btn-ghost:hover {
-    background: var(--color-primary);
-    color: white;
+    transform: scale(1.05);
 }
 
 .btn-block {
+    display: block;
     width: 100%;
+    text-align: center;
 }
 
-
-/* ==================== SIDEBAR (Proximidad, Visibilidad del Estado) ==================== */
+/* ==================== SIDEBAR ==================== */
 .sidebar-card h3 {
-    font-size: 1.2rem;
-    color: var(--color-text);
-    margin-bottom: 1rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: var(--spacing-md);
 }
 
-/* Visibilidad del Estado: Barra de progreso */
+/* NIELSEN: Visibilidad del estado - Barra de progreso */
 .progress-bar {
     width: 100%;
     height: 8px;
     background: var(--color-background-alt);
-    border-radius: 50px;
+    border-radius: 4px;
     overflow: hidden;
-    margin-bottom: 0.5rem;
+    margin-bottom: var(--spacing-sm);
 }
 
 .progress-fill {
     height: 100%;
-    /* Visibilidad del Estado: Usar degradado de color de marca */
-    background: linear-gradient(90deg, var(--color-primary), var(--color-primary-light)); 
-    border-radius: 50px;
-    transition: width 0.3s ease;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-primary-light));
+    border-radius: 4px;
+    transition: width var(--transition-slow);
+    /* NIELSEN: Feedback de progreso */
 }
 
 .progress-text {
     font-size: 0.9rem;
     color: var(--color-text-light);
-    margin-bottom: 1.5rem;
+    margin-bottom: var(--spacing-lg);
 }
 
 .profile-tasks {
     display: flex;
     flex-direction: column;
-    /* Proximidad: Agrupar visualmente las tareas */
-    gap: 0.75rem;
-    margin-bottom: 1.5rem;
-    padding-left: 0.5rem; 
-    border-left: 3px solid var(--color-background-alt); /* Continuidad */
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-lg);
 }
 
 .task-item {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    font-size: 0.95rem;
-    color: var(--color-text);
+    gap: var(--spacing-sm);
+    font-size: 0.9rem;
+    color: var(--color-text-light);
+}
+
+.task-item.completed {
+    color: var(--color-success);
 }
 
 .task-item svg {
     flex-shrink: 0;
 }
 
-.task-item.completed {
-    /* Visibilidad del Estado: Color verde para tareas completadas */
-    color: var(--color-success);
-    font-weight: 600; 
-}
-
-.task-item:not(.completed) {
-    color: var(--color-text-light);
-}
-
 .quick-stat {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.75rem 0;
+    padding: var(--spacing-md) 0;
     border-bottom: 1px solid var(--color-background-alt);
 }
 
@@ -823,130 +896,39 @@ body {
     color: var(--color-primary);
 }
 
-.tips-card {
-    background: linear-gradient(135deg, #FFF7ED, #FFEDD5);
-    border: 2px solid #FED7AA;
-}
-
-.tips-icon {
-    font-size: 2rem;
-    margin-bottom: 0.5rem;
-}
-
-.tips-card h3 {
-    color: #92400E;
-    margin-bottom: 0.75rem;
-}
-
-.tips-card p {
-    font-size: 0.95rem;
-    color: #78350F;
-    line-height: 1.6;
-}
-
-.mensajes-preview {
+/* ==================== NOTIFICACIONES ==================== */
+.notificaciones-preview {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: var(--spacing-xs);
+    margin-bottom: var(--spacing-md);
 }
 
-.mensaje-item {
+.notificacion-preview-item {
     display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem;
-    background: var(--color-background-alt);
-    border-radius: var(--radius-md);
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-sm);
     text-decoration: none;
     transition: var(--transition);
 }
 
-.mensaje-item:hover {
-    background: #e8f5f0;
-    transform: translateX(3px);
-}
-
-.mensaje-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: var(--color-primary);
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 600;
-    font-size: 14px;
-    flex-shrink: 0;
-    overflow: hidden;
-}
-
-.mensaje-avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.mensaje-info {
-    flex: 1;
-    min-width: 0;
-}
-
-.mensaje-info strong {
-    display: block;
-    font-size: 0.9rem;
-    color: var(--color-text);
-    margin-bottom: 0.25rem;
-}
-
-.mensaje-info p {
-    font-size: 0.85rem;
-    color: var(--color-text-light);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin: 0;
-}
-
-
-/* ==================== NOTIFICACIONES PREVIEW (Continuidad, Visibilidad del Estado) ==================== */
-.notificacion-preview-item {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem;
-    border-radius: 8px;
-    background: #f9fafb;
-    text-decoration: none;
-    transition: all 0.2s ease;
-    /* Continuidad: Borde izquierdo */
-    border-left: 3px solid transparent; 
-}
-
 .notificacion-preview-item:hover {
-    background: #f3f4f6;
-    transform: translateX(4px);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background: var(--color-background-alt);
 }
 
 .notificacion-preview-item.no-leida {
-    /* Visibilidad del Estado: Fondo y borde para no leídos */
-    background: #f0f9ff;
-    border-left-color: var(--color-primary);
+    background: rgba(7, 115, 75, 0.05);
 }
 
 .notif-icon {
-    /* Reconocimiento: Iconografía con colores asociados */
-    font-size: 1.5rem;
-    width: 40px;
-    height: 40px;
+    width: 32px;
+    height: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: white;
-    border-radius: 8px;
+    font-size: 20px;
     flex-shrink: 0;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .notif-content {
@@ -956,41 +938,54 @@ body {
 
 .notif-content strong {
     display: block;
-    color: #1f2937;
-    font-size: 0.875rem;
-    margin-bottom: 0.25rem;
+    font-size: 0.9rem;
+    color: var(--color-text);
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: nowrap;
 }
 
 .notif-time {
-    color: #6b7280;
-    font-size: 0.75rem;
+    font-size: 0.8rem;
+    color: var(--color-text-light);
 }
 
-/* ==================== FOOTER (Consistencia) ==================== */
+/* ==================== TIPS CARD ==================== */
+.tips-card {
+    background: linear-gradient(135deg, #FFF7ED, #FEF3C7);
+    border: 2px solid var(--color-warning);
+}
+
+.tips-icon {
+    font-size: 2rem;
+    margin-bottom: var(--spacing-sm);
+}
+
+.tips-card p {
+    font-size: 0.9rem;
+    color: var(--color-text);
+    line-height: 1.6;
+}
+
+/* ==================== FOOTER ==================== */
 .footer {
     background: var(--color-primary-dark);
     color: white;
-    padding: 3rem 0 1.5rem;
+    padding: var(--spacing-2xl) 0 var(--spacing-lg);
     margin-top: 4rem;
 }
 
 .footer-container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 2rem;
+    padding: 0 var(--spacing-xl);
     display: grid;
     grid-template-columns: 1.5fr 2fr;
-    gap: 3rem;
-    margin-bottom: 2rem;
-}
-
-.footer-logo {
+    gap: var(--spacing-2xl);
+    margin-bottom: var(--spacing-xl);
     font-size: 1.5rem;
     font-weight: 700;
-    margin-bottom: 1rem;
+    margin-bottom: var(--spacing-md);
 }
 
 .footer-brand p {
@@ -1001,12 +996,12 @@ body {
 .footer-links {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 2rem;
+    gap: var(--spacing-xl);
 }
 
 .footer-column h4 {
     font-size: 1rem;
-    margin-bottom: 1rem;
+    margin-bottom: var(--spacing-md);
 }
 
 .footer-column ul {
@@ -1014,7 +1009,7 @@ body {
 }
 
 .footer-column li {
-    margin-bottom: 0.5rem;
+    margin-bottom: var(--spacing-sm);
 }
 
 .footer-column a {
@@ -1032,7 +1027,7 @@ body {
 .footer-bottom {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 1.5rem 2rem 0;
+    padding: var(--spacing-lg) var(--spacing-xl) 0;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     text-align: center;
 }
@@ -1042,34 +1037,183 @@ body {
     font-size: 0.9rem;
 }
 
+/* ══════════════════════════════════════════════════════════════
+   RESPONSIVIDAD - SIGUIENDO PRINCIPIOS DEL DOCUMENTO
+   ══════════════════════════════════════════════════════════════ */
 
-/* ==================== RESPONSIVE (Responsividad) ==================== */
+/* TABLET - 1024px */
 @media (max-width: 1024px) {
-    /* Adaptación del diseño */
-    .content-grid {
-        grid-template-columns: 1fr;
-    }
-    
     .stats-grid {
         grid-template-columns: repeat(2, 1fr);
     }
     
-    .footer-container {
+    .content-grid {
         grid-template-columns: 1fr;
-        gap: 2rem;
+    }
+    
+    .content-sidebar {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: var(--spacing-lg);
+    }
+    
+    .sidebar-card {
+        margin-bottom: 0;
     }
 }
 
+/* TABLET Y MÓVIL - 768px - AQUÍ APARECE EL MENÚ SANDWICH */
 @media (max-width: 768px) {
-    .welcome-content h1 {
-        font-size: 2rem;
+    /* RESPONSIVIDAD: Espaciado reducido */
+    .container {
+        padding: 0 var(--spacing-md);
     }
     
+    .nav-container {
+        padding: 0 var(--spacing-md);
+    }
+    
+    /* ===== ACTIVAR MENÚ SANDWICH - NIELSEN: CONTROL DEL USUARIO ===== */
+    .nav-toggle {
+        display: flex;
+        /* RESPONSIVIDAD: Menú hamburguesa visible */
+    }
+    
+    /* Ocultar acciones desktop */
+    .nav-actions {
+        display: none;
+    }
+    
+    /* NIELSEN: Visibilidad del estado - Menú full screen */
+    .nav-menu {
+        position: fixed;
+        top: 70px;
+        left: -100%;
+        width: 100%;
+        height: calc(100vh - 70px);
+        flex-direction: column;
+        background: white;
+        box-shadow: var(--shadow-lg);
+        padding: 0;
+        transition: left var(--transition);
+        overflow-y: auto;
+        z-index: 999;
+        /* NIELSEN: Control - Usuario puede abrir/cerrar */
+    }
+    
+    .nav-menu.active {
+        left: 0;
+        /* NIELSEN: Visibilidad del estado */
+    }
+    
+    /* GESTALT: Semejanza - Enlaces móviles consistentes */
+    .nav-menu > li {
+        width: 100%;
+        border-bottom: 1px solid rgba(7, 115, 75, 0.1);
+    }
+    
+    .nav-link {
+        display: block;
+        width: 100%;
+        padding: var(--spacing-md) var(--spacing-lg);
+        font-size: 1rem;
+        font-weight: 500;
+        color: var(--color-text);
+        transition: all 0.2s ease;
+        border-radius: 0;
+        background: transparent;
+        /* RESPONSIVIDAD: Área táctil amplia */
+    }
+    
+    .nav-link:hover,
+    .nav-link:focus {
+        background: var(--color-background-alt);
+        color: var(--color-primary);
+        padding-left: var(--spacing-xl);
+        /* NIELSEN: Feedback visual en móvil */
+    }
+    
+    /* GESTALT: Proximidad - Botones móviles agrupados */
+    .nav-mobile-actions {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-md);
+        width: 100%;
+        padding: var(--spacing-lg);
+        background: linear-gradient(135deg, var(--color-background-alt), white);
+        border-top: 2px solid var(--color-secondary-light);
+        margin-top: auto;
+    }
+    
+    /* RESPONSIVIDAD: Botones táctiles optimizados */
+    .nav-mobile-actions .btn-nav {
+        width: 100%;
+        text-align: center;
+        padding: var(--spacing-md);
+        min-height: 48px; /* Mínimo táctil */
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--spacing-sm);
+        position: relative;
+        transition: var(--transition);
+    }
+    
+    .nav-mobile-actions .btn-ghost {
+        background: white;
+        color: var(--color-primary);
+        border: 2px solid var(--color-primary);
+    }
+    
+    .nav-mobile-actions .btn-ghost:hover,
+    .nav-mobile-actions .btn-ghost:active {
+        background: var(--color-primary);
+        color: white;
+        transform: translateY(-2px);
+        /* NIELSEN: Feedback táctil */
+    }
+    
+    .nav-mobile-actions .btn-primary {
+        background: var(--color-primary);
+        color: white;
+    }
+    
+    .nav-mobile-actions .btn-primary:hover,
+    .nav-mobile-actions .btn-primary:active {
+        background: var(--color-primary-light);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+    }
+    
+    .nav-mobile-actions .notification-badge {
+        position: static;
+        margin-left: var(--spacing-sm);
+    }
+    
+    /* RESPONSIVIDAD: Welcome section adaptada */
+    .welcome-section {
+        padding: var(--spacing-xl) 0;
+    }
+    
+    .welcome-content h1 {
+        font-size: clamp(1.5rem, 5vw, 2rem);
+    }
+    
+    /* GESTALT: Proximidad - Stats apiladas */
     .stats-grid {
         grid-template-columns: 1fr;
         margin-top: 0;
+        gap: var(--spacing-md);
     }
     
+    .stat-card {
+        padding: var(--spacing-lg);
+    }
+    
+    /* RESPONSIVIDAD: Acciones en columna */
     .quick-actions {
         flex-direction: column;
     }
@@ -1079,19 +1223,27 @@ body {
         justify-content: center;
     }
     
+    /* Ocultar username en móvil para ahorrar espacio */
     .username {
         display: none;
     }
     
     .user-menu {
-        padding: 0.5rem;
+        padding: var(--spacing-sm);
+    }
+    
+    /* RESPONSIVIDAD: Footer adaptado */
+    .footer-container {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-xl);
     }
     
     .footer-links {
         grid-template-columns: 1fr;
+        gap: var(--spacing-lg);
     }
     
-    /* Dropdown responsive: menú en la parte inferior */
+    /* NIELSEN: Usabilidad móvil - Dropdown desde abajo */
     .user-dropdown {
         position: fixed;
         top: auto;
@@ -1099,35 +1251,141 @@ body {
         left: 0;
         right: 0;
         min-width: 100%;
+        max-height: 80vh;
         border-radius: var(--radius-lg) var(--radius-lg) 0 0;
         transform: translateY(100%);
+        overflow-y: auto;
     }
     
     .user-dropdown.active {
         transform: translateY(0);
     }
-}
-
-@media (max-width: 480px) {
-    .container {
-        padding: 0 1rem;
-    }
     
+    /* RESPONSIVIDAD: Content cards */
     .content-card,
     .sidebar-card {
-        padding: 1.5rem;
+        padding: var(--spacing-lg);
+    }
+    
+    .job-card {
+        padding: var(--spacing-md);
+    }
+    
+    .job-header {
+        flex-wrap: wrap;
+    }
+    
+    .job-badge {
+        order: -1;
+        width: 100%;
+        text-align: center;
+        margin-bottom: var(--spacing-sm);
+    }
+}
+
+/* MÓVIL PEQUEÑO - 480px */
+@media (max-width: 480px) {
+    /* RESPONSIVIDAD: Espaciado mínimo */
+    .container {
+        padding: 0 var(--spacing-md);
     }
     
     .welcome-content h1 {
-        font-size: 1.75rem;
+        font-size: 1.5rem;
+    }
+    
+    .stat-card {
+        flex-direction: column;
+        text-align: center;
+        gap: var(--spacing-md);
+    }
+    
+    .stat-icon {
+        margin: 0 auto;
     }
     
     .job-footer {
         flex-direction: column;
-        align-items: flex-start;
+        gap: var(--spacing-md);
+        align-items: stretch;
     }
     
     .btn-small {
         width: 100%;
+    }
+    
+    /* RESPONSIVIDAD: Cards más compactas */
+    .dropdown-user-info {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .dropdown-avatar {
+        margin: 0 auto;
+    }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   ACCESIBILIDAD - NIELSEN: AYUDA Y DOCUMENTACIÓN
+   ══════════════════════════════════════════════════════════════ */
+
+/* NIELSEN: Visibilidad del estado - Focus visible */
+:focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 2px;
+    box-shadow: var(--shadow-focus);
+}
+
+/* NIELSEN: Flexibilidad - Skip link para teclado */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--color-primary);
+    color: white;
+    padding: var(--spacing-sm) var(--spacing-md);
+    text-decoration: none;
+    z-index: 100;
+    border-radius: 0 0 var(--radius-sm) 0;
+}
+
+.skip-link:focus {
+    top: 0;
+}
+
+/* ACCESIBILIDAD: Movimiento reducido */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+    
+    .nav-menu {
+        transition: none;
+    }
+}
+
+/* ACCESIBILIDAD: Alto contraste */
+@media (prefers-contrast: high) {
+    :root {
+        --color-text: #000000;
+        --color-background: #ffffff;
+        --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+        --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+    }
+
+    .btn,
+    .nav-link,
+    .dropdown-item {
+        border: 2px solid currentColor;
+    }
+    
+    .nav-link:hover,
+    .dropdown-item:hover {
+        border-width: 3px;
     }
 }
