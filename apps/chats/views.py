@@ -9,7 +9,7 @@ from django.contrib import messages
 from .models import Conversacion, Mensaje
 from .forms import MensajeForm, EditarMensajeForm
 from apps.users.models import Usuario, Profile
-
+from .utils import traducir_texto
 
 def is_ajax(request):
     return request.headers.get('x-requested-with') == 'XMLHttpRequest'
@@ -356,3 +356,104 @@ def eliminar_mensaje(request, mensaje_id):
         return JsonResponse({'success': True, 'message': 'Mensaje eliminado correctamente'})
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
+    
+    
+@login_required
+@require_POST
+def traducir_mensaje(request, mensaje_id):
+    """
+    Devuelve el mensaje traducido a un idioma destino (AJAX).
+    No modifica el mensaje en la BD, solo devuelve el texto.
+    """
+    try:
+        usuario_actual = request.user.perfil
+    except Usuario.DoesNotExist:
+        if is_ajax(request):
+            return JsonResponse({'success': False, 'error': 'Usuario no encontrado'}, status=400)
+        messages.error(request, 'Debes completar tu perfil primero.')
+        return redirect('users:perfil')
+
+    mensaje = get_object_or_404(Mensaje, id_mensaje=mensaje_id)
+
+    # Seguridad: solo quienes participan en la conversación pueden traducir
+    conversacion = mensaje.id_conversacion
+    if (
+        conversacion.id_usuario_1 != usuario_actual and
+        conversacion.id_usuario_2 != usuario_actual
+    ):
+        return JsonResponse(
+            {'success': False, 'error': 'No tienes permiso para traducir este mensaje.'},
+            status=403
+        )
+
+    idioma_destino = request.POST.get('target_lang')
+    if not idioma_destino:
+        return JsonResponse(
+            {'success': False, 'error': 'Debes indicar el idioma de destino.'},
+            status=400
+        )
+
+    try:
+        texto_traducido, idioma_origen = traducir_texto(mensaje.contenido, idioma_destino)
+    except Exception as e:
+        # En producción podrías loguear e
+        return JsonResponse(
+            {'success': False, 'error': 'Error al traducir el mensaje.'},
+            status=500
+        )
+
+    return JsonResponse({
+        'success': True,
+        'id_mensaje': mensaje.id_mensaje,
+        'texto_traducido': texto_traducido,
+        'idioma_destino': idioma_destino,
+        'idioma_origen': idioma_origen,
+    })
+
+
+@login_required
+def mensajes_nuevos(request, chat_id):
+    """
+    Devuelve los mensajes nuevos de una conversación en formato JSON.
+    Se usa para polling desde el frontend.
+    """
+    try:
+        usuario_actual = request.user.perfil
+    except Usuario.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Usuario no encontrado'}, status=400)
+
+    conversacion = get_object_or_404(Conversacion, id_conversacion=chat_id)
+
+    # Verificar que el usuario participa en la conversación
+    if (
+        conversacion.id_usuario_1 != usuario_actual and
+        conversacion.id_usuario_2 != usuario_actual
+    ):
+        return JsonResponse(
+            {'success': False, 'error': 'No tienes permiso para ver esta conversación.'},
+            status=403
+        )
+
+    after_id = request.GET.get('after_id')
+
+    mensajes_qs = Mensaje.objects.filter(
+        id_conversacion=conversacion,
+        eliminado=False
+    )
+
+    if after_id and after_id.isdigit():
+        mensajes_qs = mensajes_qs.filter(id_mensaje__gt=int(after_id))
+
+    mensajes_qs = mensajes_qs.order_by('created_at')
+
+    mensajes_data = []
+    for m in mensajes_qs:
+        mensajes_data.append({
+            'id_mensaje': m.id_mensaje,
+            'contenido': m.contenido,
+            'editado': m.editado,
+            'created_at': m.created_at.strftime('%d/%m %H:%M'),
+            'es_mio': (m.id_remitente_id == usuario_actual.id_usuario),
+        })
+
+    return JsonResponse({'success': True, 'mensajes': mensajes_data})

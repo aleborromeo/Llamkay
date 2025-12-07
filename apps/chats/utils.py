@@ -1,6 +1,7 @@
 from django.db.models import Q
 from .models import Conversacion, Mensaje
-
+from googletrans import Translator
+translator = Translator()
 
 def obtener_o_crear_chat(usuario_1, usuario_2):
     """
@@ -62,3 +63,15 @@ def obtener_chats_recientes(usuario, limite=10):
     ).order_by('-ultimo_mensaje_at', '-created_at')[:limite]
 
     return conversaciones
+
+def traducir_texto(texto, idioma_destino='en'):
+    """
+    Traduce un texto al idioma_destino usando googletrans.
+    Devuelve (texto_traducido, idioma_origen).
+    """
+    if not texto:
+        return '', 'auto'
+
+    resultado = translator.translate(texto, dest=idioma_destino)
+    return resultado.text, resultado.src
+

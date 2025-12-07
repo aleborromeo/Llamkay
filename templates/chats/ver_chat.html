@@ -28,30 +28,51 @@
         </button>
     </header>
 
-    <main class="chat-window">
+    <main class="chat-window" data-chat-id="{{ conversacion.id_conversacion }}">
         <div class="messages">
             {% if mensajes %}
                 {% for mensaje in mensajes %}
                     <div class="message {% if mensaje.id_remitente == usuario_actual %}sent{% else %}received{% endif %}" data-mensaje-id="{{ mensaje.id_mensaje }}">
                         <div class="message-content">
-                            <p>
-                                {% if mensaje.editado %}
-                                    <span class="mensaje-editado">{{ mensaje.contenido }} <em>(editado)</em></span>
-                                {% else %}
-                                    {{ mensaje.contenido }}
-                                {% endif %}
-                            </p>
-                            <small>{{ mensaje.created_at|date:"d/m H:i" }}</small>
+                            {# TEXTO DEL MENSAJE + DATA PARA RESTAURARLO #}
+                            <p class="message-text"
+   data-original-text="{{ mensaje.contenido|escapejs }}">
+    {% if mensaje.editado %}
+        <span class="mensaje-editado">{{ mensaje.contenido }} <em>(editado)</em></span>
+    {% else %}
+        {{ mensaje.contenido }}
+    {% endif %}
+</p>
 
-                            {% if mensaje.id_remitente == usuario_actual %}
-                                <div class="message-actions">
-                                    <button class="action-btn edit-btn" data-mensaje-id="{{ mensaje.id_mensaje }}" data-contenido="{{ mensaje.contenido|escapejs }}"></button>
-                                    <button class="action-btn delete-btn" data-mensaje-id="{{ mensaje.id_mensaje }}"></button>
-                                </div>
-                            {% endif %}
+<small>{{ mensaje.created_at|date:"d/m H:i" }}</small>
+
+<div class="message-content-footer">
+    <div class="translation-controls">
+        <span class="translation-label">Traducir este mensaje:</span>
+        <select class="translation-select">
+            <option value="en">Inglés</option>
+            <option value="es">Español</option>
+            <option value="pt">Portugués</option>
+            <option value="fr">Francés</option>
+        </select>
+        <button type="button" class="translation-btn">Traducir</button>
+    </div>
+
+    {% if mensaje.id_remitente == usuario_actual %}
+        <div class="message-actions">
+            <button class="action-btn edit-btn"
+                    data-mensaje-id="{{ mensaje.id_mensaje }}"
+                    data-contenido="{{ mensaje.contenido|escapejs }}"></button>
+            <button class="action-btn delete-btn"
+                    data-mensaje-id="{{ mensaje.id_mensaje }}"></button>
+        </div>
+    {% endif %}
+</div>
+
                         </div>
                     </div>
                 {% endfor %}
+
             {% else %}
                 <div class="empty-chat">
                     <p>¡Comienza una nueva conversación! 💬</p>
