@@ -2,23 +2,66 @@
 // LLAMKAY LANDING PAGE JAVASCRIPT
 // 
 // PRINCIPIOS APLICADOS:
-// - Nielsen: Visibilidad del estado del sistema
-// - Nielsen: Control y libertad del usuario
+// - Nielsen: Visibilidad del estado del sistema, Control y libertad del usuario
 // - Nielsen: Prevención de errores
 // - Responsividad: Interacciones táctiles y desktop
+// - I18n: Manejo de envío de formulario para cambio de idioma (Backend/Django)
 // =============================================
 
 document.addEventListener('DOMContentLoaded', function() {
     'use strict';
     
+    // ==================== I18N LOGIC (CORREGIDA) ====================
+    
+    const langForm = document.getElementById('language-form');
+    const langInput = document.getElementById('language-input');
+    const navMenu = document.querySelector('.nav-menu');
+    const langSelector = document.querySelector('.language-selector'); 
+    const navMobileActions = document.querySelector('.nav-mobile-actions'); 
+
+    // Función para manejar el evento de cambio de idioma
+    function handleLanguageChange(e) {
+        e.preventDefault();
+        const newLang = this.getAttribute('data-lang');
+        
+        // 1. Actualizar el input con el nuevo idioma
+        if (langInput) langInput.value = newLang;
+        
+        // 2. Enviar el formulario
+        if (langForm) langForm.submit();
+        
+        console.log('Solicitando cambio de idioma a:', newLang); 
+    }
+    
+    if (langForm && langInput) {
+        
+        // 1. Asignar listeners a los botones originales (Desktop Header)
+        document.querySelectorAll('.language-selector .lang-btn').forEach(btn => {
+            btn.addEventListener('click', handleLanguageChange);
+        });
+        
+        // 2. Lógica para el botón en el menú móvil (Responsividad)
+        if (langSelector && navMobileActions && navMenu && window.innerWidth < 1024) { 
+            // CLONACIÓN: Clonamos el selector
+            const clonedLangSelector = langSelector.cloneNode(true);
+            clonedLangSelector.classList.add('mobile-clone'); 
+            
+            // Re-asignar event listeners al CLON (Crucial: cloning descarta listeners)
+            clonedLangSelector.querySelectorAll('.lang-btn').forEach(btn => {
+                 btn.addEventListener('click', handleLanguageChange);
+            });
+            
+            // Insertar el clon antes de las acciones móviles
+            navMenu.insertBefore(clonedLangSelector, navMobileActions);
+        }
+    }
+
     // ==================== MOBILE MENU ====================
     // Nielsen: Control y libertad del usuario
-    // Responsividad: Menu hamburguesa en móvil
     
     const navToggle = document.querySelector('.nav-toggle');
-    const navMenu = document.querySelector('.nav-menu');
     
-    if (navToggle && navMenu) {
+    if (navToggle && navMenu) { // navMenu ya está definido arriba
         navToggle.addEventListener('click', function() {
             navMenu.classList.toggle('active');
             
@@ -45,7 +88,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Cerrar menu al hacer click fuera
         document.addEventListener('click', function(e) {
-            if (!navToggle.contains(e.target) && !navMenu.contains(e.target)) {
+            if (navMenu && !navToggle.contains(e.target) && !navMenu.contains(e.target)) {
                 navMenu.classList.remove('active');
                 navToggle.setAttribute('aria-expanded', 'false');
                 
@@ -267,7 +310,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Nielsen: Prevención de errores
     // Nielsen: Ayuda a recuperarse de errores
     
-    const forms = document.querySelectorAll('form');
+    const forms = document.querySelectorAll('form:not(#language-form)'); // Excluir el formulario de idioma
     
     forms.forEach(form => {
         form.addEventListener('submit', function(e) {
@@ -283,7 +326,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (!input.nextElementSibling || !input.nextElementSibling.classList.contains('error-message')) {
                         const errorMsg = document.createElement('span');
                         errorMsg.className = 'error-message';
-                        errorMsg.textContent = 'Este campo es requerido';
+                        errorMsg.textContent = 'Este campo es requerido'; 
                         errorMsg.style.color = 'var(--color-danger, #dc2626)';
                         errorMsg.style.fontSize = '0.875rem';
                         errorMsg.style.marginTop = '0.25rem';

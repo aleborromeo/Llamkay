@@ -282,6 +282,34 @@ body {
     }
 }
 
+/* Selector de Idioma - Diseño minimalista y consistente */
+.language-selector {
+    display: flex;
+    gap: 0;
+    border-radius: var(--radius-sm);
+    background: var(--color-background-alt);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    flex-shrink: 0;
+}
+
+.lang-btn {
+    padding: 0.5rem 0.75rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    transition: var(--transition);
+}
+
+.lang-btn.active {
+    background: var(--color-primary);
+    color: white;
+    box-shadow: var(--shadow-sm);
+    /* Nielsen: Visibilidad del estado del sistema */
+}
+
 /* ==================== HERO SECTION ====================
    Gestalt: Figura y fondo - contraste fuerte
    Gestalt: Continuidad - flujo visual hacia abajo
@@ -920,6 +948,18 @@ Nielsen: Flexibilidad y eficiencia de uso */
 
 /* Tablet */
 @media (max-width: 768px) {
+    /* Ocultar en el header principal */
+    .language-selector {
+        display: none; 
+    }
+
+    /* Mostrar el clon dentro del menú activo */
+    .nav-menu.active .language-selector {
+        display: flex;
+        width: 100%;
+        margin: var(--spacing-sm) 1.5rem 0;
+    }
+    
     /* ===== NAVBAR RESPONSIVE MEJORADO ===== */
     .nav-toggle {
         display: flex;

@@ -1,0 +1,305 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-12-04 09:41-0500\n"
+"PO-Revision-Date: 2025-12-04 09:43-0500\n"
+"Last-Translator: Full Name <example@example.com>\n"
+"Language-Team: English <en@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Encuentra Trabajo Informal Rápido y Seguro"
+msgstr "Find Quick and Secure Informal Work"
+
+msgid "Navegación principal"
+msgstr "Main navigation"
+
+msgid "Página principal"
+msgstr "Home page"
+
+msgid "Selección de idioma"
+msgstr "Language selection"
+
+msgid "Abrir menú de navegación"
+msgstr "Open navigation menu"
+
+msgid "Nosotros"
+msgstr "About us"
+
+msgid "Trabajos"
+msgstr "Jobs"
+
+msgid "¿Cómo funciona?"
+msgstr "How it works?"
+
+msgid "Ingresar"
+msgstr "Login"
+
+msgid "Comenzar"
+msgstr "Get Started"
+
+msgid "Hecho en Perú 🇵🇪"
+msgstr "Made in Peru 🇵🇪"
+
+msgid "Encuentra trabajo <span class=\"text-highlight\">hoy mismo</span>"
+msgstr "Find a job <span class=\"text-highlight\">today</span>"
+
+msgid "La plataforma más rápida para conseguir trabajos informales o contratar profesionales verificados en tu zona."
+msgstr "The fastest platform to find informal jobs or hire verified professionals in your area."
+
+msgid "Acciones principales"
+msgstr "Main actions"
+
+msgid "Registrarse Gratis"
+msgstr "Register for Free"
+
+msgid "Buscar Trabajos"
+msgstr "Search Jobs"
+
+msgid "Estadísticas de la plataforma"
+msgstr "Platform statistics"
+
+msgid "Usuarios activos"
+msgstr "Active users"
+
+msgid "Trabajos publicados"
+msgstr "Jobs posted"
+
+msgid "Calificación promedio"
+msgstr "Average rating"
+
+msgid "Carpintero"
+msgstr "Carpenter"
+
+msgid "S/ 80 - 120 por día"
+msgstr "S/ 80 - 120 per day"
+
+msgid "Disponible"
+msgstr "Available"
+
+msgid "Plomero"
+msgstr "Plumber"
+
+msgid "S/ 60 - 100 por hora"
+msgstr "S/ 60 - 100 per hour"
+
+msgid "Urgente"
+msgstr "Urgent"
+
+msgid "Limpieza"
+msgstr "Cleaning"
+
+msgid "S/ 50 - 80 por día"
+msgstr "S/ 50 - 80 per day"
+
+msgid "Nuevo"
+msgstr "New"
+
+msgid "Beneficios"
+msgstr "Benefits"
+
+msgid "¿Por qué elegir Llamkay?"
+msgstr "Why choose Llamkay?"
+
+msgid "La forma más segura y rápida de trabajar en Perú"
+msgstr "The safest and fastest way to work in Peru"
+
+msgid "Encuentra cerca de ti"
+msgstr "Find near you"
+
+msgid "Busca trabajos o profesionales en tu distrito o comunidad"
+msgstr "Search for jobs or professionals in your district or community"
+
+#, python-format
+msgid "100%% Verificado"
+msgstr "100%% Verified"
+
+msgid "Todos los usuarios pasan por verificación de identidad y antecedentes"
+msgstr "All users undergo identity and background verification"
+
+msgid "Chat directo"
+msgstr "Direct chat"
+
+msgid "Habla directamente con empleadores o trabajadores sin intermediarios"
+msgstr "Talk directly with employers or workers without intermediaries"
+
+msgid "Sistema de reputación"
+msgstr "Reputation system"
+
+msgid "Calificaciones y comentarios reales de trabajos completados"
+msgstr "Real ratings and reviews of completed jobs"
+
+msgid "Pago flexible"
+msgstr "Flexible payment"
+
+msgid "Acepta efectivo, Yape, Plin o transferencias bancarias"
+msgstr "Accept cash, Yape, Plin, or bank transfers"
+
+msgid "Protección garantizada"
+msgstr "Guaranteed protection"
+
+msgid "Sistema de denuncias y mediación para resolver conflictos"
+msgstr "Complaint and mediation system to resolve conflicts"
+
+msgid "Simple y Rápido"
+msgstr "Simple and Fast"
+
+msgid "En 4 pasos empiezas a trabajar o contratar"
+msgstr "In 4 steps you start working or hiring"
+
+msgid "Paso 1"
+msgstr "Step 1"
+
+msgid "Crea tu cuenta"
+msgstr "Create your account"
+
+msgid "Regístrate gratis en menos de 2 minutos como trabajador, empleador o empresa"
+msgstr "Register for free in less than 2 minutes as a worker, employer, or company"
+
+msgid "Paso 2"
+msgstr "Step 2"
+
+msgid "Completa tu perfil"
+msgstr "Complete your profile"
+
+msgid "Agrega tus habilidades, experiencia y verifica tu identidad para mayor confianza"
+msgstr "Add your skills, experience, and verify your identity for more trust"
+
+msgid "Paso 3"
+msgstr "Step 3"
+
+msgid "Busca o publica"
+msgstr "Search or post"
+
+msgid "Encuentra trabajos cerca de ti o publica lo que necesitas en tu zona"
+msgstr "Find jobs near you or post what you need in your area"
+
+msgid "Paso 4"
+msgstr "Step 4"
+
+msgid "¡Conecta y trabaja!"
+msgstr "Connect and work!"
+
+msgid "Chatea, acuerda términos y completa el trabajo. Luego califica la experiencia"
+msgstr "Chat, agree on terms, and complete the job. Then rate the experience"
+
+msgid "Empezar ahora"
+msgstr "Start now"
+
+msgid "Categorías Populares"
+msgstr "Popular Categories"
+
+msgid "Trabajos más buscados"
+msgstr "Most sought-after jobs"
+
+msgid "Carpintería"
+msgstr "Carpentry"
+
+msgid "156 trabajos"
+msgstr "156 jobs"
+
+msgid "Plomería"
+msgstr "Plumbing"
+
+msgid "128 trabajos"
+msgstr "128 jobs"
+
+msgid "Electricidad"
+msgstr "Electricity"
+
+msgid "143 trabajos"
+msgstr "143 jobs"
+
+msgid "Albañilería"
+msgstr "Masonry"
+
+msgid "201 trabajos"
+msgstr "201 jobs"
+
+msgid "167 trabajos"
+msgstr "167 jobs"
+
+msgid "Jardinería"
+msgstr "Gardening"
+
+msgid "89 trabajos"
+msgstr "89 jobs"
+
+msgid "Pintura"
+msgstr "Painting"
+
+msgid "112 trabajos"
+msgstr "112 jobs"
+
+msgid "Ver todas"
+msgstr "View all"
+
+msgid "500+ trabajos"
+msgstr "500+ jobs"
+
+msgid "¿Listo para empezar?"
+msgstr "Ready to get started?"
+
+msgid "Únete a miles de peruanos que ya trabajan con Llamkay"
+msgstr "Join thousands of Peruvians already working with Llamkay"
+
+msgid "Crear cuenta gratis"
+msgstr "Create free account"
+
+msgid "Conectando talentos con oportunidades laborales en todo el Perú"
+msgstr "Connecting talent with job opportunities throughout Peru"
+
+msgid "Redes sociales"
+msgstr "Social media"
+
+msgid "Plataforma"
+msgstr "Platform"
+
+msgid "Buscar trabajos"
+msgstr "Search jobs"
+
+msgid "Publicar trabajo"
+msgstr "Post job"
+
+msgid "Cómo funciona"
+msgstr "How it works"
+
+msgid "Sobre nosotros"
+msgstr "About us"
+
+msgid "Soporte"
+msgstr "Support"
+
+msgid "Centro de ayuda"
+msgstr "Help Center"
+
+msgid "Términos de servicio"
+msgstr "Terms of service"
+
+msgid "Política de privacidad"
+msgstr "Privacy policy"
+
+msgid "Reportar un problema"
+msgstr "Report an issue"
+
+msgid "Contacto"
+msgstr "Contact"
+
+msgid "+51 987 654 321"
+msgstr "+51 987 654 321"
+
+msgid "Huánuco, Perú"
+msgstr "Huanuco, Peru"
+
+msgid "&copy; 2025 Llamkay.pe. Todos los derechos reservados."
+msgstr "&copy; 2025 Llamkay.pe. All rights reserved."
