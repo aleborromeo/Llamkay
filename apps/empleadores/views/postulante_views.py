@@ -6,49 +6,71 @@ from django.views.decorators.http import require_POST
 
 from apps.users.models import Usuario
 from apps.empleadores.services import PostulanteService
-
+from apps.empleadores.repositories import OfertaEmpleadorRepository  # 👈 nuevo import
 
 postulante_service = PostulanteService()
+oferta_repo = OfertaEmpleadorRepository()  # 👈 repositorio de ofertas
 
 
 @login_required
 def ver_postulantes(request, oferta_id, tipo):
     try:
         usuario = Usuario.objects.get(user=request.user)
-        
+
+        # validar tipo
         if tipo not in ['usuario', 'empresa']:
             messages.error(request, "Tipo de oferta inválido.")
             return redirect('empleadores:mis_trabajos')
-        
+
+        # obtener la oferta según el tipo, validando que pertenezca al empleador
+        if tipo == 'usuario':
+            oferta = oferta_repo.get_oferta_usuario_by_id_empleador(
+                oferta_id, usuario.id_usuario
+            )
+        else:
+            oferta = oferta_repo.get_oferta_empresa_by_id_empleador(
+                oferta_id, usuario.id_usuario
+            )
+
+        if not oferta:
+            messages.error(request, "Oferta no encontrada o no te pertenece.")
+            return redirect('empleadores:mis_trabajos')
+
         estado_filtro = request.GET.get('estado')
-        
+
         resultado = postulante_service.get_postulantes_oferta(
             oferta_id,
             tipo,
             usuario.id_usuario,
             estado=estado_filtro
         )
-        
-        postulaciones = resultado['postulaciones']
 
-        pendientes = postulaciones.filter(estado="pendiente").count()
-        aceptadas = postulaciones.filter(estado="aceptada").count()
-        rechazadas = postulaciones.filter(estado="rechazada").count()
-        
+        postulaciones = resultado['postulaciones']          # lista de dicts
+        estadisticas = resultado['estadisticas']            # dict con totales
+
         context = {
-            'postulaciones': resultado['postulaciones'],
-            'estadisticas': resultado['estadisticas'],
-            'oferta_id': oferta_id,
+            'oferta': oferta,
             'tipo': tipo,
             'estado_filtro': estado_filtro,
             'usuario': usuario,
+
+            # lista para recorrer en el template
+            'postulaciones': postulaciones,
+
+            # estadísticas desde el servicio
+            'estadisticas': estadisticas,
+            'total_postulaciones': estadisticas['total'],
+            'pendientes': estadisticas['pendientes'],
+            'aceptadas': estadisticas['aceptadas'],
+            'rechazadas': estadisticas['rechazadas'],
         }
-        
+
         return render(request, 'empleadores/postulantes/ver.html', context)
-        
+
     except Usuario.DoesNotExist:
         messages.error(request, "Usuario no encontrado.")
         return redirect('users:login')
+
 
 
 @login_required
@@ -62,7 +84,7 @@ def aceptar_postulante(request, postulacion_id):
             usuario.id_usuario
         )
         
-        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             return JsonResponse(resultado)
         
         if resultado['success']:

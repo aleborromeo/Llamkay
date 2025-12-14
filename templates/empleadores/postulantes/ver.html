@@ -1,6 +1,7 @@
 {% extends "jobs/base_jobs.html" %}
 
-{% block title %}Postulantes - {{ oferta.titulo|default:oferta.titulo_puesto }} - Llamkay{% endblock %}
+{% block title %} Postulantes - {% if tipo == 'usuario' %}{{ oferta.titulo }}{% else %} {{ oferta.titulo_puesto }}{% endif %}- Llamkay{% endblock %}
+
 
 {% block extra_css %}
 <style>
@@ -216,7 +217,7 @@
 
 {% block content %}
 <div class="container">
-    <a href="{% url 'jobs:mis_trabajos' %}" class="btn btn-secondary" style="margin: 20px 0;">← Volver a Mis Trabajos</a>
+    <a href="{% url 'empleadores:mis_trabajos' %}" class="btn btn-secondary" style="margin: 20px 0;">← Volver a Mis Trabajos</a>
     
     <!-- Header de la Oferta -->
     <div class="oferta-header">
@@ -309,7 +310,7 @@
         {% endif %}
         
         <div class="postulante-actions">
-            {% if post.estado in 'pendiente,en_revision' %}
+            {% if post.estado == 'pendiente' or post.estado == 'en_revision' %}
                 <button onclick="aceptarPostulante({{ post.id }}, '{{ post.trabajador.nombre }}')" class="btn btn-success">
                     ✅ Aceptar Postulante
                 </button>
@@ -339,7 +340,7 @@
             {% endif %}
         </p>
         {% if estado_filtro %}
-            <a href="{% url 'jobs:ver_postulantes' tipo oferta.id %}" class="btn btn-primary">Ver Todas</a>
+            <a href="{% url 'empleadores:ver_postulantes' tipo oferta.id %}"class="btn btn-primary">Ver Todas</a>
         {% endif %}
     </div>
     {% endfor %}
@@ -356,13 +357,16 @@ function aceptarPostulante(postulacionId, nombreTrabajador) {
     const formData = new FormData();
     formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
     
-    fetch(`/jobs/aceptar-postulante/${postulacionId}/`, {
-        method: 'POST',
-        body: formData,
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest'
-        }
+    fetch(`/empleadores/postulantes/aceptar/${postulacionId}/`, {
+    method: "POST",
+    credentials: "same-origin", // 👈 NECESARIO PARA QUE SE ENVÍE LA COOKIE DE SESIÓN
+    headers: {
+        "X-Requested-With": "XMLHttpRequest", // 👈 Ahora sí lo detecta Django
+        "X-CSRFToken": "{{ csrf_token }}",    // 👈 Correcto CSRF
+    }
     })
+
+
     .then(response => response.json())
     .then(data => {
         if (data.success) {
@@ -400,13 +404,16 @@ function rechazarPostulante(postulacionId, nombreTrabajador) {
     const formData = new FormData();
     formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
     
-    fetch(`/jobs/rechazar-postulante/${postulacionId}/`, {
-        method: 'POST',
-        body: formData,
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest'
-        }
+    fetch(`/empleadores/postulantes/rechazar/${postulacionId}/`, {
+    method: "POST",
+    credentials: "same-origin",
+    headers: {
+        "X-Requested-With": "XMLHttpRequest",
+        "X-CSRFToken": "{{ csrf_token }}",
+    }
     })
+
+
     .then(response => response.json())
     .then(data => {
         if (data.success) {
