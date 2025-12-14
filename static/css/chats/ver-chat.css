@@ -3,26 +3,24 @@
    =================================== */
 
 /* Acciones de mensajes */
+/* Acciones de mensajes */
 .message-actions {
-    position: absolute;
-    bottom: 5px;
-    right: 10px;
-    display: none;
-    gap: 8px;
-    z-index: 10;
-    background: rgba(255, 255, 255, 0.85);
-    padding: 3px 6px;
-    border-radius: 12px;
-    backdrop-filter: blur(5px);
-}
-
-.message.sent .message-actions {
-    right: 15px;
-}
-
-.message:hover .message-actions {
+    /* ya NO absolute */
+    position: static;
     display: flex;
+    gap: 8px;
+    z-index: 1;
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
+    backdrop-filter: none;
 }
+
+/* ya no necesitamos este ajuste de right */
+.message.sent .message-actions {
+    right: auto;
+}
+
 
 .action-btn {
     background: #4b5563;
@@ -232,5 +230,82 @@
     .action-btn {
         padding: 5px 8px;
         font-size: 11px;
+    }
+}
+
+
+.translation-controls {
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: #6b7280;
+    flex-wrap: wrap;
+    flex: 1;
+}
+
+.message.sent .translation-controls {
+    color: #d1fae5;
+}
+
+.translation-select {
+    border-radius: 999px;
+    border: 1px solid #d1d5db;
+    padding: 2px 6px;
+    font-size: 12px;
+    background: #ffffff;
+    outline: none;
+}
+
+.message.sent .translation-select {
+    background: #0f766e;
+    color: #ecfdf5;
+    border-color: rgba(209, 250, 229, 0.6);
+}
+
+.translation-btn {
+    border-radius: 999px;
+    border: none;
+    padding: 4px 10px;
+    font-size: 12px;
+    cursor: pointer;
+    background: #e5e7eb;
+    color: #111827;
+    transition: all 0.2s ease;
+}
+
+.translation-btn:hover {
+    background: #d1d5db;
+}
+
+.message.sent .translation-btn {
+    background: #ecfdf5;
+    color: #065f46;
+}
+
+.translation-btn.is-restore {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.message-content-footer {
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    flex-wrap: wrap;  /* para que sea responsive */
+}
+
+@media (max-width: 480px) {
+    .message-content-footer {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+
+    .message-actions {
+        align-self: flex-end;
     }
 }
