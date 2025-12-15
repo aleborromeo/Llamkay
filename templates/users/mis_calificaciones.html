@@ -1,0 +1,237 @@
+{% extends "users/base.html" %}
+{% load static %}
+
+{% block title %}Mis Calificaciones - Llamkay.pe{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/users/mis_calificaciones.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- ========== HEADER ========== -->
+<header class="header">
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="{% url 'llamkay:index' %}" class="logo">Llamkay</a>
+            <ul class="nav-menu">
+                <li><a href="{% url 'llamkay:dashboard' %}" class="nav-link">Dashboard</a></li>
+                <li><a href="{% url 'users:perfil' %}" class="nav-link">Mi Perfil</a></li>
+                <li><a href="{% url 'users:mis_calificaciones' %}" class="nav-link active">Mis Calificaciones</a></li>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<!-- ========== HERO ========== -->
+<section class="hero">
+    <div class="hero-background"></div>
+    <div class="container">
+        <div class="hero-content">
+            <h1>📊 Mis Calificaciones</h1>
+            <p>Revisa las opiniones que has dado y recibido</p>
+        </div>
+    </div>
+</section>
+
+<!-- ========== CONTENIDO ========== -->
+<div class="container main-content">
+    <!-- Tabs de navegación -->
+    <div class="tabs-container">
+        <button class="tab-btn active" data-tab="recibidas">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            Recibidas ({{ calificaciones_recibidas|length }})
+        </button>
+        <button class="tab-btn" data-tab="dadas">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 20h9"></path>
+                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+            </svg>
+            Dadas ({{ calificaciones_dadas|length }})
+        </button>
+    </div>
+
+    <!-- TAB 1: CALIFICACIONES RECIBIDAS -->
+    <div class="tab-content active" id="tab-recibidas">
+        <div class="section-header">
+            <h2>⭐ Calificaciones que recibiste</h2>
+            <p class="section-subtitle">Lo que otros usuarios opinan sobre tu trabajo</p>
+        </div>
+
+        {% if calificaciones_recibidas %}
+        <div class="ratings-grid">
+            {% for cal in calificaciones_recibidas %}
+            <div class="rating-card">
+                <div class="rating-header">
+                    <div class="user-info">
+                        <div class="user-avatar">{{ cal.id_autor.nombres|first }}{{ cal.id_autor.apellidos|first }}</div>
+                        <div>
+                            <h4>{{ cal.id_autor.nombres }} {{ cal.id_autor.apellidos }}</h4>
+                            <p class="rating-date">{{ cal.created_at|date:"d/m/Y" }}</p>
+                        </div>
+                    </div>
+                    <div class="rating-stars">
+                        {% for i in "12345" %}
+                            {% if forloop.counter <= cal.puntuacion %}⭐{% else %}☆{% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+
+                {% if cal.comentario %}
+                <div class="rating-comment">
+                    <p>"{{ cal.comentario }}"</p>
+                </div>
+                {% endif %}
+
+                <!-- Detalles de aspectos -->
+                {% if cal.puntualidad or cal.calidad_trabajo or cal.comunicacion %}
+                <div class="rating-aspects">
+                    {% if cal.puntualidad %}
+                    <div class="aspect-item">
+                        <span class="aspect-label">⏰ Puntualidad</span>
+                        <span class="aspect-value">{{ cal.puntualidad }}/5</span>
+                    </div>
+                    {% endif %}
+                    {% if cal.calidad_trabajo %}
+                    <div class="aspect-item">
+                        <span class="aspect-label">💼 Calidad</span>
+                        <span class="aspect-value">{{ cal.calidad_trabajo }}/5</span>
+                    </div>
+                    {% endif %}
+                    {% if cal.comunicacion %}
+                    <div class="aspect-item">
+                        <span class="aspect-label">💬 Comunicación</span>
+                        <span class="aspect-value">{{ cal.comunicacion }}/5</span>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                <!-- Información del contrato -->
+                {% if cal.id_contrato %}
+                <div class="contract-info">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                        <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                    </rect>
+                    <span>Trabajo: {{ cal.id_contrato.titulo|truncatechars:40 }}</span>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            </svg>
+            <h3>Aún no tienes calificaciones</h3>
+            <p>Completa trabajos para empezar a recibir opiniones</p>
+            <a href="{% url 'jobs:buscar_trabajos' %}" class="btn btn-primary">Buscar Trabajos</a>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- TAB 2: CALIFICACIONES DADAS -->
+    <div class="tab-content" id="tab-dadas">
+        <div class="section-header">
+            <h2>✍️ Calificaciones que diste</h2>
+            <p class="section-subtitle">Tus opiniones sobre otros usuarios</p>
+        </div>
+
+        {% if calificaciones_dadas %}
+        <div class="ratings-grid">
+            {% for cal in calificaciones_dadas %}
+            <div class="rating-card">
+                <div class="rating-header">
+                    <div class="user-info">
+                        <div class="user-avatar">{{ cal.id_receptor.nombres|first }}{{ cal.id_receptor.apellidos|first }}</div>
+                        <div>
+                            <h4>{{ cal.id_receptor.nombres }} {{ cal.id_receptor.apellidos }}</h4>
+                            <p class="rating-date">{{ cal.created_at|date:"d/m/Y" }}</p>
+                        </div>
+                    </div>
+                    <div class="rating-stars">
+                        {% for i in "12345" %}
+                            {% if forloop.counter <= cal.puntuacion %}⭐{% else %}☆{% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+
+                {% if cal.comentario %}
+                <div class="rating-comment">
+                    <p>"{{ cal.comentario }}"</p>
+                </div>
+                {% endif %}
+
+                {% if cal.puntualidad or cal.calidad_trabajo or cal.comunicacion %}
+                <div class="rating-aspects">
+                    {% if cal.puntualidad %}
+                    <div class="aspect-item">
+                        <span class="aspect-label">⏰ Puntualidad</span>
+                        <span class="aspect-value">{{ cal.puntualidad }}/5</span>
+                    </div>
+                    {% endif %}
+                    {% if cal.calidad_trabajo %}
+                    <div class="aspect-item">
+                        <span class="aspect-label">💼 Calidad</span>
+                        <span class="aspect-value">{{ cal.calidad_trabajo }}/5</span>
+                    </div>
+                    {% endif %}
+                    {% if cal.comunicacion %}
+                    <div class="aspect-item">
+                        <span class="aspect-label">💬 Comunicación</span>
+                        <span class="aspect-value">{{ cal.comunicacion }}/5</span>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                <!-- Acciones -->
+                <div class="rating-actions">
+                    <a href="{% url 'users:perfil_publico' cal.id_receptor.id_usuario %}" class="btn-action btn-view">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                        Ver perfil
+                    </a>
+                    {% if cal.editada %}
+                    <span class="badge-edited">Editada</span>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                <path d="M12 20h9"></path>
+                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+            </svg>
+            <h3>No has dado calificaciones</h3>
+            <p>Después de completar un trabajo, podrás calificar a otros usuarios</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- INFO BANNER -->
+    <div class="info-banner">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+        </svg>
+        <div>
+            <strong>¿Por qué son importantes las calificaciones?</strong>
+            <p>Las calificaciones honestas ayudan a construir confianza en nuestra comunidad y permiten que otros usuarios tomen mejores decisiones al contratar o trabajar.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/users/mis_calificaciones.js' %}"></script>
+{% endblock %}

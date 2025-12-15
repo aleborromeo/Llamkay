@@ -13,6 +13,9 @@ urlpatterns = [
     path('login/', auth_views.login, name='login'),
     path('logout/', auth_views.logout_view, name='logout'),
     
+    # Bloqueo (Nuevo para bloqueado_penal.html)
+    path('bloqueado/', auth_views.bloqueado_penal, name='bloqueado_penal'), # NUEVO
+    
     # Registro 
     path('seleccionar-tipo/', auth_views.seleccionar_tipo, name='seleccionar_tipo'),
     path('register/', auth_views.register, name='register'),

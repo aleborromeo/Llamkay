@@ -4,27 +4,60 @@ Responsabilidad: Lógica de negocio para calificaciones
 """
 
 from typing import Dict, Any, Optional, List
+from abc import ABC, abstractmethod
 from django.db.models import Q
 
+from Llamkay.apps.users.repositories.factory import RepositoryFactory
 from apps.users.models import Usuario
 from apps.users.repositories import CalificacionRepository
 from apps.jobs.models import Contrato, Calificacion
 from .estadistica_service import EstadisticaService
 
 
+# =========================================================
+# ✅ STRATEGY: Cálculo de estadísticas de calificaciones
+# (No cambia tu comportamiento: por defecto delega al repo)
+# =========================================================
+
+class ICalificacionStatsStrategy(ABC):
+    """Interfaz Strategy para calcular estadísticas de calificación"""
+
+    @abstractmethod
+    def calcular(self, usuario: Usuario) -> Dict[str, Any]:
+        pass
+
+
+class RepoStatsStrategy(ICalificacionStatsStrategy):
+    """
+    Strategy por defecto: usa el método existente del repositorio.
+    ✅ No cambia nada, solo desacopla y permite alternar implementación.
+    """
+
+    def __init__(self, calificacion_repo: CalificacionRepository):
+        self.calificacion_repo = calificacion_repo
+
+    def calcular(self, usuario: Usuario) -> Dict[str, Any]:
+        return self.calificacion_repo.calcular_estadisticas(usuario)
+
+
 class CalificacionService:
     """
     Servicio para gestionar calificaciones
     """
-    
+
     def __init__(
         self,
         calificacion_repo: Optional[CalificacionRepository] = None,
-        estadistica_service: Optional[EstadisticaService] = None
+        repo=RepositoryFactory.calificacion_repo(use_logging=True, use_cache=False),
+        estadistica_service: Optional[EstadisticaService] = None,
+        stats_strategy: Optional[ICalificacionStatsStrategy] = None,   # ✅ NUEVO (Strategy)
     ):
         self.calificacion_repo = calificacion_repo or CalificacionRepository()
         self.estadistica_service = estadistica_service or EstadisticaService()
-    
+
+        # ✅ Si no te pasan Strategy, usa la default (delegando al repo)
+        self.stats_strategy = stats_strategy or RepoStatsStrategy(self.calificacion_repo)
+
     def crear_calificacion(
         self,
         autor: Usuario,
@@ -42,32 +75,32 @@ class CalificacionService:
                 'success': False,
                 'error': 'No puedes calificarte a ti mismo'
             }
-        
+
         # Validar que existe un contrato completado
         contrato_valido = Contrato.objects.filter(
             Q(id_empleador=autor, id_trabajador=receptor) |
             Q(id_empleador=receptor, id_trabajador=autor),
             estado='completado'
         ).first()
-        
+
         if not contrato_valido:
             return {
                 'success': False,
                 'error': 'No tienes un contrato completado con este usuario'
             }
-        
+
         # Determinar rol del autor
         if contrato_valido.id_empleador.id_usuario == autor.id_usuario:
             rol_autor = 'empleador'
         else:
             rol_autor = 'trabajador'
-        
+
         # Verificar si ya existe calificación
         calificacion_existente = self.calificacion_repo.obtener_por_contrato(
             contrato_valido,
             autor
         )
-        
+
         if calificacion_existente:
             # Actualizar calificación existente
             self.calificacion_repo.actualizar(calificacion_existente, datos)
@@ -83,15 +116,15 @@ class CalificacionService:
             }
             self.calificacion_repo.crear(datos_completos)
             mensaje = 'Calificación creada correctamente'
-        
+
         # Actualizar estadísticas
         self.estadistica_service.actualizar_calificaciones(receptor)
-        
+
         return {
             'success': True,
             'message': mensaje
         }
-    
+
     def obtener_calificaciones_usuario(
         self,
         usuario_id: int
@@ -101,27 +134,27 @@ class CalificacionService:
         """
         from apps.users.repositories import UsuarioRepository
         usuario_repo = UsuarioRepository()
-        
+
         usuario = usuario_repo.obtener_por_id(usuario_id)
         if not usuario:
             return {
                 'success': False,
                 'error': 'Usuario no encontrado'
             }
-        
+
         # Obtener calificaciones
         calificaciones = self.calificacion_repo.listar_por_receptor(usuario)
-        
-        # Calcular estadísticas
-        estadisticas = self.calificacion_repo.calcular_estadisticas(usuario)
-        
+
+        # ✅ Strategy (misma lógica que antes, solo desacoplado)
+        estadisticas = self.stats_strategy.calcular(usuario)
+
         return {
             'success': True,
             'usuario': usuario,
             'calificaciones': calificaciones,
             **estadisticas
         }
-    
+
     def eliminar_calificacion(
         self,
         calificacion_id: int,
@@ -136,26 +169,26 @@ class CalificacionService:
                 id_calificacion=calificacion_id,
                 id_autor=autor
             )
-            
+
             receptor = calificacion.id_receptor
-            
+
             # Desactivar
             self.calificacion_repo.desactivar(calificacion_id)
-            
+
             # Actualizar estadísticas
             self.estadistica_service.actualizar_calificaciones(receptor)
-            
+
             return {
                 'success': True,
                 'message': 'Calificación eliminada correctamente'
             }
-            
+
         except Calificacion.DoesNotExist:
             return {
                 'success': False,
                 'error': 'Calificación no encontrada o no tienes permisos'
             }
-    
+
     def obtener_mis_calificaciones(
         self,
         usuario: Usuario
@@ -165,7 +198,7 @@ class CalificacionService:
         """
         recibidas = self.calificacion_repo.listar_por_receptor(usuario)
         dadas = self.calificacion_repo.listar_por_autor(usuario)
-        
+
         return {
             'success': True,
             'calificaciones_recibidas': recibidas,

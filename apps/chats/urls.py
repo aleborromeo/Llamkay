@@ -18,4 +18,9 @@ urlpatterns = [
     
     # Eliminar mensaje
     path('mensaje/eliminar/<int:mensaje_id>/', views.eliminar_mensaje, name='eliminar_mensaje'),
+
+    # Traducit mensaje
+    path('mensaje/traducir/<int:mensaje_id>/', views.traducir_mensaje, name='traducir_mensaje'),
+
+    path('chat/<int:chat_id>/mensajes-nuevos/', views.mensajes_nuevos, name='mensajes_nuevos'),
 ]

@@ -1,0 +1,196 @@
+{% extends "users/base.html" %}
+{% load static %}
+
+{% block title %}Calificaciones de {{ usuario.nombres }} - Llamkay.pe{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/users/ver_calificaciones.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- ========== HEADER ========== -->
+<header class="header">
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="{% url 'llamkay:index' %}" class="logo">Llamkay</a>
+            <ul class="nav-menu">
+                <li><a href="{% url 'llamkay:dashboard' %}" class="nav-link">Dashboard</a></li>
+                <li><a href="{% url 'users:buscar_usuarios' %}" class="nav-link">Buscar</a></li>
+                <li><a href="{% url 'users:perfil' %}" class="btn-nav btn-ghost">Mi Perfil</a></li>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<!-- ========== HERO SECTION ========== -->
+<section class="ratings-hero">
+    <div class="hero-background"></div>
+    <div class="container">
+        <div class="ratings-hero-content">
+            <h1>⭐ Calificaciones de {{ usuario.nombres }}</h1>
+            <p>Opiniones verificadas de usuarios que trabajaron con {{ usuario.nombres }}</p>
+        </div>
+    </div>
+</section>
+
+<!-- ========== CONTENIDO PRINCIPAL ========== -->
+<div class="container ratings-content">
+    <!-- Resumen General -->
+    <div class="ratings-summary-card">
+        <div class="summary-left">
+            <div class="rating-number-huge">{{ promedio|floatformat:1 }}</div>
+            <div class="rating-stars-big">
+                {% for i in "12345" %}
+                    {% if forloop.counter <= promedio %}⭐{% else %}☆{% endif %}
+                {% endfor %}
+            </div>
+            <p class="rating-count">{{ total }} calificaciones</p>
+        </div>
+        
+        <div class="summary-right">
+            <h3>Distribución de estrellas</h3>
+            <div class="stars-distribution">
+                {% for i in "54321" %}
+                <div class="star-row">
+                    <span class="star-label">{{ i }} ⭐</span>
+                    <div class="star-bar">
+                        <div class="star-fill" style="width: {% widthratio estrellas|get_item:i total 100 %}"></div>
+                    </div>
+                    <span class="star-count">{{ estrellas|get_item:i }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Aspectos Detallados -->
+    {% if promedio_puntualidad or promedio_calidad or promedio_comunicacion %}
+    <div class="aspects-card">
+        <h2>📊 Aspectos Evaluados</h2>
+        <div class="aspects-grid">
+            {% if promedio_puntualidad %}
+            <div class="aspect-box">
+                <div class="aspect-icon">⏰</div>
+                <h4>Puntualidad</h4>
+                <div class="aspect-rating">
+                    <span class="aspect-value">{{ promedio_puntualidad|floatformat:1 }}</span>
+                    <div class="aspect-stars">
+                        {% for i in "12345" %}
+                            {% if forloop.counter <= promedio_puntualidad %}⭐{% else %}☆{% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if promedio_calidad %}
+            <div class="aspect-box">
+                <div class="aspect-icon">💼</div>
+                <h4>Calidad del Trabajo</h4>
+                <div class="aspect-rating">
+                    <span class="aspect-value">{{ promedio_calidad|floatformat:1 }}</span>
+                    <div class="aspect-stars">
+                        {% for i in "12345" %}
+                            {% if forloop.counter <= promedio_calidad %}⭐{% else %}☆{% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if promedio_comunicacion %}
+            <div class="aspect-box">
+                <div class="aspect-icon">💬</div>
+                <h4>Comunicación</h4>
+                <div class="aspect-rating">
+                    <span class="aspect-value">{{ promedio_comunicacion|floatformat:1 }}</span>
+                    <div class="aspect-stars">
+                        {% for i in "12345" %}
+                            {% if forloop.counter <= promedio_comunicacion %}⭐{% else %}☆{% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Lista de Calificaciones -->
+    <div class="ratings-list-section">
+        <div class="section-header">
+            <h2>💬 Comentarios</h2>
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">Todas</button>
+                <button class="filter-btn" data-filter="5">5 ⭐</button>
+                <button class="filter-btn" data-filter="4">4 ⭐</button>
+                <button class="filter-btn" data-filter="3">3 ⭐</button>
+            </div>
+        </div>
+
+        {% if calificaciones %}
+        <div class="ratings-list">
+            {% for cal in calificaciones %}
+            <div class="rating-card" data-rating="{{ cal.puntuacion }}">
+                <div class="rating-header">
+                    <div class="reviewer-info">
+                        <div class="reviewer-avatar">
+                            {{ cal.id_autor.nombres|first }}{{ cal.id_autor.apellidos|first }}
+                        </div>
+                        <div>
+                            <h4>{{ cal.id_autor.nombres }} {{ cal.id_autor.apellidos }}</h4>
+                            <p class="rating-date">{{ cal.created_at|date:"d/m/Y" }}</p>
+                        </div>
+                    </div>
+                    <div class="rating-stars">
+                        {% for i in "12345" %}
+                            {% if forloop.counter <= cal.puntuacion %}⭐{% else %}☆{% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+
+                {% if cal.comentario %}
+                <p class="rating-comment">"{{ cal.comentario }}"</p>
+                {% endif %}
+
+                <!-- Aspectos detallados si existen -->
+                {% if cal.puntualidad or cal.calidad_trabajo or cal.comunicacion %}
+                <div class="rating-details">
+                    {% if cal.puntualidad %}
+                    <span class="detail-badge">⏰ Puntualidad: {{ cal.puntualidad }}/5</span>
+                    {% endif %}
+                    {% if cal.calidad_trabajo %}
+                    <span class="detail-badge">💼 Calidad: {{ cal.calidad_trabajo }}/5</span>
+                    {% endif %}
+                    {% if cal.comunicacion %}
+                    <span class="detail-badge">💬 Comunicación: {{ cal.comunicacion }}/5</span>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            </svg>
+            <p>Este usuario aún no tiene calificaciones</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-section">
+        <h2>¿Trabajaste con {{ usuario.nombres }}?</h2>
+        <p>Comparte tu experiencia para ayudar a otros usuarios</p>
+        <a href="{% url 'users:calificar_usuario' usuario.id_usuario %}" class="btn btn-primary btn-large">
+            Dejar una calificación
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/users/ver_calificaciones.js' %}"></script>
+{% endblock %}

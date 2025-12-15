@@ -1,0 +1,305 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-12-04 09:41-0500\n"
+"PO-Revision-Date: 2025-12-04 09:45-0500\n"
+"Last-Translator: Full Name <example@example.com>\n"
+"Language-Team: Spanish <es@li.org>\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Encuentra Trabajo Informal Rápido y Seguro"
+msgstr "Encuentra Trabajo Informal Rápido y Seguro"
+
+msgid "Navegación principal"
+msgstr "Navegación principal"
+
+msgid "Página principal"
+msgstr "Página principal"
+
+msgid "Selección de idioma"
+msgstr "Selección de idioma"
+
+msgid "Abrir menú de navegación"
+msgstr "Abrir menú de navegación"
+
+msgid "Nosotros"
+msgstr "Nosotros"
+
+msgid "Trabajos"
+msgstr "Trabajos"
+
+msgid "¿Cómo funciona?"
+msgstr "¿Cómo funciona?"
+
+msgid "Ingresar"
+msgstr "Ingresar"
+
+msgid "Comenzar"
+msgstr "Comenzar"
+
+msgid "Hecho en Perú 🇵🇪"
+msgstr "Hecho en Perú 🇵🇪"
+
+msgid "Encuentra trabajo <span class=\"text-highlight\">hoy mismo</span>"
+msgstr "Encuentra trabajo <span class=\"text-highlight\">hoy mismo</span>"
+
+msgid "La plataforma más rápida para conseguir trabajos informales o contratar profesionales verificados en tu zona."
+msgstr "La plataforma más rápida para conseguir trabajos informales o contratar profesionales verificados en tu zona."
+
+msgid "Acciones principales"
+msgstr "Acciones principales"
+
+msgid "Registrarse Gratis"
+msgstr "Registrarse Gratis"
+
+msgid "Buscar Trabajos"
+msgstr "Buscar Trabajos"
+
+msgid "Estadísticas de la plataforma"
+msgstr "Estadísticas de la plataforma"
+
+msgid "Usuarios activos"
+msgstr "Usuarios activos"
+
+msgid "Trabajos publicados"
+msgstr "Trabajos publicados"
+
+msgid "Calificación promedio"
+msgstr "Calificación promedio"
+
+msgid "Carpintero"
+msgstr "Carpintero"
+
+msgid "S/ 80 - 120 por día"
+msgstr "S/ 80 - 120 por día"
+
+msgid "Disponible"
+msgstr "Disponible"
+
+msgid "Plomero"
+msgstr "Plomero"
+
+msgid "S/ 60 - 100 por hora"
+msgstr "S/ 60 - 100 por hora"
+
+msgid "Urgente"
+msgstr "Urgente"
+
+msgid "Limpieza"
+msgstr "Limpieza"
+
+msgid "S/ 50 - 80 por día"
+msgstr "S/ 50 - 80 por día"
+
+msgid "Nuevo"
+msgstr "Nuevo"
+
+msgid "Beneficios"
+msgstr "Beneficios"
+
+msgid "¿Por qué elegir Llamkay?"
+msgstr "¿Por qué elegir Llamkay?"
+
+msgid "La forma más segura y rápida de trabajar en Perú"
+msgstr "La forma más segura y rápida de trabajar en Perú"
+
+msgid "Encuentra cerca de ti"
+msgstr "Encuentra cerca de ti"
+
+msgid "Busca trabajos o profesionales en tu distrito o comunidad"
+msgstr "Busca trabajos o profesionales en tu distrito o comunidad"
+
+#, python-format
+msgid "100%% Verificado"
+msgstr "100%% Verificado"
+
+msgid "Todos los usuarios pasan por verificación de identidad y antecedentes"
+msgstr "Todos los usuarios pasan por verificación de identidad y antecedentes"
+
+msgid "Chat directo"
+msgstr "Chat directo"
+
+msgid "Habla directamente con empleadores o trabajadores sin intermediarios"
+msgstr "Habla directamente con empleadores o trabajadores sin intermediarios"
+
+msgid "Sistema de reputación"
+msgstr "Sistema de reputación"
+
+msgid "Calificaciones y comentarios reales de trabajos completados"
+msgstr "Calificaciones y comentarios reales de trabajos completados"
+
+msgid "Pago flexible"
+msgstr "Pago flexible"
+
+msgid "Acepta efectivo, Yape, Plin o transferencias bancarias"
+msgstr "Acepta efectivo, Yape, Plin o transferencias bancarias"
+
+msgid "Protección garantizada"
+msgstr "Protección garantizada"
+
+msgid "Sistema de denuncias y mediación para resolver conflictos"
+msgstr "Sistema de denuncias y mediación para resolver conflictos"
+
+msgid "Simple y Rápido"
+msgstr "Simple y Rápido"
+
+msgid "En 4 pasos empiezas a trabajar o contratar"
+msgstr "En 4 pasos empiezas a trabajar o contratar"
+
+msgid "Paso 1"
+msgstr "Paso 1"
+
+msgid "Crea tu cuenta"
+msgstr "Crea tu cuenta"
+
+msgid "Regístrate gratis en menos de 2 minutos como trabajador, empleador o empresa"
+msgstr "Regístrate gratis en menos de 2 minutos como trabajador, empleador o empresa"
+
+msgid "Paso 2"
+msgstr "Paso 2"
+
+msgid "Completa tu perfil"
+msgstr "Completa tu perfil"
+
+msgid "Agrega tus habilidades, experiencia y verifica tu identidad para mayor confianza"
+msgstr "Agrega tus habilidades, experiencia y verifica tu identidad para mayor confianza"
+
+msgid "Paso 3"
+msgstr "Paso 3"
+
+msgid "Busca o publica"
+msgstr "Busca o publica"
+
+msgid "Encuentra trabajos cerca de ti o publica lo que necesitas en tu zona"
+msgstr "Encuentra trabajos cerca de ti o publica lo que necesitas en tu zona"
+
+msgid "Paso 4"
+msgstr "Paso 4"
+
+msgid "¡Conecta y trabaja!"
+msgstr "¡Conecta y trabaja!"
+
+msgid "Chatea, acuerda términos y completa el trabajo. Luego califica la experiencia"
+msgstr "Chatea, acuerda términos y completa el trabajo. Luego califica la experiencia"
+
+msgid "Empezar ahora"
+msgstr "Empezar ahora"
+
+msgid "Categorías Populares"
+msgstr "Categorías Populares"
+
+msgid "Trabajos más buscados"
+msgstr "Trabajos más buscados"
+
+msgid "Carpintería"
+msgstr "Carpintería"
+
+msgid "156 trabajos"
+msgstr "156 trabajos"
+
+msgid "Plomería"
+msgstr "Plomería"
+
+msgid "128 trabajos"
+msgstr "128 trabajos"
+
+msgid "Electricidad"
+msgstr "Electricidad"
+
+msgid "143 trabajos"
+msgstr "143 trabajos"
+
+msgid "Albañilería"
+msgstr "Albañilería"
+
+msgid "201 trabajos"
+msgstr "201 trabajos"
+
+msgid "167 trabajos"
+msgstr "167 trabajos"
+
+msgid "Jardinería"
+msgstr "Jardinería"
+
+msgid "89 trabajos"
+msgstr "89 trabajos"
+
+msgid "Pintura"
+msgstr "Pintura"
+
+msgid "112 trabajos"
+msgstr "112 trabajos"
+
+msgid "Ver todas"
+msgstr "Ver todas"
+
+msgid "500+ trabajos"
+msgstr "500+ trabajos"
+
+msgid "¿Listo para empezar?"
+msgstr "¿Listo para empezar?"
+
+msgid "Únete a miles de peruanos que ya trabajan con Llamkay"
+msgstr "Únete a miles de peruanos que ya trabajan con Llamkay"
+
+msgid "Crear cuenta gratis"
+msgstr "Crear cuenta gratis"
+
+msgid "Conectando talentos con oportunidades laborales en todo el Perú"
+msgstr "Conectando talentos con oportunidades laborales en todo el Perú"
+
+msgid "Redes sociales"
+msgstr "Redes sociales"
+
+msgid "Plataforma"
+msgstr "Plataforma"
+
+msgid "Buscar trabajos"
+msgstr "Buscar trabajos"
+
+msgid "Publicar trabajo"
+msgstr "Publicar trabajo"
+
+msgid "Cómo funciona"
+msgstr "Cómo funciona"
+
+msgid "Sobre nosotros"
+msgstr "Sobre nosotros"
+
+msgid "Soporte"
+msgstr "Soporte"
+
+msgid "Centro de ayuda"
+msgstr "Centro de ayuda"
+
+msgid "Términos de servicio"
+msgstr "Términos de servicio"
+
+msgid "Política de privacidad"
+msgstr "Política de privacidad"
+
+msgid "Reportar un problema"
+msgstr "Reportar un problema"
+
+msgid "Contacto"
+msgstr "Contacto"
+
+msgid "+51 987 654 321"
+msgstr "+51 987 654 321"
+
+msgid "Huánuco, Perú"
+msgstr "Huánuco, Perú"
+
+msgid "&copy; 2025 Llamkay.pe. Todos los derechos reservados."
+msgstr "&copy; 2025 Llamkay.pe. Todos los derechos reservados."

@@ -1,0 +1,42 @@
+/* === Botones de selección de planes === */
+.planes-selector {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin: 40px 0 60px 0;
+    flex-wrap: wrap;
+}
+
+.plan-option-btn {
+    background: linear-gradient(135deg, #00a86b, #007b5e);
+    color: #fff;
+    font-weight: 600;
+    font-size: 1.1rem;
+    padding: 14px 28px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 123, 94, 0.3);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.plan-option-btn .plan-option-price {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: #d1ffd8;
+    margin-top: 4px;
+}
+
+.plan-option-btn:hover {
+    background: linear-gradient(135deg, #00905c, #00644a);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
+}
+
+.plan-option-btn.active {
+    background: #004b35;
+    box-shadow: 0 0 0 3px #00e09b inset;
+    cursor: not-allowed;
+}
