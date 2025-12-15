@@ -1,95 +1,105 @@
 {% extends "users/base.html" %}
 {% load static %}
+{% load i18n %}
 
-{% block title %}Crear Cuenta - Paso 4/4 - Llamkay.pe{% endblock %}
+{% block title %}{% trans "Crear Cuenta - Paso 4/4" %} - Llamkay.pe{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/users/register.css' %}">
 {% endblock %}
 
 {% block content %}
+<!-- Header con selector de idioma -->
+<header class="lang-header">
+    <a href="{% url 'llamkay:index' %}" class="logo-link-header">
+        <span class="logo-icon-small">🧳</span>
+        <span class="logo-text-header">Llamkay.pe</span>
+    </a>
+    
+    <div class="language-switcher">
+        <button type="button" class="lang-btn active" data-lang="es">ES</button>
+        <button type="button" class="lang-btn" data-lang="en">EN</button>
+    </div>
+</header>
+
 <div class="register-wrapper">
-    <!-- SIDEBAR INFORMATIVO -->
-    <aside class="register-sidebar">
+
+    <!-- ==================== SIDEBAR INFORMATIVO ==================== -->
+    <aside class="register-sidebar" aria-labelledby="step4-sidebar-title">
+
         <div class="register-logo">
-            <h1>🌱 Llamkay</h1>
+            <h1 aria-label="{% trans 'Llamkay plataforma' %}">
+                🌱 Llamkay
+            </h1>
         </div>
-        
-        <h2>¡Último paso!</h2>
-        <p>Verifica tu identidad para garantizar la seguridad de todos.</p>
-        
+
+        <h2 id="step4-sidebar-title" data-i18n="sidebar-title">
+            {% trans "Completa tu perfil profesional" %}
+        </h2>
+
+        <p data-i18n="sidebar-description">
+            {% trans "Esta información ayuda a que te encuentren más rápido y con mejores oportunidades." %}
+        </p>
+
+        <!-- BENEFICIOS -->
         <ul class="benefits-list">
             <li>
-                <div class="benefit-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                <div class="benefit-icon" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                         stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
                     </svg>
                 </div>
                 <div class="benefit-text">
-                    <strong>Comunidad segura</strong>
-                    <span>Todos los usuarios están verificados</span>
+                    <strong data-i18n="benefit-1-title">{% trans "Más visibilidad" %}</strong>
+                    <span data-i18n="benefit-1-desc">{% trans "Tu perfil aparece mejor posicionado" %}</span>
                 </div>
             </li>
+
             <li>
-                <div class="benefit-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <div class="benefit-icon" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                         stroke-width="2">
                         <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                         <polyline points="22 4 12 14.01 9 11.01"></polyline>
                     </svg>
                 </div>
                 <div class="benefit-text">
-                    <strong>Mayor confianza</strong>
-                    <span>Aumenta tus posibilidades de contratación</span>
+                    <strong data-i18n="benefit-2-title">{% trans "Mayor confianza" %}</strong>
+                    <span data-i18n="benefit-2-desc">{% trans "Los empleadores prefieren perfiles completos" %}</span>
                 </div>
             </li>
+
             <li>
-                <div class="benefit-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                        <polyline points="14 2 14 8 20 8"></polyline>
+                <div class="benefit-icon" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                         stroke-width="2">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                     </svg>
                 </div>
                 <div class="benefit-text">
-                    <strong>Proceso rápido</strong>
-                    <span>Revisión en 24-48 horas</span>
-                </div>
-            </li>
-            <li>
-                <div class="benefit-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                        <polyline points="7 10 12 15 17 10"></polyline>
-                        <line x1="12" y1="15" x2="12" y2="3"></line>
-                    </svg>
-                </div>
-                <div class="benefit-text">
-                    <strong>Información protegida</strong>
-                    <span>Tus documentos están seguros</span>
+                    <strong data-i18n="benefit-3-title">{% trans "Mejores coincidencias" %}</strong>
+                    <span data-i18n="benefit-3-desc">{% trans "Te mostramos trabajos acordes a ti" %}</span>
                 </div>
             </li>
         </ul>
-        
-        <div class="alert alert-info" style="margin-top: 2rem;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="10"></circle>
-                <line x1="12" y1="16" x2="12" y2="12"></line>
-                <line x1="12" y1="8" x2="12.01" y2="8"></line>
-            </svg>
-            <div>
-                <strong>¿Dónde obtengo mi certificado?</strong>
-                <p style="margin-top: 0.5rem; font-size: 0.9rem;">Puedes obtenerlo gratuitamente en <a href="https://casillajudicial.pj.gob.pe" target="_blank" style="text-decoration: underline;">casillajudicial.pj.gob.pe</a></p>
-            </div>
-        </div>
+
     </aside>
 
-    <!-- CONTENIDO PRINCIPAL -->
+    <!-- ==================== CONTENIDO PRINCIPAL ==================== -->
     <main class="register-content">
         <div class="register-header">
-            <h2>Verificación de antecedentes</h2>
-            <p class="register-subtitle">Sube tu certificado de antecedentes penales</p>
+            <h2 data-i18n="main-title">{% trans "Completa tu perfil profesional" %}</h2>
+            <p class="register-subtitle" data-i18n="main-subtitle">
+                {% trans "Esta información ayuda a que te encuentren más rápido y con mejores oportunidades." %}
+            </p>
         </div>
 
-        <!-- BARRA DE PROGRESO -->
+        <!-- ==================== BARRA DE PROGRESO ==================== -->
         <div class="progress-container">
             <div class="progress-steps">
                 <div class="progress-step completed">
@@ -98,7 +108,7 @@
                             <polyline points="20 6 9 17 4 12"></polyline>
                         </svg>
                     </div>
-                    <span class="step-label">Información</span>
+                    <span class="step-label" data-i18n="step-1-label">{% trans "Información" %}</span>
                 </div>
                 <div class="progress-step completed">
                     <div class="step-circle">
@@ -106,7 +116,7 @@
                             <polyline points="20 6 9 17 4 12"></polyline>
                         </svg>
                     </div>
-                    <span class="step-label">Ubicación</span>
+                    <span class="step-label" data-i18n="step-2-label">{% trans "Ubicación" %}</span>
                 </div>
                 <div class="progress-step completed">
                     <div class="step-circle">
@@ -114,111 +124,160 @@
                             <polyline points="20 6 9 17 4 12"></polyline>
                         </svg>
                     </div>
-                    <span class="step-label">Perfil</span>
+                    <span class="step-label" data-i18n="step-3-label">{% trans "Perfil" %}</span>
                 </div>
                 <div class="progress-step active">
                     <div class="step-circle">4</div>
-                    <span class="step-label">Verificación</span>
+                    <span class="step-label" data-i18n="step-4-label">{% trans "Verificación" %}</span>
                 </div>
             </div>
         </div>
 
-        <!-- ALERTAS -->
-        {% if error %}
-        <div class="alert alert-error">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="10"></circle>
-                <line x1="12" y1="8" x2="12" y2="12"></line>
-                <line x1="12" y1="16" x2="12.01" y2="16"></line>
-            </svg>
-            <div>{{ error }}</div>
-        </div>
-        {% endif %}
-
-        <!-- FORMULARIO -->
-        <form method="post" enctype="multipart/form-data" class="register-form" id="registerFourForm" novalidate>
+        <!-- ==================== FORMULARIO - PERFIL PROFESIONAL ==================== -->
+        <form method="post" class="register-form" id="profile-form" novalidate>
             {% csrf_token %}
-            
+
+            <!-- ==================== PERFIL PROFESIONAL ==================== -->
             <fieldset>
-                <legend>Constancia de Antecedentes Penales</legend>
-                
-                <div class="alert alert-info">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <line x1="12" y1="16" x2="12" y2="12"></line>
-                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                    </svg>
-                    <div>
-                        <strong>Documento requerido</strong>
-                        <p style="margin-top: 0.5rem;">Este certificado garantiza la seguridad de toda la comunidad. Todos los usuarios deben presentarlo.</p>
-                    </div>
-                </div>
-                
+                <legend data-i18n="legend-professional">{% trans "Perfil profesional" %}</legend>
+
                 <div class="form-grid">
                     <div class="form-group">
-                        <label for="antecedentes">Archivo del certificado *</label>
-                        <input 
-                            type="file" 
-                            name="antecedentes" 
-                            id="antecedentes"
-                            accept=".pdf,.jpg,.jpeg,.png"
+                        <label for="id_titulo">
+                            <span data-i18n="label-title">{% trans "Título profesional" %}</span> *
+                        </label>
+                        <input
+                            type="text"
+                            id="id_titulo"
+                            name="titulo"
+                            placeholder="{% trans 'Ej: Electricista, Diseñador gráfico, Albañil' %}"
                             required
-                            style="display: none;">
-                        
-                        <div class="file-upload-area" id="uploadArea">
-                            <div class="file-upload-icon">📄</div>
-                            <div class="file-upload-text">
-                                <h4>Arrastra tu archivo aquí</h4>
-                                <p>o haz clic para seleccionar</p>
-                            </div>
-                        </div>
-                        
-                        <div id="fileDisplay"></div>
-                        
-                        <span class="form-help">Formatos aceptados: PDF, JPG, PNG • Tamaño máximo: 5MB</span>
-                        
-                        {% if form.antecedentes.errors %}
-                        <span class="form-error">{{ form.antecedentes.errors.0 }}</span>
-                        {% endif %}
+                            aria-required="true"
+                            data-i18n-placeholder="placeholder-title"
+                        >
+                        <span class="form-help" data-i18n="help-title">
+                            {% trans "Este título será lo primero que vean quienes te busquen." %}
+                        </span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_experiencia">
+                            <span data-i18n="label-experience">{% trans "Años de experiencia" %}</span> *
+                        </label>
+                        <select id="id_experiencia" name="experiencia" required>
+                            <option value="" data-i18n="option-select">{% trans "Selecciona una opción" %}</option>
+                            <option value="0-1" data-i18n="option-years-0-1">{% trans "Menos de 1 año" %}</option>
+                            <option value="1-3" data-i18n="option-years-1-3">{% trans "1 a 3 años" %}</option>
+                            <option value="3-5" data-i18n="option-years-3-5">{% trans "3 a 5 años" %}</option>
+                            <option value="5+" data-i18n="option-years-5+">{% trans "Más de 5 años" %}</option>
+                        </select>
                     </div>
                 </div>
             </fieldset>
 
-            <!-- CONFIRMACIÓN FINAL -->
-            <div class="alert alert-success" style="margin-top: 2rem;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            <!-- ==================== DESCRIPCIÓN PERSONAL ==================== -->
+            <fieldset>
+                <legend data-i18n="legend-about">{% trans "Sobre ti" %}</legend>
+
+                <div class="form-group">
+                    <label for="id_descripcion">
+                        <span data-i18n="label-description">{% trans "Descripción profesional" %}</span> *
+                    </label>
+                    <textarea
+                        id="id_descripcion"
+                        name="descripcion"
+                        rows="5"
+                        placeholder="{% trans 'Describe tu experiencia, habilidades y el tipo de trabajos que realizas.' %}"
+                        required
+                        data-i18n-placeholder="placeholder-description"
+                    ></textarea>
+                    <span class="form-help" data-i18n="help-description">
+                        {% trans "Una buena descripción aumenta la confianza y las oportunidades." %}
+                    </span>
+                </div>
+            </fieldset>
+
+            <!-- ==================== DISPONIBILIDAD ==================== -->
+            <fieldset>
+                <legend data-i18n="legend-availability">{% trans "Disponibilidad" %}</legend>
+
+                <div class="form-grid form-grid-2">
+                    <div class="form-group">
+                        <label for="id_disponibilidad">
+                            <span data-i18n="label-schedule">{% trans "Disponibilidad horaria" %}</span>
+                        </label>
+                        <select id="id_disponibilidad" name="disponibilidad">
+                            <option value="" data-i18n="option-select">{% trans "Selecciona una opción" %}</option>
+                            <option value="tiempo_completo" data-i18n="option-fulltime">{% trans "Tiempo completo" %}</option>
+                            <option value="medio_tiempo" data-i18n="option-parttime">{% trans "Medio tiempo" %}</option>
+                            <option value="fines_semana" data-i18n="option-weekends">{% trans "Fines de semana" %}</option>
+                            <option value="flexible" data-i18n="option-flexible">{% trans "Flexible" %}</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_modalidad">
+                            <span data-i18n="label-modality">{% trans "Modalidad de trabajo" %}</span>
+                        </label>
+                        <select id="id_modalidad" name="modalidad">
+                            <option value="" data-i18n="option-select">{% trans "Selecciona una opción" %}</option>
+                            <option value="presencial" data-i18n="option-onsite">{% trans "Presencial" %}</option>
+                            <option value="remoto" data-i18n="option-remote">{% trans "Remoto" %}</option>
+                            <option value="mixto" data-i18n="option-hybrid">{% trans "Mixto" %}</option>
+                        </select>
+                    </div>
+                </div>
+            </fieldset>
+
+            <!-- ==================== CONSEJO ==================== -->
+            <div class="alert alert-info" style="margin-top: 2rem;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
                 </svg>
                 <div>
-                    <strong>¡Casi listo!</strong>
-                    <p style="margin-top: 0.5rem;">Una vez que envíes el formulario, revisaremos tu información y te notificaremos en 24-48 horas.</p>
+                    <strong data-i18n="tip-title">{% trans "Consejo" %}</strong>
+                    <p style="margin-top: .5rem;" data-i18n="tip-description">
+                        {% trans "Un perfil completo y claro aumenta tus oportunidades de ser contactado." %}
+                    </p>
                 </div>
             </div>
 
-            <!-- BOTONES -->
+            <!-- ==================== ACCIONES DEL FORMULARIO ==================== -->
             <div class="form-actions">
+                <!-- Volver -->
                 <a href="{% url 'users:register_three' %}" class="btn btn-secondary">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <line x1="19" y1="12" x2="5" y2="12"></line>
                         <polyline points="12 19 5 12 12 5"></polyline>
                     </svg>
-                    Anterior
+                    <span data-i18n="btn-back">{% trans "Anterior" %}</span>
                 </a>
-                <button type="submit" class="btn btn-primary" id="submitBtn">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+
+                <!-- Continuar -->
+                <button type="submit" class="btn btn-primary">
+                    <span data-i18n="btn-finish">{% trans "Finalizar" %}</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="20 6 9 17 4 12"></polyline>
                     </svg>
-                    Finalizar Registro
                 </button>
             </div>
         </form>
 
-        <!-- FOOTER -->
+        <!-- ==================== FOOTER ==================== -->
         <div class="register-footer">
-            <p>¿Ya tienes una cuenta? <a href="{% url 'users:login' %}">Inicia sesión aquí</a></p>
+            <p>
+                <span data-i18n="footer-have-account">{% trans "¿Ya tienes una cuenta?" %}</span>
+                <a href="{% url 'users:login' %}" data-i18n="footer-login">
+                    {% trans "Inicia sesión aquí" %}
+                </a>
+            </p>
         </div>
+
     </main>
 </div>
 {% endblock %}

@@ -1,210 +1,254 @@
 // =============================================
-// SELECCIONAR TIPO - LLAMKAY.PE (JAVASCRIPT)
+// SELECCIONAR TIPO - LLAMKAY.PE MEJORADO
+// Cambio de idioma + UX + Accesibilidad
 // =============================================
 
-document.addEventListener('DOMContentLoaded', function () {
-    console.log('🎯 Seleccionar Tipo JS iniciado');
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('✅ seleccionar_tipo.js iniciado');
 
     // ==================== ELEMENTOS ====================
-    const optionCards = document.querySelectorAll('.option-card');
-    const selectorForm = document.getElementById('selectorForm');
-    const tipoUsuarioInput = document.getElementById('tipo_usuario_input');
+    const optionCards = document.querySelectorAll('.option-card-new');
+    const langButtons = document.querySelectorAll('.lang-btn');
+    const form = document.getElementById('selectorForm');
 
-    // ==================== MANEJO DE CLICKS ====================
-    optionCards.forEach(card => {
-        card.addEventListener('click', function(e) {
-            const tipoUsuario = this.getAttribute('data-tipo');
-            console.log('📌 Tipo seleccionado:', tipoUsuario);
-            
-            // Establecer el valor en el input hidden
-            if (tipoUsuarioInput) {
-                tipoUsuarioInput.value = tipoUsuario;
-            }
-            
-            // Añadir clase de selección
-            optionCards.forEach(c => c.classList.remove('selected'));
-            this.classList.add('selected');
-            
-            // Animación de click
-            this.style.transform = 'scale(0.98)';
-            setTimeout(() => {
-                this.style.transform = '';
-            }, 100);
-
-            // Crear efecto ripple
-            createRipple(e, this);
-            
-            // Enviar el formulario después de un breve delay
-            setTimeout(() => {
-                console.log('📤 Enviando formulario con tipo:', tipoUsuario);
-                if (selectorForm) {
-                    selectorForm.submit();
-                }
-            }, 300);
-        });
-        
-        // Soporte para Enter y Espacio
-        card.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                this.click();
-            }
-        });
-    });
-
-    // ==================== HOVER EFFECTS ====================
-    optionCards.forEach(card => {
-        // Efecto hover con mouse tracking
-        card.addEventListener('mousemove', function(e) {
-            const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
-            
-            const rotateX = (y - centerY) / 20;
-            const rotateY = (centerX - x) / 20;
-            
-            card.style.transform = `
-                perspective(1000px) 
-                rotateX(${rotateX}deg) 
-                rotateY(${rotateY}deg) 
-                translateY(-5px)
-                scale(1.02)
-            `;
-        });
-
-        card.addEventListener('mouseleave', function() {
-            card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0) scale(1)';
-        });
-    });
-
-    // ==================== EFECTO RIPPLE ====================
-    function createRipple(event, element) {
-        // Validar que el evento tiene las propiedades necesarias
-        if (!event.clientX || !event.clientY) {
-            console.log('⚠️ Evento sin coordenadas, saltando ripple');
-            return;
+    // ==================== TRADUCCIONES ====================
+    const translations = {
+        es: {
+            step: 'Paso 1 de 5',
+            title: '¿Cómo deseas registrarte?',
+            subtitle: 'Selecciona tu rol en la plataforma para continuar',
+            trabajador_title: 'Buscar trabajo',
+            trabajador_desc: 'Encuentra oportunidades laborales en tu zona',
+            dual_title: 'Buscar y publicar trabajos',
+            dual_desc: 'Trabaja y contrata según tus necesidades',
+            empleador_title: 'Publicar trabajos',
+            empleador_desc: 'Contrata profesionales verificados',
+            empresa_title: 'Soy una empresa',
+            empresa_desc: 'Registro corporativo con RUC',
+            popular: 'Popular',
+            recommended: 'Recomendado',
+            corporate: 'Corporativo',
+            have_account: '¿Ya tienes una cuenta?',
+            login: 'Inicia sesión aquí',
+            back: 'Volver al inicio',
+            info_title: '¿No estás seguro?',
+            info_desc: 'Puedes cambiar tu tipo de cuenta después del registro desde tu perfil.'
+        },
+        en: {
+            step: 'Step 1 of 5',
+            title: 'How do you want to register?',
+            subtitle: 'Select your role on the platform to continue',
+            trabajador_title: 'Find work',
+            trabajador_desc: 'Find job opportunities in your area',
+            dual_title: 'Find and post jobs',
+            dual_desc: 'Work and hire according to your needs',
+            empleador_title: 'Post jobs',
+            empleador_desc: 'Hire verified professionals',
+            empresa_title: 'I am a company',
+            empresa_desc: 'Corporate registration with RUC',
+            popular: 'Popular',
+            recommended: 'Recommended',
+            corporate: 'Corporate',
+            have_account: 'Already have an account?',
+            login: 'Log in here',
+            back: 'Back to home',
+            info_title: 'Not sure?',
+            info_desc: 'You can change your account type after registration from your profile.'
         }
+    };
+
+    // ==================== CAMBIO DE IDIOMA ====================
+    let currentLang = 'es';
+
+    function changeLanguage(lang) {
+        currentLang = lang;
         
+        // Actualizar botones activos
+        langButtons.forEach(btn => {
+            if (btn.dataset.lang === lang) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+
+        // Actualizar textos
+        const t = translations[lang];
+
+        // Header
+        const stepBadge = document.querySelector('.step-badge');
+        const title = document.querySelector('.selector-title');
+        const subtitle = document.querySelector('.selector-subtitle');
+        
+        if (stepBadge) stepBadge.textContent = t.step;
+        if (title) title.textContent = t.title;
+        if (subtitle) subtitle.textContent = t.subtitle;
+
+        // Cards
+        const cards = document.querySelectorAll('.option-card-new');
+        cards.forEach((card, index) => {
+            const h3 = card.querySelector('h3');
+            const p = card.querySelector('p');
+            
+            if (index === 0) { // Trabajador
+                if (h3) h3.textContent = t.trabajador_title;
+                if (p) p.textContent = t.trabajador_desc;
+            } else if (index === 1) { // Dual
+                if (h3) h3.textContent = t.dual_title;
+                if (p) p.textContent = t.dual_desc;
+            } else if (index === 2) { // Empleador
+                if (h3) h3.textContent = t.empleador_title;
+                if (p) p.textContent = t.empleador_desc;
+            } else if (index === 3) { // Empresa
+                if (h3) h3.textContent = t.empresa_title;
+                if (p) p.textContent = t.empresa_desc;
+            }
+        });
+
+        // Badges
+        const popularBadge = document.querySelector('.popular-badge');
+        const featuredCorner = document.querySelector('.featured-corner span');
+        const corporateBadge = document.querySelector('.corporate-badge');
+        
+        if (popularBadge) popularBadge.textContent = t.popular;
+        if (featuredCorner) featuredCorner.textContent = t.recommended;
+        if (corporateBadge) corporateBadge.textContent = t.corporate;
+
+        // Footer
+        const footerP = document.querySelector('.selector-footer-new p');
+        const loginLink = document.querySelector('.selector-footer-new p a');
+        const backLink = document.querySelector('.back-link-new');
+        
+        if (footerP) {
+            footerP.innerHTML = `${t.have_account} <a href="${loginLink?.href || '#'}">${t.login}</a>`;
+        }
+        if (backLink) {
+            backLink.innerHTML = `← ${t.back}`;
+        }
+
+        // Info banner
+        const infoTitle = document.querySelector('.info-text-new strong');
+        const infoDesc = document.querySelector('.info-text-new span');
+        
+        if (infoTitle) infoTitle.textContent = t.info_title;
+        if (infoDesc) infoDesc.textContent = t.info_desc;
+
+        // Guardar preferencia
+        localStorage.setItem('llamkay_lang', lang);
+    }
+
+    // Event listeners para cambio de idioma
+    langButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            changeLanguage(btn.dataset.lang);
+        });
+    });
+
+    // Cargar idioma guardado
+    const savedLang = localStorage.getItem('llamkay_lang');
+    if (savedLang && savedLang !== 'es') {
+        changeLanguage(savedLang);
+    }
+
+    // ==================== INTERACCIONES DE CARDS ====================
+    if (optionCards.length) {
+        optionCards.forEach(card => {
+            // Click feedback
+            card.addEventListener('click', (e) => {
+                optionCards.forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
+
+                // Microinteracción
+                card.style.transform = 'scale(0.98)';
+                setTimeout(() => {
+                    card.style.transform = '';
+                }, 100);
+
+                // Ripple
+                if (e.clientX && e.clientY) {
+                    createRipple(e, card);
+                }
+            });
+
+            // Teclado
+            card.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    card.click();
+                }
+            });
+        });
+    }
+
+    // ==================== RIPPLE EFFECT ====================
+    function createRipple(event, element) {
         const ripple = document.createElement('span');
         const rect = element.getBoundingClientRect();
         const size = Math.max(rect.width, rect.height);
-        const x = event.clientX - rect.left - size / 2;
-        const y = event.clientY - rect.top - size / 2;
 
-        ripple.style.cssText = `
-            position: absolute;
-            width: ${size}px;
-            height: ${size}px;
-            border-radius: 50%;
-            background: rgba(7, 115, 75, 0.3);
-            top: ${y}px;
-            left: ${x}px;
-            pointer-events: none;
-            transform: scale(0);
-            animation: ripple-animation 0.6s ease-out;
-            z-index: 10;
-        `;
+        ripple.style.width = ripple.style.height = `${size}px`;
+        ripple.style.left = `${event.clientX - rect.left - size / 2}px`;
+        ripple.style.top = `${event.clientY - rect.top - size / 2}px`;
+        ripple.style.position = 'absolute';
+        ripple.style.borderRadius = '50%';
+        ripple.style.background = 'rgba(7, 115, 75, 0.3)';
+        ripple.style.transform = 'scale(0)';
+        ripple.style.animation = 'ripple-anim 0.6s ease-out';
+        ripple.style.pointerEvents = 'none';
 
         element.appendChild(ripple);
-
-        setTimeout(() => {
-            ripple.remove();
-        }, 600);
+        setTimeout(() => ripple.remove(), 600);
     }
 
     // ==================== NAVEGACIÓN CON TECLADO ====================
     let currentIndex = -1;
 
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
-            e.preventDefault();
+    document.addEventListener('keydown', (e) => {
+        if (!['ArrowRight', 'ArrowDown', 'ArrowLeft', 'ArrowUp'].includes(e.key)) return;
+        
+        e.preventDefault();
+
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
             currentIndex = (currentIndex + 1) % optionCards.length;
-            focusCard(currentIndex);
-        } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
-            e.preventDefault();
+        } else {
             currentIndex = currentIndex <= 0 ? optionCards.length - 1 : currentIndex - 1;
-            focusCard(currentIndex);
-        } else if (e.key === 'Enter' && currentIndex >= 0) {
-            e.preventDefault();
-            optionCards[currentIndex].click();
-        }
-    });
-
-    function focusCard(index) {
-        optionCards.forEach((card, i) => {
-            if (i === index) {
-                card.style.outline = '3px solid var(--color-primary)';
-                card.style.outlineOffset = '2px';
-                card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            } else {
-                card.style.outline = 'none';
-            }
-        });
-    }
-
-    // ==================== ANIMACIONES CSS ====================
-    const style = document.createElement('style');
-    style.textContent = `
-        @keyframes ripple-animation {
-            to {
-                transform: scale(2);
-                opacity: 0;
-            }
         }
 
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        .option-card.selected {
-            border-color: var(--color-primary) !important;
-            box-shadow: 0 0 0 4px rgba(7, 115, 75, 0.1) !important;
-        }
-
-        .option-card:focus-visible {
-            outline: 3px solid var(--color-primary);
-            outline-offset: 2px;
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            .option-card,
-            .option-icon,
-            * {
-                animation: none !important;
-                transition: none !important;
-            }
-        }
-    `;
-    document.head.appendChild(style);
-
-    // ==================== TOOLTIPS INFORMATIVOS ====================
-    const tooltips = {
-        'trabajador': 'Ideal para buscar trabajos temporales o freelance',
-        'trabajador_empleador': 'La opción más flexible y popular entre usuarios',
-        'empleador': 'Perfecto si solo necesitas contratar',
-        'empresa': 'Para negocios con RUC y necesidades corporativas'
-    };
-
-    optionCards.forEach(card => {
-        const tipoUsuario = card.getAttribute('data-tipo');
-        if (tipoUsuario && tooltips[tipoUsuario]) {
-            card.setAttribute('title', tooltips[tipoUsuario]);
-        }
-    });
-
-    // ==================== ANALYTICS (opcional) ====================
-    optionCards.forEach(card => {
-        card.addEventListener('click', function() {
-            const optionName = this.querySelector('h3')?.textContent || 'Unknown';
-            console.log(`📊 Opción seleccionada: ${optionName}`);
+        optionCards[currentIndex]?.focus();
+        optionCards[currentIndex]?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center'
         });
     });
 
-    console.log('✅ Seleccionar Tipo JS completamente cargado');
-    console.log(`📋 ${optionCards.length} opciones disponibles`);
+    // ==================== ANIMACIÓN DE CARGA ====================
+    optionCards.forEach((card, i) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        
+        setTimeout(() => {
+            card.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, i * 100);
+    });
+
+    console.log('🎉 seleccionar_tipo.js listo');
 });
+
+// ==================== ESTILOS DINÁMICOS ====================
+const style = document.createElement('style');
+style.textContent = `
+@keyframes ripple-anim {
+    to {
+        transform: scale(2);
+        opacity: 0;
+    }
+}
+
+.option-card-new.selected {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(7, 115, 75, 0.1);
+}
+`;
+document.head.appendChild(style);

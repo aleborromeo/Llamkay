@@ -1,19 +1,20 @@
 // =============================================
 // DASHBOARD JAVASCRIPT - LLAMKAY.PE
-// Aplicando Principios de Nielsen y Responsividad
+// Mejorado: Responsividad, Accesibilidad e i18n
 // =============================================
 
 /**
  * PRINCIPIOS APLICADOS:
- * ✓ NIELSEN #1 - Visibilidad del estado del sistema
- * ✓ NIELSEN #3 - Control y libertad del usuario
- * ✓ NIELSEN #5 - Prevención de errores
- * ✓ NIELSEN #8 - Estética y diseño minimalista
- * ✓ NIELSEN #9 - Ayuda a reconocer y recuperarse de errores
+ * ✓ Nielsen #1 - Visibilidad del estado del sistema
+ * ✓ Nielsen #3 - Control y libertad del usuario
+ * ✓ Nielsen #5 - Prevención de errores
+ * ✓ Nielsen #8 - Estética y diseño minimalista
+ * ✓ Nielsen #9 - Ayuda a reconocer y recuperarse de errores
+ * ✓ Nielsen #10 - Accesibilidad
+ * ✓ Internacionalización (i18n) completa
  */
 
 document.addEventListener('DOMContentLoaded', function() {
-    
     // ==================== INICIALIZACIÓN ====================
     initMobileMenu();
     initUserDropdown();
@@ -23,17 +24,57 @@ document.addEventListener('DOMContentLoaded', function() {
     updateWelcomeMessage();
     initAccessibility();
     initResponsiveChecks();
+    initLanguageSwitcher();
+    initKeyboardNavigation();
+    initTouchOptimization();
     
     console.log('✅ Dashboard cargado con principios de usabilidad aplicados! 🚀');
 });
 
-/**
- * ═══════════════════════════════════════════════════════════
- * MENÚ MÓVIL RESPONSIVO
- * NIELSEN #1: Visibilidad del estado (abierto/cerrado)
- * NIELSEN #3: Control del usuario (abrir/cerrar fácilmente)
- * ═══════════════════════════════════════════════════════════
- */
+/* =========================================================
+   LANGUAGE SWITCHER (i18n)
+   Manejo de cambio de idioma sin recargar
+   ========================================================= */
+function initLanguageSwitcher() {
+    const languageForm = document.getElementById('language-form');
+    const languageInput = document.getElementById('language-input');
+    
+    if (!languageForm || !languageInput) return;
+    
+    // Delegación de eventos para los botones de idioma
+    document.addEventListener('click', function(e) {
+        const langBtn = e.target.closest('.lang-btn');
+        if (!langBtn) return;
+        
+        e.preventDefault();
+        
+        const selectedLang = langBtn.dataset.lang;
+        
+        // Actualizar visualmente botones activos
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.classList.remove('active');
+            btn.setAttribute('aria-checked', 'false');
+        });
+        
+        langBtn.classList.add('active');
+        langBtn.setAttribute('aria-checked', 'true');
+        
+        // Establecer el idioma y enviar formulario
+        languageInput.value = selectedLang;
+        
+        // Feedback visual antes de enviar
+        langBtn.style.transform = 'scale(0.95)';
+        setTimeout(() => {
+            langBtn.style.transform = '';
+            languageForm.submit();
+        }, 150);
+        
+        // Anunciar cambio para lectores de pantalla
+        announceToScreenReader(`Idioma cambiado a ${selectedLang === 'es' ? 'Español' : 'English'}`);
+    });
+}
+
+/* ==================== MENÚ MÓVIL ==================== */
 function initMobileMenu() {
     const navToggle = document.querySelector('.nav-toggle');
     const navMenu = document.querySelector('.nav-menu');
@@ -46,90 +87,60 @@ function initMobileMenu() {
         toggleMenu();
     });
     
-    // Cerrar menú al hacer click en un enlace (excepto mobile actions)
+    // Cerrar menú al hacer clic en enlaces (excepto acciones móviles)
     const navLinks = navMenu.querySelectorAll('a');
     navLinks.forEach(link => {
-        link.addEventListener('click', () => {
+        link.addEventListener('click', (e) => {
             if (!link.closest('.nav-mobile-actions')) {
                 closeMenu();
             }
         });
     });
     
-    // Cerrar menú al hacer click fuera
+    // Cerrar menú al hacer clic fuera
     document.addEventListener('click', function(e) {
         if (!navToggle.contains(e.target) && !navMenu.contains(e.target)) {
-            if (navMenu.classList.contains('active')) {
-                closeMenu();
-            }
+            closeMenu();
         }
     });
     
-    // Cerrar con tecla ESC - NIELSEN #3: Control del usuario
+    // Cerrar con tecla Escape
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape' && navMenu.classList.contains('active')) {
             closeMenu();
-            navToggle.focus(); // Devolver foco para accesibilidad
+            navToggle.focus();
         }
     });
     
-    // NIELSEN #5: Prevención de errores - No cerrar si se está scrolleando
-    let isScrolling = false;
-    navMenu.addEventListener('scroll', () => {
-        isScrolling = true;
-        setTimeout(() => isScrolling = false, 100);
-    });
-    
+    // Funciones auxiliares
     function toggleMenu() {
         const isExpanded = navMenu.classList.toggle('active');
-        
-        // NIELSEN #1: Visibilidad del estado - Actualizar ARIA
         navToggle.setAttribute('aria-expanded', isExpanded);
-        
-        // Animar hamburger
-        animateHamburger(isExpanded);
-        
-        // Prevenir scroll del body cuando menú está abierto
         document.body.style.overflow = isExpanded ? 'hidden' : '';
         
-        // NIELSEN #1: Feedback visual en consola (solo dev)
-        console.log('Menú móvil:', isExpanded ? 'Abierto' : 'Cerrado');
+        // Anunciar estado para lectores de pantalla
+        announceToScreenReader(isExpanded ? 'Menú abierto' : 'Menú cerrado');
+        
+        // Enfocar primer elemento del menú cuando se abre
+        if (isExpanded) {
+            const firstLink = navMenu.querySelector('a');
+            if (firstLink) {
+                setTimeout(() => firstLink.focus(), 100);
+            }
+        }
     }
     
     function closeMenu() {
-        if (isScrolling) return; // No cerrar si está scrolleando
-        
         navMenu.classList.remove('active');
         navToggle.setAttribute('aria-expanded', 'false');
         document.body.style.overflow = '';
-        animateHamburger(false);
     }
     
-    function animateHamburger(isOpen) {
-        const spans = navToggle.querySelectorAll('span');
-        if (isOpen) {
-            spans[0].style.transform = 'rotate(45deg) translate(8px, 8px)';
-            spans[1].style.opacity = '0';
-            spans[2].style.transform = 'rotate(-45deg) translate(7px, -6px)';
-        } else {
-            spans.forEach(span => {
-                span.style.transform = '';
-                span.style.opacity = '';
-            });
-        }
-    }
-    
-    // Hacer closeMenu accesible globalmente
+    // Hacer accesible globalmente
     window.closeMenu = closeMenu;
 }
 
-/**
- * ═══════════════════════════════════════════════════════════
- * USER DROPDOWN
- * NIELSEN #1: Visibilidad del estado
- * NIELSEN #3: Control del usuario
- * ═══════════════════════════════════════════════════════════
- */
+/* ==================== USER DROPDOWN ==================== */
 function initUserDropdown() {
     const userMenuBtn = document.getElementById('userMenuBtn');
     const userDropdown = document.getElementById('userDropdown');
@@ -142,378 +153,361 @@ function initUserDropdown() {
         e.stopPropagation();
         
         const isActive = userDropdown.classList.toggle('active');
-        userMenuBtn.classList.toggle('active');
-        
-        // NIELSEN #1: Actualizar ARIA para accesibilidad
         userMenuBtn.setAttribute('aria-expanded', isActive);
+        userMenuBtn.classList.toggle('active', isActive);
         
-        console.log('User menu:', isActive ? 'Abierto' : 'Cerrado');
-    });
-    
-    // Cerrar dropdown cuando se hace click fuera
-    document.addEventListener('click', function(e) {
-        if (!userMenuBtn.contains(e.target) && !userDropdown.contains(e.target)) {
-            closeDropdown();
-        }
-    });
-    
-    // NIELSEN #3: Cerrar con ESC
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            closeDropdown();
-            
-            // También cerrar menú móvil si está abierto
-            const navMenu = document.querySelector('.nav-menu');
-            if (navMenu && navMenu.classList.contains('active')) {
-                window.closeMenu();
+        // Anunciar para lectores de pantalla
+        announceToScreenReader(isActive ? 'Menú de usuario abierto' : 'Menú de usuario cerrado');
+        
+        // Enfocar primer elemento cuando se abre
+        if (isActive) {
+            const firstItem = userDropdown.querySelector('.dropdown-item');
+            if (firstItem) {
+                setTimeout(() => firstItem.focus(), 100);
             }
         }
     });
     
-    // Cerrar dropdown al hacer click en un enlace
-    const dropdownLinks = userDropdown.querySelectorAll('a');
-    dropdownLinks.forEach(link => {
-        link.addEventListener('click', () => {
-            setTimeout(closeDropdown, 100); // Pequeño delay para UX
-        });
+    // Cerrar al hacer clic fuera
+    document.addEventListener('click', function(e) {
+        if (!userMenuBtn.contains(e.target) && !userDropdown.contains(e.target)) {
+            userDropdown.classList.remove('active');
+            userMenuBtn.setAttribute('aria-expanded', 'false');
+            userMenuBtn.classList.remove('active');
+        }
     });
     
-    function closeDropdown() {
-        userDropdown.classList.remove('active');
-        userMenuBtn.classList.remove('active');
-        userMenuBtn.setAttribute('aria-expanded', 'false');
-    }
+    // Cerrar con Escape
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && userDropdown.classList.contains('active')) {
+            userDropdown.classList.remove('active');
+            userMenuBtn.setAttribute('aria-expanded', 'false');
+            userMenuBtn.classList.remove('active');
+            userMenuBtn.focus();
+        }
+    });
 }
 
-/**
- * ═══════════════════════════════════════════════════════════
- * SMOOTH SCROLL
- * NIELSEN #8: Estética y experiencia fluida
- * ═══════════════════════════════════════════════════════════
- */
+/* ==================== SMOOTH SCROLL ==================== */
 function initSmoothScroll() {
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
+        anchor.addEventListener('click', function(e) {
             const href = this.getAttribute('href');
-            if (href !== '#') {
+            
+            if (href !== '#' && href !== '#!') {
                 e.preventDefault();
+                
                 const target = document.querySelector(href);
                 if (target) {
-                    // NIELSEN #1: Feedback visual del scroll
+                    // Smooth scroll
                     target.scrollIntoView({
                         behavior: 'smooth',
                         block: 'start'
                     });
                     
-                    // Actualizar foco para accesibilidad
+                    // Hacer el elemento enfocable y enfocarlo
                     target.setAttribute('tabindex', '-1');
                     target.focus();
+                    
+                    // Anunciar navegación
+                    const targetText = target.getAttribute('aria-label') || 
+                                     target.querySelector('h1, h2, h3')?.textContent || 
+                                     'Sección';
+                    announceToScreenReader(`Navegado a ${targetText}`);
                 }
             }
         });
     });
 }
 
-/**
- * ═══════════════════════════════════════════════════════════
- * ANIMACIONES Y FEEDBACK VISUAL
- * NIELSEN #1: Visibilidad del estado
- * NIELSEN #8: Estética minimalista
- * ═══════════════════════════════════════════════════════════
- */
+/* ==================== ANIMACIONES ==================== */
 function initAnimations() {
-    // Animación de botones de aplicación
-    const applyButtons = document.querySelectorAll('.job-card .btn-small.btn-primary');
-    
-    applyButtons.forEach(button => {
-        button.addEventListener('click', function(e) {
-            // NIELSEN #1: Feedback táctil visual
-            this.style.transform = 'scale(0.95)';
-            setTimeout(() => {
-                this.style.transform = '';
-            }, 150);
-        });
-    });
-    
     // Intersection Observer para animaciones al scroll
     const observerOptions = {
         threshold: 0.1,
         rootMargin: '0px 0px -50px 0px'
     };
     
-    const observer = new IntersectionObserver(function(entries) {
+    const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                // NIELSEN #8: Animaciones sutiles y elegantes
-                entry.target.style.opacity = '0';
-                entry.target.style.transform = 'translateY(20px)';
-                
-                setTimeout(() => {
-                    entry.target.style.transition = 'all 0.5s ease';
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                }, 100);
-                
-                observer.unobserve(entry.target);
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+                entry.target.classList.add('animate-fade-in');
             }
         });
     }, observerOptions);
     
-    // Observar elementos para animación
-    document.querySelectorAll('.activity-item, .job-card, .stat-card').forEach(item => {
-        observer.observe(item);
+    // Observar elementos animables
+    document.querySelectorAll('.activity-item, .job-card, .stat-card, .sidebar-card').forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(20px)';
+        el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        observer.observe(el);
     });
     
-    // Animación de barra de progreso
+    // Animar barra de progreso
     animateProgressBar();
 }
 
-/**
- * NIELSEN #1: Visibilidad del estado - Barra de progreso animada
- */
 function animateProgressBar() {
     const progressBar = document.querySelector('.progress-fill');
-    if (progressBar) {
-        const targetWidth = progressBar.style.width;
-        progressBar.style.width = '0%';
+    if (!progressBar) return;
+    
+    const targetWidth = progressBar.style.width;
+    progressBar.style.width = '0%';
+    
+    setTimeout(() => {
+        progressBar.style.width = targetWidth;
         
-        // NIELSEN #1: Feedback visual del progreso
-        setTimeout(() => {
-            progressBar.style.transition = 'width 1s ease';
-            progressBar.style.width = targetWidth;
-        }, 500);
-    }
+        // Anunciar progreso para lectores de pantalla
+        const percentage = parseInt(targetWidth);
+        if (!isNaN(percentage)) {
+            setTimeout(() => {
+                announceToScreenReader(`Perfil completado al ${percentage} por ciento`);
+            }, 600);
+        }
+    }, 400);
 }
 
-/**
- * ═══════════════════════════════════════════════════════════
- * LAZY LOADING DE IMÁGENES
- * RESPONSIVIDAD: Optimización de rendimiento
- * ═══════════════════════════════════════════════════════════
- */
+/* ==================== LAZY LOADING ==================== */
 function initLazyLoading() {
-    if ('IntersectionObserver' in window) {
-        const imageObserver = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const img = entry.target;
-                    if (img.dataset.src) {
-                        // Cargar imagen con fade-in
-                        img.style.opacity = '0';
-                        img.src = img.dataset.src;
-                        
-                        img.onload = () => {
-                            img.style.transition = 'opacity 0.3s ease';
-                            img.style.opacity = '1';
-                            img.removeAttribute('data-src');
-                        };
-                        
-                        imageObserver.unobserve(img);
-                    }
-                }
-            });
-        });
-        
-        document.querySelectorAll('img[data-src]').forEach(img => {
-            imageObserver.observe(img);
-        });
-    } else {
-        // Fallback para navegadores sin IntersectionObserver
+    if (!('IntersectionObserver' in window)) {
+        // Fallback para navegadores antiguos
         document.querySelectorAll('img[data-src]').forEach(img => {
             img.src = img.dataset.src;
             img.removeAttribute('data-src');
         });
+        return;
     }
-}
-
-/**
- * ═══════════════════════════════════════════════════════════
- * WELCOME MESSAGE BASADO EN HORA
- * NIELSEN #2: Concordancia entre sistema y mundo real
- * ═══════════════════════════════════════════════════════════
- */
-function updateWelcomeMessage() {
-    const hour = new Date().getHours();
-    const welcomeTitle = document.querySelector('.welcome-content h1');
     
-    if (welcomeTitle) {
-        let greeting = '¡Bienvenido de vuelta';
-        
-        // NIELSEN #2: Lenguaje natural según hora del día
-        if (hour >= 5 && hour < 12) {
-            greeting = '¡Buenos días';
-        } else if (hour >= 12 && hour < 19) {
-            greeting = '¡Buenas tardes';
-        } else {
-            greeting = '¡Buenas noches';
-        }
-        
-        const nameSpan = welcomeTitle.querySelector('.text-highlight');
-        if (nameSpan) {
-            const userName = nameSpan.textContent;
-            welcomeTitle.innerHTML = `${greeting}, <span class="text-highlight">${userName}</span>!`;
-        }
-    }
-}
-
-/**
- * ═══════════════════════════════════════════════════════════
- * ACCESIBILIDAD
- * NIELSEN #10: Ayuda y documentación
- * ═══════════════════════════════════════════════════════════
- */
-function initAccessibility() {
-    // Mejorar navegación por teclado
-    const focusableElements = document.querySelectorAll(
-        'a, button, input, select, textarea, [tabindex]:not([tabindex="-1"])'
-    );
-    
-    // Trap focus en dropdown cuando está abierto
-    const userDropdown = document.getElementById('userDropdown');
-    if (userDropdown) {
-        userDropdown.addEventListener('keydown', function(e) {
-            if (e.key === 'Tab') {
-                const focusable = this.querySelectorAll('a, button');
-                const first = focusable[0];
-                const last = focusable[focusable.length - 1];
+    const imageObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const img = entry.target;
                 
-                if (e.shiftKey && document.activeElement === first) {
-                    e.preventDefault();
-                    last.focus();
-                } else if (!e.shiftKey && document.activeElement === last) {
-                    e.preventDefault();
-                    first.focus();
+                if (img.dataset.src) {
+                    img.src = img.dataset.src;
+                    img.removeAttribute('data-src');
+                    
+                    // Añadir clase cuando la imagen se carga
+                    img.addEventListener('load', () => {
+                        img.classList.add('loaded');
+                    });
+                    
+                    imageObserver.unobserve(img);
                 }
             }
         });
-    }
+    });
     
-    // Anunciar cambios de estado para lectores de pantalla
+    document.querySelectorAll('img[data-src]').forEach(img => {
+        imageObserver.observe(img);
+    });
+}
+
+function updateWelcomeMessage() {
+    const waitForGreeting = setInterval(() => {
+        const greetingEl = document.getElementById('welcome-greeting');
+
+        if (!greetingEl || !window.DASHBOARD_I18N) return;
+
+        clearInterval(waitForGreeting);
+
+        const hour = new Date().getHours();
+        let greeting;
+
+        if (hour >= 5 && hour < 12) {
+            greeting = window.DASHBOARD_I18N.morning;
+        } else if (hour >= 12 && hour < 19) {
+            greeting = window.DASHBOARD_I18N.afternoon;
+        } else {
+            greeting = window.DASHBOARD_I18N.night;
+        }
+
+        greetingEl.textContent = greeting;
+        console.log('✅ Greeting aplicado:', greeting);
+    }, 50);
+}
+
+
+/* ==================== ACCESIBILIDAD ==================== */
+function initAccessibility() {
+    // Crear región live para anuncios
     const liveRegion = document.createElement('div');
     liveRegion.setAttribute('role', 'status');
     liveRegion.setAttribute('aria-live', 'polite');
     liveRegion.setAttribute('aria-atomic', 'true');
     liveRegion.className = 'sr-only';
+    liveRegion.id = 'live-region';
     document.body.appendChild(liveRegion);
     
+    // Función global para anuncios
     window.announceToScreenReader = function(message) {
-        liveRegion.textContent = message;
-        setTimeout(() => liveRegion.textContent = '', 1000);
+        const liveRegion = document.getElementById('live-region');
+        if (liveRegion) {
+            liveRegion.textContent = message;
+            setTimeout(() => {
+                liveRegion.textContent = '';
+            }, 1000);
+        }
     };
+    
+    // Añadir skip link si no existe
+    if (!document.querySelector('.skip-link')) {
+        const skipLink = document.createElement('a');
+        skipLink.href = '#main-content';
+        skipLink.className = 'skip-link';
+        skipLink.textContent = document.documentElement.lang === 'es' ? 
+            'Saltar al contenido principal' : 
+            'Skip to main content';
+        document.body.insertBefore(skipLink, document.body.firstChild);
+    }
 }
 
-/**
- * ═══════════════════════════════════════════════════════════
- * RESPONSIVE CHECKS
- * RESPONSIVIDAD: Adaptación según dispositivo
- * ═══════════════════════════════════════════════════════════
- */
-function initResponsiveChecks() {
-    // Detectar tamaño de pantalla y ajustar comportamiento
-    const checkViewport = () => {
-        const width = window.innerWidth;
-        const isMobile = width < 768;
-        const isTablet = width >= 768 && width < 1024;
-        const isDesktop = width >= 1024;
+/* ==================== NAVEGACIÓN POR TECLADO ==================== */
+function initKeyboardNavigation() {
+    // Navegación en dropdowns con flechas
+    const dropdowns = document.querySelectorAll('.dropdown-menu, .nav-menu');
+    
+    dropdowns.forEach(dropdown => {
+        const items = Array.from(dropdown.querySelectorAll('a, button'));
         
-        // Ajustar dropdown según dispositivo
-        const userDropdown = document.getElementById('userDropdown');
-        if (userDropdown) {
-            if (isMobile) {
-                userDropdown.style.maxHeight = '80vh';
-            } else {
-                userDropdown.style.maxHeight = '';
+        dropdown.addEventListener('keydown', function(e) {
+            const currentIndex = items.indexOf(document.activeElement);
+            
+            switch(e.key) {
+                case 'ArrowDown':
+                    e.preventDefault();
+                    const nextIndex = (currentIndex + 1) % items.length;
+                    items[nextIndex].focus();
+                    break;
+                    
+                case 'ArrowUp':
+                    e.preventDefault();
+                    const prevIndex = currentIndex - 1 < 0 ? items.length - 1 : currentIndex - 1;
+                    items[prevIndex].focus();
+                    break;
+                    
+                case 'Home':
+                    e.preventDefault();
+                    items[0].focus();
+                    break;
+                    
+                case 'End':
+                    e.preventDefault();
+                    items[items.length - 1].focus();
+                    break;
             }
+        });
+    });
+}
+
+/* ==================== OPTIMIZACIÓN TÁCTIL ==================== */
+function initTouchOptimization() {
+    // Detectar si es dispositivo táctil
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    
+    if (isTouchDevice) {
+        document.body.classList.add('touch-device');
+        
+        // Aumentar áreas de toque para elementos pequeños
+        const smallButtons = document.querySelectorAll('.icon-button, .nav-toggle, .lang-btn');
+        smallButtons.forEach(btn => {
+            if (btn.offsetWidth < 44 || btn.offsetHeight < 44) {
+                btn.style.minWidth = '44px';
+                btn.style.minHeight = '44px';
+            }
+        });
+    }
+}
+
+/* ==================== RESPONSIVE CHECKS ==================== */
+function initResponsiveChecks() {
+    function checkResponsive() {
+        const dropdown = document.getElementById('userDropdown');
+        if (!dropdown) return;
+        
+        const isMobile = window.innerWidth < 768;
+        
+        // Ajustar altura máxima del dropdown en móvil
+        if (isMobile) {
+            dropdown.style.maxHeight = '80vh';
+        } else {
+            dropdown.style.maxHeight = '';
         }
         
-        // Log para desarrollo
-        console.log('Viewport:', { isMobile, isTablet, isDesktop, width });
-    };
+        // Actualizar espaciado del container
+        const containers = document.querySelectorAll('.container');
+        containers.forEach(container => {
+            if (window.innerWidth < 768) {
+                container.style.padding = '0 1rem';
+            } else {
+                container.style.padding = '';
+            }
+        });
+    }
     
     // Check inicial
-    checkViewport();
+    checkResponsive();
     
     // Check en resize con debounce
-    let resizeTimeout;
-    window.addEventListener('resize', () => {
-        clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(checkViewport, 250);
+    let resizeTimer;
+    window.addEventListener('resize', function() {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(checkResponsive, 250);
     });
+}
+
+/* ==================== MANEJO DE ERRORES ==================== */
+window.addEventListener('error', function(e) {
+    console.error('Error capturado:', e.error);
     
-    // Detectar orientación en móviles
-    if (window.matchMedia) {
-        const orientationChange = (e) => {
-            console.log('Orientación:', e.matches ? 'Portrait' : 'Landscape');
-            // Cerrar menús al cambiar orientación
-            if (window.closeMenu) window.closeMenu();
-        };
-        
-        const portraitQuery = window.matchMedia('(orientation: portrait)');
-        portraitQuery.addListener(orientationChange);
+    // Anunciar error para usuarios
+    if (window.announceToScreenReader) {
+        const lang = document.documentElement.lang || 'es';
+        const errorMsg = lang === 'es' ? 
+            'Ha ocurrido un error. Por favor, recarga la página.' : 
+            'An error occurred. Please reload the page.';
+        announceToScreenReader(errorMsg);
     }
-}
-
-/**
- * ═══════════════════════════════════════════════════════════
- * UTILIDADES ADICIONALES
- * ═══════════════════════════════════════════════════════════
- */
-
-// NIELSEN #9: Manejo de errores en imágenes
-document.addEventListener('error', function(e) {
-    if (e.target.tagName === 'IMG') {
-        console.warn('Error cargando imagen:', e.target.src);
-        // Imagen placeholder
-        e.target.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100"%3E%3Crect fill="%23f0f0f0" width="100" height="100"/%3E%3Ctext x="50%25" y="50%25" text-anchor="middle" fill="%23999" dy=".3em"%3E?%3C/text%3E%3C/svg%3E';
-        e.target.alt = 'Imagen no disponible';
-    }
-}, true);
-
-// Detectar si hay soporte táctil
-const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-if (isTouchDevice) {
-    document.body.classList.add('touch-device');
-    console.log('Dispositivo táctil detectado');
-}
-
-// NIELSEN #5: Prevención de errores - Confirmar acciones destructivas
-document.querySelectorAll('a[href*="logout"], a[href*="delete"]').forEach(link => {
-    link.addEventListener('click', function(e) {
-        const action = this.href.includes('logout') ? 'cerrar sesión' : 'eliminar';
-        if (!confirm(`¿Estás seguro que deseas ${action}?`)) {
-            e.preventDefault();
-        }
-    });
 });
 
-// Performance monitoring (solo en desarrollo)
-if (window.performance && console.table) {
-    window.addEventListener('load', () => {
-        setTimeout(() => {
-            const perfData = window.performance.timing;
-            const pageLoadTime = perfData.loadEventEnd - perfData.navigationStart;
-            const connectTime = perfData.responseEnd - perfData.requestStart;
-            const renderTime = perfData.domComplete - perfData.domLoading;
-            
-            console.table({
-                'Carga Total': `${pageLoadTime}ms`,
-                'Conexión': `${connectTime}ms`,
-                'Renderizado': `${renderTime}ms`
-            });
-        }, 0);
-    });
-}
+/* ==================== UTILIDADES ==================== */
 
-/**
- * ═══════════════════════════════════════════════════════════
- * EXPORT PARA TESTING (opcional)
- * ═══════════════════════════════════════════════════════════
- */
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = {
-        initMobileMenu,
-        initUserDropdown,
-        updateWelcomeMessage,
-        initAccessibility
+// Debounce para optimizar eventos
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
     };
 }
+
+// Throttle para scroll events
+function throttle(func, limit) {
+    let inThrottle;
+    return function(...args) {
+        if (!inThrottle) {
+            func.apply(this, args);
+            inThrottle = true;
+            setTimeout(() => inThrottle = false, limit);
+        }
+    };
+}
+
+// Detectar preferencia de movimiento reducido
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if (prefersReducedMotion) {
+    document.documentElement.style.setProperty('--transition', '0.01ms');
+    document.documentElement.style.setProperty('--transition-fast', '0.01ms');
+    document.documentElement.style.setProperty('--transition-slow', '0.01ms');
+}
+
+console.log('📱 Dashboard optimizado para todos los dispositivos');
+console.log('♿ Accesibilidad mejorada con ARIA y navegación por teclado');
+console.log('🌍 Soporte completo de internacionalización (i18n)');

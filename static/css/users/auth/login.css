@@ -1,9 +1,10 @@
 /* =============================================
-   LOGIN - LLAMKAY.PE (MEJORADO CON PRINCIPIOS GESTALT)
+   LOGIN - LLAMKAY.PE
+   Optimizado con Nielsen + Gestalt + Responsivo
    ============================================= */
 
 :root {
-    /* Colores principales */
+    /* Colores principales - Basados en index */
     --color-primary: #07734B;
     --color-primary-dark: #034D31;
     --color-primary-light: #15AC75;
@@ -19,7 +20,7 @@
     --color-warning: #f59e0b;
     --color-info: #3b82f6;
     
-    /* Sombras - Ley de Figura y Fondo */
+    /* Sombras - Jerarquía Visual (Gestalt) */
     --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
     --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
     --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.16);
@@ -33,8 +34,15 @@
     
     /* Transiciones suaves */
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* Z-index hierarchy */
+    --z-background: 0;
+    --z-content: 1;
+    --z-dropdown: 1000;
+    --z-modal: 1050;
 }
 
+/* ==================== RESET Y BASE ==================== */
 * {
     margin: 0;
     padding: 0;
@@ -56,7 +64,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 2rem;
+    padding: 1rem;
     overflow: hidden;
 }
 
@@ -68,7 +76,7 @@ body {
     width: 100%;
     height: 100%;
     background: linear-gradient(135deg, #f8f9fa 0%, #e8f5f0 50%, #d5eee4 100%);
-    z-index: 0;
+    z-index: var(--z-background);
 }
 
 .shape {
@@ -122,22 +130,22 @@ body {
 /* ==================== CONTENEDOR PRINCIPAL - Ley de Proximidad ==================== */
 .login-container {
     position: relative;
-    z-index: 1;
+    z-index: var(--z-content);
     display: grid;
     grid-template-columns: 1fr 1fr;
-    max-width: 1200px;
+    max-width: 900px;
     width: 100%;
     background: white;
     border-radius: var(--radius-xl);
     box-shadow: var(--shadow-xl);
     overflow: hidden;
-    min-height: 600px;
+    min-height: 580px;
 }
 
-/* ==================== LADO IZQUIERDO - INFO - Ley de Semejanza ==================== */
+/* ==================== LADO IZQUIERDO - INFO ==================== */
 .login-info {
     background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
-    padding: 3rem;
+    padding: 2rem 1.5rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -173,11 +181,11 @@ body {
     z-index: 1;
 }
 
-/* Logo - Ley de Experiencia Previa */
+/* Logo */
 .logo-link {
     display: inline-block;
     text-decoration: none;
-    margin-bottom: 2rem;
+    margin-bottom: 1.25rem;
     transition: var(--transition);
 }
 
@@ -188,11 +196,11 @@ body {
 .logo {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 0.5rem;
 }
 
 .logo-icon {
-    font-size: 2.5rem;
+    font-size: 1.6rem;
     animation: bounce 2s infinite;
 }
 
@@ -206,38 +214,39 @@ body {
 }
 
 .logo-text {
-    font-size: 2rem;
+    font-size: 1.45rem;
     font-weight: 700;
     color: white;
 }
 
 .login-info h1 {
-    font-size: 2.5rem;
+    font-size: 1.6rem;
     font-weight: 700;
-    margin-bottom: 1rem;
+    margin-bottom: 0.6rem;
     line-height: 1.2;
 }
 
 .info-description {
-    font-size: 1.1rem;
+    font-size: 0.85rem;
     opacity: 0.9;
-    margin-bottom: 2.5rem;
-    line-height: 1.6;
+    margin-bottom: 1.2rem;
+    line-height: 1.45;
 }
 
 /* ==================== FEATURES - Ley de Proximidad y Semejanza ==================== */
 .info-features {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
-    margin-bottom: 2.5rem;
+    gap: 0.8rem;
+    margin-bottom: 1.2rem;
+    list-style: none;
 }
 
 .feature-item {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    padding: 1rem;
+    gap: 0.6rem;
+    padding: 0.6rem;
     background: rgba(255, 255, 255, 0.1);
     border-radius: var(--radius-md);
     backdrop-filter: blur(10px);
@@ -252,8 +261,8 @@ body {
 }
 
 .feature-icon {
-    width: 48px;
-    height: 48px;
+    width: 34px;
+    height: 34px;
     background: rgba(255, 255, 255, 0.2);
     border-radius: var(--radius-md);
     display: flex;
@@ -262,45 +271,51 @@ body {
     flex-shrink: 0;
 }
 
+.feature-icon svg {
+    width: 19px;
+    height: 19px;
+}
+
 .feature-text strong {
     display: block;
-    font-size: 1rem;
-    margin-bottom: 0.25rem;
+    font-size: 0.85rem;
+    margin-bottom: 0.08rem;
 }
 
 .feature-text span {
-    font-size: 0.9rem;
+    font-size: 0.75rem;
     opacity: 0.8;
 }
 
-/* ==================== STATS - Ley de Simetría y Orden ==================== */
+/* ==================== STATS - Ley de Simetría ==================== */
 .info-stats {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
-    padding-top: 2rem;
+    gap: 0.6rem;
+    padding-top: 1.2rem;
     border-top: 1px solid rgba(255, 255, 255, 0.2);
+    list-style: none;
 }
 
 .stat {
     text-align: center;
 }
 
-.stat strong {
+.stat dt strong {
     display: block;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     font-weight: 700;
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.08rem;
 }
 
-.stat span {
-    font-size: 0.85rem;
+.stat dd span {
+    font-size: 0.72rem;
     opacity: 0.8;
 }
 
 /* ==================== LADO DERECHO - FORMULARIO ==================== */
 .login-form-section {
-    padding: 3rem;
+    padding: 2rem 1.5rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -308,35 +323,85 @@ body {
 
 .form-container {
     width: 100%;
-    max-width: 400px;
+    max-width: 340px;
 }
 
-/* Header del Formulario - Jerarquía Visual */
+/* ==================== SELECTOR DE IDIOMA ==================== */
+.language-selector {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 0.8rem;
+}
+
+.language-form {
+    display: inline-block;
+}
+
+.language-buttons {
+    display: flex;
+    gap: 0.15rem;
+    background: var(--color-background-alt);
+    padding: 0.2rem;
+    border-radius: 6px;
+    box-shadow: var(--shadow-sm);
+}
+
+.lang-btn {
+    padding: 0.35rem 0.8rem;
+    border: none;
+    background: transparent;
+    color: var(--color-text-light);
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: var(--transition);
+    letter-spacing: 0.5px;
+}
+
+.lang-btn:hover {
+    background: rgba(7, 115, 75, 0.1);
+    color: var(--color-primary);
+}
+
+.lang-btn.active {
+    background: var(--color-primary);
+    color: white;
+    box-shadow: var(--shadow-sm);
+}
+
+.lang-btn:focus {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+/* Header del Formulario */
 .form-header {
-    margin-bottom: 2rem;
+    margin-bottom: 1.15rem;
+    text-align: center;
 }
 
 .form-header h2 {
-    font-size: 2rem;
+    font-size: 1.55rem;
     font-weight: 700;
     color: var(--color-text);
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.3rem;
 }
 
 .form-header p {
     color: var(--color-text-light);
-    font-size: 1rem;
+    font-size: 0.82rem;
 }
 
-/* ==================== ALERTAS - Ley de Figura y Fondo ==================== */
+/* ==================== ALERTAS - Nielsen: Visibilidad del Estado ==================== */
 .alert {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    padding: 1rem;
+    gap: 0.6rem;
+    padding: 0.7rem;
     border-radius: var(--radius-md);
-    margin-bottom: 1.5rem;
-    font-size: 0.95rem;
+    margin-bottom: 0.95rem;
+    font-size: 0.82rem;
     font-weight: 500;
     animation: slideDown 0.3s ease;
     border-left: 4px solid;
@@ -355,47 +420,51 @@ body {
 
 .alert-error {
     background: rgba(220, 38, 38, 0.1);
-    color: var(--color-danger);
     border-color: var(--color-danger);
+    color: #991b1b;
 }
 
 .alert svg {
     flex-shrink: 0;
+    width: 18px;
+    height: 18px;
 }
 
-/* ==================== FORMULARIO - Ley de Proximidad ==================== */
+/* ==================== FORMULARIO ==================== */
 .login-form {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 1rem;
 }
 
 .form-group {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.35rem;
 }
 
 .form-label {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    font-size: 0.95rem;
+    gap: 0.35rem;
+    font-size: 0.82rem;
     font-weight: 600;
     color: var(--color-text);
 }
 
 .form-label svg {
     color: var(--color-primary);
+    width: 15px;
+    height: 15px;
 }
 
-/* Input - Affordances y Feedback Visual (Nielsen: Visibilidad del estado) */
+/* Input - Nielsen: Feedback Visual */
 .form-input {
     width: 100%;
-    padding: 0.875rem 1rem;
+    padding: 0.68rem 0.78rem;
     border: 2px solid #e2e8f0;
     border-radius: var(--radius-md);
-    font-size: 1rem;
+    font-size: 0.87rem;
     color: var(--color-text);
     background: var(--color-background);
     transition: var(--transition);
@@ -415,6 +484,34 @@ body {
     color: #94a3b8;
 }
 
+/* Estados de validación */
+.form-input[aria-invalid="true"] {
+    border-color: var(--color-danger);
+}
+
+.form-input[aria-invalid="true"]:focus {
+    box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.1);
+}
+
+/* Mensajes de error */
+.error-message {
+    color: var(--color-danger);
+    font-size: 0.77rem;
+    font-weight: 500;
+    display: none;
+    align-items: center;
+    gap: 0.2rem;
+}
+
+.error-message.active {
+    display: flex;
+}
+
+.error-message::before {
+    content: '⚠';
+    font-size: 0.9rem;
+}
+
 /* ==================== PASSWORD WRAPPER ==================== */
 .password-wrapper {
     position: relative;
@@ -423,16 +520,16 @@ body {
 }
 
 .password-wrapper .form-input {
-    padding-right: 3rem;
+    padding-right: 2.5rem;
 }
 
 .password-toggle {
     position: absolute;
-    right: 1rem;
+    right: 0.75rem;
     background: none;
     border: none;
     cursor: pointer;
-    padding: 0.5rem;
+    padding: 0.32rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -452,19 +549,25 @@ body {
     outline-offset: 2px;
 }
 
-/* ==================== OPCIONES DEL FORMULARIO - Ley de Proximidad ==================== */
+.password-toggle svg {
+    width: 17px;
+    height: 17px;
+}
+
+/* ==================== OPCIONES DEL FORMULARIO ==================== */
 .form-options {
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 1rem;
+    flex-wrap: wrap;
 }
 
-/* Checkbox Personalizado - Ley de Cierre */
+/* Checkbox Personalizado */
 .checkbox-wrapper {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.42rem;
     cursor: pointer;
     user-select: none;
 }
@@ -474,10 +577,10 @@ body {
 }
 
 .checkbox-custom {
-    width: 20px;
-    height: 20px;
+    width: 17px;
+    height: 17px;
     border: 2px solid #cbd5e1;
-    border-radius: 4px;
+    border-radius: 3px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -487,7 +590,7 @@ body {
 
 .checkbox-custom::after {
     content: '✓';
-    font-size: 14px;
+    font-size: 11px;
     font-weight: bold;
     color: white;
     opacity: 0;
@@ -510,15 +613,15 @@ body {
 }
 
 .checkbox-label {
-    font-size: 0.9rem;
+    font-size: 0.82rem;
     color: var(--color-text);
 }
 
-/* Link - Nielsen: Concordancia entre sistema y mundo real */
+/* Link de contraseña olvidada */
 .forgot-link {
     color: var(--color-primary);
     text-decoration: none;
-    font-size: 0.9rem;
+    font-size: 0.82rem;
     font-weight: 600;
     transition: var(--transition);
     position: relative;
@@ -545,21 +648,21 @@ body {
     border-radius: 2px;
 }
 
-/* ==================== BOTÓN SUBMIT - Affordances Claras ==================== */
+/* ==================== BOTÓN SUBMIT ==================== */
 .btn-submit {
     width: 100%;
-    padding: 1rem 2rem;
+    padding: 0.72rem 1.4rem;
     background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
     color: white;
     border: none;
     border-radius: var(--radius-md);
-    font-size: 1rem;
+    font-size: 0.87rem;
     font-weight: 600;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
+    gap: 0.42rem;
     transition: var(--transition);
     box-shadow: var(--shadow-md);
     position: relative;
@@ -595,25 +698,45 @@ body {
     outline-offset: 2px;
 }
 
-.btn-submit svg {
+.btn-submit .btn-icon {
     transition: transform 0.3s ease;
 }
 
-.btn-submit:hover svg {
+.btn-submit:hover .btn-icon {
     transform: translateX(5px);
+}
+
+/* Estado de carga */
+.btn-submit[aria-busy="true"] {
+    pointer-events: none;
+    opacity: 0.8;
+}
+
+.btn-submit[aria-busy="true"] .btn-text,
+.btn-submit[aria-busy="true"] .btn-icon {
+    display: none;
+}
+
+.btn-submit[aria-busy="true"] .btn-spinner {
+    display: block;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
 }
 
 /* ==================== FOOTER DEL FORMULARIO ==================== */
 .form-footer {
-    margin-top: 2rem;
+    margin-top: 1.1rem;
     text-align: center;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 0.7rem;
 }
 
 .form-footer p {
-    font-size: 0.95rem;
+    font-size: 0.82rem;
     color: var(--color-text-light);
 }
 
@@ -643,14 +766,14 @@ body {
 .back-home {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.32rem;
     color: var(--color-text-light);
     text-decoration: none;
-    font-size: 0.9rem;
+    font-size: 0.77rem;
     font-weight: 500;
     transition: var(--transition);
     justify-content: center;
-    padding: 0.5rem;
+    padding: 0.32rem;
     border-radius: var(--radius-sm);
 }
 
@@ -661,6 +784,8 @@ body {
 
 .back-home svg {
     transition: transform 0.3s ease;
+    width: 13px;
+    height: 13px;
 }
 
 .back-home:hover svg {
@@ -668,6 +793,8 @@ body {
 }
 
 /* ==================== RESPONSIVE DESIGN ==================== */
+
+/* Tablet Grande (1024px) */
 @media (max-width: 1024px) {
     .login-container {
         grid-template-columns: 1fr;
@@ -682,6 +809,7 @@ body {
     }
 }
 
+/* Tablet (768px) */
 @media (max-width: 768px) {
     .login-wrapper {
         padding: 1rem;
@@ -689,14 +817,15 @@ body {
     
     .login-container {
         border-radius: var(--radius-lg);
+        min-height: auto;
     }
     
     .login-form-section {
-        padding: 2rem 1.5rem;
+        padding: 1.75rem 1.5rem;
     }
     
     .form-header h2 {
-        font-size: 1.75rem;
+        font-size: 1.5rem;
     }
     
     .form-options {
@@ -706,6 +835,7 @@ body {
     }
 }
 
+/* Móvil (480px) */
 @media (max-width: 480px) {
     .login-wrapper {
         padding: 0.5rem;
@@ -716,57 +846,40 @@ body {
     }
     
     .form-header h2 {
-        font-size: 1.5rem;
+        font-size: 1.35rem;
     }
     
     .form-header p {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
     }
     
     .form-input {
-        padding: 0.75rem;
-        font-size: 0.95rem;
+        padding: 0.7rem;
+        font-size: 0.9rem;
     }
     
     .btn-submit {
-        padding: 0.875rem 1.5rem;
-        font-size: 0.95rem;
+        padding: 0.8rem 1.5rem;
+        font-size: 0.9rem;
+    }
+    
+    .language-buttons {
+        gap: 0.2rem;
+    }
+    
+    .lang-btn {
+        padding: 0.35rem 0.85rem;
+        font-size: 0.8rem;
     }
 }
 
-/* ==================== ANIMACIONES ADICIONALES ==================== */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.form-container {
-    animation: fadeIn 0.5s ease;
-}
-
-.info-content > * {
-    animation: fadeIn 0.6s ease backwards;
-}
-
-.info-content > *:nth-child(1) { animation-delay: 0.1s; }
-.info-content > *:nth-child(2) { animation-delay: 0.2s; }
-.info-content > *:nth-child(3) { animation-delay: 0.3s; }
-.info-content > *:nth-child(4) { animation-delay: 0.4s; }
-.info-content > *:nth-child(5) { animation-delay: 0.5s; }
-
-/* ==================== ACCESIBILIDAD Y FOCUS VISIBLE ==================== */
+/* ==================== ACCESIBILIDAD ==================== */
 *:focus-visible {
     outline: 2px solid var(--color-primary);
     outline-offset: 2px;
 }
 
-/* ==================== MODO ALTO CONTRASTE ==================== */
+/* Modo Alto Contraste */
 @media (prefers-contrast: high) {
     .form-input {
         border-width: 3px;
@@ -777,7 +890,7 @@ body {
     }
 }
 
-/* ==================== REDUCCIÓN DE MOVIMIENTO ==================== */
+/* Reducción de Movimiento */
 @media (prefers-reduced-motion: reduce) {
     *,
     *::before,

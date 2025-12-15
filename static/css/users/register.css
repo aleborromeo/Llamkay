@@ -1,11 +1,11 @@
 /* =============================================
-   REGISTRO Y SELECCIÓN - LLAMKAY.PE
-   Unificado y Mejorado con UX Avanzada
-   Nielsen + Gestalt + Responsividad + Microinteracciones
+   REGISTRO COMPLETO - LLAMKAY.PE
+   Selector + Steps 1-4 + Responsivo + UX
+   Principios: Nielsen + Gestalt + Accesibilidad
    ============================================= */
 
 :root {
-    /* Colores principales */
+    /* Paleta de colores */
     --color-primary: #07734B;
     --color-primary-dark: #034D31;
     --color-primary-light: #15AC75;
@@ -25,13 +25,12 @@
     --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
     --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
     --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.16);
-    --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.2);
     
     /* Radios - Ley de Cierre */
     --radius-sm: 8px;
     --radius-md: 12px;
     --radius-lg: 16px;
-    --radius-xl: 24px;
+    --radius-xl: 20px;
     
     /* Transiciones */
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -45,109 +44,108 @@
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    background: linear-gradient(135deg, #f8f9fa 0%, #e8f5f0 100%);
     color: var(--color-text);
     line-height: 1.6;
     min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem 1rem;
-    overflow-x: hidden;
 }
 
 /* =============================================
-   SECCIÓN 1: SELECCIONAR TIPO DE USUARIO
+   HEADER GLOBAL CON SELECTOR DE IDIOMA
    ============================================= */
+.lang-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    box-shadow: var(--shadow-sm);
+    z-index: 100;
+}
 
-/* ==================== WRAPPER SELECTOR ==================== */
-.selector-wrapper {
-    position: relative;
+.logo-link-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.logo-link-header:hover {
+    transform: scale(1.05);
+}
+
+.logo-icon-small {
+    font-size: 1.5rem;
+}
+
+.logo-text-header {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-primary);
+}
+
+.language-switcher {
+    display: flex;
+    gap: 0.5rem;
+    background: var(--color-background-alt);
+    padding: 0.25rem;
+    border-radius: 50px;
+}
+
+.lang-btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    background: transparent;
+    color: var(--color-text-light);
+    font-weight: 600;
+    font-size: 0.875rem;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.lang-btn:hover {
+    color: var(--color-primary);
+}
+
+.lang-btn.active {
+    background: white;
+    color: var(--color-primary);
+    box-shadow: var(--shadow-sm);
+}
+
+/* =============================================
+   SELECTOR DE TIPO - MEJORADO Y COMPACTO
+   ============================================= */
+.selector-wrapper-new {
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 2rem;
-    overflow: hidden;
+    padding: 5rem 1rem 2rem;
 }
 
-/* ==================== FONDO ANIMADO - Ley de Continuidad ==================== */
-.selector-background {
-    position: absolute;
-    top: 0;
-    left: 0;
+.selector-container-new {
     width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, #f8f9fa 0%, #e8f5f0 50%, #d5eee4 100%);
-    z-index: 0;
-}
-
-.shape {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(80px);
-    opacity: 0.5;
-    animation: float 20s infinite ease-in-out;
-}
-
-.shape-1 {
-    width: 400px;
-    height: 400px;
-    background: linear-gradient(135deg, var(--color-primary-light), var(--color-secondary));
-    top: -100px;
-    left: -100px;
-    animation-delay: 0s;
-}
-
-.shape-2 {
-    width: 500px;
-    height: 500px;
-    background: linear-gradient(135deg, var(--color-secondary-light), var(--color-accent));
-    bottom: -150px;
-    right: -150px;
-    animation-delay: 5s;
-}
-
-.shape-3 {
-    width: 300px;
-    height: 300px;
-    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    animation-delay: 10s;
-}
-
-@keyframes float {
-    0%, 100% {
-        transform: translate(0, 0) scale(1);
-    }
-    33% {
-        transform: translate(30px, -30px) scale(1.1);
-    }
-    66% {
-        transform: translate(-20px, 20px) scale(0.9);
-    }
-}
-
-/* ==================== CONTENEDOR SELECTOR ==================== */
-.selector-container {
-    position: relative;
-    z-index: 1;
-    width: 100%;
-    max-width: 900px;
+    max-width: 680px;
     background: white;
     border-radius: var(--radius-xl);
-    box-shadow: var(--shadow-xl);
-    padding: 3rem;
-    animation: fadeInUp 0.6s ease;
+    box-shadow: var(--shadow-lg);
+    padding: 2.5rem;
+    animation: fadeInUp 0.5s ease;
     border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 @keyframes fadeInUp {
     from {
         opacity: 0;
-        transform: translateY(30px);
+        transform: translateY(20px);
     }
     to {
         opacity: 1;
@@ -156,433 +154,304 @@ body {
 }
 
 /* ==================== HEADER SELECTOR ==================== */
-.selector-header {
+.selector-header-new {
     text-align: center;
-    margin-bottom: 3rem;
-}
-
-.logo-link {
-    display: inline-block;
-    text-decoration: none;
     margin-bottom: 2rem;
-    transition: var(--transition);
 }
 
-.logo-link:hover {
-    transform: scale(1.05);
-}
-
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    justify-content: center;
-}
-
-.logo-icon {
-    font-size: 2.5rem;
-    animation: bounce 2s infinite;
-}
-
-@keyframes bounce {
-    0%, 100% {
-        transform: translateY(0);
-    }
-    50% {
-        transform: translateY(-10px);
-    }
-}
-
-.logo-text {
-    font-size: 2rem;
-    font-weight: 700;
-    color: var(--color-primary);
-}
-
-.header-content {
-    animation: fadeIn 0.8s ease 0.2s backwards;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.header-badge {
+.step-badge {
     display: inline-block;
-    padding: 0.5rem 1rem;
+    padding: 0.375rem 1rem;
     background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
     color: white;
     border-radius: 50px;
-    font-size: 0.85rem;
+    font-size: 0.75rem;
     font-weight: 600;
     margin-bottom: 1rem;
     box-shadow: var(--shadow-sm);
 }
 
-.selector-header h1 {
-    font-size: 2.5rem;
+.selector-title {
+    font-size: 1.75rem;
     font-weight: 700;
     color: var(--color-text);
     margin-bottom: 0.5rem;
     line-height: 1.2;
 }
 
-.selector-header p {
-    font-size: 1.1rem;
+.selector-subtitle {
+    font-size: 0.95rem;
     color: var(--color-text-light);
 }
 
-/* ==================== FORMULARIO SELECTOR ==================== */
-.selector-form {
-    margin-bottom: 2rem;
-}
-
-.options-grid {
+/* ==================== GRID SELECTOR ==================== */
+.options-grid-new {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
 }
 
-/* ==================== TARJETAS DE OPCIÓN - Affordances Claras ==================== */
-.option-card {
+/* ==================== CARDS REDISEÑADAS ==================== */
+.option-card-new {
     position: relative;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 1.25rem;
-    padding: 2rem;
+    padding: 1.25rem;
     background: white;
     border: 2px solid #e5e7eb;
     border-radius: var(--radius-lg);
     cursor: pointer;
     transition: var(--transition);
-    text-align: center;
+    text-align: left;
     overflow: hidden;
 }
 
-.option-card::before {
+.option-card-new::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    inset: 0;
     background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
     opacity: 0;
     transition: var(--transition);
-    z-index: 0;
 }
 
-.option-card > * {
+.option-card-new:hover {
+    border-color: var(--color-primary);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+}
+
+.option-card-new:hover::before {
+    opacity: 0.04;
+}
+
+.option-card-new:active {
+    transform: translateY(-1px);
+}
+
+.option-card-new.featured {
+    border-color: var(--color-primary);
+    background: linear-gradient(135deg, rgba(7, 115, 75, 0.02), rgba(21, 172, 117, 0.02));
+}
+
+.option-card-new.selected {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(7, 115, 75, 0.1);
+}
+
+/* ==================== CORNER BADGE ==================== */
+.featured-corner {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+    color: white;
+    padding: 0.375rem 0.875rem 0.375rem 1.25rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    border-radius: 0 var(--radius-lg) 0 var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    z-index: 2;
+}
+
+/* ==================== HEADER DE CARD ==================== */
+.option-header-new {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
     position: relative;
     z-index: 1;
 }
 
-.option-card:hover {
-    border-color: var(--color-primary);
-    transform: translateY(-5px);
-    box-shadow: var(--shadow-lg);
-}
-
-.option-card:hover::before {
-    opacity: 0.05;
-}
-
-.option-card:active {
-    transform: translateY(-3px);
-}
-
-.option-card:focus-visible {
-    outline: 3px solid var(--color-primary);
-    outline-offset: 2px;
-}
-
-/* Tarjeta destacada */
-.option-card.featured {
-    border-color: var(--color-primary);
-    background: linear-gradient(135deg, rgba(7, 115, 75, 0.03), rgba(21, 172, 117, 0.03));
-}
-
-.option-card.featured:hover {
-    background: linear-gradient(135deg, rgba(7, 115, 75, 0.08), rgba(21, 172, 117, 0.08));
-}
-
-/* ==================== ICONOS DE OPCIÓN - Reconocimiento Visual ==================== */
-.option-icon {
-    width: 80px;
-    height: 80px;
-    border-radius: var(--radius-lg);
+.option-icon-new {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-md);
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
     transition: var(--transition);
 }
 
-.option-card:hover .option-icon {
-    transform: scale(1.1) rotate(5deg);
+.option-card-new:hover .option-icon-new {
+    transform: scale(1.08);
 }
 
-.option-icon.trabajador {
+.option-icon-new.trabajador {
     background: linear-gradient(135deg, #3b82f6, #60a5fa);
-    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
 }
 
-.option-icon.dual {
+.option-icon-new.dual {
     background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
-    box-shadow: 0 4px 16px rgba(7, 115, 75, 0.3);
+    box-shadow: 0 4px 12px rgba(7, 115, 75, 0.25);
 }
 
-.option-icon.empleador {
+.option-icon-new.empleador {
     background: linear-gradient(135deg, #8b5cf6, #a78bfa);
-    box-shadow: 0 4px 16px rgba(139, 92, 246, 0.3);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.25);
 }
 
-.option-icon.empresa {
+.option-icon-new.empresa {
     background: linear-gradient(135deg, #f59e0b, #fbbf24);
-    box-shadow: 0 4px 16px rgba(245, 158, 11, 0.3);
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25);
 }
 
-.option-icon svg {
+.option-icon-new svg {
     color: white;
-}
-
-/* ==================== CONTENIDO DE OPCIÓN ==================== */
-.option-content {
-    flex: 1;
-}
-
-.option-content h3 {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: var(--color-text);
-    margin-bottom: 0.5rem;
-}
-
-.option-content p {
-    font-size: 0.95rem;
-    color: var(--color-text-light);
-    line-height: 1.5;
 }
 
 /* ==================== BADGES ==================== */
-.option-badge {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    padding: 0.375rem 0.75rem;
+.popular-badge,
+.corporate-badge {
+    padding: 0.25rem 0.625rem;
     background: rgba(59, 130, 246, 0.1);
     color: #3b82f6;
     border-radius: 50px;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     font-weight: 600;
 }
 
-.featured-badge {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    display: flex;
-    align-items: center;
-    gap: 0.375rem;
-    padding: 0.375rem 0.875rem;
-    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
-    color: white;
-    border-radius: 50px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    box-shadow: var(--shadow-sm);
-    animation: pulse 2s infinite;
+.corporate-badge {
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
 }
 
-@keyframes pulse {
-    0%, 100% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.05);
-    }
+/* ==================== CONTENIDO ==================== */
+.option-content-new {
+    flex: 1;
+    position: relative;
+    z-index: 1;
 }
 
-.option-card.featured .option-badge {
-    background: rgba(7, 115, 75, 0.1);
-    color: var(--color-primary);
+.option-content-new h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 0.375rem;
+}
+
+.option-content-new p {
+    font-size: 0.85rem;
+    color: var(--color-text-light);
+    line-height: 1.4;
 }
 
 /* ==================== FLECHA ==================== */
-.option-arrow {
+.option-arrow-new {
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
     color: var(--color-text-light);
+    font-size: 1.25rem;
     transition: var(--transition);
+    z-index: 1;
 }
 
-.option-card:hover .option-arrow {
+.option-card-new:hover .option-arrow-new {
     color: var(--color-primary);
-    transform: translateX(5px);
+    transform: translateX(3px);
 }
 
 /* ==================== FOOTER SELECTOR ==================== */
-.selector-footer {
+.selector-footer-new {
     text-align: center;
-    padding-top: 2rem;
+    padding-top: 1.5rem;
     border-top: 1px solid var(--color-background-alt);
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 0.75rem;
 }
 
-.selector-footer p {
-    font-size: 0.95rem;
+.selector-footer-new p {
+    font-size: 0.9rem;
     color: var(--color-text-light);
 }
 
-.selector-footer a {
+.selector-footer-new a {
     color: var(--color-primary);
     text-decoration: none;
     font-weight: 600;
     transition: var(--transition);
 }
 
-.selector-footer a:hover {
+.selector-footer-new a:hover {
     color: var(--color-primary-dark);
-    text-decoration: underline;
 }
 
-.back-link {
+.back-link-new {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.375rem;
     color: var(--color-text-light);
-    text-decoration: none;
-    font-size: 0.9rem;
-    font-weight: 500;
-    transition: var(--transition);
-    justify-content: center;
+    font-size: 0.875rem;
     padding: 0.5rem;
     border-radius: var(--radius-sm);
 }
 
-.back-link:hover {
-    color: var(--color-primary);
+.back-link-new:hover {
     background: rgba(7, 115, 75, 0.05);
 }
 
-.back-link svg {
-    transition: transform 0.3s ease;
-}
-
-.back-link:hover svg {
-    transform: translateX(-3px);
-}
-
 /* ==================== INFO BANNER ==================== */
-.info-banner {
+.info-banner-new {
     display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1.25rem;
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(59, 130, 246, 0.1));
-    border: 1px solid rgba(59, 130, 246, 0.2);
-    border-radius: var(--radius-lg);
-    margin-top: 2rem;
-    border-left: 4px solid #3b82f6;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(59, 130, 246, 0.08));
+    border: 1px solid rgba(59, 130, 246, 0.15);
+    border-radius: var(--radius-md);
+    margin-top: 1.5rem;
+    border-left: 3px solid #3b82f6;
 }
 
-.info-icon {
-    width: 48px;
-    height: 48px;
-    background: rgba(59, 130, 246, 0.1);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #3b82f6;
+.info-icon-new {
+    font-size: 1.25rem;
     flex-shrink: 0;
 }
 
-.info-content {
+.info-text-new {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
+    gap: 0.125rem;
 }
 
-.info-content strong {
-    font-size: 0.95rem;
+.info-text-new strong {
+    font-size: 0.875rem;
     color: var(--color-text);
 }
 
-.info-content span {
-    font-size: 0.9rem;
+.info-text-new span {
+    font-size: 0.8rem;
     color: var(--color-text-light);
 }
 
-/* ==================== ANIMACIONES SELECTOR ==================== */
-.option-card {
-    animation: fadeInScale 0.5s ease backwards;
-}
-
-.option-card:nth-child(1) { animation-delay: 0.1s; }
-.option-card:nth-child(2) { animation-delay: 0.2s; }
-.option-card:nth-child(3) { animation-delay: 0.3s; }
-.option-card:nth-child(4) { animation-delay: 0.4s; }
-
-@keyframes fadeInScale {
-    from {
-        opacity: 0;
-        transform: scale(0.9);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-/* Efecto ripple al hacer click */
-.option-card::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 0;
-    height: 0;
-    border-radius: 50%;
-    background: rgba(7, 115, 75, 0.2);
-    transform: translate(-50%, -50%);
-    transition: width 0.6s, height 0.6s;
-}
-
-.option-card:active::after {
-    width: 300px;
-    height: 300px;
-}
-
 /* =============================================
-   SECCIÓN 2: FORMULARIOS DE REGISTRO
+   FORMULARIOS DE REGISTRO (STEPS 1-4)
    ============================================= */
-
-/* ==================== CONTENEDOR REGISTRO ==================== */
 .register-wrapper {
     width: 100%;
     max-width: 1200px;
     display: grid;
-    grid-template-columns: 400px 1fr;
-    gap: 3rem;
+    grid-template-columns: 360px 1fr;
+    gap: 2rem;
     align-items: start;
+    padding: 6rem 1rem 2rem;
+    margin: 0 auto;
 }
 
-/* ==================== SIDEBAR INFORMATIVO - Ley de Proximidad ==================== */
+/* ==================== SIDEBAR ==================== */
 .register-sidebar {
     position: sticky;
-    top: 2rem;
+    top: 5rem;
     background: white;
     border-radius: var(--radius-lg);
-    padding: 2.5rem;
+    padding: 2rem;
     box-shadow: var(--shadow-md);
     border: 1px solid rgba(0, 0, 0, 0.05);
 }
@@ -591,39 +460,41 @@ body {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
 }
 
 .register-logo h1 {
-    font-size: 2rem;
+    font-size: 1.75rem;
     font-weight: 700;
     color: var(--color-primary);
 }
 
 .register-sidebar h2 {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     color: var(--color-text);
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
+    line-height: 1.3;
 }
 
 .register-sidebar p {
     color: var(--color-text-light);
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
     line-height: 1.6;
+    font-size: 0.95rem;
 }
 
-/* Benefits list - Ley de Semejanza */
+/* ==================== BENEFITS LIST ==================== */
 .benefits-list {
     list-style: none;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
 }
 
 .benefits-list li {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    padding: 1rem;
-    margin-bottom: 0.75rem;
+    gap: 0.875rem;
+    padding: 0.875rem;
+    margin-bottom: 0.625rem;
     background: var(--color-background-alt);
     border-radius: var(--radius-md);
     transition: var(--transition);
@@ -632,13 +503,13 @@ body {
 
 .benefits-list li:hover {
     background: #e8f5f0;
-    transform: translateX(5px);
+    transform: translateX(3px);
     border-left-color: var(--color-primary);
 }
 
 .benefit-icon {
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
     background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
     border-radius: 50%;
     display: flex;
@@ -646,6 +517,7 @@ body {
     justify-content: center;
     color: white;
     flex-shrink: 0;
+    font-size: 0.875rem;
 }
 
 .benefit-text {
@@ -655,12 +527,14 @@ body {
 .benefit-text strong {
     display: block;
     color: var(--color-text);
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.125rem;
+    font-size: 0.95rem;
 }
 
 .benefit-text span {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     color: var(--color-text-light);
+    line-height: 1.4;
 }
 
 .help-link {
@@ -670,23 +544,23 @@ body {
     color: var(--color-primary);
     text-decoration: none;
     font-weight: 600;
-    margin-top: 1.5rem;
+    margin-top: 1rem;
     transition: var(--transition);
     padding: 0.5rem;
     border-radius: var(--radius-sm);
+    font-size: 0.9rem;
 }
 
 .help-link:hover {
     color: var(--color-primary-dark);
     background: rgba(7, 115, 75, 0.05);
-    gap: 0.75rem;
 }
 
-/* ==================== FORMULARIO PRINCIPAL ==================== */
+/* ==================== CONTENIDO PRINCIPAL ==================== */
 .register-content {
     background: white;
     border-radius: var(--radius-lg);
-    padding: 3rem;
+    padding: 2.5rem;
     box-shadow: var(--shadow-md);
     border: 1px solid rgba(0, 0, 0, 0.05);
 }
@@ -696,33 +570,32 @@ body {
 }
 
 .register-header h2 {
-    font-size: 2rem;
+    font-size: 1.875rem;
     color: var(--color-text);
     margin-bottom: 0.5rem;
 }
 
 .register-subtitle {
     color: var(--color-text-light);
-    font-size: 1rem;
+    font-size: 0.95rem;
 }
 
-/* ==================== BARRA DE PROGRESO - Nielsen: Visibilidad del Estado ==================== */
+/* ==================== BARRA DE PROGRESO ==================== */
 .progress-container {
-    margin-bottom: 3rem;
+    margin-bottom: 2.5rem;
 }
 
 .progress-steps {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1rem;
     position: relative;
 }
 
 .progress-steps::before {
     content: '';
     position: absolute;
-    top: 20px;
+    top: 18px;
     left: 0;
     right: 0;
     height: 2px;
@@ -741,8 +614,8 @@ body {
 }
 
 .step-circle {
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
     background: white;
     border: 2px solid var(--color-background-alt);
@@ -752,14 +625,15 @@ body {
     font-weight: 600;
     color: var(--color-text-light);
     transition: var(--transition);
+    font-size: 0.9rem;
 }
 
 .progress-step.active .step-circle {
     background: var(--color-primary);
     border-color: var(--color-primary);
     color: white;
-    transform: scale(1.1);
-    box-shadow: 0 4px 12px rgba(7, 115, 75, 0.3);
+    transform: scale(1.08);
+    box-shadow: 0 4px 12px rgba(7, 115, 75, 0.25);
 }
 
 .progress-step.completed .step-circle {
@@ -769,7 +643,7 @@ body {
 }
 
 .step-label {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     color: var(--color-text-light);
     text-align: center;
 }
@@ -779,7 +653,7 @@ body {
     font-weight: 600;
 }
 
-/* ==================== FORMULARIOS - Nielsen: Prevención de Errores ==================== */
+/* ==================== FORMULARIOS ==================== */
 .register-form fieldset {
     border: none;
     padding: 0;
@@ -787,7 +661,7 @@ body {
 }
 
 .register-form legend {
-    font-size: 1.25rem;
+    font-size: 1.125rem;
     font-weight: 600;
     color: var(--color-text);
     margin-bottom: 1rem;
@@ -798,14 +672,13 @@ body {
 
 .form-grid {
     display: grid;
-    gap: 1.5rem;
+    gap: 1.25rem;
 }
 
 .form-grid-2 {
     grid-template-columns: repeat(2, 1fr);
 }
 
-/* Form Group - Ley de Proximidad */
 .form-group {
     display: flex;
     flex-direction: column;
@@ -815,24 +688,16 @@ body {
     font-weight: 600;
     color: var(--color-text);
     margin-bottom: 0.5rem;
-    font-size: 0.95rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+    font-size: 0.9rem;
 }
 
-.form-group label svg {
-    color: var(--color-primary);
-}
-
-/* Inputs - Nielsen: Feedback Visual */
 .form-group input,
 .form-group select,
 .form-group textarea {
     padding: 0.875rem 1rem;
     border: 2px solid #e2e8f0;
     border-radius: var(--radius-md);
-    font-size: 1rem;
+    font-size: 0.95rem;
     transition: var(--transition);
     background: white;
     font-family: inherit;
@@ -864,32 +729,26 @@ body {
     color: var(--color-text-light);
 }
 
-/* Validation states */
-.form-group input:invalid:not(:placeholder-shown) {
-    border-color: var(--color-danger);
-}
-
-.form-group input:valid:not(:placeholder-shown):not([readonly]) {
-    border-color: var(--color-success);
+.form-group select:disabled {
+    background: var(--color-background-alt);
+    cursor: not-allowed;
+    color: var(--color-text-light);
 }
 
 .form-help {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     color: var(--color-text-light);
     margin-top: 0.25rem;
 }
 
-.form-error {
+.form-error,
+.form-error-inline {
     color: var(--color-danger);
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     margin-top: 0.25rem;
     display: flex;
     align-items: center;
     gap: 0.25rem;
-}
-
-.form-error::before {
-    content: '⚠';
 }
 
 /* ==================== INPUT CON BOTÓN ==================== */
@@ -903,7 +762,7 @@ body {
 }
 
 .btn-search {
-    padding: 0.875rem 1.5rem;
+    padding: 0.875rem 1.25rem;
     background: var(--color-primary);
     color: white;
     border: none;
@@ -912,6 +771,10 @@ body {
     cursor: pointer;
     transition: var(--transition);
     white-space: nowrap;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .btn-search:hover {
@@ -922,6 +785,12 @@ body {
 
 .btn-search:active {
     transform: translateY(0);
+}
+
+.btn-search:disabled {
+    background: #d1d5db;
+    cursor: not-allowed;
+    transform: none;
 }
 
 /* ==================== PASSWORD TOGGLE ==================== */
@@ -948,7 +817,7 @@ body {
     background: rgba(7, 115, 75, 0.1);
 }
 
-/* ==================== CHECKBOX PERSONALIZADO - Ley de Cierre ==================== */
+/* ==================== CHECKBOX PERSONALIZADO ==================== */
 .custom-checkbox {
     display: flex;
     align-items: flex-start;
@@ -995,7 +864,7 @@ body {
 .custom-checkbox label {
     font-weight: normal;
     cursor: pointer;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
 }
 
 .custom-checkbox a {
@@ -1005,82 +874,6 @@ body {
 
 .custom-checkbox a:hover {
     text-decoration: underline;
-}
-
-/* ==================== FILE UPLOAD ==================== */
-.file-upload-area {
-    border: 2px dashed #d1d5db;
-    border-radius: var(--radius-md);
-    padding: 2rem;
-    text-align: center;
-    background: var(--color-background-alt);
-    cursor: pointer;
-    transition: var(--transition);
-}
-
-.file-upload-area:hover {
-    border-color: var(--color-primary);
-    background: #e8f5f0;
-}
-
-.file-upload-area.drag-over {
-    border-color: var(--color-primary);
-    background: #e8f5f0;
-    transform: scale(1.02);
-}
-
-.file-upload-icon {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-    opacity: 0.5;
-}
-
-.file-upload-text h4 {
-    color: var(--color-text);
-    margin-bottom: 0.5rem;
-}
-
-.file-upload-text p {
-    color: var(--color-text-light);
-    font-size: 0.9rem;
-}
-
-.selected-file {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1rem;
-    background: var(--color-background-alt);
-    border-radius: var(--radius-md);
-    margin-top: 1rem;
-    border: 1px solid #e5e7eb;
-}
-
-.file-info-display {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-}
-
-.file-icon {
-    width: 40px;
-    height: 40px;
-    background: var(--color-primary);
-    border-radius: var(--radius-sm);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-}
-
-.file-details h5 {
-    color: var(--color-text);
-    margin-bottom: 0.25rem;
-}
-
-.file-size {
-    font-size: 0.85rem;
-    color: var(--color-text-light);
 }
 
 /* ==================== BOTONES ==================== */
@@ -1096,7 +889,7 @@ body {
     padding: 0.875rem 2rem;
     border-radius: var(--radius-md);
     font-weight: 600;
-    font-size: 1rem;
+    font-size: 0.95rem;
     cursor: pointer;
     transition: var(--transition);
     border: none;
@@ -1105,26 +898,6 @@ body {
     justify-content: center;
     gap: 0.5rem;
     text-decoration: none;
-    position: relative;
-    overflow: hidden;
-}
-
-.btn::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 0;
-    height: 0;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.3);
-    transform: translate(-50%, -50%);
-    transition: width 0.6s, height 0.6s;
-}
-
-.btn:active::before {
-    width: 300px;
-    height: 300px;
 }
 
 .btn-primary {
@@ -1137,6 +910,10 @@ body {
     background: var(--color-primary-dark);
     transform: translateY(-2px);
     box-shadow: var(--shadow-md);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
 }
 
 .btn-primary:disabled {
@@ -1156,7 +933,28 @@ body {
     transform: translateY(-2px);
 }
 
-/* ==================== ALERTAS - Nielsen: Visibilidad del Estado ==================== */
+.btn.loading {
+    position: relative;
+    color: transparent;
+    pointer-events: none;
+}
+
+.btn.loading::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ==================== ALERTAS ==================== */
 .alert {
     padding: 1rem 1.25rem;
     border-radius: var(--radius-md);
@@ -1197,7 +995,11 @@ body {
     color: #1e40af;
 }
 
-/* ==================== FOOTER LINKS ==================== */
+.alert svg {
+    flex-shrink: 0;
+}
+
+/* ==================== FOOTER ==================== */
 .register-footer {
     text-align: center;
     margin-top: 2rem;
@@ -1207,7 +1009,7 @@ body {
 
 .register-footer p {
     color: var(--color-text-light);
-    font-size: 0.95rem;
+    font-size: 0.9rem;
 }
 
 .register-footer a {
@@ -1216,124 +1018,318 @@ body {
     font-weight: 600;
 }
 
+.register-footer a:hover
 .register-footer a:hover {
-    text-decoration: underline;
+text-decoration: underline;
 }
 
-/* ==================== LOADING STATE ==================== */
-.btn.loading {
-    position: relative;
-    color: transparent;
-    pointer-events: none;
+/* ==================== ACCESIBILIDAD ==================== */
+.skip-link {
+position: absolute;
+top: -100px;
+left: 0;
+background: var(--color-primary);
+color: white;
+padding: 0.5rem 1rem;
+text-decoration: none;
+z-index: 1000;
 }
-
-.btn.loading::after {
-    content: '';
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    border: 3px solid rgba(255, 255, 255, 0.3);
-    border-top-color: white;
-    border-radius: 50%;
-    animation: spin 0.6s linear infinite;
+.skip-link:focus {
+top: 0;
 }
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
+*:focus-visible {
+outline: 2px solid var(--color-primary);
+outline-offset: 2px;
 }
-
 /* =============================================
-   RESPONSIVE DESIGN
-   ============================================= */
-
-/* Tablet y Desktop */
+RESPONSIVE DESIGN - Mobile First
+============================================= */
+/* Tablet Grande y Desktop Pequeño */
 @media (max-width: 1024px) {
     .register-wrapper {
-        grid-template-columns: 1fr;
-        max-width: 700px;
+    grid-template-columns: 1fr;
+    max-width: 700px;
+    padding: 5rem 1rem 2rem;
     }
-    
     .register-sidebar {
         position: static;
+    }
+
+    .lang-header {
+        padding: 0.875rem 1.5rem;
     }
 }
 
 /* Tablet */
 @media (max-width: 768px) {
-    body {
-        padding: 1rem 0.5rem;
+    .lang-header {
+    padding: 0.875rem 1rem;
     }
-    
-    .selector-wrapper {
-        padding: 1rem;
+    .logo-text-header {
+        font-size: 1.1rem;
     }
 
-    .selector-container {
+    .selector-wrapper-new {
+        padding: 4.5rem 0.75rem 1.5rem;
+    }
+
+    .selector-container-new {
         padding: 2rem 1.5rem;
     }
 
-    .options-grid {
+    .options-grid-new {
         grid-template-columns: 1fr;
     }
-    
+
+    .selector-title {
+        font-size: 1.5rem;
+    }
+
+    .register-wrapper {
+        padding: 5rem 1rem 2rem;
+    }
+
     .register-content {
         padding: 2rem 1.5rem;
     }
-    
+
     .register-sidebar {
         padding: 2rem 1.5rem;
     }
-    
+
+    .register-header h2 {
+        font-size: 1.5rem;
+    }
+
     .form-grid-2 {
         grid-template-columns: 1fr;
     }
-    
+
     .progress-steps {
         flex-wrap: wrap;
-        gap: 1rem;
+        gap: 0.5rem;
     }
-    
+
+    .step-circle {
+        width: 32px;
+        height: 32px;
+        font-size: 0.85rem;
+    }
+
+    .step-label {
+        font-size: 0.75rem;
+    }
+
     .form-actions {
         flex-direction: column-reverse;
     }
-    
+
     .btn {
         width: 100%;
     }
 }
-
 /* Móvil */
 @media (max-width: 480px) {
-    .selector-container {
+    .lang-header {
+    padding: 0.75rem 0.875rem;
+    }
+
+    .logo-icon-small {
+    font-size: 1.25rem;
+}
+
+    .logo-text-header {
+        font-size: 1rem;
+    }
+
+    .language-switcher {
+        padding: 0.2rem;
+    }
+
+    .lang-btn {
+        padding: 0.375rem 0.75rem;
+        font-size: 0.8rem;
+    }
+
+    .selector-wrapper-new {
+        padding: 4rem 0.5rem 1rem;
+    }
+
+    .selector-container-new {
         padding: 1.5rem 1rem;
     }
-    
+
+    .selector-title {
+        font-size: 1.25rem;
+    }
+
+    .selector-subtitle {
+        font-size: 0.875rem;
+    }
+
+    .option-card-new {
+        padding: 1rem;
+    }
+
+    .option-icon-new {
+        width: 42px;
+        height: 42px;
+    }
+
+    .option-content-new h3 {
+        font-size: 0.95rem;
+    }
+
+    .option-content-new p {
+        font-size: 0.8rem;
+    }
+
+    .register-wrapper {
+        padding: 4.5rem 0.5rem 1.5rem;
+    }
+
     .register-content {
         padding: 1.5rem 1rem;
     }
-    
+
+    .register-sidebar {
+        padding: 1.5rem 1rem;
+    }
+
+    .register-header h2 {
+        font-size: 1.35rem;
+    }
+
+    .register-subtitle {
+        font-size: 0.875rem;
+    }
+
+    .register-logo h1 {
+        font-size: 1.5rem;
+    }
+
+    .register-sidebar h2 {
+        font-size: 1.125rem;
+    }
+
+    .register-sidebar p {
+        font-size: 0.875rem;
+    }
+
+    .benefit-text strong {
+        font-size: 0.875rem;
+    }
+
+    .benefit-text span {
+        font-size: 0.8rem;
+    }
+
     .step-circle {
-        width: 35px;
-        height: 35px;
+        width: 28px;
+        height: 28px;
+        font-size: 0.8rem;
+    }
+
+    .step-label {
+        font-size: 0.7rem;
+    }
+
+    .form-grid {
+        gap: 1rem;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 0.75rem 0.875rem;
         font-size: 0.9rem;
     }
-    
-    .step-label {
+
+    .btn {
+        padding: 0.75rem 1.5rem;
+        font-size: 0.9rem;
+    }
+
+    .btn-search {
+        padding: 0.75rem 1rem;
+        font-size: 0.875rem;
+    }
+
+}
+
+/* Móvil Pequeño */
+@media (max-width: 360px) {
+    .selector-container-new {
+    padding: 1.25rem 0.875rem;
+    }
+
+    .register-content,
+    .register-sidebar {
+        padding: 1.25rem 0.875rem;
+    }
+
+    .option-icon-new {
+        width: 38px;
+        height: 38px;
+    }
+
+    .step-circle {
+        width: 26px;
+        height: 26px;
         font-size: 0.75rem;
     }
 }
 
-/* ==================== ACCESIBILIDAD ==================== */
-*:focus-visible {
-    outline: 2px solid var(--color-primary);
-    outline-offset: 2px;
+/* =============================================
+ANIMACIONES Y TRANSICIONES
+============================================= */
+@keyframes fadeIn {
+    from {
+    opacity: 0;
+    transform: translateY(10px);
+    }
+    to {
+    opacity: 1;
+    transform: translateY(0);
+    }
+    }
+    @keyframes pulse {
+    0%, 100% {
+    transform: scale(1);
+    }
+    50% {
+    transform: scale(1.05);
+    }
 }
-
+/* =============================================
+MODO REDUCCIÓN DE MOVIMIENTO
+============================================= */
 @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
     *::after {
-        animation-duration: 0.01ms !important;
-        transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    }
+}
+/* =============================================
+IMPRESIÓN
+============================================= */
+@media print {
+    .lang-header,
+    .register-sidebar,
+    .form-actions,
+    .register-footer {
+    display: none;
+    }
+
+    .register-wrapper {
+    grid-template-columns: 1fr;
+    }
+
+    .register-content {
+        box-shadow: none;
+        border: 1px solid #ccc;
     }
 }

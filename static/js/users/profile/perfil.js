@@ -14,6 +14,18 @@ document.addEventListener('DOMContentLoaded', function() {
     const tabContents = document.querySelectorAll('.tab-content');
     const formEditarPerfil = document.getElementById('form-editar-perfil');
 
+    // ====== I18N STRINGS ======
+    const i18nScript = document.getElementById('profile-i18n');
+    let i18n = {};
+    if (i18nScript) {
+        try {
+            i18n = JSON.parse(i18nScript.textContent || '{}');
+        } catch (e) {
+            console.warn('No se pudo parsear el i18n del perfil', e);
+        }
+    }
+    const t = (key, fallback = '') => i18n[key] || fallback || key;
+
     // ========== SISTEMA DE TABS ==========
     function initTabs() {
         tabs.forEach(tab => {
@@ -125,7 +137,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (tarifaHora && tarifaHora.value) {
                 if (parseFloat(tarifaHora.value) < 0) {
                     isValid = false;
-                    errorMessage = 'La tarifa por hora debe ser un valor positivo';
+                    errorMessage = t('hourlyRateInvalid', 'La tarifa por hora debe ser un valor positivo');
                     tarifaHora.style.borderColor = 'var(--color-danger)';
                 } else {
                     tarifaHora.style.borderColor = '';
@@ -156,7 +168,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Validar tamaño (máximo 5MB)
                 const maxSize = 5 * 1024 * 1024; // 5MB
                 if (file.size > maxSize) {
-                    showNotification('La imagen no debe superar los 5MB', 'error');
+                    showNotification(t('imageSizeError', 'La imagen no debe superar los 5MB'), 'error');
                     inputFoto.value = '';
                     return;
                 }
@@ -165,7 +177,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     // Aquí podrías mostrar un preview de la imagen
-                    showNotification('Imagen seleccionada correctamente', 'success');
+                    showNotification(t('imageSelected', 'Imagen seleccionada correctamente'), 'success');
                 };
                 reader.readAsDataURL(file);
             }

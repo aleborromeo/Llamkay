@@ -1,281 +1,379 @@
 {% extends "users/base.html" %}
 {% load static %}
+{% load i18n %}
 
-{% block title %}Crear Cuenta - Paso 3/4 - Llamkay.pe{% endblock %}
+{% block title %}{% trans "Crear Cuenta - Paso 3/4" %} - Llamkay.pe{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/users/register.css' %}">
 {% endblock %}
 
 {% block content %}
+<!-- Header con selector de idioma -->
+<header class="lang-header">
+    <a href="{% url 'llamkay:index' %}" class="logo-link-header">
+        <span class="logo-icon-small">🧳</span>
+        <span class="logo-text-header">Llamkay.pe</span>
+    </a>
+    
+    <div class="language-switcher">
+        <button type="button" class="lang-btn active" data-lang="es">ES</button>
+        <button type="button" class="lang-btn" data-lang="en">EN</button>
+    </div>
+</header>
+
 <div class="register-wrapper">
-    <!-- SIDEBAR INFORMATIVO -->
-    <aside class="register-sidebar">
+
+    <!-- ==================== SIDEBAR INFORMATIVO ==================== -->
+    <aside class="register-sidebar" aria-label="{% trans 'Información del paso' %}">
         <div class="register-logo">
-            <h1>🌱 Llamkay</h1>
+            <h1 aria-hidden="true">🌱 Llamkay</h1>
         </div>
-        
-        <h2>Destaca tu perfil profesional</h2>
-        <p>Un perfil completo aumenta tus posibilidades de conseguir trabajos.</p>
-        
+
+        <h2 data-i18n="sidebar-title">{% trans "Construye tu perfil profesional" %}</h2>
+        <p data-i18n="sidebar-description">
+            {% trans "Tu perfil es lo primero que verán los empleadores y trabajadores. Hazlo claro, honesto y completo." %}
+        </p>
+
         <ul class="benefits-list">
             <li>
-                <div class="benefit-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M12 20h9"></path>
-                        <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
-                    </svg>
+                <div class="benefit-icon" aria-hidden="true">
+                    ✔️
                 </div>
                 <div class="benefit-text">
-                    <strong>Describe tus habilidades</strong>
-                    <span>Muestra lo que sabes hacer</span>
+                    <strong data-i18n="benefit-1-title">{% trans "Más confianza" %}</strong>
+                    <span data-i18n="benefit-1-desc">{% trans "Un perfil completo genera mayor credibilidad" %}</span>
                 </div>
             </li>
+
             <li>
-                <div class="benefit-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                        <line x1="16" y1="2" x2="16" y2="6"></line>
-                        <line x1="8" y1="2" x2="8" y2="6"></line>
-                        <line x1="3" y1="10" x2="21" y2="10"></line>
-                    </svg>
+                <div class="benefit-icon" aria-hidden="true">
+                    ⭐
                 </div>
                 <div class="benefit-text">
-                    <strong>Indica tu disponibilidad</strong>
-                    <span>Elige cómo quieres trabajar</span>
+                    <strong data-i18n="benefit-2-title">{% trans "Mejores oportunidades" %}</strong>
+                    <span data-i18n="benefit-2-desc">{% trans "Aparecerás en más búsquedas relevantes" %}</span>
                 </div>
             </li>
+
             <li>
-                <div class="benefit-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                        <polyline points="14 2 14 8 20 8"></polyline>
-                        <line x1="16" y1="13" x2="8" y2="13"></line>
-                        <line x1="16" y1="17" x2="8" y2="17"></line>
-                    </svg>
+                <div class="benefit-icon" aria-hidden="true">
+                    🔒
                 </div>
                 <div class="benefit-text">
-                    <strong>Sube certificados (opcional)</strong>
-                    <span>Aumenta tu credibilidad</span>
-                </div>
-            </li>
-            <li>
-                <div class="benefit-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                    </svg>
-                </div>
-                <div class="benefit-text">
-                    <strong>Casi listo</strong>
-                    <span>Un paso más para empezar</span>
+                    <strong data-i18n="benefit-3-title">{% trans "Control total" %}</strong>
+                    <span data-i18n="benefit-3-desc">{% trans "Puedes editar tu perfil cuando quieras" %}</span>
                 </div>
             </li>
         </ul>
-        
+
         <a href="#" class="help-link">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="10"></circle>
-                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
-                <line x1="12" y1="17" x2="12.01" y2="17"></line>
-            </svg>
-            ¿Necesitas ayuda?
+            <span aria-hidden="true">❓</span>
+            <span data-i18n="help-link">{% trans "¿Necesitas ayuda para completar tu perfil?" %}</span>
         </a>
     </aside>
 
-    <!-- CONTENIDO PRINCIPAL -->
-    <main class="register-content">
-        <div class="register-header">
-            <h2>Tu perfil profesional</h2>
-            <p class="register-subtitle">Cuéntanos sobre tus habilidades y experiencia</p>
-        </div>
+    <!-- ==================== CONTENIDO PRINCIPAL ==================== -->
+    <main class="register-content" role="main">
 
-        <!-- BARRA DE PROGRESO -->
-        <div class="progress-container">
+        <!-- HEADER -->
+        <header class="register-header">
+            <h2 data-i18n="main-title">{% trans "Tu perfil" %}</h2>
+            <p class="register-subtitle" data-i18n="main-subtitle">
+                {% trans "Cuéntanos quién eres y qué sabes hacer" %}
+            </p>
+        </header>
+
+        <!-- ==================== BARRA DE PROGRESO ==================== -->
+        <nav class="progress-container" aria-label="{% trans 'Progreso de registro' %}">
             <div class="progress-steps">
+
                 <div class="progress-step completed">
-                    <div class="step-circle">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-                            <polyline points="20 6 9 17 4 12"></polyline>
-                        </svg>
-                    </div>
-                    <span class="step-label">Información</span>
+                    <div class="step-circle" aria-hidden="true">✓</div>
+                    <span class="step-label" data-i18n="step-1-label">{% trans "Información" %}</span>
                 </div>
+
                 <div class="progress-step completed">
-                    <div class="step-circle">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-                            <polyline points="20 6 9 17 4 12"></polyline>
-                        </svg>
-                    </div>
-                    <span class="step-label">Ubicación</span>
+                    <div class="step-circle" aria-hidden="true">✓</div>
+                    <span class="step-label" data-i18n="step-2-label">{% trans "Ubicación" %}</span>
                 </div>
-                <div class="progress-step active">
+
+                <div class="progress-step active" aria-current="step">
                     <div class="step-circle">3</div>
-                    <span class="step-label">Perfil</span>
+                    <span class="step-label" data-i18n="step-3-label">{% trans "Perfil" %}</span>
                 </div>
+
                 <div class="progress-step">
                     <div class="step-circle">4</div>
-                    <span class="step-label">Verificación</span>
+                    <span class="step-label" data-i18n="step-4-label">{% trans "Verificación" %}</span>
                 </div>
+
             </div>
-        </div>
+        </nav>
 
-        <!-- FORMULARIO -->
-        <form method="post" enctype="multipart/form-data" class="register-form" novalidate>
+        <!-- ==================== FORMULARIO PERFIL ==================== -->
+        <form method="post"
+              class="register-form"
+              id="profile-form"
+              novalidate>
+
             {% csrf_token %}
-            
-            <fieldset>
-                <legend>Habilidades y oficios</legend>
-                
-                <div class="form-grid">
-                    <!-- ✅ CAMPO OCUPACIÓN PRINCIPAL (REQUERIDO) -->
-                    <div class="form-group">
-                        <label for="id_ocupacion">Ocupación Principal *</label>
-                        <input 
-                            type="text" 
-                            name="ocupacion" 
-                            id="id_ocupacion"
-                            value="{{ form.ocupacion.value|default_if_none:'' }}"
-                            placeholder="Ej: Carpintero, Electricista, Plomero..."
-                            required>
-                        {% if form.ocupacion.errors %}
-                        <span class="form-error">{{ form.ocupacion.errors.0 }}</span>
-                        {% endif %}
-                        <span class="form-help">Tu oficio o profesión principal</span>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="id_habilidades">Describe tus habilidades *</label>
-                        <textarea 
-                            name="habilidades" 
-                            id="id_habilidades"
-                            rows="4"
-                            placeholder="Ej: Instalación eléctrica, reparaciones, mantenimiento..."
-                            required>{{ form.habilidades.value|default_if_none:'' }}</textarea>
-                        {% if form.habilidades.errors %}
-                        <span class="form-error">{{ form.habilidades.errors.0 }}</span>
-                        {% endif %}
-                        <span class="form-help">Describe lo que sabes hacer para que los empleadores te encuentren fácilmente</span>
-                    </div>
-                </div>
-            </fieldset>
 
+            <!-- ==================== SECCIÓN: IDENTIDAD ==================== -->
             <fieldset>
-                <legend>Experiencia y disponibilidad</legend>
-                
+                <legend data-i18n="legend-identity">{% trans "Identidad pública" %}</legend>
+
                 <div class="form-grid form-grid-2">
+
+                    <!-- Nombre visible -->
                     <div class="form-group">
-                        <label for="id_experiencia">Años de experiencia</label>
-                        <select name="experiencia" id="id_experiencia">
-                            <option value="">Selecciona tu experiencia</option>
-                            <option value="sin_experiencia">Sin experiencia</option>
-                            <option value="1">Menos de 1 año</option>
-                            <option value="1-3">1-3 años</option>
-                            <option value="3-5">3-5 años</option>
-                            <option value="5+">Más de 5 años</option>
-                        </select>
+                        <label for="id_nombre_publico">
+                            <span data-i18n="label-public-name">{% trans "Nombre público" %}</span> *
+                        </label>
+                        <input
+                            type="text"
+                            id="id_nombre_publico"
+                            name="nombre_publico"
+                            value="{{ form.nombre_publico.value|default_if_none:'' }}"
+                            placeholder="{% trans 'Ej: Juan Pérez' %}"
+                            required
+                            data-i18n-placeholder="placeholder-public-name">
+
+                        {% if form.nombre_publico.errors %}
+                        <span class="form-error">
+                            {{ form.nombre_publico.errors.0 }}
+                        </span>
+                        {% endif %}
+
+                        <span class="form-help" data-i18n="help-public-name">
+                            {% trans "Este nombre será visible para otros usuarios" %}
+                        </span>
                     </div>
 
+                    <!-- Rol principal -->
                     <div class="form-group">
-                        <label for="id_disponibilidad">Disponibilidad *</label>
-                        <select name="disponibilidad" id="id_disponibilidad" required>
-                            <option value="">Selecciona tu disponibilidad</option>
-                            <option value="tiempo_completo">Tiempo completo</option>
-                            <option value="medio_tiempo">Medio tiempo</option>
-                            <option value="por_horas">Por horas</option>
-                            <option value="fines_semana">Fines de semana</option>
-                            <option value="flexible">Flexible</option>
+                        <label for="id_rol_principal">
+                            <span data-i18n="label-role">{% trans "¿Qué haces?" %}</span> *
+                        </label>
+                        <select id="id_rol_principal"
+                                name="rol_principal"
+                                required>
+                            <option value="" data-i18n="option-select-role">
+                                {% trans "Selecciona una opción" %}
+                            </option>
+                            <option value="trabajador" data-i18n="option-worker">
+                                {% trans "Ofrezco servicios" %}
+                            </option>
+                            <option value="empleador" data-i18n="option-employer">
+                                {% trans "Busco contratar" %}
+                            </option>
+                            <option value="ambos" data-i18n="option-both">
+                                {% trans "Ambos" %}
+                            </option>
                         </select>
-                        {% if form.disponibilidad.errors %}
-                        <span class="form-error">{{ form.disponibilidad.errors.0 }}</span>
+
+                        {% if form.rol_principal.errors %}
+                        <span class="form-error">
+                            {{ form.rol_principal.errors.0 }}
+                        </span>
                         {% endif %}
                     </div>
+
                 </div>
             </fieldset>
 
+            <!-- ==================== SECCIÓN: DESCRIPCIÓN ==================== -->
             <fieldset>
-                <legend>Formación académica</legend>
-                
+                <legend data-i18n="legend-about">{% trans "Sobre ti" %}</legend>
+
+                <div class="form-group">
+                    <label for="id_biografia">
+                        <span data-i18n="label-bio">{% trans "Descripción" %}</span> *
+                    </label>
+
+                    <textarea
+                        id="id_biografia"
+                        name="biografia"
+                        rows="5"
+                        maxlength="500"
+                        placeholder="{% trans 'Describe brevemente tu experiencia, habilidades y lo que ofreces...' %}"
+                        required
+                        data-i18n-placeholder="placeholder-bio">{{ form.biografia.value|default_if_none:'' }}</textarea>
+
+                    {% if form.biografia.errors %}
+                    <span class="form-error">
+                        {{ form.biografia.errors.0 }}
+                    </span>
+                    {% endif %}
+
+                    <span class="form-help" data-i18n="help-bio">
+                        {% trans "Máximo 500 caracteres. Sé claro y directo." %}
+                    </span>
+                </div>
+            </fieldset>
+
+            <!-- ==================== SECCIÓN: HABILIDADES ==================== -->
+            <fieldset>
+                <legend data-i18n="legend-skills">{% trans "Habilidades principales" %}</legend>
+
+                <div class="form-group">
+                    <label for="id_habilidades">
+                        <span data-i18n="label-skills">{% trans "Habilidades" %}</span>
+                    </label>
+
+                    <input
+                        type="text"
+                        id="id_habilidades"
+                        name="habilidades"
+                        value="{{ form.habilidades.value|default_if_none:'' }}"
+                        placeholder="{% trans 'Ej: Carpintería, Plomería, Diseño gráfico' %}"
+                        data-i18n-placeholder="placeholder-skills">
+
+                    <span class="form-help" data-i18n="help-skills">
+                        {% trans "Sepáralas por comas para facilitar la búsqueda" %}
+                    </span>
+                </div>
+            </fieldset>
+
+            <!-- ==================== SECCIÓN: EXPERIENCIA ==================== -->
+            <fieldset>
+                <legend data-i18n="legend-experience">{% trans "Experiencia" %}</legend>
+
                 <div class="form-grid form-grid-2">
+
+                    <!-- Años de experiencia -->
                     <div class="form-group">
-                        <label for="id_estudios">Nivel de estudios *</label>
-                        <select name="estudios" id="id_estudios" required>
-                            <option value="">Selecciona tu nivel</option>
-                            <option value="primaria">Primaria</option>
-                            <option value="secundaria">Secundaria</option>
-                            <option value="tecnico">Técnico</option>
-                            <option value="universitario">Universitario</option>
-                            <option value="posgrado">Posgrado</option>
+                        <label for="id_experiencia_anios">
+                            <span data-i18n="label-years">{% trans "Años de experiencia" %}</span>
+                        </label>
+                        <select id="id_experiencia_anios"
+                                name="experiencia_anios">
+                            <option value="" data-i18n="option-select">
+                                {% trans "Selecciona" %}
+                            </option>
+                            <option value="0-1" data-i18n="option-years-0-1">{% trans "Menos de 1 año" %}</option>
+                            <option value="1-3" data-i18n="option-years-1-3">{% trans "1 a 3 años" %}</option>
+                            <option value="3-5" data-i18n="option-years-3-5">{% trans "3 a 5 años" %}</option>
+                            <option value="5+" data-i18n="option-years-5+">{% trans "Más de 5 años" %}</option>
                         </select>
-                        {% if form.estudios.errors %}
-                        <span class="form-error">{{ form.estudios.errors.0 }}</span>
-                        {% endif %}
                     </div>
 
-                    <div class="form-group" id="field-carrera" style="display: none;">
-                        <label for="id_carrera">Carrera universitaria</label>
-                        <input 
-                            type="text" 
-                            name="carrera" 
-                            id="id_carrera"
-                            value="{{ form.carrera.value|default_if_none:'' }}"
-                            placeholder="Ej: Ingeniería Civil">
-                    </div>
-                </div>
-            </fieldset>
-
-            <fieldset>
-                <legend>Certificaciones (opcional)</legend>
-                
-                <div class="form-grid">
+                    <!-- Nivel -->
                     <div class="form-group">
-                        <label for="id_certificaciones">Sube tus certificados</label>
-                        <input 
-                            type="file" 
-                            name="certificaciones" 
-                            id="id_certificaciones"
-                            accept=".pdf,image/*"
-                            multiple
-                            style="display: none;">
-                        
-                        <div class="file-upload-area" id="uploadArea">
-                            <div class="file-upload-icon">📄</div>
-                            <div class="file-upload-text">
-                                <h4>Arrastra tus archivos aquí</h4>
-                                <p>o haz clic para seleccionar</p>
-                            </div>
-                        </div>
-                        
-                        <div id="fileList"></div>
-                        
-                        <span class="form-help">Formatos: PDF, JPG, PNG (máximo 5MB por archivo)</span>
+                        <label for="id_nivel">
+                            <span data-i18n="label-level">{% trans "Nivel" %}</span>
+                        </label>
+                        <select id="id_nivel" name="nivel">
+                            <option value="" data-i18n="option-select">{% trans "Selecciona" %}</option>
+                            <option value="basico" data-i18n="option-basic">{% trans "Básico" %}</option>
+                            <option value="intermedio" data-i18n="option-intermediate">{% trans "Intermedio" %}</option>
+                            <option value="avanzado" data-i18n="option-advanced">{% trans "Avanzado" %}</option>
+                        </select>
                     </div>
+
                 </div>
             </fieldset>
 
-            <!-- BOTONES -->
+            <!-- ==================== SECCIÓN: DISPONIBILIDAD ==================== -->
+            <fieldset>
+                <legend data-i18n="legend-availability">{% trans "Disponibilidad" %}</legend>
+
+                <div class="form-grid form-grid-2">
+
+                    <!-- Tipo de trabajo -->
+                    <div class="form-group">
+                        <label for="id_modalidad">
+                            <span data-i18n="label-modality">{% trans "Modalidad" %}</span>
+                        </label>
+                        <select id="id_modalidad" name="modalidad">
+                            <option value="" data-i18n="option-select">{% trans "Selecciona" %}</option>
+                            <option value="presencial" data-i18n="option-onsite">{% trans "Presencial" %}</option>
+                            <option value="remoto" data-i18n="option-remote">{% trans "Remoto" %}</option>
+                            <option value="mixto" data-i18n="option-hybrid">{% trans "Mixto" %}</option>
+                        </select>
+                    </div>
+
+                    <!-- Horario -->
+                    <div class="form-group">
+                        <label for="id_horario">
+                            <span data-i18n="label-schedule">{% trans "Horario disponible" %}</span>
+                        </label>
+                        <select id="id_horario" name="horario">
+                            <option value="" data-i18n="option-select">{% trans "Selecciona" %}</option>
+                            <option value="manana" data-i18n="option-morning">{% trans "Mañanas" %}</option>
+                            <option value="tarde" data-i18n="option-afternoon">{% trans "Tardes" %}</option>
+                            <option value="noche" data-i18n="option-evening">{% trans "Noches" %}</option>
+                            <option value="flexible" data-i18n="option-flexible">{% trans "Flexible" %}</option>
+                        </select>
+                    </div>
+
+                </div>
+            </fieldset>
+
+            <!-- ==================== SECCIÓN: VISIBILIDAD ==================== -->
+            <fieldset>
+                <legend data-i18n="legend-privacy">{% trans "Privacidad" %}</legend>
+
+                <div class="custom-checkbox">
+                    <input type="checkbox"
+                           id="id_perfil_publico"
+                           name="perfil_publico"
+                           checked>
+                    <label for="id_perfil_publico">
+                        <span data-i18n="label-public-profile">{% trans "Quiero que mi perfil sea visible para otros usuarios" %}</span>
+                    </label>
+                </div>
+
+                <span class="form-help" data-i18n="help-privacy">
+                    {% trans "Podrás cambiar esto más adelante desde tu perfil" %}
+                </span>
+            </fieldset>
+
+            <!-- ==================== NAVEGACIÓN ==================== -->
             <div class="form-actions">
-                <a href="{% url 'users:register_two' %}" class="btn btn-secondary">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+                <a href="{% url 'users:register_two' %}"
+                   class="btn btn-secondary">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         width="16" height="16"
+                         viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="2">
                         <line x1="19" y1="12" x2="5" y2="12"></line>
                         <polyline points="12 19 5 12 12 5"></polyline>
                     </svg>
-                    Anterior
+                    <span data-i18n="btn-back">{% trans "Anterior" %}</span>
                 </a>
-                <button type="submit" class="btn btn-primary">
-                    Siguiente
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+                <button type="submit"
+                        class="btn btn-primary">
+                    <span data-i18n="btn-continue">{% trans "Continuar" %}</span>
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         width="16" height="16"
+                         viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="2">
                         <line x1="5" y1="12" x2="19" y2="12"></line>
                         <polyline points="12 5 19 12 12 19"></polyline>
                     </svg>
                 </button>
+
             </div>
+
         </form>
 
-        <!-- FOOTER -->
+        <!-- ==================== FOOTER ==================== -->
         <div class="register-footer">
-            <p>¿Ya tienes una cuenta? <a href="{% url 'users:login' %}">Inicia sesión aquí</a></p>
+            <p>
+                <span data-i18n="footer-have-account">{% trans "¿Ya tienes una cuenta?" %}</span>
+                <a href="{% url 'users:login' %}" data-i18n="footer-login">
+                    {% trans "Inicia sesión aquí" %}
+                </a>
+            </p>
         </div>
+
     </main>
 </div>
 {% endblock %}

@@ -1,7 +1,8 @@
 {% extends "users/base.html" %}
 {% load static %}
+{% load i18n %}
 
-{% block title %}Iniciar Sesión - Llamkay.pe{% endblock %}
+{% block title %}{% trans "Iniciar Sesión" %} - Llamkay.pe{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/users/auth/login.css' %}">
@@ -10,7 +11,7 @@
 {% block content %}
 <div class="login-wrapper">
     <!-- Fondo animado -->
-    <div class="login-background">
+    <div class="login-background" aria-hidden="true">
         <div class="shape shape-1"></div>
         <div class="shape shape-2"></div>
         <div class="shape shape-3"></div>
@@ -18,89 +19,114 @@
 
     <!-- Contenedor principal -->
     <div class="login-container">
-        <!-- Lado izquierdo: Información -->
-        <div class="login-info">
+        <!-- ========== LADO IZQUIERDO: INFORMACIÓN ========== -->
+        <aside class="login-info" aria-label="{% trans 'Información de la plataforma' %}">
             <div class="info-content">
-                <a href="{% url 'llamkay:index' %}" class="logo-link">
+                <!-- Logo con navegación -->
+                <a href="{% url 'llamkay:index' %}" class="logo-link" aria-label="{% trans 'Ir al inicio de Llamkay' %}">
                     <div class="logo">
-                        <span class="logo-icon">🧳</span>
+                        <span class="logo-icon" aria-hidden="true">🧳</span>
                         <span class="logo-text">Llamkay.pe</span>
                     </div>
                 </a>
                 
-                <h1>¡Bienvenido de vuelta!</h1>
+                <!-- Título principal -->
+                <h1>{% trans "¡Bienvenido de vuelta!" %}</h1>
                 <p class="info-description">
-                    Conecta con miles de oportunidades laborales en todo el Perú. 
-                    Encuentra trabajo hoy mismo o contrata al profesional perfecto.
+                    {% trans "Conecta con miles de oportunidades laborales en todo el Perú. Encuentra trabajo hoy mismo o contrata al profesional perfecto." %}
                 </p>
                 
-                <div class="info-features">
-                    <div class="feature-item">
-                        <div class="feature-icon">
+                <!-- Features -->
+                <ul class="info-features" role="list">
+                    <li class="feature-item">
+                        <div class="feature-icon" aria-hidden="true">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                                 <polyline points="22 4 12 14.01 9 11.01"></polyline>
                             </svg>
                         </div>
                         <div class="feature-text">
-                            <strong>100% Verificado</strong>
-                            <span>Usuarios confiables y seguros</span>
+                            <strong>{% trans "100% Verificado" %}</strong>
+                            <span>{% trans "Usuarios confiables y seguros" %}</span>
                         </div>
-                    </div>
+                    </li>
                     
-                    <div class="feature-item">
-                        <div class="feature-icon">
+                    <li class="feature-item">
+                        <div class="feature-icon" aria-hidden="true">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
                             </svg>
                         </div>
                         <div class="feature-text">
-                            <strong>Chat Directo</strong>
-                            <span>Comunicación sin intermediarios</span>
+                            <strong>{% trans "Chat Directo" %}</strong>
+                            <span>{% trans "Comunicación sin intermediarios" %}</span>
                         </div>
-                    </div>
+                    </li>
                     
-                    <div class="feature-item">
-                        <div class="feature-icon">
+                    <li class="feature-item">
+                        <div class="feature-icon" aria-hidden="true">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
                             </svg>
                         </div>
                         <div class="feature-text">
-                            <strong>Reputación Real</strong>
-                            <span>Calificaciones verificadas</span>
+                            <strong>{% trans "Reputación Real" %}</strong>
+                            <span>{% trans "Calificaciones verificadas" %}</span>
                         </div>
-                    </div>
-                </div>
+                    </li>
+                </ul>
                 
-                <div class="info-stats">
+                <!-- Estadísticas -->
+                <dl class="info-stats" role="list">
                     <div class="stat">
-                        <strong>10,000+</strong>
-                        <span>Usuarios activos</span>
+                        <dt><strong>10,000+</strong></dt>
+                        <dd><span>{% trans "Usuarios activos" %}</span></dd>
                     </div>
                     <div class="stat">
-                        <strong>5,000+</strong>
-                        <span>Trabajos publicados</span>
+                        <dt><strong>5,000+</strong></dt>
+                        <dd><span>{% trans "Trabajos publicados" %}</span></dd>
                     </div>
                     <div class="stat">
-                        <strong>4.8/5</strong>
-                        <span>Calificación</span>
+                        <dt><strong>4.8/5</strong></dt>
+                        <dd><span>{% trans "Calificación" %}</span></dd>
                     </div>
-                </div>
+                </dl>
             </div>
-        </div>
+        </aside>
 
-        <!-- Lado derecho: Formulario -->
-        <div class="login-form-section">
+        <!-- ========== LADO DERECHO: FORMULARIO ========== -->
+        <main class="login-form-section">
             <div class="form-container">
-                <div class="form-header">
-                    <h2>Iniciar Sesión</h2>
-                    <p>Ingresa tus credenciales para continuar</p>
+                <!-- Selector de idioma -->
+                <div class="language-selector">
+                    <form action="{% url 'set_language' %}" method="post" class="language-form">
+                        {% csrf_token %}
+                        <input name="next" type="hidden" value="{{ request.path }}">
+                        <div class="language-buttons">
+                            <button type="submit" name="language" value="es" 
+                                    class="lang-btn {% if LANGUAGE_CODE == 'es' %}active{% endif %}"
+                                    aria-label="{% trans 'Cambiar a español' %}">
+                                ES
+                            </button>
+                            <button type="submit" name="language" value="en" 
+                                    class="lang-btn {% if LANGUAGE_CODE == 'en' %}active{% endif %}"
+                                    aria-label="{% trans 'Cambiar a inglés' %}">
+                                EN
+                            </button>
+                        </div>
+                    </form>
                 </div>
 
+                <!-- Header del formulario -->
+                <header class="form-header">
+                    <h2>{% trans "Login" %}</h2>
+                    <p>{% trans "Ingresa tus credenciales para continuar" %}</p>
+                </header>
+
+                <!-- Alertas -->
                 {% if error_message %}
-                <div class="alert alert-error">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <div class="alert alert-error" role="alert" aria-live="assertive">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                         <circle cx="12" cy="12" r="10"></circle>
                         <line x1="12" y1="8" x2="12" y2="12"></line>
                         <line x1="12" y1="16" x2="12.01" y2="16"></line>
@@ -109,34 +135,40 @@
                 </div>
                 {% endif %}
 
-                <form action="{% url 'users:login' %}" method="post" class="login-form" id="loginForm">
+                <!-- Formulario de login -->
+                <form action="{% url 'users:login' %}" method="post" class="login-form" id="loginForm" novalidate>
                     {% csrf_token %}
                     
+                    <!-- Campo Email -->
                     <div class="form-group">
                         <label for="email" class="form-label">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                 <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
                                 <polyline points="22,6 12,13 2,6"></polyline>
                             </svg>
-                            Correo Electrónico
+                            <span>{% trans "Correo Electrónico" %}</span>
                         </label>
                         <input 
                             type="email" 
                             id="email" 
                             name="email" 
                             class="form-input"
-                            placeholder="tu@email.com" 
+                            placeholder="{% trans 'tu@email.com' %}"
                             required
-                            autocomplete="email">
+                            autocomplete="email"
+                            aria-describedby="email-error"
+                            aria-invalid="false">
+                        <span id="email-error" class="error-message" role="alert" aria-live="polite"></span>
                     </div>
 
+                    <!-- Campo Contraseña -->
                     <div class="form-group">
                         <label for="password" class="form-label">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                                 <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                             </svg>
-                            Contraseña
+                            <span>{% trans "Contraseña" %}</span>
                         </label>
                         <div class="password-wrapper">
                             <input 
@@ -144,54 +176,69 @@
                                 id="password" 
                                 name="password" 
                                 class="form-input"
-                                placeholder="••••••••" 
+                                placeholder="••••••••"
                                 required
-                                autocomplete="current-password">
-                            <button type="button" class="password-toggle" id="togglePassword">
-                                <svg class="eye-open" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                autocomplete="current-password"
+                                aria-describedby="password-error"
+                                aria-invalid="false">
+                            <button 
+                                type="button" 
+                                class="password-toggle" 
+                                id="togglePassword"
+                                aria-label="{% trans 'Mostrar contraseña' %}"
+                                aria-pressed="false">
+                                <svg class="eye-open" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                     <circle cx="12" cy="12" r="3"></circle>
                                 </svg>
-                                <svg class="eye-closed" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
+                                <svg class="eye-closed" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;" aria-hidden="true">
                                     <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
                                     <line x1="1" y1="1" x2="23" y2="23"></line>
                                 </svg>
                             </button>
                         </div>
+                        <span id="password-error" class="error-message" role="alert" aria-live="polite"></span>
                     </div>
 
+                    <!-- Opciones -->
                     <div class="form-options">
                         <label class="checkbox-wrapper">
                             <input type="checkbox" name="remember" id="remember">
-                            <span class="checkbox-custom"></span>
-                            <span class="checkbox-label">Recordarme</span>
+                            <span class="checkbox-custom" aria-hidden="true"></span>
+                            <span class="checkbox-label">{% trans "Recordarme" %}</span>
                         </label>
-                        <a href="#" class="forgot-link">¿Olvidaste tu contraseña?</a>
+                        <a href="#" class="forgot-link">{% trans "¿Olvidaste tu contraseña?" %}</a>
                     </div>
 
-                    <button type="submit" class="btn-submit">
-                        <span>Iniciar Sesión</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <!-- Botón submit -->
+                    <button type="submit" class="btn-submit" aria-busy="false">
+                        <span class="btn-text">{% trans "Login" %}</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon" aria-hidden="true">
                             <line x1="5" y1="12" x2="19" y2="12"></line>
                             <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                        <svg class="btn-spinner" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;" aria-hidden="true">
+                            <circle cx="12" cy="12" r="10" opacity="0.25"/>
+                            <path d="M12 2a10 10 0 0 1 10 10" opacity="0.75"/>
                         </svg>
                     </button>
                 </form>
 
-                <div class="form-footer">
-                    <p>¿No tienes una cuenta? 
-                        <a href="{% url 'users:seleccionar_tipo' %}" class="register-link">Regístrate gratis</a>
+                <!-- Footer -->
+                <footer class="form-footer">
+                    <p>{% trans "¿No tienes una cuenta?" %}
+                        <a href="{% url 'users:seleccionar_tipo' %}" class="register-link">{% trans "Regístrate gratis" %}</a>
                     </p>
                     <a href="{% url 'llamkay:index' %}" class="back-home">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                             <line x1="19" y1="12" x2="5" y2="12"></line>
                             <polyline points="12 19 5 12 12 5"></polyline>
                         </svg>
-                        Volver al inicio
+                        <span>{% trans "Volver al inicio" %}</span>
                     </a>
-                </div>
+                </footer>
             </div>
-        </div>
+        </main>
     </div>
 </div>
 {% endblock %}

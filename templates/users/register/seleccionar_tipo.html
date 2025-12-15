@@ -1,167 +1,200 @@
 {% extends "users/base.html" %}
 {% load static %}
+{% load i18n %}
 
-{% block title %}Seleccionar Tipo de Usuario - Llamkay.pe{% endblock %}
+{% block title %}
+{% trans "Seleccionar tipo de usuario" %} - Llamkay.pe
+{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/users/register.css' %}">
 {% endblock %}
 
 {% block content %}
-<div class="selector-wrapper">
-    <!-- Fondo animado -->
-    <div class="selector-background">
-        <div class="shape shape-1"></div>
-        <div class="shape shape-2"></div>
-        <div class="shape shape-3"></div>
+<!-- Header con selector de idioma -->
+<header class="lang-header">
+    <a href="{% url 'llamkay:index' %}" class="logo-link-header">
+        <span class="logo-icon-small">🧳</span>
+        <span class="logo-text-header">Llamkay.pe</span>
+    </a>
+    
+    <!-- Botón de cambio de idioma -->
+    <div class="language-switcher">
+        <button type="button" class="lang-btn active" data-lang="es">ES</button>
+        <button type="button" class="lang-btn" data-lang="en">EN</button>
     </div>
+</header>
 
-    <!-- Contenedor principal -->
-    <div class="selector-container">
-        <!-- Header -->
-        <div class="selector-header">
-            <a href="{% url 'llamkay:index' %}" class="logo-link">
-                <div class="logo">
-                    <span class="logo-icon">🧳</span>
-                    <span class="logo-text">Llamkay.pe</span>
-                </div>
-            </a>
-            
-            <div class="header-content">
-                <span class="header-badge">Paso 1 de 2</span>
-                <h1>¿Cómo deseas registrarte?</h1>
-                <p>Selecciona tu rol en la plataforma para continuar</p>
-            </div>
-        </div>
+<a href="#main-content" class="skip-link">{% trans "Saltar al contenido" %}</a>
 
-        <!-- Formulario de selección -->
-        <form method="post" action="{% url 'users:seleccionar_tipo' %}" class="selector-form">
+<div class="selector-wrapper-new">
+    <!-- Contenedor Principal -->
+    <main id="main-content" class="selector-container-new" role="main">
+        
+        <!-- Header del Selector -->
+        <header class="selector-header-new">
+            <span class="step-badge">
+                {% trans "Paso 1 de 5" %}
+            </span>
+
+            <h1 class="selector-title">
+                {% trans "¿Cómo deseas registrarte?" %}
+            </h1>
+
+            <p class="selector-subtitle">
+                {% trans "Selecciona tu rol en la plataforma para continuar" %}
+            </p>
+        </header>
+
+        <!-- Formulario -->
+        <form
+            method="post"
+            action="{% url 'users:seleccionar_tipo' %}"
+            class="selector-form-new"
+            id="selectorForm"
+        >
             {% csrf_token %}
-            
-            <div class="options-grid">
-                <!-- Opción 1: Trabajador -->
-                <button type="submit" name="tipo_usuario" value="trabajador" class="option-card">
-                    <div class="option-icon trabajador">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
-                        </svg>
+
+            <div class="options-grid-new">
+
+                <!-- Opción: Trabajador -->
+                <button
+                    type="submit"
+                    name="tipo_usuario"
+                    value="trabajador"
+                    class="option-card-new"
+                    aria-label="{% trans 'Registrarse como trabajador' %}"
+                >
+                    <div class="option-header-new">
+                        <div class="option-icon-new trabajador">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77
+                                         a6 6 0 0 1-7.94 7.94l-6.91 6.91
+                                         a2.12 2.12 0 0 1-3-3l6.91-6.91
+                                         a6 6 0 0 1 7.94-7.94z"></path>
+                            </svg>
+                        </div>
+                        <span class="popular-badge">{% trans "Popular" %}</span>
                     </div>
-                    <div class="option-content">
-                        <h3>Buscar trabajo</h3>
-                        <p>Encuentra oportunidades laborales en tu zona</p>
+
+                    <div class="option-content-new">
+                        <h3>{% trans "Buscar trabajo" %}</h3>
+                        <p>{% trans "Encuentra oportunidades laborales en tu zona" %}</p>
                     </div>
-                    <div class="option-badge">Popular</div>
-                    <div class="option-arrow">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <line x1="5" y1="12" x2="19" y2="12"></line>
-                            <polyline points="12 5 19 12 12 19"></polyline>
-                        </svg>
-                    </div>
+
+                    <div class="option-arrow-new">→</div>
                 </button>
 
-                <!-- Opción 2: Trabajador y Empleador -->
-                <button type="submit" name="tipo_usuario" value="trabajador_empleador" class="option-card featured">
-                    <div class="featured-badge">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                        </svg>
-                        Recomendado
+                <!-- Opción: Trabajador + Empleador -->
+                <button
+                    type="submit"
+                    name="tipo_usuario"
+                    value="trabajador_empleador"
+                    class="option-card-new featured"
+                    aria-label="{% trans 'Registrarse como trabajador y empleador' %}"
+                >
+                    <div class="featured-corner">
+                        <span>{% trans "Recomendado" %}</span>
                     </div>
-                    <div class="option-icon dual">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="9" cy="7" r="4"></circle>
-                            <line x1="19" y1="8" x2="19" y2="14"></line>
-                            <line x1="22" y1="11" x2="16" y2="11"></line>
-                        </svg>
+
+                    <div class="option-header-new">
+                        <div class="option-icon-new dual">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="9" cy="7" r="4"></circle>
+                                <line x1="19" y1="8" x2="19" y2="14"></line>
+                                <line x1="22" y1="11" x2="16" y2="11"></line>
+                            </svg>
+                        </div>
                     </div>
-                    <div class="option-content">
-                        <h3>Buscar y Publicar</h3>
-                        <p>Trabaja y contrata según necesites</p>
+
+                    <div class="option-content-new">
+                        <h3>{% trans "Buscar y publicar trabajos" %}</h3>
+                        <p>{% trans "Trabaja y contrata según tus necesidades" %}</p>
                     </div>
-                    <div class="option-arrow">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <line x1="5" y1="12" x2="19" y2="12"></line>
-                            <polyline points="12 5 19 12 12 19"></polyline>
-                        </svg>
-                    </div>
+
+                    <div class="option-arrow-new">→</div>
                 </button>
 
-                <!-- Opción 3: Solo Empleador -->
-                <button type="submit" name="tipo_usuario" value="empleador" class="option-card">
-                    <div class="option-icon empleador">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                        </svg>
+                <!-- Opción: Empleador -->
+                <button
+                    type="submit"
+                    name="tipo_usuario"
+                    value="empleador"
+                    class="option-card-new"
+                    aria-label="{% trans 'Registrarse como empleador' %}"
+                >
+                    <div class="option-header-new">
+                        <div class="option-icon-new empleador">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5
+                                         a2 2 0 0 1 2-2h14
+                                         a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                        </div>
                     </div>
-                    <div class="option-content">
-                        <h3>Solo Publicar trabajos</h3>
-                        <p>Contrata profesionales verificados</p>
+
+                    <div class="option-content-new">
+                        <h3>{% trans "Publicar trabajos" %}</h3>
+                        <p>{% trans "Contrata profesionales verificados" %}</p>
                     </div>
-                    <div class="option-arrow">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <line x1="5" y1="12" x2="19" y2="12"></line>
-                            <polyline points="12 5 19 12 12 19"></polyline>
-                        </svg>
-                    </div>
+
+                    <div class="option-arrow-new">→</div>
                 </button>
 
-                <!-- Opción 4: Empresa -->
-                <button type="submit" name="tipo_usuario" value="empresa" class="option-card">
-                    <div class="option-icon empresa">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                            <polyline points="9 22 9 12 15 12 15 22"></polyline>
-                        </svg>
+                <!-- Opción: Empresa -->
+                <button
+                    type="submit"
+                    name="tipo_usuario"
+                    value="empresa"
+                    class="option-card-new"
+                    aria-label="{% trans 'Registrarse como empresa' %}"
+                >
+                    <div class="option-header-new">
+                        <div class="option-icon-new empresa">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M3 9l9-7 9 7v11
+                                         a2 2 0 0 1-2 2H5
+                                         a2 2 0 0 1-2-2z"></path>
+                                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                            </svg>
+                        </div>
+                        <span class="corporate-badge">{% trans "Corporativo" %}</span>
                     </div>
-                    <div class="option-content">
-                        <h3>Soy una empresa</h3>
-                        <p>Registro corporativo con RUC</p>
+
+                    <div class="option-content-new">
+                        <h3>{% trans "Soy una empresa" %}</h3>
+                        <p>{% trans "Registro corporativo con RUC" %}</p>
                     </div>
-                    <div class="option-badge">Corporativo</div>
-                    <div class="option-arrow">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <line x1="5" y1="12" x2="19" y2="12"></line>
-                            <polyline points="12 5 19 12 12 19"></polyline>
-                        </svg>
-                    </div>
+
+                    <div class="option-arrow-new">→</div>
                 </button>
+
             </div>
         </form>
 
         <!-- Footer -->
-        <div class="selector-footer">
-            <p>¿Ya tienes una cuenta? 
-                <a href="{% url 'users:login' %}">Inicia sesión aquí</a>
+        <footer class="selector-footer-new">
+            <p>
+                {% trans "¿Ya tienes una cuenta?" %}
+                <a href="{% url 'users:login' %}">
+                    {% trans "Inicia sesión aquí" %}
+                </a>
             </p>
-            <a href="{% url 'llamkay:index' %}" class="back-link">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <line x1="19" y1="12" x2="5" y2="12"></line>
-                    <polyline points="12 19 5 12 12 5"></polyline>
-                </svg>
-                Volver al inicio
-            </a>
-        </div>
 
-        <!-- Info adicional -->
-        <div class="info-banner">
-            <div class="info-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <line x1="12" y1="16" x2="12" y2="12"></line>
-                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                </svg>
-            </div>
-            <div class="info-content">
-                <strong>¿No estás seguro?</strong>
-                <span>Puedes cambiar tu tipo de cuenta después del registro en tu perfil.</span>
-            </div>
-        </div>
-    </div>
+            <a href="{% url 'llamkay:index' %}" class="back-link-new">
+                ← {% trans "Volver al inicio" %}
+            </a>
+        </footer>
+
+    </main>
 </div>
 {% endblock %}
 
-<!-- JavaScript opcional para efectos visuales -->
 {% block extra_js %}
-<!-- <script src="{% static 'js/users/seleccionar_tipo.js' %}"></script> -->
+<script src="{% static 'js/users/register/seleccionar_tipo.js' %}"></script>
 {% endblock %}

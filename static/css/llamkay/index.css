@@ -94,6 +94,42 @@ body {
     font-size: 16px;
 }
 
+.sr-only,
+.sr-announcer {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.skip-link {
+    position: absolute;
+    top: -100px;
+    left: 1rem;
+    padding: 0.75rem 1rem;
+    background: #ffffff;
+    border: 2px solid var(--color-primary);
+    border-radius: var(--radius-sm);
+    color: var(--color-primary);
+    font-weight: 700;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+    z-index: 1100;
+}
+
+.skip-link:focus-visible {
+    top: 1rem;
+}
+
+body.no-scroll {
+    overflow: hidden;
+}
+
 .container {
     max-width: 1200px;
     margin: 0 auto;
@@ -215,13 +251,13 @@ body {
 }
 
 .nav-link:hover,
-.nav-link:focus {
+.nav-link:focus-visible {
     background: var(--color-background-alt);
     color: var(--color-primary);
     /* Nielsen: Visibilidad del estado */
 }
 
-.nav-link:focus {
+.nav-link:focus-visible {
     outline: 2px solid var(--color-primary);
     outline-offset: 2px;
 }

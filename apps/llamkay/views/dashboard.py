@@ -11,6 +11,8 @@ from django.contrib import messages
 from django.db.models import Count, Q, Sum
 from django.core.exceptions import ObjectDoesNotExist
 
+from django.utils.translation import gettext as _
+
 logger = logging.getLogger(__name__)
 
 
@@ -187,9 +189,12 @@ def dashboard(request):
                     
                     actividades_recientes.append({
                         'tipo': 'info',
-                        'mensaje': f'Postulaste a <strong>{titulo}</strong>',
+                        'mensaje': _('Postulaste a <strong>%(titulo)s</strong>') % {
+                            'titulo': titulo
+                        },
                         'fecha': post.created_at
                     })
+
             
             # Últimas ofertas publicadas (empleador)
             if usuario_obj.tipo_usuario in ['empleador', 'trabajador_empleador', 'empresa']:
@@ -213,9 +218,12 @@ def dashboard(request):
                 for oferta in ofertas_empresa:
                     actividades_recientes.append({
                         'tipo': 'success',
-                        'mensaje': f'Publicaste <strong>{oferta.titulo_puesto}</strong>',
+                        'mensaje': _('Publicaste <strong>%(titulo)s</strong>') % {
+                            'titulo': oferta.titulo
+                        },
                         'fecha': oferta.created_at
                     })
+
         except Exception as e:
             logger.warning(f"⚠️ Error obteniendo actividades: {str(e)}")
         
@@ -302,14 +310,15 @@ def dashboard(request):
         
         # ==================== CONSEJO DEL DÍA ====================
         consejos = [
-            "Responde rápido a los mensajes para aumentar tus posibilidades de conseguir trabajos.",
-            "Completa tu perfil al 100% para generar más confianza.",
-            "Agrega certificaciones para destacar tu experiencia.",
-            "Mantén actualizada tu disponibilidad.",
-            "Las buenas calificaciones te ayudan a conseguir más oportunidades.",
-            "Actualiza tu foto de perfil para dar una mejor impresión.",
-            "Revisa tus notificaciones regularmente.",
+            _("Responde rápido a los mensajes para aumentar tus posibilidades de conseguir trabajos."),
+            _("Completa tu perfil al 100% para generar más confianza."),
+            _("Agrega certificaciones para destacar tu experiencia."),
+            _("Mantén actualizada tu disponibilidad."),
+            _("Las buenas calificaciones te ayudan a conseguir más oportunidades."),
+            _("Actualiza tu foto de perfil para dar una mejor impresión."),
+            _("Revisa tus notificaciones regularmente."),
         ]
+
         
         consejo_del_dia = random.choice(consejos)
         

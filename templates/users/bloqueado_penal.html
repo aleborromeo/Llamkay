@@ -1,32 +1,90 @@
 {% extends "users/base.html" %}
 {% load static %}
+{% load i18n %}
 
-{% block title %}Cuenta Bloqueada - Llamkay.pe{% endblock %}
+{% block title %}
+{% trans "Cuenta Bloqueada - Llamkay.pe" %}
+{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/users/auth/bloqueado_penal.css' %}">
 {% endblock %}
 
 {% block content %}
+
+<!-- =========================
+     SELECTOR DE IDIOMA
+     (mismo patrón que LOGIN)
+     Principios:
+     - Control del usuario (Nielsen)
+     - Consistencia
+     - Minimalismo
+========================= -->
+<div class="lang-switcher">
+    <form action="{% url 'set_language' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.path }}">
+
+        {% if LANGUAGE_CODE == 'es' %}
+            <button type="submit" name="language" value="en">EN</button>
+        {% else %}
+            <button type="submit" name="language" value="es">ES</button>
+        {% endif %}
+    </form>
+</div>
+
 <div class="bloqueado-container">
     <div class="bloqueado-card">
-        <div class="bloqueado-icon">🚫</div>
+
+        <!-- ÍCONO ESTADO -->
+        <div class="bloqueado-icon" aria-hidden="true">
+            🚫
+        </div>
         
-        <h1>Cuenta Bloqueada</h1>
+        <!-- TÍTULO PRINCIPAL -->
+        <h1>
+            {% trans "Cuenta Bloqueada" %}
+        </h1>
         
+        <!-- MENSAJE PRINCIPAL -->
         <p class="bloqueado-message">
-            Tu cuenta se encuentra bloqueada porque se detectaron 
-            <strong>antecedentes penales</strong>.
+            {% trans "Tu cuenta se encuentra bloqueada porque se detectaron" %}
+            <strong>{% trans "antecedentes penales" %}</strong>.
         </p>
         
+        <!-- AYUDA / SOPORTE -->
         <p class="bloqueado-help">
-            Si crees que esto es un error, por favor 
-            <a href="mailto:soporte@llamkay.pe">contacta a soporte</a>.
+            {% trans "Si crees que esto es un error, por favor" %}
+            <a href="mailto:soporte@llamkay.pe">
+                {% trans "contacta a soporte" %}
+            </a>.
         </p>
-        
+
+                <!-- BOTÓN PRINCIPAL -->
         <a href="{% url 'users:login' %}" class="btn btn-secondary">
-            Volver al inicio de sesión
+            {% trans "Volver al inicio de sesión" %}
         </a>
-    </div>
-</div>
-{% endblock %}
+
+                <!-- SWITCH DE IDIOMA -->
+        <div class="language-switch" role="navigation" aria-label="{% trans 'Selector de idioma' %}">
+            <form action="{% url 'set_language' %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ request.path }}">
+
+                <button 
+                    type="submit" 
+                    name="language" 
+                    value="es"
+                    class="lang-btn {% if LANGUAGE_CODE == 'es' %}active{% endif %}">
+                    ES
+                </button>
+
+                <button 
+                    type="submit" 
+                    name="language" 
+                    value="en"
+                    class="lang-btn {% if LANGUAGE_CODE == 'en' %}active{% endif %}">
+                    EN
+                </button>
+            </form>
+        </div>

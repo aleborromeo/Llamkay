@@ -1,358 +1,353 @@
 // =============================================
-// REGISTRO PASO 2 - UBICACIÓN (CASCADA)
-// Version 3.0 - Completamente funcional
+// REGISTRO PASO 2 - UBICACIÓN MEJORADO
+// i18n + UX + Accesibilidad + Cascada
 // =============================================
 
 document.addEventListener('DOMContentLoaded', function () {
-    console.log('✅ step_2.js cargado correctamente');
+    console.log('✅ step_2.js iniciado');
 
-    // ==================== ELEMENTOS DEL DOM ====================
+    /* ==================== TRADUCCIONES ==================== */
+    const translations = {
+        es: {
+            // Sidebar
+            'sidebar-title': '¿Por qué necesitamos tu ubicación?',
+            'sidebar-description': 'Tu ubicación nos ayuda a conectarte con oportunidades cerca de ti.',
+            'benefit-1-title': 'Trabajos cercanos',
+            'benefit-1-desc': 'Encuentra oportunidades en tu zona',
+            'benefit-2-title': 'Trabaja desde casa',
+            'benefit-2-desc': 'Reduce tiempos de traslado',
+            'benefit-3-title': 'Respuesta rápida',
+            'benefit-3-desc': 'Conecta con usuarios locales',
+            'benefit-4-title': 'Privacidad garantizada',
+            'benefit-4-desc': 'Tu dirección exacta está protegida',
+            'help-link': '¿Necesitas ayuda?',
+
+            // Main
+            'main-title': 'Tu ubicación',
+            'main-subtitle': 'Indícanos dónde te encuentras',
+            'step-1-label': 'Información',
+            'step-2-label': 'Ubicación',
+            'step-3-label': 'Perfil',
+            'step-4-label': 'Verificación',
+
+            // Form
+            'legend-address': 'Dirección',
+            'legend-location': 'Ubicación geográfica',
+            
+            'label-address': 'Dirección completa',
+            'label-department': 'Departamento',
+            'label-province': 'Provincia',
+            'label-district': 'Distrito',
+
+            'placeholder-address': 'Ej: Av. Larco 123, Dpto. 501',
+            
+            'help-address': 'Tu dirección exacta está protegida y no se muestra públicamente.',
+
+            'option-select-department': 'Selecciona tu departamento',
+            'option-select-province-first': 'Primero selecciona un departamento',
+            'option-select-district-first': 'Primero selecciona una provincia',
+
+            'btn-back': 'Anterior',
+            'btn-next': 'Siguiente',
+
+            'footer-have-account': '¿Ya tienes una cuenta?',
+            'footer-login': 'Inicia sesión aquí',
+
+            // Mensajes
+            'msg-loading': 'Cargando...',
+            'msg-processing': 'Procesando...',
+            'msg-error-address': 'Por favor ingresa tu dirección',
+            'msg-error-department': 'Por favor selecciona un departamento',
+            'msg-error-province': 'Por favor selecciona una provincia',
+            'msg-error-district': 'Por favor selecciona un distrito',
+            'msg-error-load-provinces': 'Error al cargar provincias',
+            'msg-error-load-districts': 'Error al cargar distritos',
+            'msg-no-provinces': 'No hay provincias disponibles',
+            'msg-no-districts': 'No hay distritos disponibles'
+        },
+        en: {
+            // Sidebar
+            'sidebar-title': 'Why do we need your location?',
+            'sidebar-description': 'Your location helps us connect you with opportunities near you.',
+            'benefit-1-title': 'Nearby jobs',
+            'benefit-1-desc': 'Find opportunities in your area',
+            'benefit-2-title': 'Work from home',
+            'benefit-2-desc': 'Reduce travel time',
+            'benefit-3-title': 'Fast response',
+            'benefit-3-desc': 'Connect with local users',
+            'benefit-4-title': 'Privacy guaranteed',
+            'benefit-4-desc': 'Your exact address is protected',
+            'help-link': 'Need help?',
+
+            // Main
+            'main-title': 'Your location',
+            'main-subtitle': 'Tell us where you are',
+            'step-1-label': 'Information',
+            'step-2-label': 'Location',
+            'step-3-label': 'Profile',
+            'step-4-label': 'Verification',
+
+            // Form
+            'legend-address': 'Address',
+            'legend-location': 'Geographic Location',
+            
+            'label-address': 'Full Address',
+            'label-department': 'Department',
+            'label-province': 'Province',
+            'label-district': 'District',
+
+            'placeholder-address': 'E.g.: Av. Larco 123, Apt. 501',
+            
+            'help-address': 'Your exact address is protected and not shown publicly.',
+
+            'option-select-department': 'Select your department',
+            'option-select-province-first': 'First select a department',
+            'option-select-district-first': 'First select a province',
+
+            'btn-back': 'Previous',
+            'btn-next': 'Next',
+
+            'footer-have-account': 'Already have an account?',
+            'footer-login': 'Log in here',
+
+            // Messages
+            'msg-loading': 'Loading...',
+            'msg-processing': 'Processing...',
+            'msg-error-address': 'Please enter your address',
+            'msg-error-department': 'Please select a department',
+            'msg-error-province': 'Please select a province',
+            'msg-error-district': 'Please select a district',
+            'msg-error-load-provinces': 'Error loading provinces',
+            'msg-error-load-districts': 'Error loading districts',
+            'msg-no-provinces': 'No provinces available',
+            'msg-no-districts': 'No districts available'
+        }
+    };
+
+    let currentLang = localStorage.getItem('llamkay_lang') || 'es';
+
+    function t(key) {
+        return translations[currentLang][key] || key;
+    }
+
+    /* ==================== CAMBIO DE IDIOMA ==================== */
+    const langButtons = document.querySelectorAll('.lang-btn');
+
+    function changeLanguage(lang) {
+        currentLang = lang;
+        localStorage.setItem('llamkay_lang', lang);
+
+        langButtons.forEach(btn => {
+            if (btn.dataset.lang === lang) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+
+        // Actualizar textos
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.dataset.i18n;
+            el.textContent = t(key);
+        });
+
+        // Actualizar placeholders
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+            const key = el.dataset.i18nPlaceholder;
+            el.placeholder = t(key);
+        });
+
+        // Actualizar options del select (solo los de placeholder)
+        updateSelectPlaceholders();
+    }
+
+    function updateSelectPlaceholders() {
+        const departamentoSelect = document.getElementById('id_departamento');
+        const provinciaSelect = document.getElementById('id_provincia');
+        const distritoSelect = document.getElementById('id_distrito');
+
+        if (departamentoSelect.value === '') {
+            departamentoSelect.querySelector('option[value=""]').textContent = t('option-select-department');
+        }
+        if (provinciaSelect.disabled) {
+            provinciaSelect.querySelector('option[value=""]').textContent = t('option-select-province-first');
+        }
+        if (distritoSelect.disabled) {
+            distritoSelect.querySelector('option[value=""]').textContent = t('option-select-district-first');
+        }
+    }
+
+    langButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            changeLanguage(btn.dataset.lang);
+        });
+    });
+
+    // Aplicar idioma guardado
+    changeLanguage(currentLang);
+
+    /* ==================== ELEMENTOS ==================== */
     const departamentoSelect = document.getElementById('id_departamento');
     const provinciaSelect = document.getElementById('id_provincia');
     const distritoSelect = document.getElementById('id_distrito');
-    const direccionInput = document.querySelector('input[name="direccion"]');
+    const direccionInput = document.getElementById('id_direccion');
     const form = document.getElementById('location-form');
 
-    // Validar que existen los elementos
     if (!departamentoSelect || !provinciaSelect || !distritoSelect) {
-        console.error('⚠️ No se encontraron todos los selectores de ubicación');
+        console.error('❌ Elementos de ubicación no encontrados');
         return;
     }
 
-    // Verificar que las URLs están definidas (vienen del template)
     if (typeof urlProvincias === 'undefined' || typeof urlDistritos === 'undefined') {
-        console.error('⚠️ URLs de API no definidas');
+        console.error('❌ URLs de backend no definidas');
         return;
     }
 
-    console.log('📍 URLs configuradas:', {
-        provincias: urlProvincias,
-        distritos: urlDistritos
-    });
-
-    // ==================== FUNCIONES HELPER ====================
-
-    /**
-     * Muestra notificación
-     */
+    /* ==================== NOTIFICACIONES ==================== */
     function showNotification(message, type = 'info') {
-        const notification = document.createElement('div');
-        notification.className = `notification notification-${type}`;
-        notification.style.cssText = `
+        const div = document.createElement('div');
+        div.className = `notification ${type}`;
+        div.setAttribute('role', 'alert');
+        div.style.cssText = `
             position: fixed;
-            top: 20px;
+            top: 80px;
             right: 20px;
-            background: ${type === 'success' ? '#10b981' : type === 'error' ? '#dc2626' : '#3b82f6'};
+            background: ${type === 'error' ? '#dc2626' : '#10b981'};
             color: white;
             padding: 1rem 1.5rem;
             border-radius: 12px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.16);
+            box-shadow: 0 8px 32px rgba(0,0,0,.2);
             z-index: 9999;
             animation: slideIn 0.3s ease;
         `;
-        notification.textContent = message;
-        
-        document.body.appendChild(notification);
+        div.textContent = message;
+        document.body.appendChild(div);
         
         setTimeout(() => {
-            notification.style.animation = 'slideOut 0.3s ease';
-            setTimeout(() => notification.remove(), 300);
+            div.style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => div.remove(), 300);
         }, 3000);
     }
 
-    /**
-     * Resetea un select y lo deshabilita
-     */
-    function resetSelect(select, placeholderText, disabled = true) {
-        select.innerHTML = `<option value="">${placeholderText}</option>`;
+    /* ==================== HELPERS ==================== */
+    function resetSelect(select, text, disabled = true) {
+        select.innerHTML = `<option value="">${text}</option>`;
         select.disabled = disabled;
-        select.value = '';
     }
 
-    /**
-     * Llena un select con opciones
-     */
-    function populateSelect(select, options, valueKey, textKey, enableAfter = true) {
-        select.innerHTML = '<option value="">Selecciona una opción</option>';
+    function setLoading(select) {
+        resetSelect(select, t('msg-loading'), true);
+    }
+
+    function populateSelect(select, items, idKey, labelKey) {
+        const placeholder = select.id === 'id_provincia' 
+            ? t('option-select-province-first') 
+            : t('option-select-district-first');
         
-        options.forEach(option => {
-            const optionElement = document.createElement('option');
-            optionElement.value = option[valueKey];
-            optionElement.textContent = option[textKey];
-            select.appendChild(optionElement);
+        resetSelect(select, placeholder, false);
+        
+        items.forEach(item => {
+            const opt = document.createElement('option');
+            opt.value = item[idKey];
+            opt.textContent = item[labelKey];
+            select.appendChild(opt);
         });
-        
-        if (enableAfter) {
-            select.disabled = false;
-        }
+        select.disabled = false;
     }
 
-    /**
-     * Muestra estado de carga en select
-     */
-    function setSelectLoading(select, loading = true) {
-        if (loading) {
-            select.disabled = true;
-            select.innerHTML = '<option value="">Cargando...</option>';
-        }
-    }
-
-    // ==================== CARGAR PROVINCIAS ====================
-
+    /* ==================== DEPARTAMENTO → PROVINCIA ==================== */
     departamentoSelect.addEventListener('change', async function () {
-        const departamentoId = this.value;
-        console.log(`🟢 Departamento seleccionado: ${departamentoId}`);
+        resetSelect(provinciaSelect, t('msg-loading'));
+        resetSelect(distritoSelect, t('option-select-district-first'));
 
-        // Resetear selects dependientes
-        resetSelect(provinciaSelect, 'Selecciona tu provincia', true);
-        resetSelect(distritoSelect, 'Primero selecciona una provincia', true);
-
-        if (!departamentoId) {
+        if (!this.value) {
+            resetSelect(provinciaSelect, t('option-select-province-first'), true);
             return;
         }
 
-        // Mostrar loading
-        setSelectLoading(provinciaSelect, true);
+        setLoading(provinciaSelect);
 
         try {
-            const url = `${urlProvincias}?id_departamento=${departamentoId}`;
-            console.log('📡 Consultando:', url);
-            
-            const response = await fetch(url, {
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            });
-            
-            console.log('📊 Response status:', response.status);
-            
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}`);
-            }
-            
-            const data = await response.json();
-            console.log('📦 Datos recibidos:', data);
+            const res = await fetch(`${urlProvincias}?id_departamento=${this.value}`);
+            const data = await res.json();
 
-            if (Array.isArray(data) && data.length > 0) {
-                populateSelect(provinciaSelect, data, 'id_provincia', 'nombre', true);
-                console.log(`✅ ${data.length} provincias cargadas`);
+            if (Array.isArray(data) && data.length) {
+                populateSelect(provinciaSelect, data, 'id_provincia', 'nombre');
             } else {
-                resetSelect(provinciaSelect, 'No hay provincias disponibles', false);
-                console.warn('⚠️ Respuesta vacía de provincias');
-                showNotification('No se encontraron provincias', 'error');
+                resetSelect(provinciaSelect, t('msg-no-provinces'), true);
+                showNotification(t('msg-no-provinces'), 'error');
             }
-            
-        } catch (error) {
-            console.error('❌ Error al cargar provincias:', error);
-            resetSelect(provinciaSelect, 'Error al cargar provincias', false);
-            showNotification('Error al cargar provincias. Intenta de nuevo.', 'error');
+        } catch {
+            showNotification(t('msg-error-load-provinces'), 'error');
+            resetSelect(provinciaSelect, t('msg-error-load-provinces'), true);
         }
     });
 
-    // ==================== CARGAR DISTRITOS ====================
-
+    /* ==================== PROVINCIA → DISTRITO ==================== */
     provinciaSelect.addEventListener('change', async function () {
-        const provinciaId = this.value;
-        console.log(`🟢 Provincia seleccionada: ${provinciaId}`);
+        resetSelect(distritoSelect, t('msg-loading'));
 
-        // Resetear distrito
-        resetSelect(distritoSelect, 'Selecciona tu distrito', true);
-        
-        if (!provinciaId) {
+        if (!this.value) {
+            resetSelect(distritoSelect, t('option-select-district-first'), true);
             return;
         }
 
-        // Mostrar loading
-        setSelectLoading(distritoSelect, true);
+        setLoading(distritoSelect);
 
         try {
-            const url = `${urlDistritos}?id_provincia=${provinciaId}`;
-            console.log('📡 Consultando:', url);
-            
-            const response = await fetch(url, {
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            });
-            
-            console.log('📊 Response status:', response.status);
-            
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}`);
-            }
-            
-            const data = await response.json();
-            console.log('📦 Datos recibidos:', data);
+            const res = await fetch(`${urlDistritos}?id_provincia=${this.value}`);
+            const data = await res.json();
 
-            if (Array.isArray(data) && data.length > 0) {
-                populateSelect(distritoSelect, data, 'id_distrito', 'nombre', true);
-                console.log(`✅ ${data.length} distritos cargados`);
+            if (Array.isArray(data) && data.length) {
+                populateSelect(distritoSelect, data, 'id_distrito', 'nombre');
             } else {
-                resetSelect(distritoSelect, 'No hay distritos disponibles', false);
-                console.warn('⚠️ Respuesta vacía de distritos');
-                showNotification('No se encontraron distritos', 'error');
+                resetSelect(distritoSelect, t('msg-no-districts'), true);
+                showNotification(t('msg-no-districts'), 'error');
             }
-            
-        } catch (error) {
-            console.error('❌ Error al cargar distritos:', error);
-            resetSelect(distritoSelect, 'Error al cargar distritos', false);
-            showNotification('Error al cargar distritos. Intenta de nuevo.', 'error');
+        } catch {
+            showNotification(t('msg-error-load-districts'), 'error');
+            resetSelect(distritoSelect, t('msg-error-load-districts'), true);
         }
     });
 
-    // ==================== VALIDACIÓN DEL FORMULARIO ====================
+    /* ==================== VALIDACIÓN ==================== */
+    form.addEventListener('submit', function (e) {
+        const errors = [];
 
-    if (form) {
-        form.addEventListener('submit', function(e) {
-            console.log('📤 Enviando formulario...');
-            
-            const errors = [];
+        if (!direccionInput.value.trim()) errors.push(t('msg-error-address'));
+        if (!departamentoSelect.value) errors.push(t('msg-error-department'));
+        if (!provinciaSelect.value) errors.push(t('msg-error-province'));
+        if (!distritoSelect.value) errors.push(t('msg-error-district'));
 
-            // Validar dirección
-            if (!direccionInput || !direccionInput.value.trim()) {
-                errors.push('Por favor ingresa tu dirección');
-            }
-            
-            // Validar departamento
-            if (!departamentoSelect.value) {
-                errors.push('Por favor selecciona un departamento');
-            }
-            
-            // Validar provincia
-            if (!provinciaSelect.value) {
-                errors.push('Por favor selecciona una provincia');
-            }
-            
-            // Validar distrito
-            if (!distritoSelect.value) {
-                errors.push('Por favor selecciona un distrito');
-            }
-            
-            if (errors.length > 0) {
-                e.preventDefault();
-                errors.forEach(error => showNotification(error, 'error'));
-                
-                // Enfocar el primer campo con error
-                if (!direccionInput.value.trim()) {
-                    direccionInput.focus();
-                } else if (!departamentoSelect.value) {
-                    departamentoSelect.focus();
-                } else if (!provinciaSelect.value) {
-                    provinciaSelect.focus();
-                } else if (!distritoSelect.value) {
-                    distritoSelect.focus();
-                }
-                
-                return false;
-            }
-            
-            console.log('✅ Formulario válido, enviando...');
-            console.log('📋 Datos:', {
-                direccion: direccionInput.value,
-                departamento: departamentoSelect.value,
-                provincia: provinciaSelect.value,
-                distrito: distritoSelect.value
-            });
-
-            // Mostrar loading en botón
-            const submitBtn = form.querySelector('button[type="submit"]');
-            if (submitBtn) {
-                submitBtn.disabled = true;
-                submitBtn.classList.add('loading');
-                submitBtn.innerHTML = `
-                    <svg style="animation: spin 1s linear infinite;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="12" y1="2" x2="12" y2="6"></line>
-                        <line x1="12" y1="18" x2="12" y2="22"></line>
-                        <line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line>
-                        <line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line>
-                        <line x1="2" y1="12" x2="6" y2="12"></line>
-                        <line x1="18" y1="12" x2="22" y2="12"></line>
-                        <line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line>
-                        <line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line>
-                    </svg>
-                    Procesando...
-                `;
-            }
-        });
-    }
-
-    // ==================== VALIDACIÓN EN TIEMPO REAL ====================
-
-    // Validar dirección mientras escribe
-    if (direccionInput) {
-        direccionInput.addEventListener('input', function() {
-            if (this.value.trim().length > 0) {
-                this.style.borderColor = '#10b981';
-            } else {
-                this.style.borderColor = '#e2e8f0';
-            }
-        });
-    }
-
-    // ==================== AUTO-GUARDAR PROGRESO (OPCIONAL) ====================
-
-    // Guardar en localStorage para no perder datos
-    function saveProgress() {
-        const progress = {
-            direccion: direccionInput?.value || '',
-            departamento: departamentoSelect?.value || '',
-            provincia: provinciaSelect?.value || '',
-            distrito: distritoSelect?.value || ''
-        };
-        localStorage.setItem('registro_step2', JSON.stringify(progress));
-    }
-
-    // Recuperar progreso
-    function loadProgress() {
-        try {
-            const saved = localStorage.getItem('registro_step2');
-            if (saved) {
-                const progress = JSON.parse(saved);
-                if (direccionInput && progress.direccion) {
-                    direccionInput.value = progress.direccion;
-                }
-                // Los selects se recargarán dinámicamente
-            }
-        } catch (e) {
-            console.error('Error al cargar progreso:', e);
+        if (errors.length) {
+            e.preventDefault();
+            errors.forEach(msg => showNotification(msg, 'error'));
+            return;
         }
-    }
 
-    // Cargar progreso al iniciar
-    loadProgress();
-
-    // Guardar progreso en cada cambio
-    [direccionInput, departamentoSelect, provinciaSelect, distritoSelect].forEach(element => {
-        if (element) {
-            element.addEventListener('change', saveProgress);
+        const btn = form.querySelector('button[type="submit"]');
+        if (btn) {
+            btn.disabled = true;
+            const btnText = btn.querySelector('span');
+            if (btnText) {
+                btnText.textContent = t('msg-processing');
+            }
         }
     });
 
-    console.log('✅ step_2.js listo');
+    console.log('✅ step_2.js listo con i18n y cascada');
 });
 
-// Agregar estilos de animación
+// ==================== ANIMACIONES ====================
 const style = document.createElement('style');
 style.textContent = `
-    @keyframes slideIn {
-        from { transform: translateX(400px); opacity: 0; }
-        to { transform: translateX(0); opacity: 1; }
-    }
-    
-    @keyframes slideOut {
-        from { transform: translateX(0); opacity: 1; }
-        to { transform: translateX(400px); opacity: 0; }
-    }
-    
-    @keyframes spin {
-        to { transform: rotate(360deg); }
-    }
-`;
-if (!document.getElementById('step2-animations')) {
-    style.id = 'step2-animations';
-    document.head.appendChild(style);
+@keyframes slideIn {
+    from { transform: translateX(400px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
 }
+@keyframes slideOut {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(400px); opacity: 0; }
+}
+`;
+document.head.appendChild(style);
