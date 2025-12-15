@@ -1,72 +1,161 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Llamkay.pe</title>
-    <link rel="stylesheet" href="css/llamkay/dashboard.css">
-</head>
-<body>
-    <!-- Skip Link para accesibilidad -->
-    <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+{% load trabajo_filters %}
+{% load usuarios_extras %}
 
+{% block title %}{% trans "Dashboard" %} - Llamkay.pe{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/llamkay/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
     <!-- ========================================
-         HEADER NAVIGATION CON MENÚ SANDWICH
+         HEADER NAVIGATION
+         Principios aplicados:
+         - Nielsen: Visibilidad del estado del sistema
+         - Gestalt: Proximidad (elementos agrupados)
+         - Responsividad: Menu hamburguesa SOLO en mÃ³vil
+         - i18n: Textos traducibles
+         - Accesibilidad: ARIA labels y estados
          ======================================== -->
     <header class="header" role="banner">
-        <nav class="navbar" role="navigation" aria-label="Navegación principal">
+        <nav class="navbar" role="navigation" aria-label="{% trans 'NavegaciÃ³n principal' %}">
             <div class="nav-container">
-                <!-- Logo -->
-                <a href="#" class="logo" aria-label="Ir al Dashboard">
+                <a href="{% url 'llamkay:dashboard' %}" class="logo" aria-label="{% trans 'Ir al Dashboard' %}">
                     <span>Llamkay</span>
                 </a>
 
-                <!-- Selector de idioma (visible en desktop) -->
-                <form id="language-form" action="#" method="post" class="sr-only" aria-hidden="true">
+                <!-- Form + Selector de idioma como la imagen -->
+                <form id="language-form" action="{% url 'set_language' %}" method="post" class="sr-only" aria-hidden="true">
+                    {% csrf_token %}
                     <input type="hidden" name="language" id="language-input">
                 </form>
 
-                <div class="language-selector" role="radiogroup" aria-label="Selección de idioma">
-                    <button class="lang-btn active" data-lang="es" role="radio" aria-checked="true" aria-label="Español">
+                <div class="language-selector" role="radiogroup" aria-label="{% trans 'SelecciÃ³n de idioma' %}">
+                    <button class="lang-btn {% if LANGUAGE_CODE == 'es' %}active{% endif %}"
+                            data-lang="es"
+                            role="radio"
+                            aria-checked="{% if LANGUAGE_CODE == 'es' %}true{% else %}false{% endif %}"
+                            aria-label="{% trans 'EspaÃ±ol' %}">
                         ES
                     </button>
-                    <button class="lang-btn" data-lang="en" role="radio" aria-checked="false" aria-label="Inglés">
+                    <button class="lang-btn {% if LANGUAGE_CODE == 'en' %}active{% endif %}"
+                            data-lang="en"
+                            role="radio"
+                            aria-checked="{% if LANGUAGE_CODE == 'en' %}true{% else %}false{% endif %}"
+                            aria-label="{% trans 'InglÃ©s' %}">
                         EN
                     </button>
                 </div>
 
-                <!-- Acciones desktop (ocultas en móvil) -->
+                <!-- Toggle mÃ³vil - SOLO visible en mÃ³vil -->
+                <button class="nav-toggle"
+                        aria-label="{% trans 'Abrir menÃº de navegaciÃ³n' %}"
+                        aria-expanded="false"
+                        aria-controls="dashboard-main-menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+
+                <!-- Menu principal -->
+                <ul class="nav-menu" id="dashboard-main-menu" role="list">
+                    <li>
+                        <a href="{% url 'llamkay:dashboard' %}" class="nav-link active" aria-current="page">
+                            {% trans "Inicio" %}
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'jobs:buscar_trabajos' %}" class="nav-link">
+                            {% trans "Trabajos" %}
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'chats:lista_chats' %}" class="nav-link">
+                            {% trans "Mensajes" %}
+                        </a>
+                    </li>
+
+                    <!-- Botones mÃ³viles dentro del menÃº hamburguesa -->
+                    <li class="nav-mobile-actions">
+                        <!-- BotÃ³n de notificaciones -->
+                        <a href="{% url 'soporte:notificaciones' %}" class="btn-nav btn-ghost"
+                           aria-label="{% trans 'Notificaciones' %}">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                            </svg>
+                            {% trans "Notificaciones" %}
+                            {% if notificaciones_count > 0 %}
+                            <span class="notification-badge" aria-label="{% trans 'Notificaciones nuevas' %}">{{ notificaciones_count }}</span>
+                            {% endif %}
+                        </a>
+
+                        <!-- MenÃº usuario mobile -->
+                        <a href="{% url 'users:perfil' %}" class="btn-nav btn-ghost">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                            {% trans "Mi Perfil" %}
+                        </a>
+
+                        <a href="{% url 'users:logout' %}" class="btn-nav btn-primary">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                <polyline points="16 17 21 12 16 7"></polyline>
+                                <line x1="21" y1="12" x2="9" y2="12"></line>
+                            </svg>
+                            {% trans "Cerrar SesiÃ³n" %}
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- Acciones desktop (ocultas en mÃ³vil) -->
                 <div class="nav-actions">
-                    <!-- Botón de notificaciones -->
-                    <a href="#" class="icon-button" aria-label="Notificaciones">
+                    <!-- BOTÃ“N DE NOTIFICACIONES -->
+                    <a href="{% url 'soporte:notificaciones' %}" class="icon-button" aria-label="{% trans 'Notificaciones' %}">
                         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                             <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
                             <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
                         </svg>
-                        <span class="notification-badge" aria-label="Notificaciones nuevas">3</span>
+                        {% if notificaciones_count > 0 %}
+                        <span class="notification-badge" aria-label="{% trans 'Notificaciones nuevas' %}">{{ notificaciones_count }}</span>
+                        {% endif %}
                     </a>
 
-                    <!-- Menú usuario desktop -->
                     <div class="user-menu-wrapper">
                         <button type="button" class="user-menu" id="userMenuBtn"
                                 aria-haspopup="menu" aria-expanded="false" aria-controls="userDropdown">
                             <div class="profile-pic-placeholder">
-                                MG
+                                {% if profile and profile.foto_url %}
+                                    <img src="{{ profile.foto_url.url }}" alt="{{ usuario.nombres }}">
+                                {% else %}
+                                    {{ usuario.nombres|first }}{{ usuario.apellidos|first }}
+                                {% endif %}
                             </div>
-                            <span class="username">María González</span>
+                            <span class="username">{{ usuario.nombres }} {{ usuario.apellidos|truncatewords:1 }}</span>
                             <svg class="dropdown-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                 <polyline points="6 9 12 15 18 9"></polyline>
                             </svg>
                         </button>
 
                         <!-- Dropdown Menu -->
-                        <div class="user-dropdown" id="userDropdown" role="menu" aria-label="Menú de usuario">
+                        <div class="user-dropdown" id="userDropdown" role="menu" aria-label="{% trans 'MenÃº de usuario' %}">
                             <div class="dropdown-header">
                                 <div class="dropdown-user-info">
-                                    <div class="dropdown-avatar">MG</div>
+                                    <div class="dropdown-avatar">
+                                        {% if profile and profile.foto_url %}
+                                            <img src="{{ profile.foto_url.url }}" alt="{{ usuario.nombres }}">
+                                        {% else %}
+                                            {{ usuario.nombres|first }}{{ usuario.apellidos|first }}
+                                        {% endif %}
+                                    </div>
                                     <div class="dropdown-user-details">
-                                        <strong>María González</strong>
-                                        <span>maria@ejemplo.com</span>
+                                        <strong>{{ usuario.nombres }} {{ usuario.apellidos }}</strong>
+                                        <span>{{ usuario.email }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -74,210 +163,158 @@
                             <div class="dropdown-divider"></div>
 
                             <div class="dropdown-menu">
-                                <a href="#" class="dropdown-item" role="menuitem">
+                                <a href="{% url 'users:perfil' %}" class="dropdown-item" role="menuitem">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                         <circle cx="12" cy="7" r="4"></circle>
                                     </svg>
-                                    <span>Mi Perfil</span>
+                                    <span>{% trans "Mi Perfil" %}</span>
                                 </a>
 
-                                <a href="#" class="dropdown-item" role="menuitem">
+                                <a href="{% url 'llamkay:dashboard' %}" class="dropdown-item" role="menuitem">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                         <rect x="3" y="3" width="7" height="7"></rect>
                                         <rect x="14" y="3" width="7" height="7"></rect>
                                         <rect x="14" y="14" width="7" height="7"></rect>
                                         <rect x="3" y="14" width="7" height="7"></rect>
                                     </svg>
-                                    <span>Dashboard</span>
+                                    <span>{% trans "Dashboard" %}</span>
                                 </a>
 
-                                <a href="#" class="dropdown-item" role="menuitem">
+                                <a href="{% url 'soporte:notificaciones' %}" class="dropdown-item" role="menuitem">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                         <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
                                         <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
                                     </svg>
-                                    <span>Notificaciones</span>
-                                    <span class="badge" aria-label="Notificaciones nuevas">3</span>
+                                    <span>{% trans "Notificaciones" %}</span>
+                                    {% if notificaciones_count > 0 %}
+                                    <span class="badge" aria-label="{% trans 'Notificaciones nuevas' %}">{{ notificaciones_count }}</span>
+                                    {% endif %}
                                 </a>
 
-                                <a href="#" class="dropdown-item" role="menuitem">
+                                <a href="{% url 'chats:lista_chats' %}" class="dropdown-item" role="menuitem">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
                                     </svg>
-                                    <span>Mensajes</span>
+                                    <span>{% trans "Mensajes" %}</span>
                                 </a>
 
-                                <a href="#" class="dropdown-item" role="menuitem">
+                                {% if usuario.tipo_usuario == 'trabajador' or usuario.tipo_usuario == 'ambos' %}
+                                <a href="{% url 'jobs:mis_postulaciones' %}" class="dropdown-item" role="menuitem">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                                         <polyline points="14 2 14 8 20 8"></polyline>
                                     </svg>
-                                    <span>Mis Postulaciones</span>
+                                    <span>{% trans "Mis Postulaciones" %}</span>
+                                </a>
+                                {% endif %}
+
+                                {% if usuario.tipo_usuario == 'empleador' or usuario.tipo_usuario == 'ambos' or usuario.tipo_usuario == 'empresa' %}
+                                <a href="{% url 'empleadores:mis_trabajos' %}" class="dropdown-item" role="menuitem">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                        <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                                        <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                                    </svg>
+                                    <span>{% trans "Mis Ofertas" %}</span>
+                                </a>
+                                {% endif %}
+
+                                <div class="dropdown-divider"></div>
+
+                                <a href="{% url 'soporte:denuncias' %}" class="dropdown-item" role="menuitem">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                                        <line x1="12" y1="9" x2="12" y2="13"></line>
+                                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                                    </svg>
+                                    <span>{% trans "Mis Denuncias" %}</span>
                                 </a>
 
                                 <div class="dropdown-divider"></div>
 
-                                <a href="#" class="dropdown-item" role="menuitem">
+                                <a href="{% url 'users:perfil' %}" class="dropdown-item" role="menuitem">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                         <circle cx="12" cy="12" r="3"></circle>
                                         <path d="M12 1v6m0 6v6"></path>
                                         <path d="M1 12h6m6 0h6"></path>
                                     </svg>
-                                    <span>Configuración</span>
+                                    <span>{% trans "ConfiguraciÃ³n" %}</span>
                                 </a>
                             </div>
 
                             <div class="dropdown-divider"></div>
 
                             <div class="dropdown-footer">
-                                <a href="#" class="dropdown-item logout-item" role="menuitem">
+                                <a href="{% url 'users:logout' %}" class="dropdown-item logout-item" role="menuitem">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
                                         <polyline points="16 17 21 12 16 7"></polyline>
                                         <line x1="21" y1="12" x2="9" y2="12"></line>
                                     </svg>
-                                    <span>Cerrar Sesión</span>
+                                    <span>{% trans "Cerrar SesiÃ³n" %}</span>
                                 </a>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Toggle móvil - SOLO visible en móvil -->
-                <button class="nav-toggle" aria-label="Abrir menú de navegación" aria-expanded="false" aria-controls="mobile-menu">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
             </div>
         </nav>
-
-        <!-- MENÚ MÓVIL FULLSCREEN -->
-        <div class="mobile-menu" id="mobile-menu" role="dialog" aria-modal="true" aria-label="Menú de navegación">
-            <div class="mobile-menu-header">
-                <div class="mobile-user-info">
-                    <div class="mobile-avatar">MG</div>
-                    <div class="mobile-user-details">
-                        <strong>María González</strong>
-                        <span>maria@ejemplo.com</span>
-                    </div>
-                </div>
-            </div>
-
-            <nav class="mobile-nav" role="navigation">
-                <a href="#" class="mobile-nav-item active">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="3" y="3" width="7" height="7"></rect>
-                        <rect x="14" y="3" width="7" height="7"></rect>
-                        <rect x="14" y="14" width="7" height="7"></rect>
-                        <rect x="3" y="14" width="7" height="7"></rect>
-                    </svg>
-                    <span>Inicio</span>
-                </a>
-
-                <a href="#" class="mobile-nav-item">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
-                        <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
-                    </svg>
-                    <span>Trabajos</span>
-                </a>
-
-                <a href="#" class="mobile-nav-item">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                    </svg>
-                    <span>Mensajes</span>
-                </a>
-
-                <a href="#" class="mobile-nav-item">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-                    </svg>
-                    <span>Notificaciones</span>
-                    <span class="mobile-badge">3</span>
-                </a>
-
-                <a href="#" class="mobile-nav-item">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="12" cy="7" r="4"></circle>
-                    </svg>
-                    <span>Mi Perfil</span>
-                </a>
-
-                <a href="#" class="mobile-nav-item">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                        <polyline points="14 2 14 8 20 8"></polyline>
-                    </svg>
-                    <span>Mis Postulaciones</span>
-                </a>
-
-                <div class="mobile-divider"></div>
-
-                <a href="#" class="mobile-nav-item">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="3"></circle>
-                        <path d="M12 1v6m0 6v6"></path>
-                        <path d="M1 12h6m6 0h6"></path>
-                    </svg>
-                    <span>Configuración</span>
-                </a>
-
-                <div class="mobile-divider"></div>
-
-                <div class="mobile-language">
-                    <span class="mobile-language-label">Idioma</span>
-                    <div class="mobile-language-buttons">
-                        <button class="mobile-lang-btn active" data-lang="es">ES</button>
-                        <button class="mobile-lang-btn" data-lang="en">EN</button>
-                    </div>
-                </div>
-
-                <a href="#" class="mobile-nav-item logout">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                        <polyline points="16 17 21 12 16 7"></polyline>
-                        <line x1="21" y1="12" x2="9" y2="12"></line>
-                    </svg>
-                    <span>Cerrar Sesión</span>
-                </a>
-            </nav>
-        </div>
     </header>
-
     <!-- ========== WELCOME SECTION ========== -->
     <section class="welcome-section" aria-labelledby="welcome-title">
         <div class="container">
             <div class="welcome-content">
                 <h1 id="welcome-title">
-                    <span id="welcome-greeting">Buenas tardes</span>,
-                    <span class="text-highlight">María</span>!
+                    <span id="welcome-greeting"></span>,
+                    <span class="text-highlight">{{ usuario.nombres }}</span>!
                 </h1>
-                <p>Aquí está un resumen de tu actividad reciente</p>
+
+
+                <p>{% trans "AquÃ­ estÃ¡ un resumen de tu actividad reciente" %}</p>
             </div>
 
-            <div class="quick-actions" role="navigation" aria-label="Acciones rápidas">
-                <a href="#" class="quick-action-btn btn-primary">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                         fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                        <circle cx="11" cy="11" r="8"></circle>
-                        <path d="m21 21-4.35-4.35"></path>
-                    </svg>
-                    Buscar trabajos
-                </a>
+            <div class="quick-actions" role="navigation" aria-label="{% trans 'Acciones rÃ¡pidas' %}">
+                {% if usuario.tipo_usuario == 'trabajador' or usuario.tipo_usuario == 'ambos' %}
+                    <a href="{% url 'jobs:buscar_trabajos' %}" class="quick-action-btn btn-primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                             fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                        </svg>
+                        {% trans "Buscar trabajos" %}
+                    </a>
 
-                <a href="#" class="quick-action-btn btn-ghost">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                         fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                        <polyline points="14 2 14 8 20 8"></polyline>
-                    </svg>
-                    Mis postulaciones
-                </a>
+                    <a href="{% url 'jobs:mis_postulaciones' %}" class="quick-action-btn btn-ghost">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                             fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                        </svg>
+                        {% trans "Mis postulaciones" %}
+                    </a>
+                {% endif %}
+
+                {% if usuario.tipo_usuario == 'empleador' or usuario.tipo_usuario == 'ambos' or usuario.tipo_usuario == 'empresa' %}
+                    <a href="{% url 'empleadores:crear_oferta_individual' %}" class="quick-action-btn btn-primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                             fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                        {% trans "Publicar trabajo" %}
+                    </a>
+
+                    <a href="{% url 'empleadores:mis_trabajos' %}" class="quick-action-btn btn-ghost">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                             fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="9" y1="9" x2="15" y2="9"></line>
+                            <line x1="9" y1="15" x2="15" y2="15"></line>
+                        </svg>
+                        {% trans "Mis ofertas" %}
+                    </a>
+                {% endif %}
             </div>
         </div>
     </section>
@@ -285,39 +322,73 @@
     <!-- ========== STATS CARDS ========== -->
     <section class="stats-section" aria-labelledby="stats-title">
         <div class="container">
-            <h2 id="stats-title" class="sr-only">Estadísticas generales</h2>
+            <h2 id="stats-title" class="sr-only">{% trans "EstadÃ­sticas generales" %}</h2>
 
             <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-icon" style="background: linear-gradient(135deg, #07734B, #15AC75);">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                             aria-hidden="true">
-                            <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="8.5" cy="7" r="4"></circle>
-                            <polyline points="17 11 19 13 23 9"></polyline>
-                        </svg>
+                {% if usuario.tipo_usuario == 'trabajador' or usuario.tipo_usuario == 'ambos' %}
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #07734B, #15AC75);">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                 aria-hidden="true">
+                                <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="8.5" cy="7" r="4"></circle>
+                                <polyline points="17 11 19 13 23 9"></polyline>
+                            </svg>
+                        </div>
+                        <div class="stat-content">
+                            <h3>{{ estadisticas.postulaciones_totales|default:0 }}</h3>
+                            <p>{% trans "Trabajos aplicados" %}</p>
+                        </div>
                     </div>
-                    <div class="stat-content">
-                        <h3>12</h3>
-                        <p>Trabajos aplicados</p>
-                    </div>
-                </div>
 
-                <div class="stat-card">
-                    <div class="stat-icon" style="background: linear-gradient(135deg, #9EBC8A, #B5C99A);">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                             aria-hidden="true">
-                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                        </svg>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #9EBC8A, #B5C99A);">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                 aria-hidden="true">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                            </svg>
+                        </div>
+                        <div class="stat-content">
+                            <h3>{{ usuario.trabajos_completados|default:0 }}</h3>
+                            <p>{% trans "Trabajos completados" %}</p>
+                        </div>
                     </div>
-                    <div class="stat-content">
-                        <h3>8</h3>
-                        <p>Trabajos completados</p>
+                {% else %}
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #07734B, #15AC75);">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                 aria-hidden="true">
+                                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                            </svg>
+                        </div>
+                        <div class="stat-content">
+                            <h3>{{ estadisticas.ofertas_activas|default:0 }}</h3>
+                            <p>{% trans "Ofertas activas" %}</p>
+                        </div>
                     </div>
-                </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #9EBC8A, #B5C99A);">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                 aria-hidden="true">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="9" cy="7" r="4"></circle>
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                            </svg>
+                        </div>
+                        <div class="stat-content">
+                            <h3>{{ estadisticas.postulantes_totales|default:0 }}</h3>
+                            <p>{% trans "Postulantes recibidos" %}</p>
+                        </div>
+                    </div>
+                {% endif %}
 
                 <div class="stat-card">
                     <div class="stat-icon" style="background: linear-gradient(135deg, #FFB020, #FFC857);">
@@ -330,8 +401,8 @@
                         </svg>
                     </div>
                     <div class="stat-content">
-                        <h3>4.8</h3>
-                        <p>Calificación promedio</p>
+                        <h3>{{ usuario.rating_promedio|floatformat:1|default:"0.0" }}</h3>
+                        <p>{% trans "CalificaciÃ³n promedio" %}</p>
                     </div>
                 </div>
 
@@ -344,200 +415,297 @@
                         </svg>
                     </div>
                     <div class="stat-content">
-                        <h3>5</h3>
-                        <p>Mensajes nuevos</p>
+                        <h3>{{ estadisticas.mensajes_no_leidos|default:0 }}</h3>
+                        <p>{% trans "Mensajes nuevos" %}</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- ========== MAIN CONTENT ========== -->
-    <section class="main-content" id="main-content" aria-labelledby="main-content-title">
+        <!-- ========== MAIN CONTENT ========== -->
+    <section class="main-content" aria-labelledby="main-content-title">
         <div class="container">
-            <h2 id="main-content-title" class="sr-only">Contenido principal del dashboard</h2>
+            <h2 id="main-content-title" class="sr-only">{% trans "Contenido principal del dashboard" %}</h2>
 
             <div class="content-grid">
                 <!-- COLUMNA PRINCIPAL -->
                 <div class="content-main">
+
                     <!-- ACTIVIDAD RECIENTE -->
                     <div class="content-card" aria-labelledby="recent-activity-title">
                         <div class="card-header">
-                            <h2 id="recent-activity-title">Actividad reciente</h2>
-                            <a href="#" class="view-all">Ver todo</a>
+                            <h2 id="recent-activity-title">{% trans "Actividad reciente" %}</h2>
+                            <a href="#" class="view-all">
+                                {% trans "Ver todo" %}
+                            </a>
                         </div>
 
                         <div class="activity-list">
-                            <div class="activity-item">
-                                <div class="activity-icon success" aria-hidden="true">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                         stroke-width="2">
-                                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                                    </svg>
-                                </div>
-                                <div class="activity-content">
-                                    <p>Tu postulación para <strong>Electricista</strong> fue aceptada</p>
-                                    <span class="activity-time">Hace 2 horas</span>
-                                </div>
-                            </div>
+                            {% for actividad in actividades_recientes %}
+                                <div class="activity-item">
+                                    <div class="activity-icon {{ actividad.tipo }}" aria-hidden="true">
+                                        {% if actividad.tipo == 'success' %}
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                 stroke-width="2">
+                                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                            </svg>
+                                        {% elif actividad.tipo == 'info' %}
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                 stroke-width="2">
+                                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14
+                                                         a2 2 0 0 1 2 2z"></path>
+                                            </svg>
+                                        {% else %}
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                 stroke-width="2">
+                                                <circle cx="12" cy="12" r="10"></circle>
+                                                <line x1="12" y1="8" x2="12" y2="12"></line>
+                                                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                                            </svg>
+                                        {% endif %}
+                                    </div>
 
-                            <div class="activity-item">
-                                <div class="activity-icon info" aria-hidden="true">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                         stroke-width="2">
-                                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14
-                                                 a2 2 0 0 1 2 2z"></path>
-                                    </svg>
+                                    <div class="activity-content">
+                                        <p>{{ actividad.mensaje|safe }}</p>
+                                        <span class="activity-time">
+                                            {{ actividad.fecha|timesince }}
+                                        </span>
+                                    </div>
                                 </div>
-                                <div class="activity-content">
-                                    <p>Nuevo mensaje de <strong>Carlos Ruiz</strong></p>
-                                    <span class="activity-time">Hace 5 horas</span>
-                                </div>
-                            </div>
-
-                            <div class="activity-item">
-                                <div class="activity-icon success" aria-hidden="true">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                         stroke-width="2">
-                                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                                    </svg>
-                                </div>
-                                <div class="activity-content">
-                                    <p>Completaste el trabajo de <strong>Plomería</strong></p>
-                                    <span class="activity-time">Hace 1 día</span>
-                                </div>
-                            </div>
+                            {% empty %}
+                                <p class="empty-state">
+                                    {% trans "No hay actividad reciente" %}
+                                </p>
+                            {% endfor %}
                         </div>
                     </div>
 
-                    <!-- TRABAJOS RECOMENDADOS -->
+                    <!-- TRABAJOS RECOMENDADOS / POSTULANTES -->
                     <div class="content-card" aria-labelledby="jobs-section-title">
                         <div class="card-header">
-                            <h2 id="jobs-section-title">Trabajos recomendados para ti</h2>
-                            <a href="#" class="view-all">Ver más</a>
+                            {% if usuario.tipo_usuario == 'trabajador' or usuario.tipo_usuario == 'ambos' %}
+                                <h2 id="jobs-section-title">
+                                    {% trans "Trabajos recomendados para ti" %}
+                                </h2>
+                                <a href="{% url 'jobs:buscar_trabajos' %}" class="view-all">
+                                    {% trans "Ver mÃ¡s" %}
+                                </a>
+                            {% else %}
+                                <h2 id="jobs-section-title">
+                                    {% trans "Postulantes recientes" %}
+                                </h2>
+                                <a href="{% url 'empleadores:crear_oferta_individual' %}" class="view-all">
+                                    {% trans "+ Publicar trabajo" %}
+                                </a>
+                            {% endif %}
                         </div>
 
                         <div class="jobs-list">
-                            <div class="job-card">
-                                <div class="job-header">
-                                    <div class="job-icon" aria-hidden="true">🔨</div>
-                                    <div class="job-info">
-                                        <h3><a href="#">Electricista para instalación</a></h3>
-                                        <p class="job-company">Juan Pérez · San Isidro</p>
-                                    </div>
-                                    <span class="job-badge urgent">Urgente</span>
-                                </div>
-                                <p class="job-description">
-                                    Se necesita electricista con experiencia para instalación de sistema eléctrico en oficina nueva...
-                                </p>
-                                <div class="job-footer">
-                                    <span class="job-price">S/ 350</span>
-                                    <a href="#" class="btn-small btn-primary">Aplicar</a>
-                                </div>
-                            </div>
+                            {% for trabajo in trabajos_recomendados %}
+                                <div class="job-card">
+                                    <div class="job-header">
+                                        <div class="job-icon" aria-hidden="true">
+                                            {% if trabajo.id_categoria %}
+                                                {{ trabajo.id_categoria.icono|default:"ðŸ”¨" }}
+                                            {% else %}
+                                                ðŸ”¨
+                                            {% endif %}
+                                        </div>
 
-                            <div class="job-card">
-                                <div class="job-header">
-                                    <div class="job-icon" aria-hidden="true">🎨</div>
-                                    <div class="job-info">
-                                        <h3><a href="#">Pintor para casa</a></h3>
-                                        <p class="job-company">Ana Martínez · Miraflores</p>
+                                        <div class="job-info">
+                                            <h3>
+                                                <a href="{% url_detalle_trabajo trabajo %}">
+                                                    {{ trabajo|get_titulo_trabajo }}
+                                                </a>
+                                            </h3>
+
+                                            <p class="job-company">
+                                                {% with empleador=trabajo|get_empleador_trabajo %}
+                                                    {% if empleador %}
+                                                        {{ empleador.nombres }} {{ empleador.apellidos }}
+                                                    {% endif %}
+                                                {% endwith %}
+                                                {% with distrito=trabajo|get_distrito_trabajo %}
+                                                    {% if distrito %}
+                                                        Â· {{ distrito.nombre }}
+                                                    {% endif %}
+                                                {% endwith %}
+                                            </p>
+                                        </div>
+
+                                        {% if trabajo|is_urgente %}
+                                            <span class="job-badge urgent">
+                                                {% trans "Urgente" %}
+                                            </span>
+                                        {% else %}
+                                            {% with fecha=trabajo|get_created_at %}
+                                                {% if fecha %}
+                                                    <span class="job-badge new">
+                                                        {% trans "Nuevo" %}
+                                                    </span>
+                                                {% endif %}
+                                            {% endwith %}
+                                        {% endif %}
                                     </div>
-                                    <span class="job-badge new">Nuevo</span>
+
+                                    <p class="job-description">
+                                        {{ trabajo|get_descripcion_trabajo|truncatewords:20 }}
+                                    </p>
+
+                                    <div class="job-footer">
+                                        <span class="job-price">
+                                            {% with pago=trabajo|get_pago_trabajo %}
+                                                {% if pago %}
+                                                    S/ {{ pago }}
+                                                {% endif %}
+                                            {% endwith %}
+                                        </span>
+
+                                        {% if usuario.tipo_usuario == 'trabajador' or usuario.tipo_usuario == 'ambos' %}
+                                            <a href="{% url_postular_trabajo trabajo %}"
+                                               class="btn-small btn-primary">
+                                                {% trans "Aplicar" %}
+                                            </a>
+                                        {% else %}
+                                            <a href="{% url_detalle_trabajo trabajo %}"
+                                               class="btn-small btn-primary">
+                                                {% trans "Ver detalles" %}
+                                            </a>
+                                        {% endif %}
+                                    </div>
                                 </div>
-                                <p class="job-description">
-                                    Buscamos pintor profesional para pintar casa de 2 pisos. Materiales incluidos...
+                            {% empty %}
+                                <p class="empty-state">
+                                    {% trans "No hay trabajos disponibles en este momento" %}
                                 </p>
-                                <div class="job-footer">
-                                    <span class="job-price">S/ 800</span>
-                                    <a href="#" class="btn-small btn-primary">Aplicar</a>
-                                </div>
-                            </div>
+                            {% endfor %}
                         </div>
                     </div>
-                </div>
 
+                </div>
+                <!-- FIN COLUMNA PRINCIPAL -->
                 <!-- SIDEBAR -->
                 <div class="content-sidebar" aria-labelledby="sidebar-title">
-                    <h2 id="sidebar-title" class="sr-only">Panel lateral del dashboard</h2>
+                    <h2 id="sidebar-title" class="sr-only">{% trans "Panel lateral del dashboard" %}</h2>
 
                     <!-- COMPLETAR PERFIL -->
                     <div class="sidebar-card">
-                        <h3>Completa tu perfil</h3>
+                        <h3>{% trans "Completa tu perfil" %}</h3>
 
                         <div class="progress-bar" role="progressbar"
                              aria-valuemin="0"
                              aria-valuemax="100"
-                             aria-valuenow="75">
-                            <div class="progress-fill" style="width: 75%"></div>
+                             aria-valuenow="{{ perfil_completado }}">
+                            <div class="progress-fill" style="width: {{ perfil_completado }}%"></div>
                         </div>
 
-                        <p class="progress-text">75% completado</p>
+                        <p class="progress-text">
+                            {% blocktrans with porcentaje=perfil_completado %}
+                                {{ porcentaje }}% completado
+                            {% endblocktrans %}
+                        </p>
 
                         <div class="profile-tasks">
-                            <div class="task-item completed">
+                            <div class="task-item {% if usuario.nombres and usuario.apellidos %}completed{% endif %}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                      viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                      stroke-width="2" aria-hidden="true">
-                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                    {% if usuario.nombres and usuario.apellidos %}
+                                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                    {% else %}
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                    {% endif %}
                                 </svg>
-                                <span>Información básica</span>
+                                <span>{% trans "InformaciÃ³n bÃ¡sica" %}</span>
                             </div>
 
-                            <div class="task-item completed">
+                            <div class="task-item {% if profile and profile.foto_url %}completed{% endif %}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                      viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                      stroke-width="2" aria-hidden="true">
-                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                    {% if profile and profile.foto_url %}
+                                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                    {% else %}
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                    {% endif %}
                                 </svg>
-                                <span>Foto de perfil</span>
+                                <span>{% trans "Foto de perfil" %}</span>
                             </div>
 
-                            <div class="task-item">
+                            <div class="task-item {% if usuario.estado_verificacion == 'verificado' %}completed{% endif %}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                      viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                      stroke-width="2" aria-hidden="true">
-                                    <circle cx="12" cy="12" r="10"></circle>
+                                    {% if usuario.estado_verificacion == 'verificado' %}
+                                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                    {% else %}
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                    {% endif %}
                                 </svg>
-                                <span>Verificar identidad</span>
+                                <span>{% trans "Verificar identidad" %}</span>
                             </div>
 
-                            <div class="task-item completed">
+                            <div class="task-item {% if usuario.habilidades.count > 0 %}completed{% endif %}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                      viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                      stroke-width="2" aria-hidden="true">
-                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                    {% if usuario.habilidades.count > 0 %}
+                                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                    {% else %}
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                    {% endif %}
                                 </svg>
-                                <span>Agregar habilidades</span>
+                                <span>{% trans "Agregar habilidades" %}</span>
                             </div>
                         </div>
 
-                        <a href="#" class="btn-small btn-block btn-ghost">Completar perfil</a>
+                        <a href="{% url 'users:perfil' %}" class="btn-small btn-block btn-ghost">
+                            {% trans "Completar perfil" %}
+                        </a>
                     </div>
 
                     <!-- RENDIMIENTO -->
                     <div class="sidebar-card">
-                        <h3>Tu rendimiento</h3>
+                        <h3>{% trans "Tu rendimiento" %}</h3>
 
-                        <div class="quick-stat">
-                            <span class="stat-label">Tasa de aceptación</span>
-                            <span class="stat-value">85%</span>
-                        </div>
-                        <div class="quick-stat">
-                            <span class="stat-label">Trabajos completados</span>
-                            <span class="stat-value">8</span>
-                        </div>
+                        {% if usuario.tipo_usuario == 'trabajador' or usuario.tipo_usuario == 'ambos' %}
+                            <div class="quick-stat">
+                                <span class="stat-label">{% trans "Tasa de aceptaciÃ³n" %}</span>
+                                <span class="stat-value">
+                                    {{ estadisticas.tasa_aceptacion|default:"0" }}%
+                                </span>
+                            </div>
+                            <div class="quick-stat">
+                                <span class="stat-label">{% trans "Trabajos completados" %}</span>
+                                <span class="stat-value">{{ usuario.trabajos_completados }}</span>
+                            </div>
+                        {% else %}
+                            <div class="quick-stat">
+                                <span class="stat-label">{% trans "Ofertas publicadas" %}</span>
+                                <span class="stat-value">{{ estadisticas.ofertas_totales|default:0 }}</span>
+                            </div>
+                            <div class="quick-stat">
+                                <span class="stat-label">{% trans "Contratos activos" %}</span>
+                                <span class="stat-value">{{ estadisticas.contratos_activos|default:0 }}</span>
+                            </div>
+                            <div class="quick-stat">
+                                <span class="stat-label">{% trans "Vistas totales" %}</span>
+                                <span class="stat-value">{{ estadisticas.vistas_totales|default:0 }}</span>
+                            </div>
+                        {% endif %}
                     </div>
 
                     <!-- NOTIFICACIONES -->
+                    {% if notificaciones_recientes %}
                     <div class="sidebar-card">
                         <div class="card-header">
                             <h3>
@@ -548,45 +716,56 @@
                                     <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
                                     <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
                                 </svg>
-                                Notificaciones
+                                {% trans "Notificaciones" %}
                             </h3>
-                            <span class="view-all" style="color: var(--color-danger); font-weight: 700;">3 Nuevas</span>
+
+                            {% if notificaciones_count > 0 %}
+                                <span class="view-all" style="color: var(--color-danger); font-weight: 700;">
+                                    {% blocktrans count total=notificaciones_count %}
+                                        {{ total }} Nueva
+                                    {% plural %}
+                                        {{ total }} Nuevas
+                                    {% endblocktrans %}
+                                </span>
+                            {% endif %}
                         </div>
 
                         <div class="notificaciones-preview">
-                            <a href="#" class="notificacion-preview-item no-leida">
-                                <div class="notif-icon" aria-hidden="true">📋</div>
-                                <div class="notif-content">
-                                    <strong>Nueva postulación recibida</strong>
-                                    <span class="notif-time">Hace 1 hora</span>
-                                </div>
-                            </a>
-
-                            <a href="#" class="notificacion-preview-item no-leida">
-                                <div class="notif-icon" aria-hidden="true">💬</div>
-                                <div class="notif-content">
-                                    <strong>Mensaje de Carlos Ruiz</strong>
-                                    <span class="notif-time">Hace 3 horas</span>
-                                </div>
-                            </a>
-
-                            <a href="#" class="notificacion-preview-item">
-                                <div class="notif-icon" aria-hidden="true">⭐</div>
-                                <div class="notif-content">
-                                    <strong>Nueva calificación recibida</strong>
-                                    <span class="notif-time">Hace 1 día</span>
-                                </div>
-                            </a>
+                            {% for notif in notificaciones_recientes %}
+                                <a href="{{ notif.url|default:'#' }}"
+                                   class="notificacion-preview-item {% if not notif.leida %}no-leida{% endif %}">
+                                    <div class="notif-icon {{ notif.tipo }}" aria-hidden="true">
+                                        {% if notif.tipo == 'postulacion' %}ðŸ“‹
+                                        {% elif notif.tipo == 'mensaje' %}ðŸ’¬
+                                        {% elif notif.tipo == 'contrato' %}ðŸ“
+                                        {% elif notif.tipo == 'pago' %}ðŸ’°
+                                        {% elif notif.tipo == 'calificacion' %}â­
+                                        {% else %}ðŸ””{% endif %}
+                                    </div>
+                                    <div class="notif-content">
+                                        <strong>{{ notif.titulo|truncatewords:8 }}</strong>
+                                        <span class="notif-time">
+                                            {{ notif.created_at|timesince }}
+                                        </span>
+                                    </div>
+                                </a>
+                            {% endfor %}
                         </div>
 
-                        <a href="#" class="btn-small btn-block btn-ghost">Ver todas las notificaciones</a>
+                        <a href="{% url 'soporte:notificaciones' %}"
+                           class="btn-small btn-block btn-ghost">
+                            {% trans "Ver todas las notificaciones" %}
+                        </a>
                     </div>
+                    {% endif %}
 
-                    <!-- CONSEJO DEL DÍA -->
+                    <!-- CONSEJO DEL DÃA -->
                     <div class="sidebar-card tips-card">
-                        <div class="tips-icon" aria-hidden="true">💡</div>
-                        <h3>Consejo del día</h3>
-                        <p>Responde rápido a los mensajes para aumentar tus posibilidades de conseguir trabajos. Los usuarios valoran la comunicación ágil.</p>
+                        <div class="tips-icon" aria-hidden="true">ðŸ’¡</div>
+                        <h3>{% trans "Consejo del dÃ­a" %}</h3>
+                        <p>
+                            {{ consejo_del_dia|default:_("Responde rÃ¡pido a los mensajes para aumentar tus posibilidades de conseguir trabajos. Los usuarios valoran la comunicaciÃ³n Ã¡gil.") }}
+                        </p>
                     </div>
                 </div>
             </div>
@@ -604,47 +783,54 @@
 
             <div class="footer-links">
                 <div class="footer-column">
-                    <h4>Plataforma</h4>
+                    <h4>{% trans "Plataforma" %}</h4>
                     <ul>
-                        <li><a href="#">Buscar trabajos</a></li>
-                        <li><a href="#">Mi Perfil</a></li>
-                        <li><a href="#">Mis Mensajes</a></li>
+                        <li><a href="{% url 'jobs:buscar_trabajos' %}">{% trans "Buscar trabajos" %}</a></li>
+                        <li><a href="{% url 'users:perfil' %}">{% trans "Mi Perfil" %}</a></li>
+                        <li><a href="{% url 'chats:lista_chats' %}">{% trans "Mis Mensajes" %}</a></li>
                     </ul>
                 </div>
 
                 <div class="footer-column">
-                    <h4>Soporte</h4>
+                    <h4>{% trans "Soporte" %}</h4>
                     <ul>
-                        <li><a href="#">Centro de ayuda</a></li>
-                        <li><a href="#">Mis Denuncias</a></li>
-                        <li><a href="#">Términos de servicio</a></li>
-                        <li><a href="#">Política de privacidad</a></li>
+                        <li><a href="#">{% trans "Centro de ayuda" %}</a></li>
+                        <li><a href="{% url 'soporte:denuncias' %}">{% trans "Mis Denuncias" %}</a></li>
+                        <li><a href="#">{% trans "TÃ©rminos de servicio" %}</a></li>
+                        <li><a href="#">{% trans "PolÃ­tica de privacidad" %}</a></li>
                     </ul>
                 </div>
             </div>
         </div>
 
         <div class="footer-bottom">
-            <p>© 2025 Llamkay.pe. Todos los derechos reservados.</p>
+            <p>
+                {% blocktrans %}
+                    Â© 2025 Llamkay.pe. Todos los derechos reservados.
+                {% endblocktrans %}
+            </p>
         </div>
     </footer>
 
-    <!-- Scripts -->
-    <script>
-        window.DASHBOARD_I18N = {
-            welcome: "Bienvenido de vuelta",
-            morning: "Buenos días",
-            afternoon: "Buenas tardes",
-            night: "Buenas noches",
-            menu_open: "Menú abierto",
-            menu_close: "Menú cerrado",
-            user_menu_open: "Menú de usuario abierto",
-            user_menu_close: "Menú de usuario cerrado",
-            lang_changed_es: "Idioma cambiado a Español",
-            lang_changed_en: "Idioma cambiado a Inglés",
-            error_generic: "Ha ocurrido un error. Por favor, recarga la página."
-        };
-    </script>
-    <script src="dashboard.js"></script>
-</body>
-</html>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  window.DASHBOARD_I18N = {
+    welcome: "{% trans 'Bienvenido de vuelta' %}",
+    morning: "{% trans 'Buenos dÃ­as' %}",
+    afternoon: "{% trans 'Buenas tardes' %}",
+    night: "{% trans 'Buenas noches' %}",
+
+    menu_open: "{% trans 'MenÃº abierto' %}",
+    menu_close: "{% trans 'MenÃº cerrado' %}",
+    user_menu_open: "{% trans 'MenÃº de usuario abierto' %}",
+    user_menu_close: "{% trans 'MenÃº de usuario cerrado' %}",
+    lang_changed_es: "{% trans 'Idioma cambiado a EspaÃ±ol' %}",
+    lang_changed_en: "{% trans 'Idioma cambiado a InglÃ©s' %}",
+    error_generic: "{% trans 'Ha ocurrido un error. Por favor, recarga la pÃ¡gina.' %}"
+  };
+</script>
+
+<script src="{% static 'js/llamkay/dashboard.js' %}"></script>
+{% endblock %}
