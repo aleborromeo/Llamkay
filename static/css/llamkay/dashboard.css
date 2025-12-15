@@ -207,23 +207,229 @@ a:hover {
     /* NIELSEN: Feedback visual */
 }
 
-/* NIELSEN: Visibilidad del estado - Badge de notificaciones */
+/* =============================================
+   DASHBOARD - LLAMKAY.PE
+   Mejoras visuales y accesibilidad
+   ============================================= */
+
+/* ==================== MEJORAS INTERACTIVAS ==================== */
+
+/* Visibilidad del estado: hover y focus en botones y enlaces */
+a,
+button,
+.nav-link,
+.btn-primary,
+.btn-ghost {
+    transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease;
+    cursor: pointer;
+}
+
+/* Resaltar botones al hacer hover/focus */
+a:hover,
+button:hover,
+.nav-link:hover,
+.btn-primary:hover,
+.btn-ghost:hover {
+    background-color: var(--color-primary-light);
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+/* Resaltar al hacer focus */
+a:focus-visible,
+button:focus-visible,
+.nav-link:focus-visible,
+.btn-primary:focus-visible,
+.btn-ghost:focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 2px;
+    box-shadow: var(--shadow-focus);
+}
+
+/* ==================== ACCESIBILIDAD ==================== */
+
+/* Skip link (accesibilidad) */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background-color: var(--color-primary);
+    color: #fff;
+    padding: var(--spacing-sm) var(--spacing-md);
+    text-decoration: none;
+    z-index: 100;
+    border-radius: 0 0 var(--radius-sm) 0;
+}
+
+.skip-link:focus {
+    top: 0;
+}
+
+/* Movimiento reducido - Reduce animaciones */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        transition: none !important;
+        animation: none !important;
+        scroll-behavior: auto !important;
+    }
+
+    /* Evitar animaciones de menú y dropdown */
+    .nav-menu,
+    .user-dropdown {
+        transition: none;
+    }
+}
+
+/* Alto contraste */
+@media (prefers-contrast: high) {
+    :root {
+        --color-background-alt: #ffffff;
+        --color-text: #000000;
+        --color-primary: #000000;
+        --color-primary-light: #FFAA00;
+    }
+
+    .btn,
+    .nav-link,
+    .dropdown-item {
+        border: 2px solid currentColor;
+    }
+    
+    .nav-link:hover,
+    .dropdown-item:hover {
+        border-width: 3px;
+    }
+}
+
+/* ==================== MEJORAS PARA VISIBILIDAD DEL ESTADO ==================== */
+
+/* Feedback visual: Botones y notificaciones */
 .notification-badge {
     position: absolute;
-    top: -2px;
-    right: -2px;
-    background: var(--color-danger);
-    color: white;
-    border-radius: var(--radius-round);
-    width: 18px;
-    height: 18px;
-    font-size: 11px;
+    top: -4px;
+    right: -4px;
+    background-color: var(--color-danger);
+    color: #fff;
     font-weight: bold;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 2px solid white;
-    /* NIELSEN: Estado visible - Usuario sabe hay notificaciones */
+    font-size: 0.75rem;
+    padding: 4px 8px;
+    border-radius: var(--radius-round);
+}
+
+/* Estadísticas (hover y active) */
+.stat-card:hover,
+.job-card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-5px);
+    /* NIELSEN: Feedback visual claro */
+}
+
+/* ==================== MEJORAS EN LA NAVEGACIÓN Y MENÚ ==================== */
+
+/* Resaltar los items activos y con focus */
+.nav-link.active {
+    background-color: var(--color-primary-light);
+    color: white;
+    font-weight: 600;
+}
+
+.nav-link:focus-visible {
+    background-color: var(--color-primary-light);
+    color: white;
+}
+
+/* Mejorar la visibilidad de los dropdowns */
+.user-dropdown {
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.user-dropdown.active {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* ==================== MEJORAS VISUALES EN CARDS ==================== */
+
+/* Proximidad - Separación entre cards */
+.content-card,
+.sidebar-card,
+.stat-card,
+.job-card {
+    margin-bottom: var(--spacing-lg);
+    padding: var(--spacing-lg);
+    background: #ffffff;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+/* Hover efecto sobre cards */
+.content-card:hover,
+.sidebar-card:hover,
+.stat-card:hover,
+.job-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* ==================== RESPONSIVIDAD (tablet, mobile) ==================== */
+
+/* Mejorar espaciado en tablets */
+@media (max-width: 1024px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .sidebar-card {
+        margin-bottom: 0;
+    }
+}
+
+/* Mejorar navegación móvil */
+@media (max-width: 768px) {
+    .nav-menu {
+        width: 100%;
+        height: 100vh;
+        position: fixed;
+        top: 70px;
+        left: -100%;
+        transition: left 0.3s ease;
+        padding: 0;
+    }
+
+    .nav-menu.active {
+        left: 0;
+    }
+
+    .nav-toggle {
+        display: flex;
+    }
+
+    .nav-actions {
+        display: none;
+    }
+}
+
+/* Táctil optimizado */
+@media (max-width: 480px) {
+    .nav-mobile-actions .btn-nav {
+        min-height: 48px;
+        font-size: 1rem;
+        padding: var(--spacing-md);
+    }
+
+    .welcome-content h1 {
+        font-size: 1.5rem;
+    }
+
+    .stat-card {
+        flex-direction: column;
+        text-align: center;
+    }
 }
 
 /* ==================== USER MENU - GESTALT: PROXIMIDAD ==================== */
@@ -1388,4 +1594,55 @@ a:hover {
     .dropdown-item:hover {
         border-width: 3px;
     }
+}
+
+/* =====================================================
+   LANGUAGE SELECTOR – DASHBOARD (BLANCO, COMO HOME)
+   ===================================================== */
+
+.header .language-selector {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #ffffff;
+    padding: 4px;
+    border-radius: 999px;
+    border: 1.5px solid rgba(7, 115, 75, 0.25);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Botones ES / EN */
+.header .language-selector .lang-btn {
+    appearance: none;
+    border: none;
+    background: transparent;
+    color: var(--color-primary);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 6px 12px;
+    border-radius: 999px;
+    cursor: pointer;
+    line-height: 1;
+    transition:
+        background var(--transition-fast),
+        color var(--transition-fast),
+        box-shadow var(--transition-fast);
+}
+
+/* Hover */
+.header .language-selector .lang-btn:hover {
+    background: rgba(7, 115, 75, 0.1);
+}
+
+/* Idioma activo */
+.header .language-selector .lang-btn.active {
+    background: var(--color-primary);
+    color: #ffffff;
+    box-shadow: var(--shadow-sm);
+}
+
+/* Focus accesible */
+.header .language-selector .lang-btn:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(7, 115, 75, 0.3);
 }

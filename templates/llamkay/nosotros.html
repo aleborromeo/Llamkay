@@ -1,64 +1,63 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 
-{% block title %}Sobre Nosotros - Llamkay.pe{% endblock %}
+{% block title %}{% trans "Sobre Nosotros" %} - Llamkay.pe{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/llamkay/nosotros.css' %}">
 {% endblock %}
 
 {% block content %}
-<!-- 
-═══════════════════════════════════════════════════════════════════════════
-NAVBAR - Aplicación de principios:
+<form id="language-form" method="POST" action="{% url 'set_language' %}" style="display:none;">
+    {% csrf_token %}
+    <input name="next" type="hidden" value="{{ request.path }}">
+    <input id="language-input" name="language" type="hidden">
+</form>
 
-✓ GESTALT - Proximidad: Los enlaces están agrupados por funcionalidad
-✓ GESTALT - Semejanza: Los botones de acción tienen el mismo estilo
-✓ NIELSEN #4 - Consistencia: El navbar se mantiene igual en toda la app
-✓ NIELSEN #6 - Reconocimiento: Iconos y textos visibles (no solo iconos)
-✓ RESPONSIVIDAD: Menú hamburguesa adaptativo
-═══════════════════════════════════════════════════════════════════════════
--->
-<header class="header" role="banner">
-    <nav class="navbar" role="navigation" aria-label="Navegación principal">
+    <header class="header" role="banner">
+    <nav class="navbar" role="navigation" aria-label="{% trans "Navegación principal" %}">
         <div class="nav-container">
-            <!-- Logo - Gestalt: Experiencia Previa -->
-            <a href="{% url 'llamkay:index' %}" class="logo" aria-label="Llamkay - Página principal">
+
+            <a href="{% url 'llamkay:index' %}" class="logo" aria-label="Llamkay - {% trans 'Página principal' %}">
                 <span>Llamkay</span>
             </a>
+
+            <div class="language-selector" role="radiogroup" aria-label="{% trans "Selección de idioma" %}">
+                <button class="lang-btn {% if LANGUAGE_CODE == 'es' %}active{% endif %}" data-lang="es" aria-checked="{% if LANGUAGE_CODE == 'es' %}true{% else %}false{% endif %}" role="radio" aria-label="{% trans "Español" %}">ES</button>
+                <button class="lang-btn {% if LANGUAGE_CODE == 'en' %}active{% endif %}" data-lang="en" aria-checked="{% if LANGUAGE_CODE == 'en' %}true{% else %}false{% endif %}" role="radio" aria-label="{% trans "Inglés" %}">EN</button>
+            </div>
+
+<button class="nav-toggle" aria-label="{% trans "Abrir menú de navegación" %}" aria-expanded="false">
             
-            <!-- Toggle móvil - Responsividad -->
-            <button class="nav-toggle" aria-label="Abrir menú de navegación" aria-expanded="false">
+            <button class="nav-toggle" aria-label="{% trans "Abrir menú de navegación" %}" aria-expanded="false">
                 <span></span>
                 <span></span>
                 <span></span>
             </button>
             
-            <!-- Menu principal - Gestalt: Continuidad -->
             <ul class="nav-menu" role="list">
-                <li><a href="{% url 'llamkay:index' %}" class="nav-link">Inicio</a></li>
-                <li><a href="{% url 'llamkay:nosotros' %}" class="nav-link active" aria-current="page">Nosotros</a></li>
-                <li><a href="{% url 'jobs:all_trabajos' %}" class="nav-link">Trabajos</a></li>
-                <li><a href="{% url 'llamkay:ayuda' %}" class="nav-link">Ayuda</a></li>
+                <li><a href="{% url 'llamkay:index' %}" class="nav-link">{% trans "Inicio" %}</a></li>
+                <li><a href="{% url 'llamkay:nosotros' %}" class="nav-link active" aria-current="page">{% trans "Nosotros" %}</a></li>
+                <li><a href="{% url 'jobs:all_trabajos' %}" class="nav-link">{% trans "Trabajos" %}</a></li>
+                <li><a href="#como-funciona" class="nav-link">{% trans "¿Cómo funciona?" %}</a></li>
                 
-                <!-- Botones móviles dentro del menú hamburguesa -->
-                <div class="nav-mobile-actions">
+                <li class="nav-mobile-actions">
                     {% if user.is_authenticated %}
-                        <a href="{% url 'llamkay:dashboard' %}" class="btn-nav btn-primary-mobile">Dashboard</a>
+                        <a href="{% url 'llamkay:dashboard' %}" class="btn-nav btn-primary">{% trans "Dashboard" %}</a>
                     {% else %}
-                        <a href="{% url 'users:login' %}" class="btn-nav btn-outline-mobile">Iniciar Sesión</a>
-                        <a href="{% url 'users:seleccionar_tipo' %}" class="btn-nav btn-primary-mobile">Registrarse</a>
+                        <a href="{% url 'users:login' %}" class="btn-nav btn-ghost">{% trans "Ingresar" %}</a>
+                        <a href="{% url 'users:seleccionar_tipo' %}" class="btn-nav btn-primary">{% trans "Comenzar" %}</a>
                     {% endif %}
-                </div>
+                </li>
             </ul>
             
-            <!-- Botones desktop (ocultos en móvil) -->
             <div class="nav-desktop-actions">
                 {% if user.is_authenticated %}
-                    <a href="{% url 'llamkay:dashboard' %}" class="btn-nav btn-primary">Dashboard</a>
+                    <a href="{% url 'llamkay:dashboard' %}" class="btn-nav btn-primary">{% trans "Dashboard" %}</a>
                 {% else %}
-                    <a href="{% url 'users:login' %}" class="btn-nav btn-ghost">Ingresar</a>
-                    <a href="{% url 'users:seleccionar_tipo' %}" class="btn-nav btn-primary">Comenzar</a>
+                    <a href="{% url 'users:login' %}" class="btn-nav btn-ghost">{% trans "Ingresar" %}</a>
+                    <a href="{% url 'users:seleccionar_tipo' %}" class="btn-nav btn-primary">{% trans "Comenzar" %}</a>
                 {% endif %}
             </div>
         </div>
@@ -66,193 +65,223 @@ NAVBAR - Aplicación de principios:
 </header>
 
 <main>
-    <!-- 
-    ═══════════════════════════════════════════════════════════════════════════
-    HERO SECTION
-    
-    ✓ GESTALT - Figura y Fondo: Contraste claro entre texto y fondo
-    ✓ GESTALT - Simetría: Contenido centrado y balanceado
-    ✓ NIELSEN #2 - Concordancia: Lenguaje claro y directo
-    ✓ NIELSEN #8 - Diseño minimalista: Solo contenido esencial
-    ✓ RESPONSIVIDAD: Padding y tamaños adaptativos con clamp()
-    ═══════════════════════════════════════════════════════════════════════════
-    -->
-    <section class="hero-nosotros">
-        <div class="container">
-            <h1>Sobre Llamkay</h1>
-            <p class="hero-subtitle">Conectando talentos peruanos con oportunidades laborales</p>
-        </div>
-    </section>
-
-    <!-- 
-    ═══════════════════════════════════════════════════════════════════════════
-    MISIÓN Y VISIÓN
-    
-    ✓ GESTALT - Proximidad: Contenido relacionado agrupado en cards
-    ✓ GESTALT - Semejanza: Cards con el mismo diseño para contenido similar
-    ✓ GESTALT - Simetría: Layout balanceado y ordenado
-    ✓ GESTALT - Cierre: Bordes redondeados completan la forma visual
-    ✓ NIELSEN #6 - Reconocimiento: Iconos apoyan la comprensión inmediata
-    ✓ NIELSEN #8 - Diseño minimalista: Contenido esencial sin distracciones
-    ✓ RESPONSIVIDAD: Grid adaptativo (2 columnas → 1 columna en móvil)
-    ═══════════════════════════════════════════════════════════════════════════
-    -->
-    <section class="mision-vision">
-        <div class="container">
-            <div class="content-grid">
-                <article class="card" data-aos="fade-up">
-                    <div class="card-icon" aria-hidden="true">🎯</div>
-                    <h2>Nuestra Misión</h2>
-                    <p>
-                        Facilitar la conexión entre trabajadores calificados y empleadores en todo el Perú, 
-                        promoviendo el empleo formal, la transparencia y la confianza en cada interacción laboral.
-                    </p>
-                </article>
+    <section class="hero" role="region" aria-labelledby="hero-title">
+        <div class="hero-container">
+            <div class="hero-content">
+                <span class="hero-badge" role="text">{% trans "Nuestra Historia" %} 📖</span>
                 
-                <article class="card" data-aos="fade-up" data-aos-delay="100">
-                    <div class="card-icon" aria-hidden="true">🌟</div>
-                    <h2>Nuestra Visión</h2>
-                    <p>
-                        Ser la plataforma líder en Perú para la búsqueda y oferta de servicios laborales, 
-                        reconocida por su seguridad, eficiencia y compromiso con el desarrollo profesional 
-                        de todos los peruanos.
-                    </p>
-                </article>
-            </div>
-        </div>
-    </section>
-
-    <!-- 
-    ═══════════════════════════════════════════════════════════════════════════
-    HISTORIA
-    
-    ✓ GESTALT - Continuidad: Flujo visual de texto a imagen
-    ✓ GESTALT - Proximidad: Párrafos agrupados lógicamente
-    ✓ NIELSEN #1 - Visibilidad: Feedback en hover (imagen escala)
-    ✓ NIELSEN #6 - Reconocimiento: Imagen apoya la comprensión del texto
-    ✓ RESPONSIVIDAD: Layout 2 columnas → 1 columna en móvil (imagen primero)
-    ═══════════════════════════════════════════════════════════════════════════
-    -->
-    <section class="historia">
-        <div class="container">
-            <h2>Nuestra Historia</h2>
-            <div class="historia-content">
-                <div class="historia-text">
-                    <p>
-                        Llamkay nació en 2024 con la visión de transformar la forma en que los peruanos 
-                        encuentran oportunidades laborales. Observamos la necesidad de crear un espacio 
-                        seguro y confiable donde trabajadores y empleadores puedan conectarse de manera directa.
-                    </p>
-                    <p>
-                        Desde nuestros inicios, nos hemos comprometido con la verificación de identidad, 
-                        la transparencia en las transacciones y la creación de una comunidad basada en 
-                        la confianza mutua.
-                    </p>
-                    <p>
-                        Hoy, miles de peruanos confían en Llamkay para encontrar trabajo o contratar 
-                        profesionales calificados en diversas áreas.
-                    </p>
-                </div>
-                <div class="historia-image">
-                    <img src="{% static 'images/about-us.jpg' %}" 
-                         alt="Equipo trabajando colaborativamente en oficina moderna" 
-                         loading="lazy">
+                <h1 id="hero-title" class="hero-title">
+                    {% blocktrans %}Conoce más sobre <span class="text-highlight">Llamkay</span>{% endblocktrans %}
+                </h1>
+                
+                <p class="hero-description">
+                    {% trans "Conectando talentos peruanos con oportunidades laborales desde 2024" %}
+                </p>
+                
+                <div class="hero-stats" role="list" aria-label="{% trans "Estadísticas de la plataforma" %}">
+                    <div class="stat-item" role="listitem">
+                        <strong>10,000+</strong>
+                        <span>{% trans "Usuarios activos" %}</span>
+                    </div>
+                    <div class="stat-item" role="listitem">
+                        <strong>5,000+</strong>
+                        <span>{% trans "Trabajos publicados" %}</span>
+                    </div>
+                    <div class="stat-item" role="listitem">
+                        <strong>4.8/5</strong>
+                        <span>{% trans "Calificación promedio" %}</span>
+                    </div>
                 </div>
             </div>
         </div>
+        
+        <div class="hero-wave" aria-hidden="true">
+            <svg viewBox="0 0 1440 120" xmlns="http://www.w3.org/2000/svg">
+                <path fill="#ffffff" d="M0,64L80,69.3C160,75,320,85,480,80C640,75,800,53,960,48C1120,43,1280,53,1360,58.7L1440,64L1440,120L1360,120C1280,120,1120,120,960,120C800,120,640,120,480,120C320,120,160,120,80,120L0,120Z"></path>
+            </svg>
+        </div>
     </section>
 
-    <!-- 
-    ═══════════════════════════════════════════════════════════════════════════
-    VALORES
-    
-    ✓ GESTALT - Semejanza: Cards uniformes para contenido relacionado
-    ✓ GESTALT - Simetría: Grid perfectamente balanceado
-    ✓ GESTALT - Experiencia previa: Iconos universalmente reconocibles
-    ✓ NIELSEN #1 - Visibilidad: Estados hover claros (translateY + shadow)
-    ✓ NIELSEN #4 - Consistencia: Estructura repetitiva y predecible
-    ✓ RESPONSIVIDAD: Grid flexible 4 → 2 → 1 columna según viewport
-    ═══════════════════════════════════════════════════════════════════════════
-    -->
-    <section class="valores">
+    <section class="benefits" role="region" aria-labelledby="mision-vision-title">
         <div class="container">
-            <h2>Nuestros Valores</h2>
+            <div class="section-header">
+                <span class="section-badge" role="text">{% trans "Nuestro Propósito" %}</span>
+                <h2 id="mision-vision-title">{% trans "Misión y Visión" %}</h2>
+                <p>{% trans "Los pilares que guían nuestro trabajo cada día" %}</p>
+            </div>
             
-            <div class="valores-grid">
-                <article class="valor-card" data-aos="zoom-in">
-                    <div class="valor-icon" aria-hidden="true">🤝</div>
-                    <h3>Confianza</h3>
-                    <p>Verificamos la identidad de todos nuestros usuarios para garantizar seguridad</p>
+            <div class="benefits-grid" role="list">
+                <article class="benefit-card" role="listitem">
+                    <div class="benefit-icon" aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                            <path d="M2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                        </svg>
+                    </div>
+                    <h3>{% trans "Nuestra Misión" %}</h3>
+                    <p>
+                        {% trans "Facilitar la conexión entre trabajadores calificados y empleadores en todo el Perú, promoviendo el empleo formal, la transparencia y la confianza en cada interacción laboral." %}
+                    </p>
                 </article>
                 
-                <article class="valor-card" data-aos="zoom-in" data-aos-delay="100">
-                    <div class="valor-icon" aria-hidden="true">💎</div>
-                    <h3>Transparencia</h3>
-                    <p>Promovemos la honestidad en cada transacción y comunicación</p>
-                </article>
-                
-                <article class="valor-card" data-aos="zoom-in" data-aos-delay="200">
-                    <div class="valor-icon" aria-hidden="true">🚀</div>
-                    <h3>Innovación</h3>
-                    <p>Mejoramos constantemente nuestra plataforma con tecnología de punta</p>
-                </article>
-                
-                <article class="valor-card" data-aos="zoom-in" data-aos-delay="300">
-                    <div class="valor-icon" aria-hidden="true">❤️</div>
-                    <h3>Compromiso Social</h3>
-                    <p>Contribuimos al desarrollo económico y profesional del Perú</p>
+                <article class="benefit-card" role="listitem">
+                    <div class="benefit-icon" aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                        </svg>
+                    </div>
+                    <h3>{% trans "Nuestra Visión" %}</h3>
+                    <p>
+                        {% trans "Ser la plataforma líder en Perú para la búsqueda y oferta de servicios laborales, reconocida por su seguridad, eficiencia y compromiso con el desarrollo profesional de todos los peruanos." %}
+                    </p>
                 </article>
             </div>
         </div>
     </section>
 
-    <!-- 
-    ═══════════════════════════════════════════════════════════════════════════
-    LLAMADO A LA ACCIÓN (CTA)
-    
-    ✓ GESTALT - Figura y Fondo: Botones destacados con alto contraste
-    ✓ GESTALT - Proximidad: Botones agrupados por función similar
-    ✓ NIELSEN #1 - Visibilidad del estado: Hover muestra interactividad clara
-    ✓ NIELSEN #3 - Control y libertad: Múltiples opciones de acción
-    ✓ NIELSEN #7 - Flexibilidad: Dos formas diferentes de obtener ayuda
-    ✓ RESPONSIVIDAD: Botones se apilan verticalmente en móvil con width 100%
-    ═══════════════════════════════════════════════════════════════════════════
-    -->
-    <section class="contacto-cta">
+    <section class="how-it-works" role="region" aria-labelledby="historia-title">
         <div class="container">
-            <h2>¿Tienes alguna pregunta?</h2>
-            <p>Estamos aquí para ayudarte</p>
+            <div class="section-header">
+                <span class="section-badge" role="text">{% trans "Nuestro Camino" %}</span>
+                <h2 id="historia-title">{% trans "Nuestra Historia" %}</h2>
+                <p>{% trans "Cómo empezó todo y hacia dónde vamos" %}</p>
+            </div>
             
-            <div class="contacto-buttons">
-                <a href="mailto:contacto@llamkay.pe" class="btn btn-large btn-primary">
-                    📧 Contáctanos
-                </a>
-                <a href="{% url 'llamkay:ayuda' %}" class="btn btn-large btn-secondary">
-                    ❓ Centro de Ayuda
-                </a>
+            <div class="steps" role="list">
+                <article class="step" role="listitem">
+                    <div class="step-number" aria-label="{% trans "Paso 1" %}">1</div>
+                    <div class="step-content">
+                        <h3>{% trans "El Inicio (2024)" %}</h3>
+                        <p>
+                            {% blocktrans %}Llamkay nació con la visión de transformar la forma en que los peruanos encuentran oportunidades laborales. Observamos la necesidad de crear un espacio seguro y confiable donde trabajadores y empleadores puedan conectarse de manera directa.{% endblocktrans %}
+                        </p>
+                    </div>
+                    <div class="step-icon" aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                        </svg>
+                    </div>
+                </article>
+                
+                <article class="step" role="listitem">
+                    <div class="step-number" aria-label="{% trans "Paso 2" %}">2</div>
+                    <div class="step-content">
+                        <h3>{% trans "Nuestro Compromiso" %}</h3>
+                        <p>
+                            {% blocktrans %}Desde nuestros inicios, nos hemos comprometido con la verificación de identidad, la transparencia en las transacciones y la creación de una comunidad basada en la confianza mutua.{% endblocktrans %}
+                        </p>
+                    </div>
+                    <div class="step-icon" aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
+                    </div>
+                </article>
+                
+                <article class="step" role="listitem">
+                    <div class="step-number" aria-label="{% trans "Paso 3" %}">3</div>
+                    <div class="step-content">
+                        <h3>{% trans "Hoy en Día" %}</h3>
+                        <p>
+                            {% blocktrans %}Miles de peruanos confían en Llamkay para encontrar trabajo o contratar profesionales calificados en diversas áreas. Seguimos creciendo y mejorando cada día para servir mejor a nuestra comunidad.{% endblocktrans %}
+                        </p>
+                    </div>
+                    <div class="step-icon" aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="benefits valores-section" role="region" aria-labelledby="valores-title">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge" role="text">{% trans "Nuestros Principios" %}</span>
+                <h2 id="valores-title">{% trans "Nuestros Valores" %}</h2>
+                <p>{% trans "Los valores que nos definen como equipo y comunidad" %}</p>
+            </div>
+            
+            <div class="benefits-grid" role="list">
+                <article class="benefit-card" role="listitem">
+                    <div class="benefit-icon" aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
+                    </div>
+                    <h3>{% trans "Confianza" %}</h3>
+                    <p>{% trans "Verificamos la identidad de todos nuestros usuarios para garantizar seguridad" %}</p>
+                </article>
+                
+                <article class="benefit-card" role="listitem">
+                    <div class="benefit-icon" aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M12 16v-4"></path>
+                            <path d="M12 8h.01"></path>
+                        </svg>
+                    </div>
+                    <h3>{% trans "Transparencia" %}</h3>
+                    <p>{% trans "Promovemos la honestidad en cada transacción y comunicación" %}</p>
+                </article>
+                
+                <article class="benefit-card" role="listitem">
+                    <div class="benefit-icon" aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                    </div>
+                    <h3>{% trans "Innovación" %}</h3>
+                    <p>{% trans "Mejoramos constantemente nuestra plataforma con tecnología de punta" %}</p>
+                </article>
+                
+                <article class="benefit-card" role="listitem">
+                    <div class="benefit-icon" aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                        </svg>
+                    </div>
+                    <h3>{% trans "Compromiso Social" %}</h3>
+                    <p>{% trans "Contribuimos al desarrollo económico y profesional del Perú" %}</p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-final" role="region" aria-labelledby="cta-title">
+        <div class="container">
+            <div class="cta-content">
+                <h2 id="cta-title">{% trans "¿Tienes alguna pregunta?" %}</h2>
+                <p>{% trans "Estamos aquí para ayudarte en lo que necesites" %}</p>
+                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                    <a href="mailto:contacto@llamkay.pe" class="btn btn-xlarge btn-white">
+                        📧 {% trans "Contáctanos" %}
+                    </a>
+                    <a href="{% url 'llamkay:ayuda' %}" class="btn btn-xlarge btn-white" style="background: transparent; border: 2px solid white;">
+                        ❓ {% trans "Centro de Ayuda" %}
+                    </a>
+                </div>
             </div>
         </div>
     </section>
 </main>
 
-<!-- ========================================
-     FOOTER
-     Principios aplicados:
-     - Nielsen: Consistencia y estándares
-     - Gestalt: Proximidad (información agrupada)
-     ======================================== -->
 <footer class="footer" role="contentinfo">
     <div class="footer-container">
-        <!-- Brand section -->
         <div class="footer-brand">
             <div class="footer-logo">
-                <img src="{% static 'images/llamkay.png' %}" alt="Logo Llamkay">
+                <img src="{% static 'images/llamkay.png' %}" alt="{% trans "Logo Llamkay" %}">
                 <span>Llamkay</span>
             </div>
-            <p>Conectando talentos con oportunidades laborales en todo el Perú</p>
+            <p>{% trans "Conectando talentos con oportunidades laborales en todo el Perú" %}</p>
             
-            <!-- Social links - Gestalt: Semejanza -->
-            <div class="social-links" role="list" aria-label="Redes sociales">
+            <div class="social-links" role="list" aria-label="{% trans "Redes sociales" %}">
                 <a href="https://www.facebook.com/llamkay" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                         <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
@@ -276,61 +305,46 @@ NAVBAR - Aplicación de principios:
             </div>
         </div>
 
-        <!-- Footer links - Gestalt: Proximidad -->
-    <div class="footer-links">
-        <div class="footer-column">
-            <h4>Plataforma</h4>
-            <ul role="list">
-                <li><a href="{% url 'jobs:all_trabajos' %}">Buscar trabajos</a></li>
-                <li><a href="{% url 'users:seleccionar_tipo' %}">Publicar trabajo</a></li>
-                <li><a href="#como-funciona">Cómo funciona</a></li>
-                <li><a href="{% url 'llamkay:nosotros' %}">Sobre nosotros</a></li>
-            </ul>
-        </div>
-        
-        <div class="footer-column">
-            <h4>Soporte</h4>
-            <ul role="list">
-                <li><a href="#">Centro de ayuda</a></li>
-                <li><a href="#">Términos de servicio</a></li>
-                <li><a href="#">Política de privacidad</a></li>
-                <li><a href="{% url 'soporte:crear_denuncia' %}">Reportar un problema</a></li>
-            </ul>
-        </div>
-        
-        <div class="footer-column">
-            <h4>Contacto</h4>
-            <ul role="list">
-                <li><a href="mailto:contacto@llamkay.pe">contacto@llamkay.pe</a></li>
-                <li><a href="mailto:soporte@llamkay.pe">soporte@llamkay.pe</a></li>
-                <li><a href="tel:+51987654321">+51 987 654 321</a></li>
-                <li>Huánuco, Perú</li>
-            </ul>
+        <div class="footer-links">
+            <div class="footer-column">
+                <h4>{% trans "Plataforma" %}</h4>
+                <ul role="list">
+                    <li><a href="{% url 'users:seleccionar_tipo' %}">{% trans "Publicar trabajo" %}</a></li>
+                    <li><a href="#como-funciona">{% trans "Cómo funciona" %}</a></li>
+                    <li><a href="{% url 'llamkay:nosotros' %}">{% trans "Sobre nosotros" %}</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h4>{% trans "Soporte" %}</h4>
+                <ul role="list">
+                    <li><a href="#">{% trans "Centro de ayuda" %}</a></li>
+                    <li><a href="#">{% trans "Términos de servicio" %}</a></li>
+                    <li><a href="#">{% trans "Política de privacidad" %}</a></li>
+                    <li><a href="{% url 'soporte:crear_denuncia' %}">{% trans "Reportar un problema" %}</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h4>{% trans "Contacto" %}</h4>
+                <ul role="list">
+                    <li><a href="mailto:contacto@llamkay.pe">contacto@llamkay.pe</a></li>
+                    <li><a href="mailto:soporte@llamkay.pe">soporte@llamkay.pe</a></li>
+                    <li><a href="tel:+51987654321">+51 987 654 321</a></li>
+                    <li>{% trans "Huánuco, Perú" %}</li>
+                </ul>
+            </div>
         </div>
     </div>
-</div>
 
     <div class="footer-bottom">
-        <p>&copy; 2025 Llamkay.pe. Todos los derechos reservados.</p>
+        <p>{% blocktrans %}&copy; 2025 Llamkay.pe. Todos los derechos reservados.{% endblocktrans %}</p>
     </div>
 </footer>
-
-<!-- 
-═══════════════════════════════════════════════════════════════════════════
-BOTÓN DE REGRESO AL INICIO
-
-✓ NIELSEN #3 - Control y libertad: Permite navegación rápida sin scroll manual
-✓ NIELSEN #7 - Flexibilidad: Atajo para usuarios frecuentes
-✓ NIELSEN #1 - Visibilidad: Aparece solo cuando es útil (scroll > 300px)
-✓ RESPONSIVIDAD: Visible y accesible en todos los dispositivos
-═══════════════════════════════════════════════════════════════════════════
--->
-<button id="scrollToTop" class="scroll-to-top" aria-label="Volver arriba" title="Volver arriba">
-    ↑
-</button>
 
 {% endblock %}
 
 {% block extra_js %}
 <script src="{% static 'js/llamkay/nosotros.js' %}"></script>
 {% endblock %}
+="{% url 'jobs:all_trabajos' %}">{% trans "Buscar trabajos" %}</a></li>

@@ -1,210 +1,134 @@
 // =============================================
-// SELECCIONAR TIPO - LLAMKAY.PE (JAVASCRIPT)
+// SELECCIONAR TIPO - LLAMKAY.PE
+// JS ACCESIBLE + UX + SIN ROMPER FORMULARIO
 // =============================================
 
-document.addEventListener('DOMContentLoaded', function () {
-    console.log('🎯 Seleccionar Tipo JS iniciado');
+document.addEventListener('DOMContentLoaded', () => {
 
     // ==================== ELEMENTOS ====================
     const optionCards = document.querySelectorAll('.option-card');
-    const selectorForm = document.getElementById('selectorForm');
-    const tipoUsuarioInput = document.getElementById('tipo_usuario_input');
 
-    // ==================== MANEJO DE CLICKS ====================
+    if (!optionCards.length) return;
+
+    // ==================== CLICK FEEDBACK ====================
     optionCards.forEach(card => {
-        card.addEventListener('click', function(e) {
-            const tipoUsuario = this.getAttribute('data-tipo');
-            console.log('📌 Tipo seleccionado:', tipoUsuario);
-            
-            // Establecer el valor en el input hidden
-            if (tipoUsuarioInput) {
-                tipoUsuarioInput.value = tipoUsuario;
-            }
-            
-            // Añadir clase de selección
-            optionCards.forEach(c => c.classList.remove('selected'));
-            this.classList.add('selected');
-            
-            // Animación de click
-            this.style.transform = 'scale(0.98)';
-            setTimeout(() => {
-                this.style.transform = '';
-            }, 100);
 
-            // Crear efecto ripple
-            createRipple(e, this);
-            
-            // Enviar el formulario después de un breve delay
-            setTimeout(() => {
-                console.log('📤 Enviando formulario con tipo:', tipoUsuario);
-                if (selectorForm) {
-                    selectorForm.submit();
-                }
-            }, 300);
+        // CLICK
+        card.addEventListener('click', (e) => {
+            // Feedback visual inmediato (Nielsen)
+            optionCards.forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+
+            // Microinteracción segura (no bloquea submit)
+            card.classList.add('is-clicked');
+            setTimeout(() => card.classList.remove('is-clicked'), 150);
+
+            // Ripple solo si hay coordenadas (mouse/touch)
+            if (e.clientX && e.clientY) {
+                createRipple(e, card);
+            }
         });
-        
-        // Soporte para Enter y Espacio
-        card.addEventListener('keypress', function(e) {
+
+        // ==================== TECLADO ====================
+        card.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
-                this.click();
+                card.click(); // Accesibilidad total
             }
         });
     });
 
-    // ==================== HOVER EFFECTS ====================
-    optionCards.forEach(card => {
-        // Efecto hover con mouse tracking
-        card.addEventListener('mousemove', function(e) {
-            const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
-            
-            const rotateX = (y - centerY) / 20;
-            const rotateY = (centerX - x) / 20;
-            
-            card.style.transform = `
-                perspective(1000px) 
-                rotateX(${rotateX}deg) 
-                rotateY(${rotateY}deg) 
-                translateY(-5px)
-                scale(1.02)
-            `;
-        });
-
-        card.addEventListener('mouseleave', function() {
-            card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0) scale(1)';
-        });
-    });
-
-    // ==================== EFECTO RIPPLE ====================
+    // ==================== RIPPLE EFFECT ====================
     function createRipple(event, element) {
-        // Validar que el evento tiene las propiedades necesarias
-        if (!event.clientX || !event.clientY) {
-            console.log('⚠️ Evento sin coordenadas, saltando ripple');
-            return;
-        }
-        
         const ripple = document.createElement('span');
         const rect = element.getBoundingClientRect();
         const size = Math.max(rect.width, rect.height);
-        const x = event.clientX - rect.left - size / 2;
-        const y = event.clientY - rect.top - size / 2;
 
-        ripple.style.cssText = `
-            position: absolute;
-            width: ${size}px;
-            height: ${size}px;
-            border-radius: 50%;
-            background: rgba(7, 115, 75, 0.3);
-            top: ${y}px;
-            left: ${x}px;
-            pointer-events: none;
-            transform: scale(0);
-            animation: ripple-animation 0.6s ease-out;
-            z-index: 10;
-        `;
+        ripple.style.width = ripple.style.height = `${size}px`;
+        ripple.style.left = `${event.clientX - rect.left - size / 2}px`;
+        ripple.style.top = `${event.clientY - rect.top - size / 2}px`;
+        ripple.classList.add('ripple');
 
         element.appendChild(ripple);
 
-        setTimeout(() => {
-            ripple.remove();
-        }, 600);
+        setTimeout(() => ripple.remove(), 600);
     }
 
-    // ==================== NAVEGACIÓN CON TECLADO ====================
+    // ==================== NAVEGACIÓN CON FLECHAS ====================
     let currentIndex = -1;
 
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
-            e.preventDefault();
+    document.addEventListener('keydown', (e) => {
+        const keys = ['ArrowRight', 'ArrowDown', 'ArrowLeft', 'ArrowUp'];
+        if (!keys.includes(e.key)) return;
+
+        e.preventDefault();
+
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
             currentIndex = (currentIndex + 1) % optionCards.length;
-            focusCard(currentIndex);
-        } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
-            e.preventDefault();
-            currentIndex = currentIndex <= 0 ? optionCards.length - 1 : currentIndex - 1;
-            focusCard(currentIndex);
-        } else if (e.key === 'Enter' && currentIndex >= 0) {
-            e.preventDefault();
-            optionCards[currentIndex].click();
+        } else {
+            currentIndex = currentIndex <= 0
+                ? optionCards.length - 1
+                : currentIndex - 1;
         }
+
+        focusCard(currentIndex);
     });
 
     function focusCard(index) {
         optionCards.forEach((card, i) => {
             if (i === index) {
-                card.style.outline = '3px solid var(--color-primary)';
-                card.style.outlineOffset = '2px';
-                card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            } else {
-                card.style.outline = 'none';
+                card.focus();
+                card.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
             }
         });
     }
 
-    // ==================== ANIMACIONES CSS ====================
-    const style = document.createElement('style');
-    style.textContent = `
-        @keyframes ripple-animation {
-            to {
-                transform: scale(2);
-                opacity: 0;
-            }
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        .option-card.selected {
-            border-color: var(--color-primary) !important;
-            box-shadow: 0 0 0 4px rgba(7, 115, 75, 0.1) !important;
-        }
-
-        .option-card:focus-visible {
-            outline: 3px solid var(--color-primary);
-            outline-offset: 2px;
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            .option-card,
-            .option-icon,
-            * {
-                animation: none !important;
-                transition: none !important;
-            }
-        }
-    `;
-    document.head.appendChild(style);
-
-    // ==================== TOOLTIPS INFORMATIVOS ====================
-    const tooltips = {
-        'trabajador': 'Ideal para buscar trabajos temporales o freelance',
-        'trabajador_empleador': 'La opción más flexible y popular entre usuarios',
-        'empleador': 'Perfecto si solo necesitas contratar',
-        'empresa': 'Para negocios con RUC y necesidades corporativas'
-    };
-
-    optionCards.forEach(card => {
-        const tipoUsuario = card.getAttribute('data-tipo');
-        if (tipoUsuario && tooltips[tipoUsuario]) {
-            card.setAttribute('title', tooltips[tipoUsuario]);
-        }
-    });
-
-    // ==================== ANALYTICS (opcional) ====================
-    optionCards.forEach(card => {
-        card.addEventListener('click', function() {
-            const optionName = this.querySelector('h3')?.textContent || 'Unknown';
-            console.log(`📊 Opción seleccionada: ${optionName}`);
+    // ==================== REDUCED MOTION ====================
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        optionCards.forEach(card => {
+            card.style.transition = 'none';
         });
-    });
+    }
 
-    console.log('✅ Seleccionar Tipo JS completamente cargado');
-    console.log(`📋 ${optionCards.length} opciones disponibles`);
 });
+
+// =============================================
+// CSS DINÁMICO NECESARIO PARA JS
+// =============================================
+const style = document.createElement('style');
+style.textContent = `
+.option-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.option-card.selected {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 4px rgba(7, 115, 75, 0.15);
+}
+
+.option-card.is-clicked {
+    transform: scale(0.97);
+}
+
+.ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(7, 115, 75, 0.25);
+    transform: scale(0);
+    animation: ripple-animation 0.6s ease-out;
+    pointer-events: none;
+    z-index: 0;
+}
+
+@keyframes ripple-animation {
+    to {
+        transform: scale(2);
+        opacity: 0;
+    }
+}
+`;
+document.head.appendChild(style);

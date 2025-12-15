@@ -9,12 +9,19 @@
 {% endblock %}
 
 {% block content %}
+<!--
+  ACCESIBILIDAD (Nielsen #4/#7 + WCAG):
+  - Skip link: permite saltar navegación y llegar directo al contenido.
+  - Mantiene identidad visual: solo se muestra al hacer focus (ver CSS).
+-->
+<a class="skip-link" href="#main-content">{% trans "Saltar al contenido principal" %}</a>
 <form id="language-form" method="POST" action="{% url 'set_language' %}" style="display:none;">
     {% csrf_token %}
     <input name="next" type="hidden" value="{{ request.path }}">
     <input id="language-input" name="language" type="hidden">
 </form>
 
+<!-- HEADER: navegación consistente y sticky (Gestalt: continuidad / Nielsen #1) -->
 <header class="header" role="banner">
     <nav class="navbar" role="navigation" aria-label="{% trans "Navegación principal" %}">
         <div class="nav-container">
@@ -27,13 +34,13 @@
                 <button class="lang-btn {% if LANGUAGE_CODE == 'en' %}active{% endif %}" data-lang="en" aria-checked="{% if LANGUAGE_CODE == 'en' %}true{% else %}false{% endif %}" role="radio" aria-label="Inglés">EN</button>
             </div>
 
-            <button class="nav-toggle" aria-label="{% trans "Abrir menú de navegación" %}" aria-expanded="false">
+            <button class="nav-toggle" type="button" aria-label="{% trans "Abrir menú de navegación" %}" aria-expanded="false" aria-controls="main-nav">
                 <span></span>
                 <span></span>
                 <span></span>
             </button>
             
-            <ul class="nav-menu" role="list">
+            <ul id="main-nav" class="nav-menu" role="list">
                 <li><a href="{% url 'llamkay:nosotros' %}" class="nav-link">{% trans "Nosotros" %}</a></li>
                 <li><a href="{% url 'jobs:all_trabajos' %}" class="nav-link">{% trans "Trabajos" %}</a></li>
                 <li><a href="#como-funciona" class="nav-link">{% trans "¿Cómo funciona?" %}</a></li>
@@ -52,16 +59,19 @@
     </nav>
 </header>
 
+<!-- MAIN: landmark principal para lectores de pantalla -->
+<main id="main-content" role="main">
+<!-- HERO: jerarquía visual y CTA claros (Figura–Fondo + Reconocimiento) -->
 <section class="hero" role="region" aria-labelledby="hero-title">
     <div class="hero-container">
         <div class="hero-content">
-            <span class="hero-badge" role="text">{% trans "Hecho en Perú 🇵🇪" %}</span>
+            <span class="hero-badge" role="text" data-i18n-key="hero.badge">{% trans "Hecho en Perú 🇵🇪" %}</span>
             
             <h1 id="hero-title" class="hero-title">
                 {% blocktrans %}Encuentra trabajo <span class="text-highlight">hoy mismo</span>{% endblocktrans %}
             </h1>
             
-            <p class="hero-description">
+            <p class="hero-description" data-i18n-key="hero.description">
                 {% trans "La plataforma más rápida para conseguir trabajos informales o contratar profesionales verificados en tu zona." %}
             </p>
             
@@ -84,7 +94,7 @@
                 </a>
             </div>
             
-            <div class="hero-stats" role="list" aria-label="{% trans "Estadísticas de la plataforma" %}">
+            <div class="hero-stats" role="list" aria-label="{% trans "Estadísticas de la plataforma" %}" aria-live="polite">
                 <div class="stat-item" role="listitem">
                     <strong>10,000+</strong>
                     <span>{% trans "Usuarios activos" %}</span>
@@ -132,9 +142,9 @@
 <section class="benefits" role="region" aria-labelledby="benefits-title">
     <div class="container">
         <div class="section-header">
-            <span class="section-badge" role="text">{% trans "Beneficios" %}</span>
-            <h2 id="benefits-title">{% trans "¿Por qué elegir Llamkay?" %}</h2>
-            <p>{% trans "La forma más segura y rápida de trabajar en Perú" %}</p>
+            <span class="section-badge" role="text" data-i18n-key="benefits.badge">{% trans "Beneficios" %}</span>
+            <h2 id="benefits-title" data-i18n-key="benefits.title">{% trans "¿Por qué elegir Llamkay?" %}</h2>
+            <p data-i18n-key="benefits.subtitle">{% trans "La forma más segura y rápida de trabajar en Perú" %}</p>
         </div>
         
         <div class="benefits-grid" role="list">
@@ -207,9 +217,9 @@
 <section class="how-it-works" id="como-funciona" role="region" aria-labelledby="how-title">
     <div class="container">
         <div class="section-header">
-            <span class="section-badge" role="text">{% trans "Simple y Rápido" %}</span>
-            <h2 id="how-title">{% trans "¿Cómo funciona?" %}</h2>
-            <p>{% trans "En 4 pasos empiezas a trabajar o contratar" %}</p>
+            <span class="section-badge" role="text" data-i18n-key="how.badge">{% trans "Simple y Rápido" %}</span>
+            <h2 id="how-title" data-i18n-key="how.title">{% trans "¿Cómo funciona?" %}</h2>
+            <p data-i18n-key="how.subtitle">{% trans "En 4 pasos empiezas a trabajar o contratar" %}</p>
         </div>
         
         <div class="steps" role="list">
@@ -283,8 +293,8 @@
 <section class="categories" role="region" aria-labelledby="categories-title">
     <div class="container">
         <div class="section-header">
-            <span class="section-badge" role="text">{% trans "Categorías Populares" %}</span>
-            <h2 id="categories-title">{% trans "Trabajos más buscados" %}</h2>
+            <span class="section-badge" role="text" data-i18n-key="categories.badge">{% trans "Categorías Populares" %}</span>
+            <h2 id="categories-title" data-i18n-key="categories.title">{% trans "Trabajos más buscados" %}</h2>
         </div>
         
         <div class="categories-grid" role="list">
@@ -342,8 +352,8 @@
 <section class="cta-final" role="region" aria-labelledby="cta-title">
     <div class="container">
         <div class="cta-content">
-            <h2 id="cta-title">{% trans "¿Listo para empezar?" %}</h2>
-            <p>{% trans "Únete a miles de peruanos que ya trabajan con Llamkay" %}</p>
+            <h2 id="cta-title" data-i18n-key="cta.title">{% trans "¿Listo para empezar?" %}</h2>
+            <p data-i18n-key="cta.subtitle">{% trans "Únete a miles de peruanos que ya trabajan con Llamkay" %}</p>
             <a href="{% url 'users:seleccionar_tipo' %}" class="btn btn-xlarge btn-white">
                 {% trans "Crear cuenta gratis" %}
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
@@ -355,6 +365,7 @@
     </div>
 </section>
 
+<!-- FOOTER: enlaces agrupados por proximidad y consistencia -->
 <footer class="footer" role="contentinfo">
     <div class="footer-container">
         <div class="footer-brand">
@@ -362,17 +373,21 @@
                 <img src="{% static 'images/llamkay.png' %}" alt="Logo Llamkay">
                 <span>Llamkay</span>
             </div>
-            <p>{% trans "Conectando talentos con oportunidades laborales en todo el Perú" %}</p>
+            <p data-i18n-key="footer.tagline">{% trans "Conectando talentos con oportunidades laborales en todo el Perú" %}</p>
             
             <div class="social-links" role="list" aria-label="{% trans "Redes sociales" %}">
                 <a href="https://www.facebook.com/llamkay" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
-                    </a>
+                     <span class="sr-only">Facebook</span>
+                </a>
                 <a href="https://www.instagram.com/llamkay.pe" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-                    </a>
+                    <span class="sr-only">Instagram</span>
+                </a>
                 <a href="https://www.tiktok.com/@llamkay.pe" target="_blank" rel="noopener noreferrer" aria-label="TikTok">
-                    </a>
+                    <span class="sr-only">TikTok</span>
+                </a>
                 <a href="https://wa.me/51987654321" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
-                    </a>
+                    <span class="sr-only">WhatsApp</span>
+                </a>
             </div>
         </div>
 
@@ -413,6 +428,9 @@
         <p>{% blocktrans %}&copy; 2025 Llamkay.pe. Todos los derechos reservados.{% endblocktrans %}</p>
     </div>
 </footer>
+<!-- Live region para feedback accesible (Nielsen #1) -->
+<div class="sr-announcer" role="status" aria-live="polite" aria-atomic="true"></div>
+</main>
 {% endblock %}
 {% block extra_js %}
 <script src="{% static 'js/llamkay/index.js' %}"></script>

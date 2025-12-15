@@ -301,3 +301,37 @@ body {
         color: #000000;
     }
 }
+
+/* ==================== IDIOMA ==================== */
+.language-switch {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+}
+
+.language-switch form {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.lang-btn {
+    background: transparent;
+    border: 2px solid #d1d5db;
+    padding: 0.4rem 0.9rem;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: var(--transition);
+    color: var(--color-text-light);
+}
+
+.lang-btn:hover {
+    background: rgba(0,0,0,0.05);
+}
+
+.lang-btn.active {
+    background: var(--color-danger);
+    color: white;
+    border-color: var(--color-danger);
+}

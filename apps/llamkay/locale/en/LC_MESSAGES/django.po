@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-04 09:41-0500\n"
+"POT-Creation-Date: 2025-12-14 22:57-0500\n"
 "PO-Revision-Date: 2025-12-04 09:43-0500\n"
 "Last-Translator: Full Name <example@example.com>\n"
 "Language-Team: English <en@li.org>\n"
@@ -18,26 +18,293 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgid "Encuentra Trabajo Informal Rápido y Seguro"
-msgstr "Find Quick and Secure Informal Work"
+msgid "Dashboard"
+msgstr "Dashboard"
 
 msgid "Navegación principal"
 msgstr "Main navigation"
 
-msgid "Página principal"
-msgstr "Home page"
+#, fuzzy
+#| msgid "Dashboard"
+msgid "Ir al Dashboard"
+msgstr "Dashboard"
 
 msgid "Selección de idioma"
 msgstr "Language selection"
 
+msgid "Español"
+msgstr "Spanish"
+
+msgid "Inglés"
+msgstr "English"
+
 msgid "Abrir menú de navegación"
 msgstr "Open navigation menu"
 
-msgid "Nosotros"
-msgstr "About us"
+msgid "Inicio"
+msgstr "Home"
 
 msgid "Trabajos"
 msgstr "Jobs"
+
+msgid "Mensajes"
+msgstr "Messages"
+
+msgid "Notificaciones"
+msgstr "Notifications"
+
+#, fuzzy
+#| msgid "Calificaciones verificadas"
+msgid "Notificaciones nuevas"
+msgstr "Verified ratings"
+
+msgid "Mi Perfil"
+msgstr "My Profile"
+
+#, fuzzy
+#| msgid "Iniciar Sesión"
+msgid "Cerrar Sesión"
+msgstr "Login"
+
+msgid "Menú de usuario"
+msgstr "User menu"
+
+msgid "Mis Postulaciones"
+msgstr "My Applications"
+
+msgid "Mis Ofertas"
+msgstr "My Offers"
+
+msgid "Mis Denuncias"
+msgstr "My Reports"
+
+#, fuzzy
+#| msgid "Calificación promedio"
+msgid "Configuración"
+msgstr "Average rating"
+
+#, python-format
+msgid ""
+"\n"
+"                        ¡Bienvenido de vuelta, <span class=\"text-highlight\">%(nombre)s</span>!\n"
+"                    "
+msgstr ""
+"\n"
+"                        Welcome back, <span class=\"text-highlight\">%(nombre)s</span>!\n"
+"                    "
+
+msgid "Aquí está un resumen de tu actividad reciente"
+msgstr "Here is a summary of your recent activity"
+
+#, fuzzy
+#| msgid "Acciones principales"
+msgid "Acciones rápidas"
+msgstr "Main actions"
+
+msgid "Buscar trabajos"
+msgstr "Search jobs"
+
+msgid "Mis postulaciones"
+msgstr "My applications"
+
+msgid "Publicar trabajo"
+msgstr "Post job"
+
+msgid "Mis ofertas"
+msgstr "My offers"
+
+#, fuzzy
+#| msgid "Estadísticas de la plataforma"
+msgid "Estadísticas generales"
+msgstr "Platform statistics"
+
+#, fuzzy
+#| msgid "Trabajos publicados"
+msgid "Trabajos aplicados"
+msgstr "Jobs posted"
+
+#, fuzzy
+#| msgid "Trabajos publicados"
+msgid "Trabajos completados"
+msgstr "Jobs posted"
+
+msgid "Ofertas activas"
+msgstr "Active offers"
+
+msgid "Postulantes recibidos"
+msgstr "Applicants received"
+
+msgid "Calificación promedio"
+msgstr "Average rating"
+
+msgid "Mensajes nuevos"
+msgstr "New messages"
+
+msgid "Contenido principal del dashboard"
+msgstr "Main dashboard content"
+
+msgid "Actividad reciente"
+msgstr "Recent activity"
+
+#, fuzzy
+#| msgid "Ver todas"
+msgid "Ver todo"
+msgstr "View all"
+
+msgid "No hay actividad reciente"
+msgstr "No recent activity"
+
+msgid "Trabajos recomendados para ti"
+msgstr "Recommended jobs for you"
+
+msgid "Ver más"
+msgstr "View more"
+
+msgid "Postulantes recientes"
+msgstr "Recent applicants"
+
+#, fuzzy
+#| msgid "Publicar trabajo"
+msgid "+ Publicar trabajo"
+msgstr "Post job"
+
+msgid "Urgente"
+msgstr "Urgent"
+
+msgid "Nuevo"
+msgstr "New"
+
+msgid "Aplicar"
+msgstr "Apply"
+
+#, fuzzy
+#| msgid "Ver todas"
+msgid "Ver detalles"
+msgstr "View all"
+
+msgid "No hay trabajos disponibles en este momento"
+msgstr "No jobs available at the moment"
+
+msgid "Panel lateral del dashboard"
+msgstr "Dashboard sidebar"
+
+msgid "Completa tu perfil"
+msgstr "Complete your profile"
+
+#, python-format
+msgid ""
+"\n"
+"                                %(porcentaje)s%% completado\n"
+"                            "
+msgstr ""
+"\n"
+"                                %(porcentaje)s%% completed\n"
+"                            "
+
+msgid "Información básica"
+msgstr "Basic information"
+
+#, fuzzy
+#| msgid "Completa tu perfil"
+msgid "Foto de perfil"
+msgstr "Complete your profile"
+
+msgid "Verificar identidad"
+msgstr "Verify identity"
+
+msgid "Agregar habilidades"
+msgstr "Add skills"
+
+#, fuzzy
+#| msgid "Completa tu perfil"
+msgid "Completar perfil"
+msgstr "Complete your profile"
+
+msgid "Tu rendimiento"
+msgstr "Your performance"
+
+#, fuzzy
+#| msgid "Sistema de reputación"
+msgid "Tasa de aceptación"
+msgstr "Reputation system"
+
+#, fuzzy
+#| msgid "Trabajos publicados"
+msgid "Ofertas publicadas"
+msgstr "Jobs posted"
+
+#, fuzzy
+#| msgid "Usuarios activos"
+msgid "Contratos activos"
+msgstr "Active users"
+
+msgid "Vistas totales"
+msgstr "Total views"
+
+#, python-format
+msgid ""
+"\n"
+"                                        %(total)s Nueva\n"
+"                                    "
+msgid_plural ""
+"\n"
+"                                        %(total)s Nuevas\n"
+"                                    "
+msgstr[0] ""
+"\n"
+"                                        %(total)s New\n"
+"                                    "
+msgstr[1] ""
+"\n"
+"                                        %(total)s New\n"
+"                                    "
+
+msgid "Ver todas las notificaciones"
+msgstr "View all notifications"
+
+msgid "Consejo del día"
+msgstr "Tip of the day"
+
+msgid "Responde rápido a los mensajes para aumentar tus posibilidades de conseguir trabajos. Los usuarios valoran la comunicación ágil."
+msgstr "Respond quickly to messages to increase your chances of getting jobs. Users value fast communication."
+
+msgid "Plataforma"
+msgstr "Platform"
+
+msgid "Mis Mensajes"
+msgstr ""
+
+msgid "Soporte"
+msgstr "Support"
+
+msgid "Centro de ayuda"
+msgstr "Help Center"
+
+msgid "Términos de servicio"
+msgstr "Terms of service"
+
+msgid "Política de privacidad"
+msgstr "Privacy policy"
+
+#, fuzzy
+#| msgid "&copy; 2025 Llamkay.pe. Todos los derechos reservados."
+msgid ""
+"\n"
+"                    © 2025 Llamkay.pe. Todos los derechos reservados.\n"
+"                "
+msgstr "&copy; 2025 Llamkay.pe. All rights reserved."
+
+msgid "Encuentra Trabajo Informal Rápido y Seguro"
+msgstr "Find Quick and Secure Informal Work"
+
+msgid "Saltar al contenido principal"
+msgstr "Skip to main content"
+
+msgid "Página principal"
+msgstr "Home page"
+
+msgid "Nosotros"
+msgstr "About us"
 
 msgid "¿Cómo funciona?"
 msgstr "How it works?"
@@ -75,9 +342,6 @@ msgstr "Active users"
 msgid "Trabajos publicados"
 msgstr "Jobs posted"
 
-msgid "Calificación promedio"
-msgstr "Average rating"
-
 msgid "Carpintero"
 msgstr "Carpenter"
 
@@ -93,17 +357,11 @@ msgstr "Plumber"
 msgid "S/ 60 - 100 por hora"
 msgstr "S/ 60 - 100 per hour"
 
-msgid "Urgente"
-msgstr "Urgent"
-
 msgid "Limpieza"
 msgstr "Cleaning"
 
 msgid "S/ 50 - 80 por día"
 msgstr "S/ 50 - 80 per day"
-
-msgid "Nuevo"
-msgstr "New"
 
 msgid "Beneficios"
 msgstr "Benefits"
@@ -169,11 +427,8 @@ msgstr "Register for free in less than 2 minutes as a worker, employer, or compa
 msgid "Paso 2"
 msgstr "Step 2"
 
-msgid "Completa tu perfil"
-msgstr "Complete your profile"
-
 msgid "Agrega tus habilidades, experiencia y verifica tu identidad para mayor confianza"
-msgstr "Add your skills, experience, and verify your identity for more trust"
+msgstr "Add your skills, experience, and verify your identity for greater trust"
 
 msgid "Paso 3"
 msgstr "Step 3"
@@ -262,32 +517,11 @@ msgstr "Connecting talent with job opportunities throughout Peru"
 msgid "Redes sociales"
 msgstr "Social media"
 
-msgid "Plataforma"
-msgstr "Platform"
-
-msgid "Buscar trabajos"
-msgstr "Search jobs"
-
-msgid "Publicar trabajo"
-msgstr "Post job"
-
 msgid "Cómo funciona"
 msgstr "How it works"
 
 msgid "Sobre nosotros"
 msgstr "About us"
-
-msgid "Soporte"
-msgstr "Support"
-
-msgid "Centro de ayuda"
-msgstr "Help Center"
-
-msgid "Términos de servicio"
-msgstr "Terms of service"
-
-msgid "Política de privacidad"
-msgstr "Privacy policy"
 
 msgid "Reportar un problema"
 msgstr "Report an issue"
@@ -303,3 +537,545 @@ msgstr "Huanuco, Peru"
 
 msgid "&copy; 2025 Llamkay.pe. Todos los derechos reservados."
 msgstr "&copy; 2025 Llamkay.pe. All rights reserved."
+
+msgid "Sobre Nosotros"
+msgstr "About Us"
+
+msgid "Nuestra Historia"
+msgstr "Our History"
+
+#, fuzzy
+#| msgid "Encuentra trabajo <span class=\"text-highlight\">hoy mismo</span>"
+msgid "Conoce más sobre <span class=\"text-highlight\">Llamkay</span>"
+msgstr "Find a job <span class=\"text-highlight\">today</span>"
+
+#, fuzzy
+#| msgid "Conectando talentos peruanos con oportunidades laborales"
+msgid "Conectando talentos peruanos con oportunidades laborales desde 2024"
+msgstr "Connecting Peruvian talent with job opportunities"
+
+msgid "Nuestro Propósito"
+msgstr "Our Purpose"
+
+msgid "Misión y Visión"
+msgstr "Mission and Vision"
+
+msgid "Los pilares que guían nuestro trabajo cada día"
+msgstr "The pillars that guide our work every day"
+
+msgid "Nuestra Misión"
+msgstr "Our Mission"
+
+msgid "Facilitar la conexión entre trabajadores calificados y empleadores en todo el Perú, promoviendo el empleo formal, la transparencia y la confianza en cada interacción laboral."
+msgstr "Facilitating the connection between skilled workers and employers throughout Peru, promoting formal employment, transparency, and trust in every work interaction."
+
+msgid "Nuestra Visión"
+msgstr "Our Vision"
+
+msgid "Ser la plataforma líder en Perú para la búsqueda y oferta de servicios laborales, reconocida por su seguridad, eficiencia y compromiso con el desarrollo profesional de todos los peruanos."
+msgstr "To be the leading platform in Peru for searching and offering labor services, recognized for its security, efficiency, and commitment to the professional development of all Peruvians."
+
+#, fuzzy
+#| msgid "Nuestros Valores"
+msgid "Nuestro Camino"
+msgstr "Our Values"
+
+msgid "Cómo empezó todo y hacia dónde vamos"
+msgstr ""
+
+msgid "El Inicio (2024)"
+msgstr ""
+
+#, fuzzy
+#| msgid "Llamkay nació en 2024 con la visión de transformar la forma en que los peruanos encuentran oportunidades laborales. Observamos la necesidad de crear un espacio seguro y confiable donde trabajadores y empleadores puedan conectarse de manera directa."
+msgid "Llamkay nació con la visión de transformar la forma en que los peruanos encuentran oportunidades laborales. Observamos la necesidad de crear un espacio seguro y confiable donde trabajadores y empleadores puedan conectarse de manera directa."
+msgstr "Llamkay was founded in 2024 with the vision of transforming how Peruvians find job opportunities. We identified the need to create a safe and reliable space where workers and employers can connect directly."
+
+#, fuzzy
+#| msgid "Nuestros Valores"
+msgid "Nuestro Compromiso"
+msgstr "Our Values"
+
+msgid "Desde nuestros inicios, nos hemos comprometido con la verificación de identidad, la transparencia en las transacciones y la creación de una comunidad basada en la confianza mutua."
+msgstr "Since our beginnings, we have been committed to identity verification, transparency in transactions, and the creation of a community based on mutual trust."
+
+msgid "Hoy en Día"
+msgstr "Today"
+
+#, fuzzy
+#| msgid "Hoy, miles de peruanos confían en Llamkay para encontrar trabajo o contratar profesionales calificados en diversas áreas."
+msgid "Miles de peruanos confían en Llamkay para encontrar trabajo o contratar profesionales calificados en diversas áreas. Seguimos creciendo y mejorando cada día para servir mejor a nuestra comunidad."
+msgstr "Today, thousands of Peruvians trust Llamkay to find job opportunities or hire qualified professionals in various fields."
+
+#, fuzzy
+#| msgid "Nuestros Valores"
+msgid "Nuestros Principios"
+msgstr "Our Values"
+
+msgid "Nuestros Valores"
+msgstr "Our Values"
+
+msgid "Los valores que nos definen como equipo y comunidad"
+msgstr "The values that define us as a team and community"
+
+msgid "Confianza"
+msgstr "Trust"
+
+msgid "Verificamos la identidad de todos nuestros usuarios para garantizar seguridad"
+msgstr "We verify the identity of all our users to guarantee safety"
+
+msgid "Transparencia"
+msgstr "Transparency"
+
+msgid "Promovemos la honestidad en cada transacción y comunicación"
+msgstr "We promote honesty in every transaction and communication"
+
+msgid "Innovación"
+msgstr "Innovation"
+
+msgid "Mejoramos constantemente nuestra plataforma con tecnología de punta"
+msgstr "We continuously improve our platform using cutting-edge technology"
+
+msgid "Compromiso Social"
+msgstr "Social Commitment"
+
+msgid "Contribuimos al desarrollo económico y profesional del Perú"
+msgstr "We contribute to the economic and professional development of Peru"
+
+#, fuzzy
+#| msgid "¿Tienes alguna pregunta?"
+msgid "¿Tienes alguna pregunta?"
+msgstr "Do you have any questions?"
+
+#, fuzzy
+#| msgid "Estamos aquí para ayudarte"
+msgid "Estamos aquí para ayudarte en lo que necesites"
+msgstr "We are here to help you"
+
+msgid "Contáctanos"
+msgstr "Contact us"
+
+msgid "Centro de Ayuda"
+msgstr "Help Center"
+
+#, fuzzy
+#| msgid "Sobre Llamkay"
+msgid "Logo Llamkay"
+msgstr "About Llamkay"
+
+msgid "Iniciar Sesión"
+msgstr "Login"
+
+#, fuzzy
+#| msgid "Estadísticas de la plataforma"
+msgid "Información de la plataforma"
+msgstr "Platform statistics"
+
+msgid "Ir al inicio de Llamkay"
+msgstr "Go to Llamkay home"
+
+msgid "¡Bienvenido de vuelta!"
+msgstr "Welcome back!"
+
+msgid "Conecta con miles de oportunidades laborales en todo el Perú. Encuentra trabajo hoy mismo o contrata al profesional perfecto."
+msgstr "Connect with thousands of job opportunities across Peru. Find work today or hire the perfect professional."
+
+msgid "Usuarios confiables y seguros"
+msgstr "Trusted and secure users"
+
+#, fuzzy
+#| msgid "Chat directo"
+msgid "Chat Directo"
+msgstr "Direct chat"
+
+msgid "Comunicación sin intermediarios"
+msgstr "Communication without intermediaries"
+
+msgid "Reputación Real"
+msgstr "Real Reputation"
+
+msgid "Calificaciones verificadas"
+msgstr "Verified ratings"
+
+#, fuzzy
+#| msgid "Calificación promedio"
+msgid "Calificación"
+msgstr "Average rating"
+
+msgid "Cambiar a español"
+msgstr "Switch to Spanish"
+
+msgid "Cambiar a inglés"
+msgstr "Switch to English"
+
+msgid "Login"
+msgstr "Login"
+
+msgid "Ingresa tus credenciales para continuar"
+msgstr "Enter your credentials to continue"
+
+msgid "Correo Electrónico"
+msgstr "Email Address"
+
+msgid "tu@email.com"
+msgstr "your@email.com"
+
+msgid "Contraseña"
+msgstr "Password"
+
+msgid "Mostrar contraseña"
+msgstr "Show password"
+
+msgid "Recordarme"
+msgstr "Remember me"
+
+msgid "¿Olvidaste tu contraseña?"
+msgstr "Forgot your password?"
+
+#, fuzzy
+#| msgid "¿Tienes alguna pregunta?"
+msgid "¿No tienes una cuenta?"
+msgstr "Do you have any questions?"
+
+#, fuzzy
+#| msgid "Registrarse Gratis"
+msgid "Regístrate gratis"
+msgstr "Register for Free"
+
+#, fuzzy
+#| msgid "Volver arriba"
+msgid "Volver al inicio"
+msgstr "Back to top"
+
+msgid "Seleccionar tipo de usuario"
+msgstr "Select user type"
+
+#, fuzzy
+#| msgid "Saltar al contenido principal"
+msgid "Saltar al contenido"
+msgstr "Skip to main content"
+
+#, fuzzy
+#| msgid "Paso 1"
+msgid "Paso 1 de 2"
+msgstr "Step 1"
+
+msgid "¿Cómo deseas registrarte?"
+msgstr "How would you like to register?"
+
+msgid "Selecciona tu rol en la plataforma para continuar"
+msgstr "Select your role on the platform to continue"
+
+msgid "Ideal para buscar trabajos temporales o freelance"
+msgstr "Ideal for finding temporary or freelance jobs"
+
+#, fuzzy
+#| msgid "Registrarse Gratis"
+msgid "Registrarse como trabajador"
+msgstr "Register for Free"
+
+#, fuzzy
+#| msgid "Buscar trabajos"
+msgid "Buscar trabajo"
+msgstr "Search jobs"
+
+#, fuzzy
+#| msgid "Conectando talentos con oportunidades laborales en todo el Perú"
+msgid "Encuentra oportunidades laborales en tu zona"
+msgstr "Connecting talent with job opportunities throughout Peru"
+
+mmsgid "Popular"
+msgstr "Popular"
+
+#, fuzzy
+#| msgid "En 4 pasos empiezas a trabajar o contratar"
+msgid "La opción más flexible: trabajar y contratar"
+msgstr "In 4 steps you start working or hiring"
+
+#, fuzzy
+#| msgid "Regístrate gratis en menos de 2 minutos como trabajador, empleador o empresa"
+msgid "Registrarse como trabajador y empleador"
+msgstr "Register for free in less than 2 minutes as a worker, employer, or company"
+
+msgid "Recomendado"
+msgstr "Recommended"
+
+#, fuzzy
+#| msgid "Buscar trabajos"
+msgid "Buscar y publicar trabajos"
+msgstr "Search jobs"
+
+msgid "Trabaja y contrata según tus necesidades"
+msgstr "Work and hire according to your needs"
+
+msgid "Perfecto si solo necesitas contratar personas"
+msgstr "Perfect if you only need to hire people"
+
+msgid "Registrarse como empleador"
+msgstr "Register as an employer"
+
+#, fuzzy
+#| msgid "Publicar trabajo"
+msgid "Publicar trabajos"
+msgstr "Post job"
+
+#, fuzzy
+#| msgid "Calificaciones verificadas"
+msgid "Contrata profesionales verificados"
+msgstr "Verified ratings"
+
+msgid "Registro corporativo con RUC"
+msgstr "Corporate registration with RUC"
+
+#, fuzzy
+#| msgid "Registrarse Gratis"
+msgid "Registrarse como empresa"
+msgstr "Register for Free"
+
+msgid "Soy una empresa"
+msgstr "I am a company"
+
+#, fuzzy
+#| msgid "Usuarios activos"
+msgid "Corporativo"
+msgstr "Active users"
+
+#, fuzzy
+#| msgid "¿Tienes alguna pregunta?"
+msgid "¿Ya tienes una cuenta?"
+msgstr "Do you have any questions?"
+
+#, fuzzy
+#| msgid "Iniciar Sesión"
+msgid "Inicia sesión aquí"
+msgstr "Login"
+
+msgid "¿No estás seguro?"
+msgstr "Not sure?"
+
+msgid "Puedes cambiar tu tipo de cuenta después del registro desde tu perfil."
+msgstr "You can change your account type after registration from your profile."
+
+msgid "Crear Cuenta - Paso 1/4 - Llamkay.pe"
+msgstr "Create Account - Step 1/4 - Llamkay.pe"
+
+#, fuzzy
+#| msgid "Estadísticas de la plataforma"
+msgid "Información del registro"
+msgstr "Platform statistics"
+
+msgid "¡Únete a nuestra comunidad!"
+msgstr "Join our community!"
+
+#, fuzzy
+#| msgid "Hoy, miles de peruanos confían en Llamkay para encontrar trabajo o contratar profesionales calificados en diversas áreas."
+msgid "Miles de peruanos ya confían en Llamkay para encontrar trabajo o contratar profesionales."
+msgstr "Today, thousands of Peruvians trust Llamkay to find job opportunities or hire qualified professionals in various fields."
+
+#, fuzzy
+#| msgid "Todos los usuarios pasan por verificación de identidad y antecedentes"
+msgid "Todos los usuarios pasan por verificación"
+msgstr "All users undergo identity and background verification"
+
+#, fuzzy
+#| msgid "Encuentra cerca de ti"
+msgid "Encuentra cerca"
+msgstr "Find near you"
+
+#, fuzzy
+#| msgid "Busca trabajos o profesionales en tu distrito o comunidad"
+msgid "Trabajos en tu distrito o comunidad"
+msgstr "Search for jobs or professionals in your district or community"
+
+msgid "Pagos seguros"
+msgstr "Secure payments"
+
+#, fuzzy
+#| msgid "Protección garantizada"
+msgid "Sistema de protección garantizada"
+msgstr "Guaranteed protection system"
+
+#, python-format
+msgid "Sin intermediarios, 100%% gratis"
+msgstr "No intermediaries, 100%% free"
+
+msgid "¿Necesitas ayuda?"
+msgstr "Need help?"
+
+#, fuzzy
+#| msgid "Crea tu cuenta"
+msgid "Crear tu cuenta"
+msgstr "Create your account"
+
+msgid "Completa tu información personal para comenzar"
+msgstr "Complete your personal information to get started"
+
+msgid "Progreso de registro"
+msgstr "Registration progress"
+
+#, fuzzy
+#| msgid "Innovación"
+msgid "Información"
+msgstr "Innovation"
+
+#, fuzzy
+#| msgid "Calificación promedio"
+msgid "Ubicación"
+msgstr "Average rating"
+
+msgid "Perfil"
+msgstr "Profile"
+
+#, fuzzy
+#| msgid "Calificación promedio"
+msgid "Verificación"
+msgstr "Verification"
+
+#, fuzzy
+#| msgid "Sistema de reputación"
+msgid "Datos de Identificación"
+msgstr "Identification data"
+
+msgid "DNI"
+msgstr "ID number"
+
+msgid "00000000"
+msgstr "00000000"
+
+msgid "Buscar DNI"
+msgstr "Search ID"
+
+#, fuzzy
+#| msgid "Buscar trabajos"
+msgid "Buscar"
+msgstr "Search jobs"
+
+msgid "Ingresa tu DNI para autocompletar tus datos"
+msgstr "Enter your ID number to auto-fill your information"
+
+msgid "Nombres"
+msgstr "First names"
+
+msgid "Se completará automáticamente"
+msgstr "Will be filled automatically"
+
+msgid "Apellidos"
+msgstr "Last names"
+
+msgid "Fecha de nacimiento"
+msgstr "Date of birth"
+
+msgid "Debes ser mayor de 18 años"
+msgstr "You must be over 18 years old"
+
+msgid "Género"
+msgstr "Gender"
+
+msgid "Selecciona tu género"
+msgstr "Select your gender"
+
+msgid "Masculino"
+msgstr "Male"
+
+msgid "Femenino"
+msgstr "Female"
+
+msgid "Otro"
+msgstr "Other"
+
+msgid "Prefiero no decir"
+msgstr "Prefer not to say"
+
+msgid "Datos de la empresa"
+msgstr "Company information"
+
+msgid "RUC"
+msgstr "RUC"
+
+msgid "00000000000"
+msgstr "00000000000"
+
+msgid "Buscar RUC"
+msgstr "Search RUC"
+
+msgid "Ingresa el RUC de tu empresa"
+msgstr "Enter your company’s RUC"
+
+msgid "Razón social"
+msgstr "Business name"
+
+msgid "Datos de contacto"
+msgstr "Contact information"
+
+msgid "Teléfono"
+msgstr "Phone"
+
+msgid "999 999 999"
+msgstr "999 999 999"
+
+#, fuzzy
+#| msgid "Correo Electrónico"
+msgid "Correo electrónico"
+msgstr "Email address"
+
+msgid "Seguridad"
+msgstr "Security"
+
+msgid "Mínimo 8 caracteres"
+msgstr "Minimum 8 characters"
+
+#, fuzzy
+#| msgid "Mostrar contraseña"
+msgid "Confirmar contraseña"
+msgstr "Show password"
+
+#, fuzzy
+#| msgid "¿Olvidaste tu contraseña?"
+msgid "Repite tu contraseña"
+msgstr "Forgot your password?"
+
+msgid "Acepto los"
+msgstr "I accept the"
+
+#, fuzzy
+#| msgid "Términos de servicio"
+msgid "términos y condiciones"
+msgstr "terms and conditions"
+
+msgid "y la"
+msgstr "and the"
+
+#, fuzzy
+#| msgid "Política de privacidad"
+msgid "política de privacidad"
+msgstr "privacy policy"
+
+#, fuzzy
+#| msgid "Sobre Llamkay"
+msgid "de Llamkay"
+msgstr "of Llamkay"
+
+#, fuzzy
+#| msgid "Volver arriba"
+msgid "Volver al paso anterior"
+msgstr "Go back to the previous step"
+
+msgid "Atrás"
+msgstr "Back"
+
+msgid "Continuar al siguiente paso"
+msgstr "Continue to the next step"
+
+#, fuzzy
+#| msgid "Urgente"
+msgid "Siguiente"
+msgstr "Urgent"
+
+#~ msgid "Ayuda"
+#~ msgstr "Help"
+
+#~ msgid "Registrarse"
+#~ msgstr "Register"
+
+#~ msgid "Equipo trabajando colaborativamente en oficina moderna"
+#~ msgstr "Team working collaboratively in a modern office"

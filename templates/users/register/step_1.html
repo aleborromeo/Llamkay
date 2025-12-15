@@ -1,119 +1,179 @@
 {% extends "users/base.html" %}
 {% load static %}
+{% load i18n %}
 
-{% block title %}Crear Cuenta - Paso 1/4 - Llamkay.pe{% endblock %}
+{% block title %}{% trans "Crear Cuenta - Paso 1/4" %} - Llamkay.pe{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/users/register.css' %}">
 {% endblock %}
 
 {% block content %}
+<!-- Header con selector de idioma -->
+<header class="lang-header">
+    <a href="{% url 'llamkay:index' %}" class="logo-link-header">
+        <span class="logo-icon-small">🧳</span>
+        <span class="logo-text-header">Llamkay.pe</span>
+    </a>
+    
+    <div class="language-switcher">
+        <button class="lang-btn active" data-lang="es" aria-label="Español">ES</button>
+        <button class="lang-btn" data-lang="en" aria-label="English">EN</button>
+    </div>
+</header>
+
 <div class="register-wrapper">
-    <!-- SIDEBAR INFORMATIVO -->
-    <aside class="register-sidebar">
+
+    <!-- ==================== SIDEBAR INFORMATIVO ==================== -->
+    <aside class="register-sidebar"
+           role="complementary"
+           aria-label="{% trans 'Información del registro' %}">
+
         <div class="register-logo">
-            <h1>🌱 Llamkay</h1>
+            <h1 aria-label="Llamkay">🌱 Llamkay</h1>
         </div>
-        
-        <h2>¡Únete a nuestra comunidad!</h2>
-        <p>Miles de peruanos ya confían en Llamkay para encontrar trabajo o contratar profesionales.</p>
-        
+
+        <h2 data-i18n="sidebar-title">{% trans "¡Únete a nuestra comunidad!" %}</h2>
+        <p data-i18n="sidebar-description">
+            {% trans "Miles de peruanos ya confían en Llamkay para encontrar trabajo o contratar profesionales." %}
+        </p>
+
         <ul class="benefits-list">
             <li>
-                <div class="benefit-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <div class="benefit-icon" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                         <polyline points="22 4 12 14.01 9 11.01"></polyline>
                     </svg>
                 </div>
                 <div class="benefit-text">
-                    <strong>100% Verificado</strong>
-                    <span>Todos los usuarios pasan por verificación</span>
+                    <strong data-i18n="benefit-1-title">{% trans "100% Verificado" %}</strong>
+                    <span data-i18n="benefit-1-desc">{% trans "Todos los usuarios pasan por verificación" %}</span>
                 </div>
             </li>
+
             <li>
-                <div class="benefit-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <div class="benefit-icon" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                         <circle cx="12" cy="10" r="3"></circle>
                     </svg>
                 </div>
                 <div class="benefit-text">
-                    <strong>Encuentra cerca</strong>
-                    <span>Trabajos en tu distrito o comunidad</span>
+                    <strong data-i18n="benefit-2-title">{% trans "Encuentra cerca" %}</strong>
+                    <span data-i18n="benefit-2-desc">{% trans "Trabajos en tu distrito o comunidad" %}</span>
                 </div>
             </li>
+
             <li>
-                <div class="benefit-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <div class="benefit-icon" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
                     </svg>
                 </div>
                 <div class="benefit-text">
-                    <strong>Pagos seguros</strong>
-                    <span>Sistema de protección garantizada</span>
+                    <strong data-i18n="benefit-3-title">{% trans "Pagos seguros" %}</strong>
+                    <span data-i18n="benefit-3-desc">{% trans "Sistema de protección garantizada" %}</span>
                 </div>
             </li>
+
             <li>
-                <div class="benefit-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <div class="benefit-icon" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
                     </svg>
                 </div>
                 <div class="benefit-text">
-                    <strong>Chat directo</strong>
-                    <span>Sin intermediarios, 100% gratis</span>
+                    <strong data-i18n="benefit-4-title">{% trans "Chat directo" %}</strong>
+                    <span data-i18n="benefit-4-desc">{% trans "Sin intermediarios, 100% gratis" %}</span>
                 </div>
             </li>
         </ul>
-        
+
         <a href="#" class="help-link">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="12" cy="12" r="10"></circle>
                 <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
                 <line x1="12" y1="17" x2="12.01" y2="17"></line>
             </svg>
-            ¿Necesitas ayuda?
+            <span data-i18n="help-link">{% trans "¿Necesitas ayuda?" %}</span>
         </a>
     </aside>
 
-    <!-- CONTENIDO PRINCIPAL -->
-    <main class="register-content">
+    <!-- ==================== CONTENIDO PRINCIPAL ==================== -->
+    <main class="register-content"
+          role="main"
+          aria-labelledby="register-title">
+
         <div class="register-header">
-            <h2>Crear tu cuenta</h2>
-            <p class="register-subtitle">Completa tu información personal para comenzar</p>
+            <h2 id="register-title" data-i18n="main-title">
+                {% trans "Crear tu cuenta" %}
+            </h2>
+            <p class="register-subtitle" data-i18n="main-subtitle">
+                {% trans "Completa tu información personal para comenzar" %}
+            </p>
         </div>
 
-        <!-- BARRA DE PROGRESO -->
-        <div class="progress-container">
+        <!-- ==================== BARRA DE PROGRESO ==================== -->
+        <div class="progress-container"
+             aria-label="{% trans 'Progreso de registro' %}">
+
             <div class="progress-steps">
-                <div class="progress-step active">
+
+                <div class="progress-step active"
+                     aria-current="step">
                     <div class="step-circle">1</div>
-                    <span class="step-label">Información</span>
+                    <span class="step-label" data-i18n="step-1-label">
+                        {% trans "Información" %}
+                    </span>
                 </div>
+
                 <div class="progress-step">
                     <div class="step-circle">2</div>
-                    <span class="step-label">Ubicación</span>
+                    <span class="step-label" data-i18n="step-2-label">
+                        {% trans "Ubicación" %}
+                    </span>
                 </div>
+
                 <div class="progress-step">
                     <div class="step-circle">3</div>
-                    <span class="step-label">Perfil</span>
+                    <span class="step-label" data-i18n="step-3-label">
+                        {% trans "Perfil" %}
+                    </span>
                 </div>
+
                 <div class="progress-step">
                     <div class="step-circle">4</div>
-                    <span class="step-label">Verificación</span>
+                    <span class="step-label" data-i18n="step-4-label">
+                        {% trans "Verificación" %}
+                    </span>
                 </div>
+
             </div>
         </div>
 
-        <!-- ALERTAS -->
+        <!-- ==================== ALERTAS ==================== -->
         {% if form.non_field_errors %}
-        <div class="alert alert-error">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <div class="alert alert-error"
+             role="alert"
+             aria-live="assertive">
+
+            <svg xmlns="http://www.w3.org/2000/svg"
+                 width="20" height="20"
+                 viewBox="0 0 24 24"
+                 fill="none" stroke="currentColor"
+                 stroke-width="2"
+                 aria-hidden="true">
                 <circle cx="12" cy="12" r="10"></circle>
                 <line x1="12" y1="8" x2="12" y2="12"></line>
                 <line x1="12" y1="16" x2="12.01" y2="16"></line>
             </svg>
+
             <div>
                 {% for error in form.non_field_errors %}
                 <p>{{ error }}</p>
@@ -122,271 +182,373 @@
         </div>
         {% endif %}
 
-        <!-- FORMULARIO -->
-        <form method="post" class="register-form" id="registerForm" novalidate>
+        <!-- ==================== FORMULARIO ==================== -->
+        <form method="post"
+              class="register-form"
+              id="registerForm"
+              novalidate
+              aria-describedby="form-help-text">
+
             {% csrf_token %}
-            
+
             {% if tipo_usuario != 'empresa' %}
-            <!-- PERSONA NATURAL -->
+            <!-- ==================== PERSONA NATURAL ==================== -->
             <fieldset>
-                <legend>Datos de Identificación</legend>
-                
+                <legend data-i18n="legend-identity">{% trans "Datos de Identificación" %}</legend>
+
                 <div class="form-grid">
+
+                    <!-- DNI -->
                     <div class="form-group">
-                        <label for="id_dni">DNI *</label>
+                        <label for="id_dni">
+                            <span data-i18n="label-dni">{% trans "DNI" %}</span> *
+                        </label>
+
                         <div class="input-with-button">
-                            <input 
-                                type="text" 
-                                name="dni" 
+                            <input
+                                type="text"
+                                name="dni"
                                 id="id_dni"
                                 value="{{ form.dni.value|default_if_none:'' }}"
                                 placeholder="00000000"
                                 maxlength="8"
-                                required>
-                            <button type="button" class="btn-search" data-action="buscar-dni">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                required
+                                inputmode="numeric"
+                                aria-required="true"
+                                data-i18n-placeholder="placeholder-dni">
+
+                            <button type="button"
+                                    class="btn-search"
+                                    data-action="buscar-dni"
+                                    aria-label="{% trans 'Buscar DNI' %}">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     width="16" height="16"
+                                     viewBox="0 0 24 24"
+                                     fill="none" stroke="currentColor"
+                                     stroke-width="2"
+                                     aria-hidden="true">
                                     <circle cx="11" cy="11" r="8"></circle>
                                     <path d="m21 21-4.35-4.35"></path>
                                 </svg>
-                                Buscar
+                                <span data-i18n="btn-search">{% trans "Buscar" %}</span>
                             </button>
                         </div>
+
                         {% if form.dni.errors %}
-                        <span class="form-error">{{ form.dni.errors.0 }}</span>
+                        <span class="form-error">
+                            {{ form.dni.errors.0 }}
+                        </span>
                         {% endif %}
-                        <span class="form-help">Ingresa tu DNI para autocompletar tus datos</span>
+
+                        <span class="form-help" data-i18n="help-dni">
+                            {% trans "Ingresa tu DNI para autocompletar tus datos" %}
+                        </span>
                     </div>
 
+                    <!-- NOMBRES / APELLIDOS -->
                     <div class="form-grid form-grid-2">
+
                         <div class="form-group">
-                            <label for="id_nombre">Nombres *</label>
-                            <input 
-                                type="text" 
-                                name="nombre" 
+                            <label for="id_nombre">
+                                <span data-i18n="label-name">{% trans "Nombres" %}</span> *
+                            </label>
+                            <input
+                                type="text"
+                                name="nombre"
                                 id="id_nombre"
                                 value="{{ form.nombre.value|default_if_none:'' }}"
                                 readonly
-                                placeholder="Se completará automáticamente"
-                                required>
-                            {% if form.nombre.errors %}
-                            <span class="form-error">{{ form.nombre.errors.0 }}</span>
-                            {% endif %}
+                                placeholder="{% trans 'Se completará automáticamente' %}"
+                                required
+                                data-i18n-placeholder="placeholder-autocomplete">
                         </div>
 
                         <div class="form-group">
-                            <label for="id_apellido">Apellidos *</label>
-                            <input 
-                                type="text" 
-                                name="apellido" 
+                            <label for="id_apellido">
+                                <span data-i18n="label-lastname">{% trans "Apellidos" %}</span> *
+                            </label>
+                            <input
+                                type="text"
+                                name="apellido"
                                 id="id_apellido"
                                 value="{{ form.apellido.value|default_if_none:'' }}"
                                 readonly
-                                placeholder="Se completará automáticamente"
-                                required>
-                            {% if form.apellido.errors %}
-                            <span class="form-error">{{ form.apellido.errors.0 }}</span>
-                            {% endif %}
+                                placeholder="{% trans 'Se completará automáticamente' %}"
+                                required
+                                data-i18n-placeholder="placeholder-autocomplete">
                         </div>
+
                     </div>
-                    
-                    <!-- ✅ NUEVOS CAMPOS: FECHA Y GÉNERO -->
+
+                    <!-- FECHA / GÉNERO -->
                     <div class="form-grid form-grid-2">
+
                         <div class="form-group">
-                            <label for="id_fecha_nacimiento">Fecha de Nacimiento *</label>
-                            <input 
-                                type="date" 
-                                name="fecha_nacimiento" 
+                            <label for="id_fecha_nacimiento">
+                                <span data-i18n="label-birthdate">{% trans "Fecha de nacimiento" %}</span> *
+                            </label>
+                            <input
+                                type="date"
+                                name="fecha_nacimiento"
                                 id="id_fecha_nacimiento"
                                 value="{{ form.fecha_nacimiento.value|default_if_none:'' }}"
-                                max="2007-01-01"
                                 required>
-                            {% if form.fecha_nacimiento.errors %}
-                            <span class="form-error">{{ form.fecha_nacimiento.errors.0 }}</span>
-                            {% endif %}
-                            <span class="form-help">Debes ser mayor de 18 años</span>
+                            <span class="form-help" data-i18n="help-age">
+                                {% trans "Debes ser mayor de 18 años" %}
+                            </span>
                         </div>
 
                         <div class="form-group">
-                            <label for="id_genero">Género *</label>
+                            <label for="id_genero">
+                                <span data-i18n="label-gender">{% trans "Género" %}</span> *
+                            </label>
                             <select name="genero" id="id_genero" required>
-                                <option value="">Selecciona tu género</option>
-                                <option value="masculino" {% if form.genero.value == 'masculino' %}selected{% endif %}>Masculino</option>
-                                <option value="femenino" {% if form.genero.value == 'femenino' %}selected{% endif %}>Femenino</option>
-                                <option value="otro" {% if form.genero.value == 'otro' %}selected{% endif %}>Otro</option>
-                                <option value="prefiero_no_decir" {% if form.genero.value == 'prefiero_no_decir' %}selected{% endif %}>Prefiero no decir</option>
+                                <option value="" data-i18n="option-select-gender">{% trans "Selecciona tu género" %}</option>
+                                <option value="masculino" data-i18n="option-male">{% trans "Masculino" %}</option>
+                                <option value="femenino" data-i18n="option-female">{% trans "Femenino" %}</option>
+                                <option value="otro" data-i18n="option-other">{% trans "Otro" %}</option>
+                                <option value="prefiero_no_decir" data-i18n="option-no-say">
+                                    {% trans "Prefiero no decir" %}
+                                </option>
                             </select>
-                            {% if form.genero.errors %}
-                            <span class="form-error">{{ form.genero.errors.0 }}</span>
-                            {% endif %}
                         </div>
+
                     </div>
                 </div>
             </fieldset>
 
             {% else %}
-            <!-- EMPRESA -->
+            <!-- ==================== EMPRESA ==================== -->
             <fieldset>
-                <legend>Datos de la Empresa</legend>
-                
+                <legend data-i18n="legend-company">{% trans "Datos de la empresa" %}</legend>
+
                 <div class="form-grid">
+
                     <div class="form-group">
-                        <label for="id_ruc">RUC *</label>
+                        <label for="id_ruc">
+                            <span data-i18n="label-ruc">{% trans "RUC" %}</span> *
+                        </label>
+
                         <div class="input-with-button">
-                            <input 
-                                type="text" 
-                                name="ruc" 
+                            <input
+                                type="text"
+                                name="ruc"
                                 id="id_ruc"
                                 value="{{ form.ruc.value|default_if_none:'' }}"
                                 placeholder="00000000000"
                                 maxlength="11"
-                                required>
-                            <button type="button" class="btn-search" data-action="buscar-ruc">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <circle cx="11" cy="11" r="8"></circle>
-                                    <path d="m21 21-4.35-4.35"></path>
-                                </svg>
-                                Buscar
+                                required
+                                inputmode="numeric"
+                                data-i18n-placeholder="placeholder-ruc">
+
+                            <button type="button"
+                                    class="btn-search"
+                                    data-action="buscar-ruc"
+                                    aria-label="{% trans 'Buscar RUC' %}">
+                                <span data-i18n="btn-search">{% trans "Buscar" %}</span>
                             </button>
                         </div>
-                        {% if form.ruc.errors %}
-                        <span class="form-error">{{ form.ruc.errors.0 }}</span>
-                        {% endif %}
-                        <span class="form-help">Ingresa el RUC de tu empresa</span>
+
+                        <span class="form-help" data-i18n="help-ruc">
+                            {% trans "Ingresa el RUC de tu empresa" %}
+                        </span>
                     </div>
 
                     <div class="form-group">
-                        <label for="id_razon_social">Razón Social *</label>
-                        <input 
-                            type="text" 
-                            name="razon_social" 
+                        <label for="id_razon_social">
+                            <span data-i18n="label-business-name">{% trans "Razón social" %}</span> *
+                        </label>
+                        <input
+                            type="text"
+                            name="razon_social"
                             id="id_razon_social"
-                            value="{{ form.razon_social.value|default_if_none:'' }}"
                             readonly
-                            placeholder="Se completará automáticamente"
-                            required>
-                        {% if form.razon_social.errors %}
-                        <span class="form-error">{{ form.razon_social.errors.0 }}</span>
-                        {% endif %}
+                            placeholder="{% trans 'Se completará automáticamente' %}"
+                            required
+                            data-i18n-placeholder="placeholder-autocomplete">
                     </div>
+
                 </div>
             </fieldset>
             {% endif %}
 
-            <!-- DATOS DE CONTACTO -->
+            <!-- ==================== DATOS DE CONTACTO ==================== -->
             <fieldset>
-                <legend>Datos de Contacto</legend>
-                
+                <legend data-i18n="legend-contact">{% trans "Datos de contacto" %}</legend>
+
                 <div class="form-grid form-grid-2">
+
                     <div class="form-group">
-                        <label for="id_telefono">Teléfono *</label>
-                        <input 
-                            type="tel" 
-                            name="telefono" 
+                        <label for="id_telefono">
+                            <span data-i18n="label-phone">{% trans "Teléfono" %}</span> *
+                        </label>
+                        <input
+                            type="tel"
+                            name="telefono"
                             id="id_telefono"
                             value="{{ form.telefono.value|default_if_none:'' }}"
                             placeholder="999 999 999"
-                            required>
-                        {% if form.telefono.errors %}
-                        <span class="form-error">{{ form.telefono.errors.0 }}</span>
-                        {% endif %}
+                            required
+                            inputmode="tel"
+                            aria-required="true"
+                            data-i18n-placeholder="placeholder-phone">
                     </div>
 
                     <div class="form-group">
-                        <label for="id_email">Correo Electrónico *</label>
-                        <input 
-                            type="email" 
-                            name="email" 
+                        <label for="id_email">
+                            <span data-i18n="label-email">{% trans "Correo electrónico" %}</span> *
+                        </label>
+                        <input
+                            type="email"
+                            name="email"
                             id="id_email"
                             value="{{ form.email.value|default_if_none:'' }}"
                             placeholder="tu@email.com"
-                            required>
-                        {% if form.email.errors %}
-                        <span class="form-error">{{ form.email.errors.0 }}</span>
-                        {% endif %}
+                            required
+                            aria-required="true"
+                            data-i18n-placeholder="placeholder-email">
                     </div>
+
                 </div>
             </fieldset>
 
-            <!-- CONTRASEÑA -->
+            <!-- ==================== SEGURIDAD ==================== -->
             <fieldset>
-                <legend>Seguridad</legend>
-                
+                <legend data-i18n="legend-security">{% trans "Seguridad" %}</legend>
+
                 <div class="form-grid form-grid-2">
+
                     <div class="form-group">
-                        <label for="id_password1">Contraseña *</label>
+                        <label for="id_password1">
+                            <span data-i18n="label-password">{% trans "Contraseña" %}</span> *
+                        </label>
+
                         <div class="password-wrapper">
-                            <input 
-                                type="password" 
-                                name="password1" 
+                            <input
+                                type="password"
+                                name="password1"
                                 id="id_password1"
-                                placeholder="Mínimo 8 caracteres"
-                                required>
-                            <button type="button" class="password-toggle" data-target="id_password1">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                    <circle cx="12" cy="12" r="3"></circle>
+                                placeholder="{% trans 'Mínimo 8 caracteres' %}"
+                                required
+                                aria-required="true"
+                                data-i18n-placeholder="placeholder-password">
+
+                            <button type="button"
+                                    class="password-toggle"
+                                    data-target="id_password1"
+                                    aria-label="{% trans 'Mostrar contraseña' %}">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     width="20" height="20"
+                                     viewBox="0 0 24 24"
+                                     fill="none" stroke="currentColor"
+                                     stroke-width="2"
+                                     aria-hidden="true">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                    <circle cx="12" cy="12" r="3"/>
                                 </svg>
                             </button>
                         </div>
-                        {% if form.password1.errors %}
-                        <span class="form-error">{{ form.password1.errors.0 }}</span>
-                        {% endif %}
                     </div>
 
                     <div class="form-group">
-                        <label for="id_password2">Confirmar Contraseña *</label>
+                        <label for="id_password2">
+                            <span data-i18n="label-confirm-password">{% trans "Confirmar contraseña" %}</span> *
+                        </label>
+
                         <div class="password-wrapper">
-                            <input 
-                                type="password" 
-                                name="password2" 
+                            <input
+                                type="password"
+                                name="password2"
                                 id="id_password2"
-                                placeholder="Repite tu contraseña"
-                                required>
-                            <button type="button" class="password-toggle" data-target="id_password2">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                    <circle cx="12" cy="12" r="3"></circle>
+                                placeholder="{% trans 'Repite tu contraseña' %}"
+                                required
+                                aria-required="true"
+                                data-i18n-placeholder="placeholder-repeat-password">
+
+                            <button type="button"
+                                    class="password-toggle"
+                                    data-target="id_password2"
+                                    aria-label="{% trans 'Mostrar contraseña' %}">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     width="20" height="20"
+                                     viewBox="0 0 24 24"
+                                     fill="none" stroke="currentColor"
+                                     stroke-width="2"
+                                     aria-hidden="true">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                    <circle cx="12" cy="12" r="3"/>
                                 </svg>
                             </button>
                         </div>
-                        {% if form.password2.errors %}
-                        <span class="form-error">{{ form.password2.errors.0 }}</span>
-                        {% endif %}
                     </div>
+
                 </div>
             </fieldset>
 
-            <!-- TÉRMINOS -->
+            <!-- ==================== TÉRMINOS ==================== -->
             <div class="custom-checkbox">
-                <input type="checkbox" name="acepto_terminos" id="acepto_terminos" required>
+                <input
+                    type="checkbox"
+                    name="acepto_terminos"
+                    id="acepto_terminos"
+                    required
+                    aria-required="true">
+
                 <label for="acepto_terminos">
-                    Acepto los <a href="#" target="_blank">términos y condiciones</a> y la <a href="#" target="_blank">política de privacidad</a> de Llamkay
+                    <span data-i18n="terms-accept">{% trans "Acepto los" %}</span>
+                    <a href="#" target="_blank" data-i18n="terms-link">{% trans "términos y condiciones" %}</a>
+                    <span data-i18n="terms-and">{% trans "y la" %}</span>
+                    <a href="#" target="_blank" data-i18n="privacy-link">{% trans "política de privacidad" %}</a>
+                    <span data-i18n="terms-of">{% trans "de Llamkay" %}</span>
                 </label>
             </div>
 
-            <!-- BOTONES -->
+            <!-- ==================== ACCIONES ==================== -->
             <div class="form-actions">
-                <a href="{% url 'users:seleccionar_tipo' %}" class="btn btn-secondary">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="19" y1="12" x2="5" y2="12"></line>
-                        <polyline points="12 19 5 12 12 5"></polyline>
+
+                <a href="{% url 'users:seleccionar_tipo' %}"
+                   class="btn btn-secondary"
+                   aria-label="{% trans 'Volver al paso anterior' %}">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         width="16" height="16"
+                         viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor"
+                         stroke-width="2"
+                         aria-hidden="true">
+                        <line x1="19" y1="12" x2="5" y2="12"/>
+                        <polyline points="12 19 5 12 12 5"/>
                     </svg>
-                    Atrás
+                    <span data-i18n="btn-back">{% trans "Atrás" %}</span>
                 </a>
-                <button type="submit" class="btn btn-primary">
-                    Siguiente
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="5" y1="12" x2="19" y2="12"></line>
-                        <polyline points="12 5 19 12 12 19"></polyline>
+
+                <button type="submit"
+                        class="btn btn-primary"
+                        aria-label="{% trans 'Continuar al siguiente paso' %}">
+                    <span data-i18n="btn-next">{% trans "Siguiente" %}</span>
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         width="16" height="16"
+                         viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor"
+                         stroke-width="2"
+                         aria-hidden="true">
+                        <line x1="5" y1="12" x2="19" y2="12"/>
+                        <polyline points="12 5 19 12 12 19"/>
                     </svg>
                 </button>
+
             </div>
         </form>
 
-        <!-- FOOTER -->
+        <!-- ==================== FOOTER ==================== -->
         <div class="register-footer">
-            <p>¿Ya tienes una cuenta? <a href="{% url 'users:login' %}">Inicia sesión aquí</a></p>
+            <p>
+                <span data-i18n="footer-have-account">{% trans "¿Ya tienes una cuenta?" %}</span>
+                <a href="{% url 'users:login' %}" data-i18n="footer-login">
+                    {% trans "Inicia sesión aquí" %}
+                </a>
+            </p>
         </div>
+
     </main>
 </div>
 {% endblock %}
