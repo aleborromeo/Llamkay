@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-14 22:57-0500\n"
+"POT-Creation-Date: 2025-12-15 11:55-0500\n"
 "PO-Revision-Date: 2025-12-04 09:43-0500\n"
 "Last-Translator: Full Name <example@example.com>\n"
 "Language-Team: English <en@li.org>\n"
@@ -272,7 +272,7 @@ msgid "Plataforma"
 msgstr "Platform"
 
 msgid "Mis Mensajes"
-msgstr ""
+msgstr "My Messages"
 
 msgid "Soporte"
 msgstr "Support"
@@ -581,10 +581,10 @@ msgid "Nuestro Camino"
 msgstr "Our Values"
 
 msgid "Cómo empezó todo y hacia dónde vamos"
-msgstr ""
+msgstr "How it all started and where we're going"
 
 msgid "El Inicio (2024)"
-msgstr ""
+msgstr "The Beginning (2024)"
 
 #, fuzzy
 #| msgid "Llamkay nació en 2024 con la visión de transformar la forma en que los peruanos encuentran oportunidades laborales. Observamos la necesidad de crear un espacio seguro y confiable donde trabajadores y empleadores puedan conectarse de manera directa."
@@ -747,6 +747,36 @@ msgstr "Register for Free"
 msgid "Volver al inicio"
 msgstr "Back to top"
 
+#, fuzzy
+#| msgid "Crear Cuenta - Paso 1/4 - Llamkay.pe"
+msgid "Cuenta Bloqueada - Llamkay.pe"
+msgstr "Create Account - Step 1/4 - Llamkay.pe"
+
+msgid "Cuenta Bloqueada"
+msgstr "Account Blocked"
+
+msgid "Tu cuenta se encuentra bloqueada porque se detectaron"
+msgstr "Your account has been blocked because"
+
+msgid "antecedentes penales"
+msgstr "criminal records were detected"
+
+msgid "Si crees que esto es un error, por favor"
+msgstr "If you believe this is a mistake, please"
+
+msgid "contacta a soporte"
+msgstr "contact support"
+
+#, fuzzy
+#| msgid "Volver arriba"
+msgid "Volver al inicio de sesión"
+msgstr "Back to top"
+
+#, fuzzy
+#| msgid "Selección de idioma"
+msgid "Selector de idioma"
+msgstr "Language selection"
+
 msgid "Seleccionar tipo de usuario"
 msgstr "Select user type"
 
@@ -757,7 +787,7 @@ msgstr "Skip to main content"
 
 #, fuzzy
 #| msgid "Paso 1"
-msgid "Paso 1 de 2"
+msgid "Paso 1 de 5"
 msgstr "Step 1"
 
 msgid "¿Cómo deseas registrarte?"
@@ -766,13 +796,13 @@ msgstr "How would you like to register?"
 msgid "Selecciona tu rol en la plataforma para continuar"
 msgstr "Select your role on the platform to continue"
 
-msgid "Ideal para buscar trabajos temporales o freelance"
-msgstr "Ideal for finding temporary or freelance jobs"
-
 #, fuzzy
 #| msgid "Registrarse Gratis"
 msgid "Registrarse como trabajador"
 msgstr "Register for Free"
+
+msgid "Popular"
+msgstr "Popular"
 
 #, fuzzy
 #| msgid "Buscar trabajos"
@@ -783,14 +813,6 @@ msgstr "Search jobs"
 #| msgid "Conectando talentos con oportunidades laborales en todo el Perú"
 msgid "Encuentra oportunidades laborales en tu zona"
 msgstr "Connecting talent with job opportunities throughout Peru"
-
-mmsgid "Popular"
-msgstr "Popular"
-
-#, fuzzy
-#| msgid "En 4 pasos empiezas a trabajar o contratar"
-msgid "La opción más flexible: trabajar y contratar"
-msgstr "In 4 steps you start working or hiring"
 
 #, fuzzy
 #| msgid "Regístrate gratis en menos de 2 minutos como trabajador, empleador o empresa"
@@ -808,9 +830,6 @@ msgstr "Search jobs"
 msgid "Trabaja y contrata según tus necesidades"
 msgstr "Work and hire according to your needs"
 
-msgid "Perfecto si solo necesitas contratar personas"
-msgstr "Perfect if you only need to hire people"
-
 msgid "Registrarse como empleador"
 msgstr "Register as an employer"
 
@@ -824,21 +843,21 @@ msgstr "Post job"
 msgid "Contrata profesionales verificados"
 msgstr "Verified ratings"
 
-msgid "Registro corporativo con RUC"
-msgstr "Corporate registration with RUC"
-
 #, fuzzy
 #| msgid "Registrarse Gratis"
 msgid "Registrarse como empresa"
 msgstr "Register for Free"
 
-msgid "Soy una empresa"
-msgstr "I am a company"
-
 #, fuzzy
 #| msgid "Usuarios activos"
 msgid "Corporativo"
 msgstr "Active users"
+
+msgid "Soy una empresa"
+msgstr "I am a company"
+
+msgid "Registro corporativo con RUC"
+msgstr "Corporate registration with RUC"
 
 #, fuzzy
 #| msgid "¿Tienes alguna pregunta?"
@@ -850,13 +869,9 @@ msgstr "Do you have any questions?"
 msgid "Inicia sesión aquí"
 msgstr "Login"
 
-msgid "¿No estás seguro?"
-msgstr "Not sure?"
-
-msgid "Puedes cambiar tu tipo de cuenta después del registro desde tu perfil."
-msgstr "You can change your account type after registration from your profile."
-
-msgid "Crear Cuenta - Paso 1/4 - Llamkay.pe"
+#, fuzzy
+#| msgid "Crear Cuenta - Paso 1/4 - Llamkay.pe"
+msgid "Crear Cuenta - Paso 1/4"
 msgstr "Create Account - Step 1/4 - Llamkay.pe"
 
 #, fuzzy
@@ -939,9 +954,6 @@ msgstr "Identification data"
 msgid "DNI"
 msgstr "ID number"
 
-msgid "00000000"
-msgstr "00000000"
-
 msgid "Buscar DNI"
 msgstr "Search ID"
 
@@ -992,9 +1004,6 @@ msgstr "Company information"
 msgid "RUC"
 msgstr "RUC"
 
-msgid "00000000000"
-msgstr "00000000000"
-
 msgid "Buscar RUC"
 msgstr "Search RUC"
 
@@ -1009,9 +1018,6 @@ msgstr "Contact information"
 
 msgid "Teléfono"
 msgstr "Phone"
-
-msgid "999 999 999"
-msgstr "999 999 999"
 
 #, fuzzy
 #| msgid "Correo Electrónico"
@@ -1071,8 +1077,374 @@ msgstr "Continue to the next step"
 msgid "Siguiente"
 msgstr "Urgent"
 
-#~ msgid "Ayuda"
-#~ msgstr "Help"
+#, fuzzy
+#| msgid "Crear Cuenta - Paso 1/4 - Llamkay.pe"
+msgid "Crear Cuenta - Paso 2/4"
+msgstr "Create Account - Step 1/4 - Llamkay.pe"
+
+msgid "Panel informativo"
+msgstr "Information panel"
+
+msgid "¿Por qué necesitamos tu ubicación?"
+msgstr "Why do we need your location?"
+
+msgid "Tu ubicación nos ayuda a conectarte con oportunidades cerca de ti."
+msgstr "Your location helps us connect you with opportunities near you."
+
+#, fuzzy
+#| msgid "Trabajos publicados"
+msgid "Trabajos cercanos"
+msgstr "Jobs posted"
+
+#, fuzzy
+#| msgid "Conectando talentos con oportunidades laborales en todo el Perú"
+msgid "Encuentra oportunidades en tu zona"
+msgstr "Connecting talent with job opportunities throughout Peru"
+
+#, fuzzy
+#| msgid "Trabajos publicados"
+msgid "Trabaja desde casa"
+msgstr "Jobs posted"
+
+msgid "Reduce tiempos de traslado"
+msgstr "Reduce travel time"
+
+msgid "Respuesta rápida"
+msgstr "Quick response"
+
+msgid "Conecta con usuarios locales"
+msgstr "Connect with local users"
+
+#, fuzzy
+#| msgid "Protección garantizada"
+msgid "Privacidad garantizada"
+msgstr "Guaranteed privacy"
+
+msgid "Tu dirección exacta está protegida"
+msgstr "Your exact address is protected"
+
+#, fuzzy
+#| msgid "Ayuda"
+msgid "Abrir ayuda"
+msgstr "Help"
+
+#, fuzzy
+#| msgid "Calificación promedio"
+msgid "Tu ubicación"
+msgstr "Average rating"
+
+msgid "Indícanos dónde te encuentras"
+msgstr "Tell us where you are"
+
+#, fuzzy
+#| msgid "Progreso de registro"
+msgid "Pasos de registro"
+msgstr "Registration progress"
+
+#, fuzzy
+#| msgid "Trabajos publicados"
+msgid "Paso 1 completado"
+msgstr "Jobs posted"
+
+#, fuzzy
+#| msgid "Paso 2"
+msgid "Paso 2 actual"
+msgstr "Step 2"
+
+msgid "Paso 3 pendiente"
+msgstr "Step 3 pending"
+
+msgid "Paso 4 pendiente"
+msgstr "Step 4 pending"
+
+msgid "Dirección"
+msgstr "Address"
+
+msgid "Dirección completa"
+msgstr "Full address"
+
+msgid "Ej: Av. Larco 123, Dpto. 501"
+msgstr "E.g.: Av. Larco 123, Apt. 501"
+
+msgid "Tu dirección exacta está protegida y no se muestra públicamente."
+msgstr "Your exact address is protected and is not shown publicly."
+
+#, fuzzy
+#| msgid "Calificación promedio"
+msgid "Ubicación geográfica"
+msgstr "Average rating"
+
+msgid "Departamento"
+msgstr "Department"
+
+msgid "Selecciona tu departamento"
+msgstr "Select your department"
+
+msgid "Construye tu perfil profesional"
+msgstr "Build your professional profile"
+
+msgid "Tu perfil es lo primero que verán los empleadores y trabajadores. Hazlo claro, honesto y completo."
+msgstr "Your profile is the first thing employers and workers will see. Make it clear, honest, and complete."
+
+msgid "Un perfil completo genera mayor credibilidad"
+msgstr "A complete profile generates more credibility"
+
+msgid "Mejores oportunidades"
+msgstr "Better opportunities"
+
+msgid "Aparecerás en más búsquedas relevantes"
+msgstr "You will appear in more relevant searches"
+
+msgid "Puedes editar tu perfil cuando quieras"
+msgstr "You can edit your profile anytime"
+
+msgid "¿Necesitas ayuda para completar tu perfil?"
+msgstr "Need help completing your profile?"
+
+msgid "Cuéntanos quién eres y qué sabes hacer"
+msgstr "Tell us who you are and what you can do"
+
+msgid "Identidad pública"
+msgstr "Public identity"
+
+msgid "Nombre público"
+msgstr "Public name"
+
+msgid "Ej: Juan Pérez"
+msgstr "Example: Juan Pérez"
+
+msgid "Este nombre será visible para otros usuarios"
+msgstr "This name will be visible to other users"
+
+msgid "¿Qué haces?"
+msgstr "What do you do?"
+
+msgid "Selecciona una opción"
+msgstr "Select an option"
+
+msgid "Ofrezco servicios"
+msgstr "I offer services"
+
+msgid "Busco contratar"
+msgstr "I am looking to hire"
+
+msgid "Ambos"
+msgstr "Both"
+
+#, fuzzy
+#| msgid "Sobre nosotros"
+msgid "Sobre ti"
+msgstr "About us"
+
+#, fuzzy
+#| msgid "Calificación promedio"
+msgid "Descripción"
+msgstr "Verification"
+
+msgid "Describe brevemente tu experiencia, habilidades y lo que ofreces..."
+msgstr "Briefly describe your experience, skills, and what you offer..."
+
+msgid "Máximo 500 caracteres. Sé claro y directo."
+msgstr "Up to 500 characters. Be clear and direct."
+
+#, fuzzy
+#| msgid "Acciones principales"
+msgid "Habilidades principales"
+msgstr "Main actions"
+
+#, fuzzy
+#| msgid "Agregar habilidades"
+msgid "Habilidades"
+msgstr "Add skills"
+
+msgid "Ej: Carpintería, Plomería, Diseño gráfico"
+msgstr "E.g.: Carpentry, Plumbing, Graphic Design"
+
+msgid "Sepáralas por comas para facilitar la búsqueda"
+msgstr "Separate them with commas to make searching easier"
+
+msgid "Experiencia"
+msgstr "Experience"
+
+msgid "Años de experiencia"
+msgstr "Years of experience"
+
+msgid "Selecciona"
+msgstr "Select"
+
+msgid "Menos de 1 año"
+msgstr "Less than 1 year"
+
+msgid "1 a 3 años"
+msgstr "1 to 3 years"
+
+msgid "3 a 5 años"
+msgstr "3 to 5 years"
+
+msgid "Más de 5 años"
+msgstr "More than 5 years"
+
+msgid "Nivel"
+msgstr "Level"
+
+msgid "Básico"
+msgstr "Basic"
+
+msgid "Intermedio"
+msgstr "Intermediate"
+
+msgid "Avanzado"
+msgstr "Advanced"
+
+msgid "Disponibilidad"
+msgstr "Availability"
+
+msgid "Modalidad"
+msgstr "Work mode"
+
+msgid "Presencial"
+msgstr "On-site"
+
+msgid "Remoto"
+msgstr "Remote"
+
+msgid "Mixto"
+msgstr "Hybrid"
+
+msgid "Horario disponible"
+msgstr "Available schedule"
+
+msgid "Mañanas"
+msgstr "Mornings"
+
+msgid "Tardes"
+msgstr "Afternoons"
+
+msgid "Noches"
+msgstr "Evenings"
+
+msgid "Flexible"
+msgstr "Flexible"
+
+msgid "Privacidad"
+msgstr "Privacy"
+
+msgid "Quiero que mi perfil sea visible para otros usuarios"
+msgstr "I want my profile to be visible to other users"
+
+msgid "Podrás cambiar esto más adelante desde tu perfil"
+msgstr "You can change this later from your profile"
+
+msgid "Continuar"
+msgstr "Continue"
+
+#, fuzzy
+#| msgid "Crear Cuenta - Paso 1/4 - Llamkay.pe"
+msgid "Crear Cuenta - Paso 4/4"
+msgstr "Create Account - Step 1/4 - Llamkay.pe"
+
+#, fuzzy
+#| msgid "Plataforma"
+msgid "Llamkay plataforma"
+msgstr "Platform"
+
+#, fuzzy
+#| msgid "Completa tu perfil"
+msgid "Completa tu perfil profesional"
+msgstr "Complete your profile"
+
+msgid "Esta información ayuda a que te encuentren más rápido y con mejores oportunidades."
+msgstr "This information helps you get found faster and with better opportunities."
+
+msgid "Más visibilidad"
+msgstr "More visibility"
+
+msgid "Tu perfil aparece mejor posicionado"
+msgstr "Your profile appears better positioned"
+
+msgid "Mayor confianza"
+msgstr "Greater trust"
+
+msgid "Los empleadores prefieren perfiles completos"
+msgstr "Employers prefer complete profiles"
+
+msgid "Mejores coincidencias"
+msgstr "Better matches"
+
+msgid "Te mostramos trabajos acordes a ti"
+msgstr "We show you jobs that match you"
+
+msgid "Perfil profesional"
+msgstr "Professional profile"
+
+msgid "Título profesional"
+msgstr "Professional title"
+
+msgid "Ej: Electricista, Diseñador gráfico, Albañil"
+msgstr "E.g.: Electrician, Graphic Designer, Construction Worker"
+
+msgid "Este título será lo primero que vean quienes te busquen."
+msgstr "This title will be the first thing people see when searching for you."
+
+msgid "Descripción profesional"
+msgstr "Professional description"
+
+msgid "Describe tu experiencia, habilidades y el tipo de trabajos que realizas."
+msgstr "Describe your experience, skills, and the type of work you do."
+
+msgid "Una buena descripción aumenta la confianza y las oportunidades."
+msgstr "A good description increases trust and opportunities."
+
+msgid "Disponibilidad horaria"
+msgstr "Availability"
+
+msgid "Tiempo completo"
+msgstr "Full time"
+
+msgid "Medio tiempo"
+msgstr "Part time"
+
+msgid "Fines de semana"
+msgstr "Weekends"
+
+#, fuzzy
+#| msgid "Publicar trabajo"
+msgid "Modalidad de trabajo"
+msgstr "Post job"
+
+#, fuzzy
+#| msgid "Consejo del día"
+msgid "Consejo"
+msgstr "Tip of the day"
+
+msgid "Un perfil completo y claro aumenta tus oportunidades de ser contactado."
+msgstr "A complete and clear profile increases your chances of being contacted."
+
+msgid "Finalizar"
+msgstr "Finish"
+
+#~ msgid "Ideal para buscar trabajos temporales o freelance"
+#~ msgstr "Ideal for finding temporary or freelance jobs"
+
+#, fuzzy
+#~| msgid "En 4 pasos empiezas a trabajar o contratar"
+#~ msgid "La opción más flexible: trabajar y contratar"
+#~ msgstr "In 4 steps you start working or hiring"
+
+#~ msgid "Perfecto si solo necesitas contratar personas"
+#~ msgstr "Perfect if you only need to hire people"
+
+#~ msgid "¿No estás seguro?"
+#~ msgstr "Not sure?"
+
+#~ msgid "00000000"
+#~ msgstr "00000000"
+
+#~ msgid "00000000000"
+#~ msgstr "00000000000"
+
+#~ msgid "999 999 999"
+#~ msgstr "999 999 999"
 
 #~ msgid "Registrarse"
 #~ msgstr "Register"

@@ -900,7 +900,7 @@ button:focus-visible,
     padding: var(--spacing-xl);
 }
 
-/* ==================== JOB CARDS ==================== */
+/* ==================== JOBS LIST & CARDS ==================== */
 .jobs-list {
     display: flex;
     flex-direction: column;
@@ -912,14 +912,18 @@ button:focus-visible,
     border: 1px solid var(--color-background-alt);
     border-radius: var(--radius-md);
     transition: var(--transition);
-    /* GESTALT: Semejanza */
 }
 
 .job-card:hover {
     border-color: var(--color-primary);
     box-shadow: var(--shadow-md);
     transform: translateY(-2px);
-    /* NIELSEN: Feedback de interacción */
+}
+
+@media (max-width: 768px) {
+    .job-card {
+        padding: var(--spacing-md);
+    }
 }
 
 .job-header {
@@ -927,11 +931,14 @@ button:focus-visible,
     gap: var(--spacing-md);
     margin-bottom: var(--spacing-md);
     align-items: flex-start;
+    flex-wrap: wrap;
 }
 
 .job-icon {
     width: 48px;
     height: 48px;
+    min-width: 48px;
+    min-height: 48px;
     border-radius: var(--radius-sm);
     background: var(--color-background-alt);
     display: flex;
@@ -943,6 +950,7 @@ button:focus-visible,
 
 .job-info {
     flex: 1;
+    min-width: 0;
 }
 
 .job-info h3 {
@@ -955,6 +963,7 @@ button:focus-visible,
     color: var(--color-text);
     text-decoration: none;
     transition: var(--transition-fast);
+    word-wrap: break-word;
 }
 
 .job-info h3 a:hover {
@@ -964,6 +973,7 @@ button:focus-visible,
 .job-company {
     font-size: 0.9rem;
     color: var(--color-text-light);
+    word-wrap: break-word;
 }
 
 .job-badge {
@@ -984,17 +994,39 @@ button:focus-visible,
     color: var(--color-success);
 }
 
+@media (max-width: 480px) {
+    .job-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .job-info {
+        width: 100%;
+    }
+}
+
 .job-description {
     color: var(--color-text-light);
     font-size: 0.9rem;
     margin-bottom: var(--spacing-md);
     line-height: 1.5;
+    word-wrap: break-word;
 }
 
 .job-footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: var(--spacing-md);
+    flex-wrap: wrap;
+}
+
+@media (max-width: 480px) {
+    .job-footer {
+        flex-direction: column;
+        align-items: stretch;
+    }
 }
 
 .job-price {
@@ -1005,7 +1037,7 @@ button:focus-visible,
 
 .btn-small {
     padding: var(--spacing-sm) var(--spacing-lg);
-    min-height: 36px; /* RESPONSIVIDAD: Táctil */
+    min-height: 44px;
     border-radius: var(--radius-sm);
     font-size: 0.9rem;
     font-weight: 600;
@@ -1013,6 +1045,9 @@ button:focus-visible,
     border: none;
     cursor: pointer;
     transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .btn-small.btn-primary:hover {
@@ -1025,14 +1060,14 @@ button:focus-visible,
     text-align: center;
 }
 
-/* ==================== SIDEBAR ==================== */
+/* ==================== SIDEBAR COMPONENTS ==================== */
 .sidebar-card h3 {
     font-size: 1.1rem;
     font-weight: 700;
     margin-bottom: var(--spacing-md);
 }
 
-/* NIELSEN: Visibilidad del estado - Barra de progreso */
+/* Progress Bar */
 .progress-bar {
     width: 100%;
     height: 8px;
@@ -1047,7 +1082,6 @@ button:focus-visible,
     background: linear-gradient(90deg, var(--color-primary), var(--color-primary-light));
     border-radius: 4px;
     transition: width var(--transition-slow);
-    /* NIELSEN: Feedback de progreso */
 }
 
 .progress-text {
@@ -1085,6 +1119,7 @@ button:focus-visible,
     align-items: center;
     padding: var(--spacing-md) 0;
     border-bottom: 1px solid var(--color-background-alt);
+    gap: var(--spacing-md);
 }
 
 .quick-stat:last-child {
@@ -1130,6 +1165,8 @@ button:focus-visible,
 .notif-icon {
     width: 32px;
     height: 32px;
+    min-width: 32px;
+    min-height: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1177,7 +1214,7 @@ button:focus-visible,
 .footer {
     background: var(--color-primary-dark);
     color: white;
-    padding: var(--spacing-2xl) 0 var(--spacing-lg);
+    padding: clamp(2rem, 5vw, 3rem) 0 var(--spacing-lg);
     margin-top: 4rem;
 }
 
@@ -1189,6 +1226,17 @@ button:focus-visible,
     grid-template-columns: 1.5fr 2fr;
     gap: var(--spacing-2xl);
     margin-bottom: var(--spacing-xl);
+}
+
+@media (max-width: 768px) {
+    .footer-container {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-xl);
+        padding: 0 var(--spacing-md);
+    }
+}
+
+.footer-logo {
     font-size: 1.5rem;
     font-weight: 700;
     margin-bottom: var(--spacing-md);
@@ -1203,6 +1251,13 @@ button:focus-visible,
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: var(--spacing-xl);
+}
+
+@media (max-width: 640px) {
+    .footer-links {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-lg);
+    }
 }
 
 .footer-column h4 {
@@ -1238,311 +1293,18 @@ button:focus-visible,
     text-align: center;
 }
 
+@media (max-width: 768px) {
+    .footer-bottom {
+        padding: var(--spacing-lg) var(--spacing-md) 0;
+    }
+}
+
 .footer-bottom p {
     opacity: 0.7;
     font-size: 0.9rem;
 }
 
-/* ══════════════════════════════════════════════════════════════
-   RESPONSIVIDAD - SIGUIENDO PRINCIPIOS DEL DOCUMENTO
-   ══════════════════════════════════════════════════════════════ */
-
-/* TABLET - 1024px */
-@media (max-width: 1024px) {
-    .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    
-    .content-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .content-sidebar {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: var(--spacing-lg);
-    }
-    
-    .sidebar-card {
-        margin-bottom: 0;
-    }
-}
-
-/* TABLET Y MÓVIL - 768px - AQUÍ APARECE EL MENÚ SANDWICH */
-@media (max-width: 768px) {
-    /* RESPONSIVIDAD: Espaciado reducido */
-    .container {
-        padding: 0 var(--spacing-md);
-    }
-    
-    .nav-container {
-        padding: 0 var(--spacing-md);
-    }
-    
-    /* ===== ACTIVAR MENÚ SANDWICH - NIELSEN: CONTROL DEL USUARIO ===== */
-    .nav-toggle {
-        display: flex;
-        /* RESPONSIVIDAD: Menú hamburguesa visible */
-    }
-    
-    /* Ocultar acciones desktop */
-    .nav-actions {
-        display: none;
-    }
-    
-    /* NIELSEN: Visibilidad del estado - Menú full screen */
-    .nav-menu {
-        position: fixed;
-        top: 70px;
-        left: -100%;
-        width: 100%;
-        height: calc(100vh - 70px);
-        flex-direction: column;
-        background: white;
-        box-shadow: var(--shadow-lg);
-        padding: 0;
-        transition: left var(--transition);
-        overflow-y: auto;
-        z-index: 999;
-        /* NIELSEN: Control - Usuario puede abrir/cerrar */
-    }
-    
-    .nav-menu.active {
-        left: 0;
-        /* NIELSEN: Visibilidad del estado */
-    }
-    
-    /* GESTALT: Semejanza - Enlaces móviles consistentes */
-    .nav-menu > li {
-        width: 100%;
-        border-bottom: 1px solid rgba(7, 115, 75, 0.1);
-    }
-    
-    .nav-link {
-        display: block;
-        width: 100%;
-        padding: var(--spacing-md) var(--spacing-lg);
-        font-size: 1rem;
-        font-weight: 500;
-        color: var(--color-text);
-        transition: all 0.2s ease;
-        border-radius: 0;
-        background: transparent;
-        /* RESPONSIVIDAD: Área táctil amplia */
-    }
-    
-    .nav-link:hover,
-    .nav-link:focus {
-        background: var(--color-background-alt);
-        color: var(--color-primary);
-        padding-left: var(--spacing-xl);
-        /* NIELSEN: Feedback visual en móvil */
-    }
-    
-    /* GESTALT: Proximidad - Botones móviles agrupados */
-    .nav-mobile-actions {
-        display: flex;
-        flex-direction: column;
-        gap: var(--spacing-md);
-        width: 100%;
-        padding: var(--spacing-lg);
-        background: linear-gradient(135deg, var(--color-background-alt), white);
-        border-top: 2px solid var(--color-secondary-light);
-        margin-top: auto;
-    }
-    
-    /* RESPONSIVIDAD: Botones táctiles optimizados */
-    .nav-mobile-actions .btn-nav {
-        width: 100%;
-        text-align: center;
-        padding: var(--spacing-md);
-        min-height: 48px; /* Mínimo táctil */
-        font-size: 1rem;
-        font-weight: 600;
-        border-radius: var(--radius-md);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: var(--spacing-sm);
-        position: relative;
-        transition: var(--transition);
-    }
-    
-    .nav-mobile-actions .btn-ghost {
-        background: white;
-        color: var(--color-primary);
-        border: 2px solid var(--color-primary);
-    }
-    
-    .nav-mobile-actions .btn-ghost:hover,
-    .nav-mobile-actions .btn-ghost:active {
-        background: var(--color-primary);
-        color: white;
-        transform: translateY(-2px);
-        /* NIELSEN: Feedback táctil */
-    }
-    
-    .nav-mobile-actions .btn-primary {
-        background: var(--color-primary);
-        color: white;
-    }
-    
-    .nav-mobile-actions .btn-primary:hover,
-    .nav-mobile-actions .btn-primary:active {
-        background: var(--color-primary-light);
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-md);
-    }
-    
-    .nav-mobile-actions .notification-badge {
-        position: static;
-        margin-left: var(--spacing-sm);
-    }
-    
-    /* RESPONSIVIDAD: Welcome section adaptada */
-    .welcome-section {
-        padding: var(--spacing-xl) 0;
-    }
-    
-    .welcome-content h1 {
-        font-size: clamp(1.5rem, 5vw, 2rem);
-    }
-    
-    /* GESTALT: Proximidad - Stats apiladas */
-    .stats-grid {
-        grid-template-columns: 1fr;
-        margin-top: 0;
-        gap: var(--spacing-md);
-    }
-    
-    .stat-card {
-        padding: var(--spacing-lg);
-    }
-    
-    /* RESPONSIVIDAD: Acciones en columna */
-    .quick-actions {
-        flex-direction: column;
-    }
-    
-    .quick-action-btn {
-        width: 100%;
-        justify-content: center;
-    }
-    
-    /* Ocultar username en móvil para ahorrar espacio */
-    .username {
-        display: none;
-    }
-    
-    .user-menu {
-        padding: var(--spacing-sm);
-    }
-    
-    /* RESPONSIVIDAD: Footer adaptado */
-    .footer-container {
-        grid-template-columns: 1fr;
-        gap: var(--spacing-xl);
-    }
-    
-    .footer-links {
-        grid-template-columns: 1fr;
-        gap: var(--spacing-lg);
-    }
-    
-    /* NIELSEN: Usabilidad móvil - Dropdown desde abajo */
-    .user-dropdown {
-        position: fixed;
-        top: auto;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        min-width: 100%;
-        max-height: 80vh;
-        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-        transform: translateY(100%);
-        overflow-y: auto;
-    }
-    
-    .user-dropdown.active {
-        transform: translateY(0);
-    }
-    
-    /* RESPONSIVIDAD: Content cards */
-    .content-card,
-    .sidebar-card {
-        padding: var(--spacing-lg);
-    }
-    
-    .job-card {
-        padding: var(--spacing-md);
-    }
-    
-    .job-header {
-        flex-wrap: wrap;
-    }
-    
-    .job-badge {
-        order: -1;
-        width: 100%;
-        text-align: center;
-        margin-bottom: var(--spacing-sm);
-    }
-}
-
-/* MÓVIL PEQUEÑO - 480px */
-@media (max-width: 480px) {
-    /* RESPONSIVIDAD: Espaciado mínimo */
-    .container {
-        padding: 0 var(--spacing-md);
-    }
-    
-    .welcome-content h1 {
-        font-size: 1.5rem;
-    }
-    
-    .stat-card {
-        flex-direction: column;
-        text-align: center;
-        gap: var(--spacing-md);
-    }
-    
-    .stat-icon {
-        margin: 0 auto;
-    }
-    
-    .job-footer {
-        flex-direction: column;
-        gap: var(--spacing-md);
-        align-items: stretch;
-    }
-    
-    .btn-small {
-        width: 100%;
-    }
-    
-    /* RESPONSIVIDAD: Cards más compactas */
-    .dropdown-user-info {
-        flex-direction: column;
-        text-align: center;
-    }
-    
-    .dropdown-avatar {
-        margin: 0 auto;
-    }
-}
-
-/* ══════════════════════════════════════════════════════════════
-   ACCESIBILIDAD - NIELSEN: AYUDA Y DOCUMENTACIÓN
-   ══════════════════════════════════════════════════════════════ */
-
-/* NIELSEN: Visibilidad del estado - Focus visible */
-:focus-visible {
-    outline: 3px solid var(--color-primary);
-    outline-offset: 2px;
-    box-shadow: var(--shadow-focus);
-}
-
-/* NIELSEN: Flexibilidad - Skip link para teclado */
+/* ==================== ACCESIBILIDAD ==================== */
 .skip-link {
     position: absolute;
     top: -40px;
@@ -1559,7 +1321,16 @@ button:focus-visible,
     top: 0;
 }
 
-/* ACCESIBILIDAD: Movimiento reducido */
+/* Focus visible global */
+:focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 2px;
+    box-shadow: var(--shadow-focus);
+}
+
+/* ==================== MEDIA QUERIES - ACCESIBILIDAD ==================== */
+
+/* Reducir movimiento */
 @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
@@ -1570,16 +1341,18 @@ button:focus-visible,
         scroll-behavior: auto !important;
     }
     
-    .nav-menu {
+    .nav-menu,
+    .user-dropdown {
         transition: none;
     }
 }
 
-/* ACCESIBILIDAD: Alto contraste */
+/* Alto contraste */
 @media (prefers-contrast: high) {
     :root {
         --color-text: #000000;
         --color-background: #ffffff;
+        --color-background-alt: #ffffff;
         --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
         --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
     }
@@ -1596,53 +1369,109 @@ button:focus-visible,
     }
 }
 
-/* =====================================================
-   LANGUAGE SELECTOR – DASHBOARD (BLANCO, COMO HOME)
-   ===================================================== */
+/* ==================== UTILIDADES ==================== */
 
-.header .language-selector {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    background: #ffffff;
-    padding: 4px;
-    border-radius: 999px;
-    border: 1.5px solid rgba(7, 115, 75, 0.25);
-    box-shadow: var(--shadow-sm);
+/* Text utilities */
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+
+/* Display utilities */
+.d-none { display: none; }
+.d-block { display: block; }
+.d-flex { display: flex; }
+.d-grid { display: grid; }
+
+/* Spacing utilities */
+.mt-0 { margin-top: 0; }
+.mt-1 { margin-top: var(--spacing-sm); }
+.mt-2 { margin-top: var(--spacing-md); }
+.mt-3 { margin-top: var(--spacing-lg); }
+.mt-4 { margin-top: var(--spacing-xl); }
+
+.mb-0 { margin-bottom: 0; }
+.mb-1 { margin-bottom: var(--spacing-sm); }
+.mb-2 { margin-bottom: var(--spacing-md); }
+.mb-3 { margin-bottom: var(--spacing-lg); }
+.mb-4 { margin-bottom: var(--spacing-xl); }
+
+.p-0 { padding: 0; }
+.p-1 { padding: var(--spacing-sm); }
+.p-2 { padding: var(--spacing-md); }
+.p-3 { padding: var(--spacing-lg); }
+.p-4 { padding: var(--spacing-xl); }
+
+/* Flex utilities */
+.flex-1 { flex: 1; }
+.flex-wrap { flex-wrap: wrap; }
+.flex-column { flex-direction: column; }
+.align-center { align-items: center; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.gap-1 { gap: var(--spacing-sm); }
+.gap-2 { gap: var(--spacing-md); }
+.gap-3 { gap: var(--spacing-lg); }
+
+/* ==================== ANIMACIONES ==================== */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
-/* Botones ES / EN */
-.header .language-selector .lang-btn {
-    appearance: none;
-    border: none;
-    background: transparent;
-    color: var(--color-primary);
-    font-size: 0.75rem;
-    font-weight: 700;
-    padding: 6px 12px;
-    border-radius: 999px;
-    cursor: pointer;
-    line-height: 1;
-    transition:
-        background var(--transition-fast),
-        color var(--transition-fast),
-        box-shadow var(--transition-fast);
+@keyframes slideInFromRight {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 
-/* Hover */
-.header .language-selector .lang-btn:hover {
-    background: rgba(7, 115, 75, 0.1);
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
 }
 
-/* Idioma activo */
-.header .language-selector .lang-btn.active {
-    background: var(--color-primary);
-    color: #ffffff;
-    box-shadow: var(--shadow-sm);
+.animate-fade-in {
+    animation: fadeIn 0.5s ease-out;
 }
 
-/* Focus accesible */
-.header .language-selector .lang-btn:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(7, 115, 75, 0.3);
+.animate-slide-in {
+    animation: slideInFromRight 0.5s ease-out;
+}
+
+/* ==================== PRINT STYLES ==================== */
+@media print {
+    .header,
+    .nav-toggle,
+    .nav-actions,
+    .quick-actions,
+    .footer,
+    .btn,
+    .dropdown-item {
+        display: none;
+    }
+    
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .content-card,
+    .sidebar-card {
+        box-shadow: none;
+        border: 1px solid #ccc;
+        page-break-inside: avoid;
+    }
 }

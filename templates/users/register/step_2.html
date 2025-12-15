@@ -2,32 +2,36 @@
 {% load static %}
 {% load i18n %}
 
-{% block title %}{% trans "Crear Cuenta" %} - {% blocktrans %}Paso 2/4{% endblocktrans %} - Llamkay.pe{% endblock %}
+{% block title %}{% trans "Crear Cuenta - Paso 2/4" %} - Llamkay.pe{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/users/register.css' %}">
 {% endblock %}
 
 {% block content %}
-<div
-  class="register-wrapper"
-  data-i18n-error-direccion="{% trans 'Por favor ingresa tu dirección' %}"
-  data-i18n-error-departamento="{% trans 'Por favor selecciona un departamento' %}"
-  data-i18n-error-provincia="{% trans 'Por favor selecciona una provincia' %}"
-  data-i18n-error-distrito="{% trans 'Por favor selecciona un distrito' %}"
-  data-i18n-loading="{% trans 'Cargando...' %}"
-  data-i18n-processing="{% trans 'Procesando...' %}"
->
-    {# ============================================================
-       SIDEBAR - Gestalt (proximidad) + Nielsen (ayuda/documentación)
-       ============================================================ #}
+<!-- Header con selector de idioma -->
+<header class="lang-header">
+    <a href="{% url 'llamkay:index' %}" class="logo-link-header">
+        <span class="logo-icon-small">🧳</span>
+        <span class="logo-text-header">Llamkay.pe</span>
+    </a>
+    
+    <div class="language-switcher">
+        <button type="button" class="lang-btn active" data-lang="es">ES</button>
+        <button type="button" class="lang-btn" data-lang="en">EN</button>
+    </div>
+</header>
+
+<div class="register-wrapper">
+
+    <!-- ==================== SIDEBAR INFORMATIVO ==================== -->
     <aside class="register-sidebar" aria-label="{% trans 'Panel informativo' %}">
         <div class="register-logo" aria-hidden="true">
             <h1>🌱 Llamkay</h1>
         </div>
 
-        <h2>{% trans "¿Por qué necesitamos tu ubicación?" %}</h2>
-        <p>{% trans "Tu ubicación nos ayuda a conectarte con oportunidades cerca de ti." %}</p>
+        <h2 data-i18n="sidebar-title">{% trans "¿Por qué necesitamos tu ubicación?" %}</h2>
+        <p data-i18n="sidebar-description">{% trans "Tu ubicación nos ayuda a conectarte con oportunidades cerca de ti." %}</p>
 
         <ul class="benefits-list" role="list">
             <li>
@@ -39,8 +43,8 @@
                     </svg>
                 </div>
                 <div class="benefit-text">
-                    <strong>{% trans "Trabajos cercanos" %}</strong>
-                    <span>{% trans "Encuentra oportunidades en tu zona" %}</span>
+                    <strong data-i18n="benefit-1-title">{% trans "Trabajos cercanos" %}</strong>
+                    <span data-i18n="benefit-1-desc">{% trans "Encuentra oportunidades en tu zona" %}</span>
                 </div>
             </li>
 
@@ -53,8 +57,8 @@
                     </svg>
                 </div>
                 <div class="benefit-text">
-                    <strong>{% trans "Trabaja desde casa" %}</strong>
-                    <span>{% trans "Reduce tiempos de traslado" %}</span>
+                    <strong data-i18n="benefit-2-title">{% trans "Trabaja desde casa" %}</strong>
+                    <span data-i18n="benefit-2-desc">{% trans "Reduce tiempos de traslado" %}</span>
                 </div>
             </li>
 
@@ -67,8 +71,8 @@
                     </svg>
                 </div>
                 <div class="benefit-text">
-                    <strong>{% trans "Respuesta rápida" %}</strong>
-                    <span>{% trans "Conecta con usuarios locales" %}</span>
+                    <strong data-i18n="benefit-3-title">{% trans "Respuesta rápida" %}</strong>
+                    <span data-i18n="benefit-3-desc">{% trans "Conecta con usuarios locales" %}</span>
                 </div>
             </li>
 
@@ -80,8 +84,8 @@
                     </svg>
                 </div>
                 <div class="benefit-text">
-                    <strong>{% trans "Privacidad garantizada" %}</strong>
-                    <span>{% trans "Tu dirección exacta está protegida" %}</span>
+                    <strong data-i18n="benefit-4-title">{% trans "Privacidad garantizada" %}</strong>
+                    <span data-i18n="benefit-4-desc">{% trans "Tu dirección exacta está protegida" %}</span>
                 </div>
             </li>
         </ul>
@@ -93,20 +97,18 @@
                 <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
                 <line x1="12" y1="17" x2="12.01" y2="17"></line>
             </svg>
-            {% trans "¿Necesitas ayuda?" %}
+            <span data-i18n="help-link">{% trans "¿Necesitas ayuda?" %}</span>
         </a>
     </aside>
 
-    {# ============================================================
-       CONTENIDO - Nielsen (visibilidad del estado + control)
-       ============================================================ #}
+    <!-- ==================== CONTENIDO PRINCIPAL ==================== -->
     <main class="register-content" role="main" aria-labelledby="register-title">
         <header class="register-header">
-            <h2 id="register-title">{% trans "Tu ubicación" %}</h2>
-            <p class="register-subtitle">{% trans "Indícanos dónde te encuentras" %}</p>
+            <h2 id="register-title" data-i18n="main-title">{% trans "Tu ubicación" %}</h2>
+            <p class="register-subtitle" data-i18n="main-subtitle">{% trans "Indícanos dónde te encuentras" %}</p>
         </header>
 
-        {# ==================== BARRA DE PROGRESO ==================== #}
+        <!-- ==================== BARRA DE PROGRESO ==================== -->
         <section class="progress-container" aria-label="{% trans 'Progreso de registro' %}">
             <div class="progress-steps" role="list" aria-label="{% trans 'Pasos de registro' %}">
                 <div class="progress-step completed" role="listitem" aria-label="{% trans 'Paso 1 completado' %}">
@@ -116,27 +118,27 @@
                             <polyline points="20 6 9 17 4 12"></polyline>
                         </svg>
                     </div>
-                    <span class="step-label">{% trans "Información" %}</span>
+                    <span class="step-label" data-i18n="step-1-label">{% trans "Información" %}</span>
                 </div>
 
                 <div class="progress-step active" role="listitem" aria-current="step" aria-label="{% trans 'Paso 2 actual' %}">
                     <div class="step-circle">2</div>
-                    <span class="step-label">{% trans "Ubicación" %}</span>
+                    <span class="step-label" data-i18n="step-2-label">{% trans "Ubicación" %}</span>
                 </div>
 
                 <div class="progress-step" role="listitem" aria-label="{% trans 'Paso 3 pendiente' %}">
                     <div class="step-circle">3</div>
-                    <span class="step-label">{% trans "Perfil" %}</span>
+                    <span class="step-label" data-i18n="step-3-label">{% trans "Perfil" %}</span>
                 </div>
 
                 <div class="progress-step" role="listitem" aria-label="{% trans 'Paso 4 pendiente' %}">
                     <div class="step-circle">4</div>
-                    <span class="step-label">{% trans "Verificación" %}</span>
+                    <span class="step-label" data-i18n="step-4-label">{% trans "Verificación" %}</span>
                 </div>
             </div>
         </section>
 
-        {# ==================== ALERTAS ==================== #}
+        <!-- ==================== ALERTAS ==================== -->
         {% if form.non_field_errors %}
         <div class="alert alert-error" role="alert" aria-live="polite">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
@@ -153,9 +155,7 @@
         </div>
         {% endif %}
 
-                {# ============================================================
-           FORMULARIO - Nielsen (prevención de errores + feedback)
-           ============================================================ #}
+        <!-- ==================== FORMULARIO ==================== -->
         <form
             method="post"
             class="register-form"
@@ -165,14 +165,14 @@
         >
             {% csrf_token %}
 
-            {# ==================== DIRECCIÓN ==================== #}
+            <!-- ==================== DIRECCIÓN ==================== -->
             <fieldset>
-                <legend>{% trans "Dirección" %}</legend>
+                <legend data-i18n="legend-address">{% trans "Dirección" %}</legend>
 
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="id_direccion">
-                            {% trans "Dirección completa" %} *
+                            <span data-i18n="label-address">{% trans "Dirección completa" %}</span> *
                         </label>
 
                         <input
@@ -184,6 +184,7 @@
                             required
                             aria-required="true"
                             aria-describedby="direccion-help"
+                            data-i18n-placeholder="placeholder-address"
                         >
 
                         {% if form.direccion.errors %}
@@ -192,22 +193,22 @@
                             </span>
                         {% endif %}
 
-                        <span class="form-help" id="direccion-help">
+                        <span class="form-help" id="direccion-help" data-i18n="help-address">
                             {% trans "Tu dirección exacta está protegida y no se muestra públicamente." %}
                         </span>
                     </div>
                 </div>
             </fieldset>
 
-            {# ==================== UBICACIÓN GEOGRÁFICA ==================== #}
+            <!-- ==================== UBICACIÓN GEOGRÁFICA ==================== -->
             <fieldset>
-                <legend>{% trans "Ubicación geográfica" %}</legend>
+                <legend data-i18n="legend-location">{% trans "Ubicación geográfica" %}</legend>
 
                 <div class="form-grid">
-                    {# -------- Departamento -------- #}
+                    <!-- Departamento -->
                     <div class="form-group">
                         <label for="id_departamento">
-                            {% trans "Departamento" %} *
+                            <span data-i18n="label-department">{% trans "Departamento" %}</span> *
                         </label>
 
                         <select
@@ -216,7 +217,7 @@
                             required
                             aria-required="true"
                         >
-                            <option value="">
+                            <option value="" data-i18n="option-select-department">
                                 {% trans "Selecciona tu departamento" %}
                             </option>
 
@@ -239,10 +240,10 @@
                         {% endif %}
                     </div>
 
-                    {# -------- Provincia -------- #}
+                    <!-- Provincia -->
                     <div class="form-group">
                         <label for="id_provincia">
-                            {% trans "Provincia" %} *
+                            <span data-i18n="label-province">{% trans "Provincia" %}</span> *
                         </label>
 
                         <select
@@ -253,7 +254,7 @@
                             aria-required="true"
                             aria-disabled="true"
                         >
-                            <option value="">
+                            <option value="" data-i18n="option-select-province-first">
                                 {% trans "Primero selecciona un departamento" %}
                             </option>
                         </select>
@@ -265,10 +266,10 @@
                         {% endif %}
                     </div>
 
-                    {# -------- Distrito -------- #}
+                    <!-- Distrito -->
                     <div class="form-group">
                         <label for="id_distrito">
-                            {% trans "Distrito" %} *
+                            <span data-i18n="label-district">{% trans "Distrito" %}</span> *
                         </label>
 
                         <select
@@ -279,7 +280,7 @@
                             aria-required="true"
                             aria-disabled="true"
                         >
-                            <option value="">
+                            <option value="" data-i18n="option-select-district-first">
                                 {% trans "Primero selecciona una provincia" %}
                             </option>
                         </select>
@@ -293,7 +294,7 @@
                 </div>
             </fieldset>
 
-                        {# ==================== BOTONES ==================== #}
+            <!-- ==================== BOTONES ==================== -->
             <div class="form-actions">
                 <a
                     href="{% url 'users:register' %}"
@@ -304,14 +305,14 @@
                         <line x1="19" y1="12" x2="5" y2="12"></line>
                         <polyline points="12 19 5 12 12 5"></polyline>
                     </svg>
-                    {% trans "Anterior" %}
+                    <span data-i18n="btn-back">{% trans "Anterior" %}</span>
                 </a>
 
                 <button
                     type="submit"
                     class="btn btn-primary"
                 >
-                    {% trans "Siguiente" %}
+                    <span data-i18n="btn-next">{% trans "Siguiente" %}</span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -321,11 +322,11 @@
             </div>
         </form>
 
-        {# ==================== FOOTER ==================== #}
+        <!-- ==================== FOOTER ==================== -->
         <div class="register-footer">
             <p>
-                {% trans "¿Ya tienes una cuenta?" %}
-                <a href="{% url 'users:login' %}">
+                <span data-i18n="footer-have-account">{% trans "¿Ya tienes una cuenta?" %}</span>
+                <a href="{% url 'users:login' %}" data-i18n="footer-login">
                     {% trans "Inicia sesión aquí" %}
                 </a>
             </p>
@@ -343,5 +344,3 @@
 
 <script src="{% static 'js/users/register/step_2.js' %}"></script>
 {% endblock %}
-
-

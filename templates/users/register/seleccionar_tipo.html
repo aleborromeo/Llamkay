@@ -20,8 +20,8 @@
     
     <!-- Botón de cambio de idioma -->
     <div class="language-switcher">
-        <button class="lang-btn active" data-lang="es" aria-label="Español">ES</button>
-        <button class="lang-btn" data-lang="en" aria-label="English">EN</button>
+        <button type="button" class="lang-btn active" data-lang="es">ES</button>
+        <button type="button" class="lang-btn" data-lang="en">EN</button>
     </div>
 </header>
 
@@ -34,7 +34,7 @@
         <!-- Header del Selector -->
         <header class="selector-header-new">
             <span class="step-badge">
-                {% trans "Paso 1 de 2" %}
+                {% trans "Paso 1 de 5" %}
             </span>
 
             <h1 class="selector-title">
@@ -191,21 +191,10 @@
             </a>
         </footer>
 
-        <!-- Info Banner -->
-        <div class="info-banner-new" role="note">
-            <span class="info-icon-new">ℹ️</span>
-            <div class="info-text-new">
-                <strong>{% trans "¿No estás seguro?" %}</strong>
-                <span>
-                    {% trans "Puedes cambiar tu tipo de cuenta después del registro desde tu perfil." %}
-                </span>
-            </div>
-        </div>
-
     </main>
 </div>
 {% endblock %}
 
 {% block extra_js %}
-<script src="{% static 'js/users/seleccionar_tipo.js' %}"></script>
+<script src="{% static 'js/users/register/seleccionar_tipo.js' %}"></script>
 {% endblock %}

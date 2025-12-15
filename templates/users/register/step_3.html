@@ -2,30 +2,36 @@
 {% load static %}
 {% load i18n %}
 
-{% block title %}
-{% trans "Crear Cuenta - Paso 3/4" %} - Llamkay.pe
-{% endblock %}
+{% block title %}{% trans "Crear Cuenta - Paso 3/4" %} - Llamkay.pe{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/users/register.css' %}">
 {% endblock %}
 
 {% block content %}
+<!-- Header con selector de idioma -->
+<header class="lang-header">
+    <a href="{% url 'llamkay:index' %}" class="logo-link-header">
+        <span class="logo-icon-small">🧳</span>
+        <span class="logo-text-header">Llamkay.pe</span>
+    </a>
+    
+    <div class="language-switcher">
+        <button type="button" class="lang-btn active" data-lang="es">ES</button>
+        <button type="button" class="lang-btn" data-lang="en">EN</button>
+    </div>
+</header>
+
 <div class="register-wrapper">
 
-    <!-- =========================
-         SIDEBAR INFORMATIVO
-         PRINCIPIOS:
-         - Gestalt: Proximidad y Semejanza
-         - Nielsen: Reconocimiento
-    ========================== -->
+    <!-- ==================== SIDEBAR INFORMATIVO ==================== -->
     <aside class="register-sidebar" aria-label="{% trans 'Información del paso' %}">
         <div class="register-logo">
             <h1 aria-hidden="true">🌱 Llamkay</h1>
         </div>
 
-        <h2>{% trans "Construye tu perfil profesional" %}</h2>
-        <p>
+        <h2 data-i18n="sidebar-title">{% trans "Construye tu perfil profesional" %}</h2>
+        <p data-i18n="sidebar-description">
             {% trans "Tu perfil es lo primero que verán los empleadores y trabajadores. Hazlo claro, honesto y completo." %}
         </p>
 
@@ -35,8 +41,8 @@
                     ✔️
                 </div>
                 <div class="benefit-text">
-                    <strong>{% trans "Más confianza" %}</strong>
-                    <span>{% trans "Un perfil completo genera mayor credibilidad" %}</span>
+                    <strong data-i18n="benefit-1-title">{% trans "Más confianza" %}</strong>
+                    <span data-i18n="benefit-1-desc">{% trans "Un perfil completo genera mayor credibilidad" %}</span>
                 </div>
             </li>
 
@@ -45,8 +51,8 @@
                     ⭐
                 </div>
                 <div class="benefit-text">
-                    <strong>{% trans "Mejores oportunidades" %}</strong>
-                    <span>{% trans "Aparecerás en más búsquedas relevantes" %}</span>
+                    <strong data-i18n="benefit-2-title">{% trans "Mejores oportunidades" %}</strong>
+                    <span data-i18n="benefit-2-desc">{% trans "Aparecerás en más búsquedas relevantes" %}</span>
                 </div>
             </li>
 
@@ -55,70 +61,57 @@
                     🔒
                 </div>
                 <div class="benefit-text">
-                    <strong>{% trans "Control total" %}</strong>
-                    <span>{% trans "Puedes editar tu perfil cuando quieras" %}</span>
+                    <strong data-i18n="benefit-3-title">{% trans "Control total" %}</strong>
+                    <span data-i18n="benefit-3-desc">{% trans "Puedes editar tu perfil cuando quieras" %}</span>
                 </div>
             </li>
         </ul>
 
         <a href="#" class="help-link">
             <span aria-hidden="true">❓</span>
-            {% trans "¿Necesitas ayuda para completar tu perfil?" %}
+            <span data-i18n="help-link">{% trans "¿Necesitas ayuda para completar tu perfil?" %}</span>
         </a>
     </aside>
 
-    <!-- =========================
-         CONTENIDO PRINCIPAL
-         PRINCIPIOS:
-         - Nielsen: Visibilidad del estado
-         - Accesibilidad: landmarks
-    ========================== -->
+    <!-- ==================== CONTENIDO PRINCIPAL ==================== -->
     <main class="register-content" role="main">
 
         <!-- HEADER -->
         <header class="register-header">
-            <h2>{% trans "Tu perfil" %}</h2>
-            <p class="register-subtitle">
+            <h2 data-i18n="main-title">{% trans "Tu perfil" %}</h2>
+            <p class="register-subtitle" data-i18n="main-subtitle">
                 {% trans "Cuéntanos quién eres y qué sabes hacer" %}
             </p>
         </header>
 
-        <!-- =========================
-             BARRA DE PROGRESO
-             Nielsen #1: Visibilidad del estado
-        ========================== -->
+        <!-- ==================== BARRA DE PROGRESO ==================== -->
         <nav class="progress-container" aria-label="{% trans 'Progreso de registro' %}">
             <div class="progress-steps">
 
                 <div class="progress-step completed">
-                    <div class="step-circle" aria-hidden="true">✔</div>
-                    <span class="step-label">{% trans "Información" %}</span>
+                    <div class="step-circle" aria-hidden="true">✓</div>
+                    <span class="step-label" data-i18n="step-1-label">{% trans "Información" %}</span>
                 </div>
 
                 <div class="progress-step completed">
-                    <div class="step-circle" aria-hidden="true">✔</div>
-                    <span class="step-label">{% trans "Ubicación" %}</span>
+                    <div class="step-circle" aria-hidden="true">✓</div>
+                    <span class="step-label" data-i18n="step-2-label">{% trans "Ubicación" %}</span>
                 </div>
 
                 <div class="progress-step active" aria-current="step">
                     <div class="step-circle">3</div>
-                    <span class="step-label">{% trans "Perfil" %}</span>
+                    <span class="step-label" data-i18n="step-3-label">{% trans "Perfil" %}</span>
                 </div>
 
                 <div class="progress-step">
                     <div class="step-circle">4</div>
-                    <span class="step-label">{% trans "Verificación" %}</span>
+                    <span class="step-label" data-i18n="step-4-label">{% trans "Verificación" %}</span>
                 </div>
 
             </div>
         </nav>
 
-                <!-- =========================
-             FORMULARIO PERFIL
-             Nielsen:
-             - Prevención de errores
-             - Reconocimiento
-        ========================== -->
+        <!-- ==================== FORMULARIO PERFIL ==================== -->
         <form method="post"
               class="register-form"
               id="profile-form"
@@ -126,19 +119,16 @@
 
             {% csrf_token %}
 
-            <!-- =========================
-                 SECCIÓN: IDENTIDAD
-                 Gestalt: Proximidad
-            ========================== -->
+            <!-- ==================== SECCIÓN: IDENTIDAD ==================== -->
             <fieldset>
-                <legend>{% trans "Identidad pública" %}</legend>
+                <legend data-i18n="legend-identity">{% trans "Identidad pública" %}</legend>
 
                 <div class="form-grid form-grid-2">
 
                     <!-- Nombre visible -->
                     <div class="form-group">
                         <label for="id_nombre_publico">
-                            {% trans "Nombre público" %} *
+                            <span data-i18n="label-public-name">{% trans "Nombre público" %}</span> *
                         </label>
                         <input
                             type="text"
@@ -146,7 +136,8 @@
                             name="nombre_publico"
                             value="{{ form.nombre_publico.value|default_if_none:'' }}"
                             placeholder="{% trans 'Ej: Juan Pérez' %}"
-                            required>
+                            required
+                            data-i18n-placeholder="placeholder-public-name">
 
                         {% if form.nombre_publico.errors %}
                         <span class="form-error">
@@ -154,7 +145,7 @@
                         </span>
                         {% endif %}
 
-                        <span class="form-help">
+                        <span class="form-help" data-i18n="help-public-name">
                             {% trans "Este nombre será visible para otros usuarios" %}
                         </span>
                     </div>
@@ -162,21 +153,21 @@
                     <!-- Rol principal -->
                     <div class="form-group">
                         <label for="id_rol_principal">
-                            {% trans "¿Qué haces?" %} *
+                            <span data-i18n="label-role">{% trans "¿Qué haces?" %}</span> *
                         </label>
                         <select id="id_rol_principal"
                                 name="rol_principal"
                                 required>
-                            <option value="">
+                            <option value="" data-i18n="option-select-role">
                                 {% trans "Selecciona una opción" %}
                             </option>
-                            <option value="trabajador">
+                            <option value="trabajador" data-i18n="option-worker">
                                 {% trans "Ofrezco servicios" %}
                             </option>
-                            <option value="empleador">
+                            <option value="empleador" data-i18n="option-employer">
                                 {% trans "Busco contratar" %}
                             </option>
-                            <option value="ambos">
+                            <option value="ambos" data-i18n="option-both">
                                 {% trans "Ambos" %}
                             </option>
                         </select>
@@ -191,16 +182,13 @@
                 </div>
             </fieldset>
 
-            <!-- =========================
-                 SECCIÓN: DESCRIPCIÓN
-                 Nielsen: Minimalismo
-            ========================== -->
+            <!-- ==================== SECCIÓN: DESCRIPCIÓN ==================== -->
             <fieldset>
-                <legend>{% trans "Sobre ti" %}</legend>
+                <legend data-i18n="legend-about">{% trans "Sobre ti" %}</legend>
 
                 <div class="form-group">
                     <label for="id_biografia">
-                        {% trans "Descripción" %} *
+                        <span data-i18n="label-bio">{% trans "Descripción" %}</span> *
                     </label>
 
                     <textarea
@@ -209,7 +197,8 @@
                         rows="5"
                         maxlength="500"
                         placeholder="{% trans 'Describe brevemente tu experiencia, habilidades y lo que ofreces...' %}"
-                        required>{{ form.biografia.value|default_if_none:'' }}</textarea>
+                        required
+                        data-i18n-placeholder="placeholder-bio">{{ form.biografia.value|default_if_none:'' }}</textarea>
 
                     {% if form.biografia.errors %}
                     <span class="form-error">
@@ -217,22 +206,19 @@
                     </span>
                     {% endif %}
 
-                    <span class="form-help">
+                    <span class="form-help" data-i18n="help-bio">
                         {% trans "Máximo 500 caracteres. Sé claro y directo." %}
                     </span>
                 </div>
             </fieldset>
 
-            <!-- =========================
-                 SECCIÓN: HABILIDADES
-                 Gestalt: Semejanza
-            ========================== -->
+            <!-- ==================== SECCIÓN: HABILIDADES ==================== -->
             <fieldset>
-                <legend>{% trans "Habilidades principales" %}</legend>
+                <legend data-i18n="legend-skills">{% trans "Habilidades principales" %}</legend>
 
                 <div class="form-group">
                     <label for="id_habilidades">
-                        {% trans "Habilidades" %}
+                        <span data-i18n="label-skills">{% trans "Habilidades" %}</span>
                     </label>
 
                     <input
@@ -240,101 +226,93 @@
                         id="id_habilidades"
                         name="habilidades"
                         value="{{ form.habilidades.value|default_if_none:'' }}"
-                        placeholder="{% trans 'Ej: Carpintería, Plomería, Diseño gráfico' %}">
+                        placeholder="{% trans 'Ej: Carpintería, Plomería, Diseño gráfico' %}"
+                        data-i18n-placeholder="placeholder-skills">
 
-                    <span class="form-help">
+                    <span class="form-help" data-i18n="help-skills">
                         {% trans "Sepáralas por comas para facilitar la búsqueda" %}
                     </span>
                 </div>
             </fieldset>
 
-                        <!-- =========================
-                 SECCIÓN: EXPERIENCIA
-                 Nielsen: Flexibilidad
-            ========================== -->
+            <!-- ==================== SECCIÓN: EXPERIENCIA ==================== -->
             <fieldset>
-                <legend>{% trans "Experiencia" %}</legend>
+                <legend data-i18n="legend-experience">{% trans "Experiencia" %}</legend>
 
                 <div class="form-grid form-grid-2">
 
                     <!-- Años de experiencia -->
                     <div class="form-group">
                         <label for="id_experiencia_anios">
-                            {% trans "Años de experiencia" %}
+                            <span data-i18n="label-years">{% trans "Años de experiencia" %}</span>
                         </label>
                         <select id="id_experiencia_anios"
                                 name="experiencia_anios">
-                            <option value="">
+                            <option value="" data-i18n="option-select">
                                 {% trans "Selecciona" %}
                             </option>
-                            <option value="0-1">{% trans "Menos de 1 año" %}</option>
-                            <option value="1-3">{% trans "1 a 3 años" %}</option>
-                            <option value="3-5">{% trans "3 a 5 años" %}</option>
-                            <option value="5+">{% trans "Más de 5 años" %}</option>
+                            <option value="0-1" data-i18n="option-years-0-1">{% trans "Menos de 1 año" %}</option>
+                            <option value="1-3" data-i18n="option-years-1-3">{% trans "1 a 3 años" %}</option>
+                            <option value="3-5" data-i18n="option-years-3-5">{% trans "3 a 5 años" %}</option>
+                            <option value="5+" data-i18n="option-years-5+">{% trans "Más de 5 años" %}</option>
                         </select>
                     </div>
 
                     <!-- Nivel -->
                     <div class="form-group">
                         <label for="id_nivel">
-                            {% trans "Nivel" %}
+                            <span data-i18n="label-level">{% trans "Nivel" %}</span>
                         </label>
                         <select id="id_nivel" name="nivel">
-                            <option value="">{% trans "Selecciona" %}</option>
-                            <option value="basico">{% trans "Básico" %}</option>
-                            <option value="intermedio">{% trans "Intermedio" %}</option>
-                            <option value="avanzado">{% trans "Avanzado" %}</option>
+                            <option value="" data-i18n="option-select">{% trans "Selecciona" %}</option>
+                            <option value="basico" data-i18n="option-basic">{% trans "Básico" %}</option>
+                            <option value="intermedio" data-i18n="option-intermediate">{% trans "Intermedio" %}</option>
+                            <option value="avanzado" data-i18n="option-advanced">{% trans "Avanzado" %}</option>
                         </select>
                     </div>
 
                 </div>
             </fieldset>
 
-            <!-- =========================
-                 SECCIÓN: DISPONIBILIDAD
-                 Gestalt: Agrupación
-            ========================== -->
+            <!-- ==================== SECCIÓN: DISPONIBILIDAD ==================== -->
             <fieldset>
-                <legend>{% trans "Disponibilidad" %}</legend>
+                <legend data-i18n="legend-availability">{% trans "Disponibilidad" %}</legend>
 
                 <div class="form-grid form-grid-2">
 
                     <!-- Tipo de trabajo -->
                     <div class="form-group">
                         <label for="id_modalidad">
-                            {% trans "Modalidad" %}
+                            <span data-i18n="label-modality">{% trans "Modalidad" %}</span>
                         </label>
                         <select id="id_modalidad" name="modalidad">
-                            <option value="">{% trans "Selecciona" %}</option>
-                            <option value="presencial">{% trans "Presencial" %}</option>
-                            <option value="remoto">{% trans "Remoto" %}</option>
-                            <option value="mixto">{% trans "Mixto" %}</option>
+                            <option value="" data-i18n="option-select">{% trans "Selecciona" %}</option>
+                            <option value="presencial" data-i18n="option-onsite">{% trans "Presencial" %}</option>
+                            <option value="remoto" data-i18n="option-remote">{% trans "Remoto" %}</option>
+                            <option value="mixto" data-i18n="option-hybrid">{% trans "Mixto" %}</option>
                         </select>
                     </div>
 
                     <!-- Horario -->
                     <div class="form-group">
                         <label for="id_horario">
-                            {% trans "Horario disponible" %}
+                            <span data-i18n="label-schedule">{% trans "Horario disponible" %}</span>
                         </label>
                         <select id="id_horario" name="horario">
-                            <option value="">{% trans "Selecciona" %}</option>
-                            <option value="manana">{% trans "Mañanas" %}</option>
-                            <option value="tarde">{% trans "Tardes" %}</option>
-                            <option value="noche">{% trans "Noches" %}</option>
-                            <option value="flexible">{% trans "Flexible" %}</option>
+                            <option value="" data-i18n="option-select">{% trans "Selecciona" %}</option>
+                            <option value="manana" data-i18n="option-morning">{% trans "Mañanas" %}</option>
+                            <option value="tarde" data-i18n="option-afternoon">{% trans "Tardes" %}</option>
+                            <option value="noche" data-i18n="option-evening">{% trans "Noches" %}</option>
+                            <option value="flexible" data-i18n="option-flexible">{% trans "Flexible" %}</option>
                         </select>
                     </div>
 
                 </div>
             </fieldset>
 
-            <!-- =========================
-                 SECCIÓN: VISIBILIDAD
-                 Nielsen: Control del usuario
-            ========================== -->
+            <!-- ==================== SECCIÓN: VISIBILIDAD ==================== -->
             <fieldset>
-                <legend>{% trans "Privacidad" %}</legend>
+                <legend data-i18n="legend-privacy">{% trans "Privacidad" %}</legend>
 
                 <div class="custom-checkbox">
                     <input type="checkbox"
@@ -342,22 +320,19 @@
                            name="perfil_publico"
                            checked>
                     <label for="id_perfil_publico">
-                        {% trans "Quiero que mi perfil sea visible para otros usuarios" %}
+                        <span data-i18n="label-public-profile">{% trans "Quiero que mi perfil sea visible para otros usuarios" %}</span>
                     </label>
                 </div>
 
-                <span class="form-help">
+                <span class="form-help" data-i18n="help-privacy">
                     {% trans "Podrás cambiar esto más adelante desde tu perfil" %}
                 </span>
             </fieldset>
 
-            <!-- =========================
-                 NAVEGACIÓN
-                 Nielsen: Control + feedback
-            ========================== -->
+            <!-- ==================== NAVEGACIÓN ==================== -->
             <div class="form-actions">
 
-                <a href="{% url 'users:register_step_2' %}"
+                <a href="{% url 'users:register_two' %}"
                    class="btn btn-secondary">
                     <svg xmlns="http://www.w3.org/2000/svg"
                          width="16" height="16"
@@ -368,12 +343,12 @@
                         <line x1="19" y1="12" x2="5" y2="12"></line>
                         <polyline points="12 19 5 12 12 5"></polyline>
                     </svg>
-                    {% trans "Anterior" %}
+                    <span data-i18n="btn-back">{% trans "Anterior" %}</span>
                 </a>
 
                 <button type="submit"
                         class="btn btn-primary">
-                    {% trans "Continuar" %}
+                    <span data-i18n="btn-continue">{% trans "Continuar" %}</span>
                     <svg xmlns="http://www.w3.org/2000/svg"
                          width="16" height="16"
                          viewBox="0 0 24 24"
@@ -389,14 +364,11 @@
 
         </form>
 
-        <!-- =========================
-             FOOTER
-             Consistencia visual
-        ========================== -->
+        <!-- ==================== FOOTER ==================== -->
         <div class="register-footer">
             <p>
-                {% trans "¿Ya tienes una cuenta?" %}
-                <a href="{% url 'users:login' %}">
+                <span data-i18n="footer-have-account">{% trans "¿Ya tienes una cuenta?" %}</span>
+                <a href="{% url 'users:login' %}" data-i18n="footer-login">
                     {% trans "Inicia sesión aquí" %}
                 </a>
             </p>
@@ -404,3 +376,8 @@
 
     </main>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/users/register/step_3.js' %}"></script>
+{% endblock %}

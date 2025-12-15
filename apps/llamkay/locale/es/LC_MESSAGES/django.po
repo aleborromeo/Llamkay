@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-14 22:57-0500\n"
+"POT-Creation-Date: 2025-12-15 11:55-0500\n"
 "PO-Revision-Date: 2025-12-04 09:45-0500\n"
 "Last-Translator: Full Name <example@example.com>\n"
 "Language-Team: Spanish <es@li.org>\n"
@@ -753,6 +753,36 @@ msgstr "Registrarse Gratis"
 msgid "Volver al inicio"
 msgstr "Volver arriba"
 
+#, fuzzy
+#| msgid "Crear Cuenta - Paso 1/4 - Llamkay.pe"
+msgid "Cuenta Bloqueada - Llamkay.pe"
+msgstr "Crear Cuenta - Paso 1/4 - Llamkay.pe"
+
+msgid "Cuenta Bloqueada"
+msgstr ""
+
+msgid "Tu cuenta se encuentra bloqueada porque se detectaron"
+msgstr ""
+
+msgid "antecedentes penales"
+msgstr ""
+
+msgid "Si crees que esto es un error, por favor"
+msgstr ""
+
+msgid "contacta a soporte"
+msgstr ""
+
+#, fuzzy
+#| msgid "Volver arriba"
+msgid "Volver al inicio de sesión"
+msgstr "Volver arriba"
+
+#, fuzzy
+#| msgid "Selección de idioma"
+msgid "Selector de idioma"
+msgstr "Selección de idioma"
+
 msgid "Seleccionar tipo de usuario"
 msgstr "Seleccionar tipo de usuario"
 
@@ -761,7 +791,7 @@ msgstr "Saltar al contenido"
 
 #, fuzzy
 #| msgid "Paso 1"
-msgid "Paso 1 de 2"
+msgid "Paso 1 de 5"
 msgstr "Paso 1 de 2"
 
 msgid "¿Cómo deseas registrarte?"
@@ -770,13 +800,13 @@ msgstr "¿Cómo deseas registrarte?"
 msgid "Selecciona tu rol en la plataforma para continuar"
 msgstr "Selecciona tu rol en la plataforma para continuar"
 
-msgid "Ideal para buscar trabajos temporales o freelance"
-msgstr "Ideal para buscar trabajos temporales o freelance"
-
 #, fuzzy
 #| msgid "Registrarse Gratis"
 msgid "Registrarse como trabajador"
 msgstr "Registrarse Gratis"
+
+msgid "Popular"
+msgstr "Popular"
 
 #, fuzzy
 #| msgid "Buscar trabajos"
@@ -787,14 +817,6 @@ msgstr "Buscar trabajos"
 #| msgid "Conectando talentos con oportunidades laborales en todo el Perú"
 msgid "Encuentra oportunidades laborales en tu zona"
 msgstr "Conectando talentos con oportunidades laborales en todo el Perú"
-
-msgid "Popular"
-msgstr "Popular"
-
-#, fuzzy
-#| msgid "En 4 pasos empiezas a trabajar o contratar"
-msgid "La opción más flexible: trabajar y contratar"
-msgstr "En 4 pasos empiezas a trabajar o contratar"
 
 #, fuzzy
 #| msgid "Regístrate gratis en menos de 2 minutos como trabajador, empleador o empresa"
@@ -812,9 +834,6 @@ msgstr "Buscar trabajos"
 msgid "Trabaja y contrata según tus necesidades"
 msgstr "Trabaja y contrata según tus necesidades"
 
-msgid "Perfecto si solo necesitas contratar personas"
-msgstr "Perfecto si solo necesitas contratar personas"
-
 msgid "Registrarse como empleador"
 msgstr "Registrarse como empleador"
 
@@ -826,21 +845,21 @@ msgstr "Publicar trabajo"
 msgid "Contrata profesionales verificados"
 msgstr "Contrata profesionales verificados"
 
-msgid "Registro corporativo con RUC"
-msgstr "Registro corporativo con RUC"
-
 #, fuzzy
 #| msgid "Registrarse Gratis"
 msgid "Registrarse como empresa"
 msgstr "Registrarse Gratis"
 
-msgid "Soy una empresa"
-msgstr "Soy una empresa"
-
 #, fuzzy
 #| msgid "Usuarios activos"
 msgid "Corporativo"
 msgstr "Usuarios activos"
+
+msgid "Soy una empresa"
+msgstr "Soy una empresa"
+
+msgid "Registro corporativo con RUC"
+msgstr "Registro corporativo con RUC"
 
 #, fuzzy
 #| msgid "¿Tienes alguna pregunta?"
@@ -852,13 +871,9 @@ msgstr "¿Tienes alguna pregunta?"
 msgid "Inicia sesión aquí"
 msgstr "Iniciar Sesión"
 
-msgid "¿No estás seguro?"
-msgstr "¿No estás seguro?"
-
-msgid "Puedes cambiar tu tipo de cuenta después del registro desde tu perfil."
-msgstr "Puedes cambiar tu tipo de cuenta después del registro desde tu perfil."
-
-msgid "Crear Cuenta - Paso 1/4 - Llamkay.pe"
+#, fuzzy
+#| msgid "Crear Cuenta - Paso 1/4 - Llamkay.pe"
+msgid "Crear Cuenta - Paso 1/4"
 msgstr "Crear Cuenta - Paso 1/4 - Llamkay.pe"
 
 #, fuzzy
@@ -941,9 +956,6 @@ msgstr "Sistema de reputación"
 msgid "DNI"
 msgstr ""
 
-msgid "00000000"
-msgstr ""
-
 msgid "Buscar DNI"
 msgstr ""
 
@@ -994,9 +1006,6 @@ msgstr ""
 msgid "RUC"
 msgstr ""
 
-msgid "00000000000"
-msgstr ""
-
 msgid "Buscar RUC"
 msgstr ""
 
@@ -1010,9 +1019,6 @@ msgid "Datos de contacto"
 msgstr ""
 
 msgid "Teléfono"
-msgstr ""
-
-msgid "999 999 999"
 msgstr ""
 
 msgid "Correo electrónico"
@@ -1067,8 +1073,429 @@ msgstr ""
 msgid "Siguiente"
 msgstr "Urgente"
 
-#~ msgid "Ayuda"
-#~ msgstr "Ayuda"
+#, fuzzy
+#| msgid "Crear Cuenta - Paso 1/4 - Llamkay.pe"
+msgid "Crear Cuenta - Paso 2/4"
+msgstr "Crear Cuenta - Paso 1/4 - Llamkay.pe"
+
+msgid "Panel informativo"
+msgstr ""
+
+msgid "¿Por qué necesitamos tu ubicación?"
+msgstr ""
+
+msgid "Tu ubicación nos ayuda a conectarte con oportunidades cerca de ti."
+msgstr ""
+
+#, fuzzy
+#| msgid "Trabajos publicados"
+msgid "Trabajos cercanos"
+msgstr "Trabajos completados"
+
+#, fuzzy
+#| msgid "Conectando talentos con oportunidades laborales en todo el Perú"
+msgid "Encuentra oportunidades en tu zona"
+msgstr "Conectando talentos con oportunidades laborales en todo el Perú"
+
+#, fuzzy
+#| msgid "Trabajos publicados"
+msgid "Trabaja desde casa"
+msgstr "Trabajos aplicados"
+
+msgid "Reduce tiempos de traslado"
+msgstr ""
+
+msgid "Respuesta rápida"
+msgstr ""
+
+msgid "Conecta con usuarios locales"
+msgstr ""
+
+#, fuzzy
+#| msgid "Protección garantizada"
+msgid "Privacidad garantizada"
+msgstr "Protección garantizada"
+
+msgid "Tu dirección exacta está protegida"
+msgstr ""
+
+#, fuzzy
+#| msgid "Ayuda"
+msgid "Abrir ayuda"
+msgstr "Ayuda"
+
+#, fuzzy
+#| msgid "Calificación promedio"
+msgid "Tu ubicación"
+msgstr "Calificación promedio"
+
+msgid "Indícanos dónde te encuentras"
+msgstr ""
+
+#, fuzzy
+#| msgid "Estadísticas de la plataforma"
+msgid "Pasos de registro"
+msgstr "Información del registro"
+
+#, fuzzy
+#| msgid "Trabajos publicados"
+msgid "Paso 1 completado"
+msgstr "Trabajos completados"
+
+#, fuzzy
+#| msgid "Paso 2"
+msgid "Paso 2 actual"
+msgstr "Paso 2"
+
+msgid "Paso 3 pendiente"
+msgstr ""
+
+msgid "Paso 4 pendiente"
+msgstr ""
+
+#, fuzzy
+#| msgid "Calificación promedio"
+msgid "Dirección"
+msgstr "Calificación promedio"
+
+msgid "Dirección completa"
+msgstr ""
+
+msgid "Ej: Av. Larco 123, Dpto. 501"
+msgstr ""
+
+msgid "Tu dirección exacta está protegida y no se muestra públicamente."
+msgstr ""
+
+#, fuzzy
+#| msgid "Calificación promedio"
+msgid "Ubicación geográfica"
+msgstr "Calificación promedio"
+
+msgid "Departamento"
+msgstr ""
+
+#, fuzzy
+#| msgid "Seleccionar tipo de usuario"
+msgid "Selecciona tu departamento"
+msgstr "Seleccionar tipo de usuario"
+
+msgid "Provincia"
+msgstr ""
+
+msgid "Primero selecciona un departamento"
+msgstr ""
+
+msgid "Distrito"
+msgstr ""
+
+msgid "Primero selecciona una provincia"
+msgstr ""
+
+msgid "Anterior"
+msgstr ""
+
+#, fuzzy
+#| msgid "Crear Cuenta - Paso 1/4 - Llamkay.pe"
+msgid "Crear Cuenta - Paso 3/4"
+msgstr "Crear Cuenta - Paso 1/4 - Llamkay.pe"
+
+#, fuzzy
+#| msgid "Estadísticas de la plataforma"
+msgid "Información del paso"
+msgstr "Información del registro"
+
+msgid "Construye tu perfil profesional"
+msgstr ""
+
+msgid "Tu perfil es lo primero que verán los empleadores y trabajadores. Hazlo claro, honesto y completo."
+msgstr ""
+
+#, fuzzy
+#| msgid "Confianza"
+msgid "Más confianza"
+msgstr "Confianza"
+
+msgid "Un perfil completo genera mayor credibilidad"
+msgstr ""
+
+msgid "Mejores oportunidades"
+msgstr ""
+
+msgid "Aparecerás en más búsquedas relevantes"
+msgstr ""
+
+#, fuzzy
+#| msgid "Usuarios activos"
+msgid "Control total"
+msgstr "Contratos activos"
+
+msgid "Puedes editar tu perfil cuando quieras"
+msgstr ""
+
+msgid "¿Necesitas ayuda para completar tu perfil?"
+msgstr ""
+
+#, fuzzy
+#| msgid "Mi Perfil"
+msgid "Tu perfil"
+msgstr "Mi Perfil"
+
+msgid "Cuéntanos quién eres y qué sabes hacer"
+msgstr ""
+
+msgid "Identidad pública"
+msgstr ""
+
+msgid "Nombre público"
+msgstr ""
+
+msgid "Ej: Juan Pérez"
+msgstr ""
+
+msgid "Este nombre será visible para otros usuarios"
+msgstr ""
+
+msgid "¿Qué haces?"
+msgstr ""
+
+msgid "Selecciona una opción"
+msgstr ""
+
+msgid "Ofrezco servicios"
+msgstr ""
+
+#, fuzzy
+#| msgid "Buscar trabajos"
+msgid "Busco contratar"
+msgstr "Buscar trabajos"
+
+msgid "Ambos"
+msgstr ""
+
+#, fuzzy
+#| msgid "Sobre nosotros"
+msgid "Sobre ti"
+msgstr "Sobre nosotros"
+
+#, fuzzy
+#| msgid "Calificación promedio"
+msgid "Descripción"
+msgstr "Calificación promedio"
+
+msgid "Describe brevemente tu experiencia, habilidades y lo que ofreces..."
+msgstr ""
+
+msgid "Máximo 500 caracteres. Sé claro y directo."
+msgstr ""
+
+#, fuzzy
+#| msgid "Acciones principales"
+msgid "Habilidades principales"
+msgstr "Acciones principales"
+
+#, fuzzy
+#| msgid "Agregar habilidades"
+msgid "Habilidades"
+msgstr "Agregar habilidades"
+
+msgid "Ej: Carpintería, Plomería, Diseño gráfico"
+msgstr ""
+
+msgid "Sepáralas por comas para facilitar la búsqueda"
+msgstr ""
+
+msgid "Experiencia"
+msgstr ""
+
+msgid "Años de experiencia"
+msgstr ""
+
+#, fuzzy
+#| msgid "Selección de idioma"
+msgid "Selecciona"
+msgstr "Selección de idioma"
+
+msgid "Menos de 1 año"
+msgstr ""
+
+msgid "1 a 3 años"
+msgstr ""
+
+msgid "3 a 5 años"
+msgstr ""
+
+msgid "Más de 5 años"
+msgstr ""
+
+msgid "Nivel"
+msgstr ""
+
+msgid "Básico"
+msgstr ""
+
+msgid "Intermedio"
+msgstr ""
+
+msgid "Avanzado"
+msgstr ""
+
+#, fuzzy
+#| msgid "Disponible"
+msgid "Disponibilidad"
+msgstr "Disponible"
+
+msgid "Modalidad"
+msgstr ""
+
+#, fuzzy
+#| msgid "Transparencia"
+msgid "Presencial"
+msgstr "Transparencia"
+
+msgid "Remoto"
+msgstr ""
+
+msgid "Mixto"
+msgstr ""
+
+#, fuzzy
+#| msgid "Disponible"
+msgid "Horario disponible"
+msgstr "Disponible"
+
+msgid "Mañanas"
+msgstr ""
+
+msgid "Tardes"
+msgstr ""
+
+msgid "Noches"
+msgstr ""
+
+#, fuzzy
+#| msgid "Pago flexible"
+msgid "Flexible"
+msgstr "Pago flexible"
+
+#, fuzzy
+#| msgid "Electricidad"
+msgid "Privacidad"
+msgstr "Electricidad"
+
+msgid "Quiero que mi perfil sea visible para otros usuarios"
+msgstr ""
+
+#, fuzzy
+#| msgid "Puedes cambiar tu tipo de cuenta después del registro desde tu perfil."
+msgid "Podrás cambiar esto más adelante desde tu perfil"
+msgstr "Puedes cambiar tu tipo de cuenta después del registro desde tu perfil."
+
+msgid "Continuar"
+msgstr ""
+
+#, fuzzy
+#| msgid "Crear Cuenta - Paso 1/4 - Llamkay.pe"
+msgid "Crear Cuenta - Paso 4/4"
+msgstr "Crear Cuenta - Paso 1/4 - Llamkay.pe"
+
+#, fuzzy
+#| msgid "Plataforma"
+msgid "Llamkay plataforma"
+msgstr "Plataforma"
+
+#, fuzzy
+#| msgid "Completa tu perfil"
+msgid "Completa tu perfil profesional"
+msgstr "Completa tu perfil"
+
+msgid "Esta información ayuda a que te encuentren más rápido y con mejores oportunidades."
+msgstr ""
+
+msgid "Más visibilidad"
+msgstr ""
+
+msgid "Tu perfil aparece mejor posicionado"
+msgstr ""
+
+#, fuzzy
+#| msgid "Confianza"
+msgid "Mayor confianza"
+msgstr "Confianza"
+
+msgid "Los empleadores prefieren perfiles completos"
+msgstr ""
+
+msgid "Mejores coincidencias"
+msgstr ""
+
+msgid "Te mostramos trabajos acordes a ti"
+msgstr ""
+
+msgid "Perfil profesional"
+msgstr ""
+
+msgid "Título profesional"
+msgstr ""
+
+msgid "Ej: Electricista, Diseñador gráfico, Albañil"
+msgstr ""
+
+msgid "Este título será lo primero que vean quienes te busquen."
+msgstr ""
+
+msgid "Descripción profesional"
+msgstr ""
+
+msgid "Describe tu experiencia, habilidades y el tipo de trabajos que realizas."
+msgstr ""
+
+msgid "Una buena descripción aumenta la confianza y las oportunidades."
+msgstr ""
+
+msgid "Disponibilidad horaria"
+msgstr ""
+
+#, fuzzy
+#| msgid "Trabajos publicados"
+msgid "Tiempo completo"
+msgstr "Trabajos completados"
+
+msgid "Medio tiempo"
+msgstr ""
+
+msgid "Fines de semana"
+msgstr ""
+
+#, fuzzy
+#| msgid "Publicar trabajo"
+msgid "Modalidad de trabajo"
+msgstr "Publicar trabajo"
+
+#, fuzzy
+#| msgid "Consejo del día"
+msgid "Consejo"
+msgstr "Consejo del día"
+
+msgid "Un perfil completo y claro aumenta tus oportunidades de ser contactado."
+msgstr ""
+
+msgid "Finalizar"
+msgstr ""
+
+#~ msgid "Ideal para buscar trabajos temporales o freelance"
+#~ msgstr "Ideal para buscar trabajos temporales o freelance"
+
+#, fuzzy
+#~| msgid "En 4 pasos empiezas a trabajar o contratar"
+#~ msgid "La opción más flexible: trabajar y contratar"
+#~ msgstr "En 4 pasos empiezas a trabajar o contratar"
+
+#~ msgid "Perfecto si solo necesitas contratar personas"
+#~ msgstr "Perfecto si solo necesitas contratar personas"
+
+#~ msgid "¿No estás seguro?"
+#~ msgstr "¿No estás seguro?"
 
 #, fuzzy
 #~| msgid "Registrarse Gratis"
