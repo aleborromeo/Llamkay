@@ -359,7 +359,7 @@ function aceptarPostulante(postulacionId, nombreTrabajador) {
     
     fetch(`/empleadores/postulantes/aceptar/${postulacionId}/`, {
     method: "POST",
-    credentials: "same-origin", // 👈 NECESARIO PARA QUE SE ENVÍE LA COOKIE DE SESIÓN
+    credentials: "include", // 👈 NECESARIO PARA QUE SE ENVÍE LA COOKIE DE SESIÓN
     headers: {
         "X-Requested-With": "XMLHttpRequest", // 👈 Ahora sí lo detecta Django
         "X-CSRFToken": "{{ csrf_token }}",    // 👈 Correcto CSRF
@@ -406,7 +406,7 @@ function rechazarPostulante(postulacionId, nombreTrabajador) {
     
     fetch(`/empleadores/postulantes/rechazar/${postulacionId}/`, {
     method: "POST",
-    credentials: "same-origin",
+    credentials: "include",
     headers: {
         "X-Requested-With": "XMLHttpRequest",
         "X-CSRFToken": "{{ csrf_token }}",

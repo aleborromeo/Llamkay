@@ -78,27 +78,20 @@ def ver_postulantes(request, oferta_id, tipo):
 def aceptar_postulante(request, postulacion_id):
     try:
         usuario = Usuario.objects.get(user=request.user)
-        
+
         resultado = postulante_service.aceptar_postulante(
             postulacion_id,
             usuario.id_usuario
         )
-        
-        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            return JsonResponse(resultado)
-        
-        if resultado['success']:
-            messages.success(request, resultado['message'])
-        else:
-            messages.error(request, resultado['message'])
-        
-        return redirect(request.META.get('HTTP_REFERER', 'empleadores:mis_trabajos'))
-        
+
+        return JsonResponse(resultado)
+
     except Usuario.DoesNotExist:
         return JsonResponse({
             'success': False,
             'message': 'Usuario no encontrado'
         }, status=404)
+
 
 
 @login_required
@@ -112,15 +105,12 @@ def rechazar_postulante(request, postulacion_id):
             usuario.id_usuario
         )
         
-        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        is_ajax = request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
+
+        if is_ajax:
             return JsonResponse(resultado)
-        
-        if resultado['success']:
-            messages.success(request, resultado['message'])
-        else:
-            messages.error(request, resultado['message'])
-        
-        return redirect(request.META.get('HTTP_REFERER', 'empleadores:mis_trabajos'))
+
+        return redirect('empleadores:mis_trabajos')
         
     except Usuario.DoesNotExist:
         return JsonResponse({

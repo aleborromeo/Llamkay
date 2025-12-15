@@ -17,7 +17,6 @@ urlpatterns = [
     path('jobs/', include('apps.jobs.urls')),
     path('empleadores/', include('apps.empleadores.urls')),
     path('chats/', include('apps.chats.urls')),
-    path('soporte/', include('apps.soporte.urls')),
 ]
 
 # Servir archivos estáticos en desarrollo
