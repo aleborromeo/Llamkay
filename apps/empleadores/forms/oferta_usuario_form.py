@@ -138,6 +138,10 @@ class OfertaUsuarioForm(forms.ModelForm):
         fecha_limite = self.cleaned_data.get('fecha_limite')
         if fecha_limite and fecha_limite < date.today():
             raise ValidationError('La fecha límite debe ser futura')
+        
+        print("Fecha límite recibida:", fecha_limite)
+        print("Hoy:", date.today())
+
         return fecha_limite
 
     def clean(self):
@@ -145,7 +149,7 @@ class OfertaUsuarioForm(forms.ModelForm):
         fecha_inicio = cleaned_data.get('fecha_inicio_estimada')
         fecha_limite = cleaned_data.get('fecha_limite')
 
-        if fecha_inicio and fecha_limite and fecha_inicio < fecha_limite:
+        if fecha_inicio and fecha_limite and fecha_inicio > fecha_limite: # Es > ya que la fecha limite tiene que ser mayor a la fecha estimada
             raise ValidationError(
                 'La fecha de inicio debe ser posterior a la fecha límite de postulación'
             )

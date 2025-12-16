@@ -212,35 +212,45 @@ function cerrarOferta(ofertaId, titulo) {
     });
 }
 
-function aceptarPostulante(postulacionId, nombreTrabajador) {
-    if (!confirm(`¿Estás seguro de aceptar a ${nombreTrabajador}?`)) {
-        return;
-    }
-    
-    const formData = new FormData();
-    formData.append('csrfmiddlewaretoken', getCsrfToken());
-    
-    fetch(`/jobs/aceptar-postulante/${postulacionId}/`, {
-        method: 'POST',
-        body: formData,
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest'
-        }
+/*function aceptarPostulante(postulacionId, nombreTrabajador) {
+  if (!confirm(`¿Estás seguro de aceptar a ${nombreTrabajador}?`)) return;
+
+  fetch(`/empleadores/postulantes/aceptar/${postulacionId}/`, {
+    method: 'POST',
+    headers: {
+      'X-Requested-With': 'XMLHttpRequest',
+      'X-CSRFToken': getCsrfToken(), // IMPORTANTÍSIMO
+    },
+  })
+    .then(async (response) => {
+      const text = await response.text();
+
+      console.log("STATUS:", response.status);
+      console.log("CONTENT-TYPE:", response.headers.get("content-type"));
+      console.log("RESPONSE (inicio):", text.slice(0, 400));
+
+      // si no es OK, lanza error para caer al catch pero ya viste el HTML arriba
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+      // intenta parsear JSON
+      return JSON.parse(text);
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            showMessage('success', data.message);
-            setTimeout(() => location.reload(), 1500);
-        } else {
-            showMessage('error', data.message || 'Error al aceptar postulante');
-        }
+    .then((data) => {
+      if (data.success) {
+        showMessage('success', data.message);
+        setTimeout(() => location.reload(), 1500);
+      } else {
+        showMessage('error', data.message || 'Error al aceptar postulante');
+      }
     })
-    .catch(error => {
-        console.error('Error:', error);
-        showMessage('error', 'Error al procesar la solicitud');
+    .catch((error) => {
+      console.error("FETCH ERROR:", error);
+      showMessage('error', 'Error al procesar la solicitud');
     });
 }
+
+
+
 
 function rechazarPostulante(postulacionId, nombreTrabajador) {
     if (!confirm(`¿Estás seguro de rechazar a ${nombreTrabajador}?`)) {
@@ -271,6 +281,8 @@ function rechazarPostulante(postulacionId, nombreTrabajador) {
         showMessage('error', 'Error al procesar la solicitud');
     });
 }
+
+*/
 
 function confirmarQuitar(event, titulo) {
     event.preventDefault();

@@ -7,21 +7,13 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
+# URLs que NO necesitan i18n (admin, APIs, AJAX)
 urlpatterns = [
-    # Admin
     path('admin/', admin.site.urls),
-    
-    # Apps principales
-    path('', include('apps.llamkay.urls')),  # Home/landing
-    path('users/', include('apps.users.urls')),
-    path('jobs/', include('apps.jobs.urls')),
-    path('empleadores/', include('apps.empleadores.urls')),
-    path('chats/', include('apps.chats.urls')),
-    path('soporte/', include('apps.soporte.urls')),
-    path('pagos/', include('apps.monetizacion.urls'))
+    path('i18n/', include('django.conf.urls.i18n')),
 ]
 
-# Envuelve las URLs que deseas traducir en la ruta
+# URLs con soporte i18n
 urlpatterns += i18n_patterns(
     path('', include('apps.llamkay.urls')),
     path('users/', include('apps.users.urls')),
@@ -29,19 +21,13 @@ urlpatterns += i18n_patterns(
     path('empleadores/', include('apps.empleadores.urls')),
     path('chats/', include('apps.chats.urls')),
     path('soporte/', include('apps.soporte.urls')),
+    path('pagos/', include('apps.monetizacion.urls')),
 )
-
-urlpatterns += [
-    path('i18n/', include('django.conf.urls.i18n')),
-]
 
 # Servir archivos estáticos en desarrollo
 if settings.DEBUG:
-    # Servir archivos estáticos desde STATICFILES_DIRS
     from django.contrib.staticfiles.urls import staticfiles_urlpatterns
     urlpatterns += staticfiles_urlpatterns()
-    
-    # Servir archivos media
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # Personalizar admin

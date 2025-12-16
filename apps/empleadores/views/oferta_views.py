@@ -40,6 +40,9 @@ def registro_individual(request):
                 messages.error(request, "Por favor corrige los errores en el formulario.")
         else:
             form = OfertaUsuarioForm()
+            
+        if request.method == "GET":
+            list(messages.get_messages(request))
         
         context = {
             'form': form,
@@ -80,7 +83,9 @@ def registro_empresa(request):
                 messages.error(request, "Por favor corrige los errores en el formulario.")
         else:
             form = OfertaEmpresaForm()
-        
+            
+        if request.method == "GET":
+            list(messages.get_messages(request))
         context = {
             'form': form,
             'usuario': usuario,
@@ -179,7 +184,9 @@ def editar_trabajo(request, oferta_id):
                 messages.error(request, "Por favor corrige los errores en el formulario.")
         else:
             form = FormClass(instance=oferta)
-        
+            
+        if request.method == "GET":
+            list(messages.get_messages(request))        
         context = {
             'form': form,
             'oferta': oferta,
