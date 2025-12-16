@@ -7,7 +7,7 @@ from typing import Dict, Any, Optional, List
 from abc import ABC, abstractmethod
 from django.db.models import Q
 
-from Llamkay.apps.users.repositories.factory import RepositoryFactory
+from apps.users.repositories.factory import RepositoryFactory
 from apps.users.models import Usuario
 from apps.users.repositories import CalificacionRepository
 from apps.jobs.models import Contrato, Calificacion
