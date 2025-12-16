@@ -93,34 +93,77 @@ class PostulanteService:
         Returns:
             Dict con 'success' y 'message'
         """
-        postulacion = self.postulacion_repo.get_by_id(postulacion_id)
-        
-        if not postulacion:
+        try:
+            print("="*80)
+            print(f"🟢 ACEPTAR POSTULANTE - ID: {postulacion_id}, Empleador: {empleador_id}")
+            
+            postulacion = self.postulacion_repo.get_by_id(postulacion_id)
+            
+            if not postulacion:
+                print("❌ Postulación no encontrada")
+                return {
+                    'success': False,
+                    'message': 'Postulación no encontrada'
+                }
+            
+            print(f"✅ Postulación encontrada - Estado actual: {postulacion.estado}")
+            
+            # Obtener la oferta según el tipo usando los nombres correctos de los campos
+            if postulacion.id_oferta_usuario:
+                oferta = postulacion.id_oferta_usuario
+                oferta_empleador_id = oferta.id_empleador.id_usuario
+                print(f"📋 Oferta Usuario - ID: {oferta.id}, Empleador: {oferta_empleador_id}")
+            elif postulacion.id_oferta_empresa:
+                oferta = postulacion.id_oferta_empresa
+                oferta_empleador_id = oferta.id_empleador.id_usuario
+                print(f"📋 Oferta Empresa - ID: {oferta.id}, Empleador: {oferta_empleador_id}")
+            else:
+                print("❌ No se encontró oferta asociada")
+                return {
+                    'success': False,
+                    'message': 'No se encontró la oferta asociada a esta postulación'
+                }
+            
+            # Validar que sea el dueño de la oferta
+            if oferta_empleador_id != empleador_id:
+                print(f"❌ Sin permisos - Empleador oferta: {oferta_empleador_id}, Empleador actual: {empleador_id}")
+                return {
+                    'success': False,
+                    'message': 'No tienes permisos para esta acción'
+                }
+            
+            # Verificar que no esté ya aceptada
+            if postulacion.estado == 'aceptada':
+                print("⚠️ Ya estaba aceptada")
+                return {
+                    'success': False,
+                    'message': 'Esta postulación ya fue aceptada'
+                }
+            
+            # Cambiar estado
+            print(f"🔄 Actualizando estado de {postulacion.estado} a 'aceptada'")
+            if self.postulacion_repo.actualizar_estado(postulacion_id, 'aceptada'):
+                print("✅ Estado actualizado correctamente")
+                # TODO: Crear notificación para el trabajador
+                return {
+                    'success': True,
+                    'message': 'Postulación aceptada correctamente'
+                }
+            
+            print("❌ Error al actualizar estado")
             return {
                 'success': False,
-                'message': 'Postulación no encontrada'
+                'message': 'Error al aceptar postulación'
             }
-        
-        # Validar que sea el dueño de la oferta
-        oferta = postulacion.oferta
-        if oferta.id_empleador.id_usuario != empleador_id:
+            
+        except Exception as e:
+            print(f"💥 ERROR CRÍTICO en aceptar_postulante: {e}")
+            import traceback
+            traceback.print_exc()
             return {
                 'success': False,
-                'message': 'No tienes permisos para esta acción'
+                'message': f'Error interno: {str(e)}'
             }
-        
-        # Cambiar estado
-        if self.postulacion_repo.actualizar_estado(postulacion_id, 'aceptada'):
-            # TODO: Crear notificación para el trabajador
-            return {
-                'success': True,
-                'message': 'Postulación aceptada correctamente'
-            }
-        
-        return {
-            'success': False,
-            'message': 'Error al aceptar postulación'
-        }
     
     def rechazar_postulante(
         self,
@@ -137,34 +180,77 @@ class PostulanteService:
         Returns:
             Dict con 'success' y 'message'
         """
-        postulacion = self.postulacion_repo.get_by_id(postulacion_id)
-        
-        if not postulacion:
+        try:
+            print("="*80)
+            print(f"🔴 RECHAZAR POSTULANTE - ID: {postulacion_id}, Empleador: {empleador_id}")
+            
+            postulacion = self.postulacion_repo.get_by_id(postulacion_id)
+            
+            if not postulacion:
+                print("❌ Postulación no encontrada")
+                return {
+                    'success': False,
+                    'message': 'Postulación no encontrada'
+                }
+            
+            print(f"✅ Postulación encontrada - Estado actual: {postulacion.estado}")
+            
+            # Obtener la oferta según el tipo usando los nombres correctos de los campos
+            if postulacion.id_oferta_usuario:
+                oferta = postulacion.id_oferta_usuario
+                oferta_empleador_id = oferta.id_empleador.id_usuario
+                print(f"📋 Oferta Usuario - ID: {oferta.id}, Empleador: {oferta_empleador_id}")
+            elif postulacion.id_oferta_empresa:
+                oferta = postulacion.id_oferta_empresa
+                oferta_empleador_id = oferta.id_empleador.id_usuario
+                print(f"📋 Oferta Empresa - ID: {oferta.id}, Empleador: {oferta_empleador_id}")
+            else:
+                print("❌ No se encontró oferta asociada")
+                return {
+                    'success': False,
+                    'message': 'No se encontró la oferta asociada a esta postulación'
+                }
+            
+            # Validar que sea el dueño de la oferta
+            if oferta_empleador_id != empleador_id:
+                print(f"❌ Sin permisos - Empleador oferta: {oferta_empleador_id}, Empleador actual: {empleador_id}")
+                return {
+                    'success': False,
+                    'message': 'No tienes permisos para esta acción'
+                }
+            
+            # Verificar que no esté ya rechazada
+            if postulacion.estado == 'rechazada':
+                print("⚠️ Ya estaba rechazada")
+                return {
+                    'success': False,
+                    'message': 'Esta postulación ya fue rechazada'
+                }
+            
+            # Cambiar estado
+            print(f"🔄 Actualizando estado de {postulacion.estado} a 'rechazada'")
+            if self.postulacion_repo.actualizar_estado(postulacion_id, 'rechazada'):
+                print("✅ Estado actualizado correctamente")
+                # TODO: Crear notificación para el trabajador
+                return {
+                    'success': True,
+                    'message': 'Postulación rechazada correctamente'
+                }
+            
+            print("❌ Error al actualizar estado")
             return {
                 'success': False,
-                'message': 'Postulación no encontrada'
+                'message': 'Error al rechazar postulación'
             }
-        
-        # Validar que sea el dueño de la oferta
-        oferta = postulacion.oferta
-        if oferta.id_empleador.id_usuario != empleador_id:
+            
+        except Exception as e:
+            print(f"💥 ERROR CRÍTICO en rechazar_postulante: {e}")
+            import traceback
+            traceback.print_exc()
             return {
                 'success': False,
-                'message': 'No tienes permisos para esta acción'
+                'message': f'Error interno: {str(e)}'
             }
-        
-        # Cambiar estado
-        if self.postulacion_repo.actualizar_estado(postulacion_id, 'rechazada'):
-            # TODO: Crear notificación para el trabajador
-            return {
-                'success': True,
-                'message': 'Postulación rechazada'
-            }
-        
-        return {
-            'success': False,
-            'message': 'Error al rechazar postulación'
-        }
     
     def get_postulaciones_recientes(
         self,
@@ -187,19 +273,26 @@ class PostulanteService:
         
         postulaciones_data = []
         for post in postulaciones:
-            oferta = post.oferta
-            tipo = post.tipo_oferta
+            # Obtener oferta según los campos correctos
+            if post.id_oferta_usuario:
+                oferta = post.id_oferta_usuario
+                tipo = 'usuario'
+                titulo = oferta.titulo
+            else:
+                oferta = post.id_oferta_empresa
+                tipo = 'empresa'
+                titulo = oferta.titulo_puesto if oferta else 'Oferta eliminada'
             
             postulaciones_data.append({
                 'id': post.id_postulacion,
                 'tipo': tipo,
-                'titulo': oferta.titulo if tipo == 'usuario' else oferta.titulo_puesto,
+                'titulo': titulo,
                 'trabajador': post.id_trabajador.nombre_completo,
                 'estado': post.estado,
                 'estado_display': post.get_estado_display(),
                 'fecha': post.created_at,
                 'leida': post.leida,
-                'oferta_id': oferta.id,
+                'oferta_id': oferta.id if oferta else None,
             })
         
         return postulaciones_data

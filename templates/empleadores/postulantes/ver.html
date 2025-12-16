@@ -1,4 +1,7 @@
 {% extends "jobs/base_jobs.html" %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+
 
 {% block title %}
   Postulantes - {% if tipo == 'usuario' %}{{ oferta.titulo }}{% else %}{{ oferta.titulo_puesto }}{% endif %} - Llamkay
@@ -316,17 +319,19 @@
 
         <div class="postulante-actions">
             {% if post.estado == 'pendiente' or post.estado == 'en_revision' %}
-            <button type="button" class="btn btn-success btn-aceptar" data-postulacion-id="{{ post.id }}"
-                data-nombre="{{ post.trabajador.nombre|escapejs }}"
-                data-url="{% url 'empleadores:aceptar_postulante' post.id %}"
-                onclick="console.log('URL:', this.dataset.url)">
-                
+            <button type="button" 
+                    class="btn btn-success btn-aceptar" 
+                    data-postulacion-id="{{ post.id }}"
+                    data-nombre="{{ post.trabajador.nombre|escapejs }}"
+                    data-url="{% url 'empleadores:aceptar_postulante' post.id %}">
                 ✅ Aceptar Postulante
-                
             </button>
 
-
-            <button onclick="rechazarPostulante({{ post.id }}, '{{ post.trabajador.nombre }}')" class="btn btn-danger">
+            <button type="button"
+                    class="btn btn-danger btn-rechazar" 
+                    data-postulacion-id="{{ post.id }}"
+                    data-nombre="{{ post.trabajador.nombre|escapejs }}"
+                    data-url="{% url 'empleadores:rechazar_postulante' post.id %}">
                 ❌ Rechazar
             </button>
             {% endif %}
@@ -361,33 +366,63 @@
 
 {% block extra_js %}
 <script>
-
     document.addEventListener("DOMContentLoaded", () => {
-    const botones = document.querySelectorAll(".btn-aceptar");
-    console.log("Total de botones encontrados:", botones.length);
-    
-    botones.forEach((btn, index) => {
-        console.log(`Botón ${index + 1}:`, {
-            postulacionId: btn.dataset.postulacionId,
-            url: btn.dataset.url,
-            nombre: btn.dataset.nombre
-        });
-    });
-});
-
-    document.addEventListener("DOMContentLoaded", () => {
-        document.querySelectorAll(".btn-aceptar").forEach(btn => {
-            btn.addEventListener("click", function () {
+        console.log("🚀 Inicializando botones de postulantes...");
+        
+        // Verificar que tenemos CSRF token
+        const csrfToken = getCsrfTokenFromCookie();
+        console.log("CSRF Token disponible:", csrfToken ? "✅ SÍ" : "❌ NO");
+        
+        // Inicializar botones de aceptar
+        const botonesAceptar = document.querySelectorAll(".btn-aceptar");
+        console.log(`✅ Botones de aceptar encontrados: ${botonesAceptar.length}`);
+        
+        botonesAceptar.forEach((btn, index) => {
+            console.log(`Botón aceptar ${index + 1}:`, {
+                id: btn.dataset.postulacionId,
+                url: btn.dataset.url,
+                nombre: btn.dataset.nombre
+            });
+            
+            btn.addEventListener("click", function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
                 const postulacionId = this.dataset.postulacionId;
                 const nombre = this.dataset.nombre;
                 const url = this.dataset.url;
-
+                
+                console.log('🔵 Click en aceptar:', { postulacionId, nombre, url });
                 aceptarPostulante(postulacionId, nombre, url);
+            });
+        });
+        
+        // Inicializar botones de rechazar
+        const botonesRechazar = document.querySelectorAll(".btn-rechazar");
+        console.log(`❌ Botones de rechazar encontrados: ${botonesRechazar.length}`);
+        
+        botonesRechazar.forEach((btn, index) => {
+            console.log(`Botón rechazar ${index + 1}:`, {
+                id: btn.dataset.postulacionId,
+                url: btn.dataset.url,
+                nombre: btn.dataset.nombre
+            });
+            
+            btn.addEventListener("click", function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const postulacionId = this.dataset.postulacionId;
+                const nombre = this.dataset.nombre;
+                const url = this.dataset.url;
+                
+                console.log('🔴 Click en rechazar:', { postulacionId, nombre, url });
+                rechazarPostulante(postulacionId, nombre, url);
             });
         });
     });
 
-    // Lee el CSRF token desde la cookie (forma estándar en Django)
+    // Lee el CSRF token desde la cookie
     function getCsrfTokenFromCookie() {
         const name = "csrftoken=";
         const decodedCookie = decodeURIComponent(document.cookie || "");
@@ -396,71 +431,92 @@
             part = part.trim();
             if (part.startsWith(name)) return part.substring(name.length);
         }
+        console.warn("⚠️ CSRF token no encontrado en cookies");
         return "";
     }
 
-    // Helper: parsea JSON solo si es JSON
-    async function parseJsonSafe(response) {
-        const contentType = response.headers.get("content-type") || "";
-        if (!contentType.includes("application/json")) {
-            const text = await response.text();
-            // Esto ayuda a debuggear cuando Django devuelve HTML (403/404)
-            throw new Error("Respuesta no es JSON. Primeros caracteres: " + text.slice(0, 120));
+    function aceptarPostulante(postulacionId, nombreTrabajador, url) {
+        console.log("=".repeat(80));
+        console.log("🟢 INICIANDO ACEPTACIÓN DE POSTULANTE");
+        console.log("Postulación ID:", postulacionId);
+        console.log("Trabajador:", nombreTrabajador);
+        console.log("URL:", url);
+        console.log("=".repeat(80));
+        
+        if (!confirm(`¿Estás seguro de aceptar a ${nombreTrabajador}?`)) {
+            console.log("❌ Usuario canceló la confirmación");
+            return;
         }
-        return response.json();
-    }
 
-function aceptarPostulante(postulacionId, nombreTrabajador, url) {
-    if (!confirm(`¿Estás seguro de aceptar a ${nombreTrabajador}?`)) {
-        return;
-    }
+        const csrfToken = getCsrfTokenFromCookie();
+        console.log("CSRF Token:", csrfToken ? "✅ Encontrado" : "❌ No encontrado");
 
-    const csrfToken = getCsrfTokenFromCookie();
-
-    fetch(url, {
-        method: "POST",
-        credentials: "include",
-        headers: {
-            "X-Requested-With": "XMLHttpRequest",
-            "X-CSRFToken": csrfToken,
-            "Content-Type": "application/json",
-        }
-    })
-        .then(async response => {
-            console.log('Status:', response.status);
-            console.log('Content-Type:', response.headers.get('content-type'));
+        // Crear FormData para asegurar que sea POST
+        const formData = new FormData();
+        
+        console.log("📤 Enviando petición AJAX POST...");
+        
+        fetch(url, {
+            method: "POST",
+            credentials: "include",
+            headers: {
+                "X-Requested-With": "XMLHttpRequest",
+                "X-CSRFToken": csrfToken
+                // NO incluir Content-Type cuando usas FormData
+            },
+            body: formData
+        })
+        .then(response => {
+            console.log("📥 Respuesta recibida:");
+            console.log("  - Status:", response.status);
+            console.log("  - Status Text:", response.statusText);
+            console.log("  - Content-Type:", response.headers.get('content-type'));
+            console.log("  - Redirected:", response.redirected);
+            console.log("  - URL:", response.url);
             
-            // Si es una redirección (login), recargar la página
+            // Si es una redirección, algo salió mal
             if (response.redirected) {
-                console.log('Redirigido a:', response.url);
-                window.location.href = response.url;
-                return;
+                console.error("⚠️ La respuesta fue redirigida a:", response.url);
+                throw new Error('La petición fue redirigida. Posible problema de autenticación o CSRF.');
             }
             
-            // Si no es JSON, probablemente es un error HTML
+            // Verificar si es JSON
             const contentType = response.headers.get("content-type") || "";
             if (!contentType.includes("application/json")) {
-                const text = await response.text();
-                console.error('Respuesta no JSON:', text.substring(0, 500));
-                throw new Error("Error del servidor. Verifica la consola.");
+                console.error("❌ La respuesta NO es JSON");
+                return response.text().then(text => {
+                    console.error("Contenido de la respuesta:", text.substring(0, 500));
+                    throw new Error("El servidor no devolvió JSON. Revisa la vista en Django.");
+                });
             }
             
-            // Si la respuesta no es OK, lanzar error con el mensaje
+            // Si el status no es OK
             if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || `Error HTTP ${response.status}`);
+                console.error(`❌ Error HTTP ${response.status}`);
+                return response.json().then(errorData => {
+                    console.error("Datos del error:", errorData);
+                    throw new Error(errorData.message || `Error HTTP ${response.status}`);
+                });
             }
             
+            console.log("✅ Respuesta válida, parseando JSON...");
             return response.json();
         })
         .then(data => {
-            if (!data) return; // Si fue redirigido, data es undefined
+            if (!data) {
+                console.log("⚠️ No hay datos para procesar (posible redirect)");
+                return;
+            }
+            
+            console.log("📦 Datos recibidos:", data);
             
             if (data.success) {
-                mostrarMensaje('success', data.message);
+                console.log("✅ Operación exitosa");
+                mostrarMensaje('success', data.message || 'Postulante aceptado correctamente');
 
                 const card = document.getElementById(`postulacion-${postulacionId}`);
                 if (card) {
+                    console.log("🔄 Actualizando UI de la tarjeta...");
                     card.className = 'postulante-card aceptada';
 
                     const badge = card.querySelector('.estado-badge');
@@ -475,66 +531,128 @@ function aceptarPostulante(postulacionId, nombreTrabajador, url) {
                     }
                 }
                 
-                // Actualizar estadísticas
+                console.log("🔄 Recargando página en 1.5 segundos...");
                 setTimeout(() => location.reload(), 1500);
             } else {
+                console.error("❌ Operación fallida:", data.message);
                 mostrarMensaje('error', data.message || 'Error al aceptar postulante');
             }
         })
         .catch(error => {
-            console.error('Error completo:', error);
+            console.error("💥 ERROR CRÍTICO:", error);
+            console.error("Stack trace:", error.stack);
             mostrarMensaje('error', error.message || 'Error al procesar la solicitud');
         });
-}
+    }
 
     function rechazarPostulante(postulacionId, nombreTrabajador, url) {
-        if (!confirm(`¿Estás seguro de rechazar a ${nombreTrabajador}?`)) return;
+        console.log("=".repeat(80));
+        console.log("🔴 INICIANDO RECHAZO DE POSTULANTE");
+        console.log("Postulación ID:", postulacionId);
+        console.log("Trabajador:", nombreTrabajador);
+        console.log("URL:", url);
+        console.log("=".repeat(80));
+        
+        if (!confirm(`¿Estás seguro de rechazar a ${nombreTrabajador}?`)) {
+            console.log("❌ Usuario canceló la confirmación");
+            return;
+        }
 
         const csrfToken = getCsrfTokenFromCookie();
+        console.log("CSRF Token:", csrfToken ? "✅ Encontrado" : "❌ No encontrado");
+
         const formData = new FormData();
+        
+        console.log("📤 Enviando petición AJAX POST...");
 
         fetch(url, {
             method: "POST",
             credentials: "include",
             headers: {
                 "X-Requested-With": "XMLHttpRequest",
-                "X-CSRFToken": csrfToken,
+                "X-CSRFToken": csrfToken
             },
             body: formData
         })
-            .then(parseJsonSafe)
-            .then(data => {
-                if (data.success) {
-                    mostrarMensaje("success", data.message || "Postulante rechazado");
+        .then(response => {
+            console.log("📥 Respuesta recibida:");
+            console.log("  - Status:", response.status);
+            console.log("  - Status Text:", response.statusText);
+            console.log("  - Content-Type:", response.headers.get('content-type'));
+            console.log("  - Redirected:", response.redirected);
+            
+            if (response.redirected) {
+                console.error("⚠️ La respuesta fue redirigida a:", response.url);
+                throw new Error('La petición fue redirigida. Posible problema de autenticación.');
+            }
+            
+            const contentType = response.headers.get("content-type") || "";
+            if (!contentType.includes("application/json")) {
+                console.error("❌ La respuesta NO es JSON");
+                return response.text().then(text => {
+                    console.error("Contenido:", text.substring(0, 500));
+                    throw new Error("El servidor no devolvió JSON");
+                });
+            }
+            
+            if (!response.ok) {
+                console.error(`❌ Error HTTP ${response.status}`);
+                return response.json().then(errorData => {
+                    throw new Error(errorData.message || `Error HTTP ${response.status}`);
+                });
+            }
+            
+            console.log("✅ Respuesta válida, parseando JSON...");
+            return response.json();
+        })
+        .then(data => {
+            if (!data) {
+                console.log("⚠️ No hay datos para procesar");
+                return;
+            }
+            
+            console.log("📦 Datos recibidos:", data);
+            
+            if (data.success) {
+                console.log("✅ Operación exitosa");
+                mostrarMensaje("success", data.message || "Postulante rechazado");
 
-                    const card = document.getElementById(`postulacion-${postulacionId}`);
-                    if (card) {
-                        card.className = "postulante-card rechazada";
-                        const badge = card.querySelector(".estado-badge");
-                        if (badge) {
-                            badge.className = "estado-badge estado-rechazada";
-                            badge.textContent = "❌ Rechazada";
-                        }
-                        const actions = card.querySelector(".postulante-actions");
-                        if (actions) {
-                            actions.querySelectorAll("button").forEach(btn => btn.remove());
-                        }
+                const card = document.getElementById(`postulacion-${postulacionId}`);
+                if (card) {
+                    console.log("🔄 Actualizando UI...");
+                    card.className = "postulante-card rechazada";
+                    
+                    const badge = card.querySelector(".estado-badge");
+                    if (badge) {
+                        badge.className = "estado-badge estado-rechazada";
+                        badge.textContent = "❌ Rechazada";
                     }
-
-                    setTimeout(() => location.reload(), 1200);
-                } else {
-                    mostrarMensaje("error", data.message || "Error al rechazar postulante");
+                    
+                    const actions = card.querySelector(".postulante-actions");
+                    if (actions) {
+                        actions.querySelectorAll("button").forEach(btn => btn.remove());
+                    }
                 }
-            })
-            .catch(err => {
-                console.error("Error rechazarPostulante:", err);
-                mostrarMensaje("error", "Error al procesar la solicitud");
-            });
+
+                console.log("🔄 Recargando página...");
+                setTimeout(() => location.reload(), 1500);
+            } else {
+                console.error("❌ Operación fallida:", data.message);
+                mostrarMensaje("error", data.message || "Error al rechazar postulante");
+            }
+        })
+        .catch(error => {
+            console.error("💥 ERROR CRÍTICO:", error);
+            console.error("Stack trace:", error.stack);
+            mostrarMensaje("error", error.message || "Error al procesar la solicitud");
+        });
     }
 
     function mostrarMensaje(tipo, mensaje) {
+        console.log(`📢 Mostrando mensaje [${tipo}]:`, mensaje);
+        
         const alertDiv = document.createElement("div");
-        alertDiv.className = `alert alert-${tipo === "success" ? "success" : "error"}`;
+        alertDiv.className = `alert alert-${tipo === "success" ? "success" : "danger"}`;
         alertDiv.textContent = mensaje;
 
         alertDiv.style.position = "fixed";
@@ -542,7 +660,12 @@ function aceptarPostulante(postulacionId, nombreTrabajador, url) {
         alertDiv.style.right = "20px";
         alertDiv.style.zIndex = "9999";
         alertDiv.style.minWidth = "300px";
+        alertDiv.style.padding = "15px";
+        alertDiv.style.borderRadius = "8px";
         alertDiv.style.boxShadow = "0 4px 12px rgba(0,0,0,0.15)";
+        alertDiv.style.backgroundColor = tipo === "success" ? "#d4edda" : "#f8d7da";
+        alertDiv.style.color = tipo === "success" ? "#155724" : "#721c24";
+        alertDiv.style.border = `1px solid ${tipo === "success" ? "#c3e6cb" : "#f5c6cb"}`;
 
         document.body.appendChild(alertDiv);
 

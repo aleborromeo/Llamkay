@@ -202,8 +202,8 @@ def editar_trabajo(request, oferta_id):
         return redirect('users:login')
 
 
-@login_required
 @require_POST
+@login_required
 def eliminar_trabajo(request, oferta_id):
     try:
         usuario = Usuario.objects.get(user=request.user)
@@ -239,8 +239,8 @@ def eliminar_trabajo(request, oferta_id):
         }, status=500)
 
 
-@login_required
 @require_POST
+@login_required
 def cambiar_estado_oferta(request, oferta_id):
     try:
         usuario = Usuario.objects.get(user=request.user)

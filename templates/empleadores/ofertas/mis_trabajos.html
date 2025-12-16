@@ -217,22 +217,22 @@
                                 </button>
                                 <div class="dropdown-menu">
                                     {% if oferta.estado != 'activa' %}
-                                    <button class="dropdown-item cambiar-estado" 
-                                            data-id="{{ oferta.id }}" 
+                                    <button class="dropdown-item cambiar-estado"
+                                            data-url="{% url 'empleadores:cambiar_estado_oferta' oferta.id %}"
                                             data-estado="activa">
                                         ✓ Activar
                                     </button>
                                     {% endif %}
                                     {% if oferta.estado != 'pausada' %}
-                                    <button class="dropdown-item cambiar-estado" 
-                                            data-id="{{ oferta.id }}" 
+                                    <button class="dropdown-item cambiar-estado"
+                                            data-url="{% url 'empleadores:cambiar_estado_oferta' oferta.id %}"
                                             data-estado="pausada">
                                         ⏸ Pausar
                                     </button>
                                     {% endif %}
                                     {% if oferta.estado != 'cerrada' %}
-                                    <button class="dropdown-item cambiar-estado" 
-                                            data-id="{{ oferta.id }}" 
+                                    <button class="dropdown-item cambiar-estado"
+                                            data-url="{% url 'empleadores:cambiar_estado_oferta' oferta.id %}"
                                             data-estado="cerrada">
                                         ✕ Cerrar
                                     </button>
@@ -318,25 +318,26 @@
                                 </button>
                                 <div class="dropdown-menu">
                                     {% if oferta.estado != 'activa' %}
-                                    <button class="dropdown-item cambiar-estado" 
-                                            data-id="{{ oferta.id }}" 
+                                    <button class="dropdown-item cambiar-estado"
+                                            data-url="{% url 'empleadores:cambiar_estado_oferta' oferta.id %}"
                                             data-estado="activa">
                                         ✓ Activar
                                     </button>
                                     {% endif %}
                                     {% if oferta.estado != 'pausada' %}
-                                    <button class="dropdown-item cambiar-estado" 
-                                            data-id="{{ oferta.id }}" 
+                                    <button class="dropdown-item cambiar-estado"
+                                            data-url="{% url 'empleadores:cambiar_estado_oferta' oferta.id %}"
                                             data-estado="pausada">
                                         ⏸ Pausar
-                                    </button>
+                                    </button>   
                                     {% endif %}
                                     {% if oferta.estado != 'cerrada' %}
-                                    <button class="dropdown-item cambiar-estado" 
-                                            data-id="{{ oferta.id }}" 
+                                    <button class="dropdown-item cambiar-estado"
+                                            data-url="{% url 'empleadores:cambiar_estado_oferta' oferta.id %}"
                                             data-estado="cerrada">
                                         ✕ Cerrar
                                     </button>
+
                                     {% endif %}
                                 </div>
                             </div>

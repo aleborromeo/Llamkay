@@ -14,9 +14,10 @@ urlpatterns = [
     path('ofertas/eliminar/<int:oferta_id>/', oferta_views.eliminar_trabajo, name='eliminar_trabajo'),
     path('ofertas/cambiar-estado/<int:oferta_id>/', oferta_views.cambiar_estado_oferta, name='cambiar_estado_oferta'),
     
-    path('postulantes/<str:tipo>/<int:oferta_id>/', postulante_views.ver_postulantes, name='ver_postulantes'),
     path('postulantes/aceptar/<int:postulacion_id>/', postulante_views.aceptar_postulante, name='aceptar_postulante'),
     path('postulantes/rechazar/<int:postulacion_id>/', postulante_views.rechazar_postulante, name='rechazar_postulante'),
+
+    path('postulantes/<str:tipo>/<int:oferta_id>/', postulante_views.ver_postulantes, name='ver_postulantes'),
     path('postulantes/recientes/', postulante_views.postulaciones_recientes, name='postulaciones_recientes'),
     
     path('ajax/cargar-provincias/', oferta_views.cargar_provincias, name='cargar_provincias'),

@@ -2,16 +2,16 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import JsonResponse
-from django.views.decorators.http import require_POST, require_http_methods
-from apps.empleadores.decorators import ajax_login_required
-
+from functools import wraps
+from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 from apps.users.models import Usuario
 from apps.empleadores.services import PostulanteService
-from apps.empleadores.repositories import OfertaEmpleadorRepository  # 👈 nuevo import
+from apps.empleadores.repositories import OfertaEmpleadorRepository
 
 postulante_service = PostulanteService()
-oferta_repo = OfertaEmpleadorRepository()  # 👈 repositorio de ofertas
+oferta_repo = OfertaEmpleadorRepository()
 
 
 @login_required
@@ -47,19 +47,15 @@ def ver_postulantes(request, oferta_id, tipo):
             estado=estado_filtro
         )
 
-        postulaciones = resultado['postulaciones']          # lista de dicts
-        estadisticas = resultado['estadisticas']            # dict con totales
+        postulaciones = resultado['postulaciones']
+        estadisticas = resultado['estadisticas']
 
         context = {
             'oferta': oferta,
             'tipo': tipo,
             'estado_filtro': estado_filtro,
             'usuario': usuario,
-
-            # lista para recorrer en el template
             'postulaciones': postulaciones,
-
-            # estadísticas desde el servicio
             'estadisticas': estadisticas,
             'total_postulaciones': estadisticas['total'],
             'pendientes': estadisticas['pendientes'],
@@ -73,93 +69,125 @@ def ver_postulantes(request, oferta_id, tipo):
         messages.error(request, "Usuario no encontrado.")
         return redirect('users:login')
 
+def ajax_login_required(view_func):
+    @wraps(view_func)
+    def _wrapped_view(request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return JsonResponse({
+                'success': False,
+                'message': 'No autenticado'
+            }, status=401)
+        return view_func(request, *args, **kwargs)
+    return _wrapped_view
 
 
 
-
-@ajax_login_required  # <-- Usa este en lugar de @login_required
 @require_POST
-
-
-
-@require_POST
+@ajax_login_required
 def aceptar_postulante(request, postulacion_id):
-    print("=" * 50)
-    print("🔍 INICIO DE LA VISTA")
-    print(f"Usuario autenticado: {request.user.is_authenticated}")
-    print(f"Usuario: {request.user}")
-    print(f"Método: {request.method}")
-    print(f"Headers: {dict(request.headers)}")
-    print("=" * 50)
+    """Vista para aceptar un postulante - SOLO maneja AJAX"""
     
-    # Verificar autenticación manualmente
+    print("="*80)
+    print("🔵 VISTA ACEPTAR_POSTULANTE LLAMADA")
+    print(f"  - Método: {request.method}")
+    print(f"  - AJAX: {request.headers.get('X-Requested-With')}")
+    print(f"  - Autenticado: {request.user.is_authenticated}")
+    print(f"  - Usuario: {request.user}")
+    print(f"  - Postulación ID: {postulacion_id}")
+    print("="*80)
+    
+    # Verificar autenticación
     if not request.user.is_authenticated:
-        print("❌ Usuario no autenticado")
+        print("❌ Usuario NO autenticado")
         return JsonResponse({
             'success': False,
             'message': 'Debes iniciar sesión'
         }, status=401)
     
-    # Verificar que sea AJAX
-    if not request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        print("❌ No es petición AJAX")
-        return JsonResponse({
-            'success': False,
-            'message': 'Petición inválida'
-        }, status=400)
-    
     try:
         usuario = Usuario.objects.get(user=request.user)
-        print(f"✅ Usuario encontrado: {usuario}")
-
+        print(f"✅ Usuario encontrado: {usuario.nombre_completo} (ID: {usuario.id_usuario})")
+        
         resultado = postulante_service.aceptar_postulante(
             postulacion_id,
             usuario.id_usuario
         )
-
-        print(f"✅ Resultado del servicio: {resultado}")
-        print("=" * 50)
         
+        print(f"📦 Resultado del servicio: {resultado}")
+        print("="*80)
+        
+        # SIEMPRE devolver JSON, nunca redirect
         return JsonResponse(resultado)
 
     except Usuario.DoesNotExist:
-        print("❌ Usuario no existe en la BD")
+        print("❌ Usuario no existe en BD")
         return JsonResponse({
             'success': False,
             'message': 'Usuario no encontrado'
         }, status=404)
+        
     except Exception as e:
-        print(f"❌ Error: {type(e).__name__}: {e}")
+        print(f"💥 ERROR CRÍTICO: {type(e).__name__}: {e}")
         import traceback
         traceback.print_exc()
         return JsonResponse({
             'success': False,
             'message': f'Error del servidor: {str(e)}'
         }, status=500)
-        
-@login_required
+
+
 @require_POST
+@ajax_login_required
 def rechazar_postulante(request, postulacion_id):
+    """Vista para rechazar un postulante - SOLO maneja AJAX"""
+    
+    print("="*80)
+    print("🔴 VISTA RECHAZAR_POSTULANTE LLAMADA")
+    print(f"  - Método: {request.method}")
+    print(f"  - AJAX: {request.headers.get('X-Requested-With')}")
+    print(f"  - Autenticado: {request.user.is_authenticated}")
+    print(f"  - Usuario: {request.user}")
+    print(f"  - Postulación ID: {postulacion_id}")
+    print("="*80)
+    
+    # Verificar autenticación
+    if not request.user.is_authenticated:
+        print("❌ Usuario NO autenticado")
+        return JsonResponse({
+            'success': False,
+            'message': 'Debes iniciar sesión'
+        }, status=401)
+    
     try:
         usuario = Usuario.objects.get(user=request.user)
+        print(f"✅ Usuario encontrado: {usuario.nombre_completo} (ID: {usuario.id_usuario})")
         
         resultado = postulante_service.rechazar_postulante(
             postulacion_id,
             usuario.id_usuario
         )
         
-        is_ajax = request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
-
-        if is_ajax:
-            return JsonResponse(resultado)
-
-        return redirect('empleadores:mis_trabajos')
+        print(f"📦 Resultado del servicio: {resultado}")
+        print("="*80)
         
+        # SIEMPRE devolver JSON, nunca redirect
+        return JsonResponse(resultado)
+
     except Usuario.DoesNotExist:
+        print("❌ Usuario no existe en BD")
         return JsonResponse({
             'success': False,
             'message': 'Usuario no encontrado'
         }, status=404)
+        
+    except Exception as e:
+        print(f"💥 ERROR CRÍTICO: {type(e).__name__}: {e}")
+        import traceback
+        traceback.print_exc()
+        return JsonResponse({
+            'success': False,
+            'message': f'Error del servidor: {str(e)}'
+        }, status=500)
 
 
 @login_required

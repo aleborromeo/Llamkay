@@ -189,3 +189,4 @@ PLIN_NUMBER = '+51999999999'  # Tu número Plin
 # Para generar QR
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
